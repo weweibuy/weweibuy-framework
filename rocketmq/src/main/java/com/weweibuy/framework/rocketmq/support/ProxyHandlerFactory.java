@@ -1,7 +1,5 @@
 package com.weweibuy.framework.rocketmq.support;
 
-import org.apache.rocketmq.client.producer.MQProducer;
-
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.Map;
@@ -14,12 +12,7 @@ import java.util.Map;
  **/
 public interface ProxyHandlerFactory {
 
-    InvocationHandler create(MQProducer producer, Map<Method, MethodHandler> methodMethodHandlerMap);
+    InvocationHandler create(Map<Method, MethodHandler> methodMethodHandlerMap);
 
-
-    interface MethodHandler {
-
-        Object invoke(Object[] arg) throws Throwable;
-    }
 
 }

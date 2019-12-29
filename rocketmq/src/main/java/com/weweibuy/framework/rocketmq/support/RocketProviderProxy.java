@@ -1,12 +1,11 @@
 package com.weweibuy.framework.rocketmq.support;
 
-import org.apache.rocketmq.client.producer.DefaultMQProducer;
-
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.Map;
 
 /**
  * @author durenhao
@@ -14,12 +13,11 @@ import java.lang.reflect.Modifier;
  **/
 public class RocketProviderProxy implements InvocationHandler {
 
-    private final DefaultMQProducer producer;
+    private final Map<Method, MethodHandler> methodMethodHandlerMap;
 
-    public RocketProviderProxy(DefaultMQProducer producer) {
-        this.producer = producer;
+    public RocketProviderProxy(Map<Method, MethodHandler> methodMethodHandlerMap) {
+        this.methodMethodHandlerMap = methodMethodHandlerMap;
     }
-
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
@@ -28,7 +26,7 @@ public class RocketProviderProxy implements InvocationHandler {
         } else if (isDefaultMethod(method)) {
             return invokeDefaultMethod(proxy, method, args);
         }
-        return "";
+        return methodMethodHandlerMap.get(method).invoke(args);
     }
 
 

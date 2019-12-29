@@ -23,7 +23,7 @@ public class RocketProviderFactoryBean implements FactoryBean<Object> {
 
     @Override
     public Object getObject() throws Exception {
-        return Proxy.newProxyInstance(type.getClassLoader(), new Class[]{type},
+        return  Proxy.newProxyInstance(type.getClassLoader(), new Class[]{type},
                 (a, b, c) -> {
                     log.info("进入代理方法!!! 方法名: {}, 参数:{}", b.getName(), c);
                     return b.invoke(c);
