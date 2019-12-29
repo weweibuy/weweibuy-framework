@@ -4,13 +4,16 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.weweibuy</groupId>
+    <groupId>com.weweibuy.framework</groupId>
     <artifactId>weweibuy-framework</artifactId>
     <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
     <modules>
-        <module>framework-common</module>
-        <module>framework-idempotent</module>
+        <module>common</module>
+        <module>idempotent</module>
+        <module>rocketmq</module>
+        <module>interface</module>
+        <module>samples</module>
     </modules>
 
     <properties>
@@ -18,13 +21,16 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <junit.version>4.12</junit.version>
-        <log4j.version>1.2.17</log4j.version>
-        <lombok.version>1.16.18</lombok.version>
+        <lombok.version>1.18.10</lombok.version>
+        <spring-boot.version>2.2.2.RELEASE</spring-boot.version>
+        <rocketmq-client-version>4.6.0</rocketmq-client-version>
+        <guava.version>28.1-jre</guava.version>
+        <apache.common.lang.version>commons-lang3</apache.common.lang.version>
     </properties>
 
     <dependencyManagement>
-        <dependencies>
 
+        <dependencies>
             <!--junit测试-->
             <dependency>
                 <groupId>junit</groupId>
@@ -32,24 +38,72 @@
                 <version>${junit.version}</version>
             </dependency>
 
-            <!--lombok-->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring-boot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.rocketmq</groupId>
+                <artifactId>rocketmq-client</artifactId>
+                <version>${rocketmq-client-version}</version>
+            </dependency>
+
             <dependency>
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
                 <version>${lombok.version}</version>
             </dependency>
+
+            <dependency>
+                <groupId>com.weweibuy.framework</groupId>
+                <artifactId>common</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.weweibuy.framework</groupId>
+                <artifactId>rocketmq</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.weweibuy.framework</groupId>
+                <artifactId>idempotent</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.weweibuy.framework</groupId>
+                <artifactId>interface</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>${guava.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>${apache.common.lang.version}</version>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 
     <dependencies>
-        <!--junit测试-->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <scope>test</scope>
         </dependency>
 
-        <!--lombok-->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
