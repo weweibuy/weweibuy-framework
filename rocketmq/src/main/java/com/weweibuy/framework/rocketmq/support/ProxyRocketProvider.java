@@ -10,7 +10,14 @@ import org.apache.rocketmq.client.producer.MQProducer;
  **/
 public class ProxyRocketProvider {
 
+    private final ProxyHandlerFactory proxyHandlerFactory;
+
+    public ProxyRocketProvider(ProxyHandlerFactory proxyHandlerFactory) {
+        this.proxyHandlerFactory = proxyHandlerFactory;
+    }
+
     public Object newInstance(MQProducer mqProducer) {
+
 
         return "";
     }

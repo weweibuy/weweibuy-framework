@@ -4,7 +4,6 @@ import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.util.Map;
 
 /**
@@ -23,18 +22,13 @@ public class RocketProviderProxy implements InvocationHandler {
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         if (Object.class.equals(method.getDeclaringClass())) {
             return method.invoke(this, args);
-        } else if (isDefaultMethod(method)) {
+        } else if (MethodUtils.isDefault(method)) {
             return invokeDefaultMethod(proxy, method, args);
         }
         return methodMethodHandlerMap.get(method).invoke(args);
     }
 
 
-    private boolean isDefaultMethod(Method method) {
-        return ((method.getModifiers()
-                & (Modifier.ABSTRACT | Modifier.PUBLIC | Modifier.STATIC)) == Modifier.PUBLIC)
-                && method.getDeclaringClass().isInterface();
-    }
 
     private Object invokeDefaultMethod(Object proxy, Method method, Object[] args)
             throws Throwable {
