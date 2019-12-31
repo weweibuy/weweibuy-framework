@@ -35,7 +35,6 @@ public class TargetMethodMetaDataParse {
                     RocketProviderHandler providerHandler = m.getAnnotation(RocketProviderHandler.class);
                     parseAnnotationOnMethod(rocketMethodMetadata, providerHandler);
                     Annotation[][] parameterAnnotations = m.getParameterAnnotations();
-
                 });
         return null;
 
@@ -51,8 +50,9 @@ public class TargetMethodMetaDataParse {
         return metadata;
     }
 
-    private void parseAnnotationOnParameter(RocketMethodMetadata metadata, Annotation[] annotations, int index) {
-
+    private void parseAnnotationOnParameter(RocketMethodMetadata metadata, Method method, Annotation[] annotations, int index) {
+        for (int i = 0; i < annotations.length; i++) {
+        }
     }
 
 
@@ -62,5 +62,19 @@ public class TargetMethodMetaDataParse {
                 MethodUtils.isDefault(method);
     }
 
+
+    public static void main(String[] args) {
+        Method[] methods = TargetMethodMetaDataParse.class.getDeclaredMethods();
+        Arrays.stream(methods)
+                .filter(method -> method.getName().equals("parseAnnotationOnParameter"))
+                .findFirst()
+                .ifPresent(m -> {
+                    Annotation[][] parameterAnnotations = m.getParameterAnnotations();
+                    Annotation[] parameterAnnotation = parameterAnnotations[0];
+
+                    System.err.println(parameterAnnotations.length);
+                    System.err.println(parameterAnnotation.length);
+                });
+    }
 
 }

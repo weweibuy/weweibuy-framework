@@ -1,6 +1,6 @@
 package com.weweibuy.framework.rocketmq.core;
 
-import lombok.Setter;
+import lombok.Data;
 
 /**
  * 方法元数据
@@ -8,7 +8,7 @@ import lombok.Setter;
  * @author durenhao
  * @date 2019/12/30 20:51
  **/
-@Setter
+@Data
 public class RocketMethodMetadata {
 
     private String topic;
