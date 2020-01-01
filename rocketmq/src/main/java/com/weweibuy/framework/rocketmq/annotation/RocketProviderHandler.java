@@ -35,6 +35,14 @@ public @interface RocketProviderHandler {
     int timeout() default 3000;
 
     /**
+     * 批量,发送, 批量发送时对应需要转为message的参数必须为
+     * {@link java.util.Collection}  类型
+     *
+     * @return
+     */
+    boolean batch() default false;
+
+    /**
      * 是否顺序发送, 使用顺序发送必须指定 RocketProviderHandler.key(), 对key去hash 选择队列
      * {@link org.apache.rocketmq.client.producer.selector.SelectMessageQueueByHash}
      *

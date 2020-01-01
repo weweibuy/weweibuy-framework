@@ -7,9 +7,13 @@ import java.lang.annotation.Target;
 
 /**
  * @author durenhao
- * @date 2019/12/31 16:11
+ * @date 2019/12/31 21:57
  **/
 @Target({ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Payload {
+public @interface Header {
+
+    String value() default "";
+
+
 }

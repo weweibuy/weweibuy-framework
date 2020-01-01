@@ -1,7 +1,10 @@
 package com.weweibuy.framework.rocketmq.support;
 
-import com.weweibuy.framework.rocketmq.core.MessageConverter;
+import com.weweibuy.framework.rocketmq.core.RocketMethodMetadata;
 import org.apache.rocketmq.client.producer.MQProducer;
+import org.apache.rocketmq.common.message.Message;
+
+import java.util.Map;
 
 /**
  * @author durenhao
@@ -11,17 +14,30 @@ public class DefaultRocketMethodHandler implements MethodHandler {
 
     private final MQProducer mqProducer;
 
-    private final MessageConverter messageConverter;
+    private final RocketMethodMetadata rocketMethodMetadata;
 
-    public DefaultRocketMethodHandler(MQProducer mqProducer,
-                                      MessageConverter messageConverter) {
+    public DefaultRocketMethodHandler(MQProducer mqProducer, RocketMethodMetadata rocketMethodMetadata) {
         this.mqProducer = mqProducer;
-        this.messageConverter = messageConverter;
+        this.rocketMethodMetadata = rocketMethodMetadata;
     }
 
 
     @Override
     public Object invoke(Object[] arg) throws Throwable {
-        return null;
+        Message message = buildMsgFromMetadata(arg, rocketMethodMetadata);
+        return mqProducer.send(message);
     }
+
+    private Message buildMsgFromMetadata(Object[] arg, RocketMethodMetadata metadata) {
+        Integer bodyIndex = metadata.getBodyIndex();
+        Map<Integer, MethodParameterProcessor> methodParameterProcessorMap = metadata.getMethodParameterProcessorMap();
+        MethodParameterProcessor parameterProcessor = methodParameterProcessorMap.get(bodyIndex);
+        Message message = parameterProcessor.process(metadata, new Message(), arg, bodyIndex);
+        methodParameterProcessorMap.entrySet().stream()
+                .filter(e -> !e.getKey().equals(bodyIndex))
+                .forEach(e -> e.getValue().process(metadata, message, arg, e.getKey()));
+        return message;
+    }
+
+
 }

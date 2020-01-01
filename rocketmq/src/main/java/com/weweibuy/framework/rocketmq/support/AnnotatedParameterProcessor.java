@@ -1,8 +1,3 @@
-/*
- * All rights Reserved, Designed By baowei
- *
- * 注意：本内容仅限于内部传阅，禁止外泄以及用于其他的商业目的
- */
 package com.weweibuy.framework.rocketmq.support;
 
 import java.lang.annotation.Annotation;
@@ -13,14 +8,20 @@ import java.lang.annotation.Annotation;
  * @author durenhao
  * @date 2019/12/31 16:46
  **/
-public interface AnnotatedParameterProcessor<T extends Annotation> {
+public interface AnnotatedParameterProcessor extends MethodParameterProcessor {
 
     /**
-     * 获取注解类型
+     * 是否匹配
+     *
+     * @param annotation
+     * @return
+     */
+    boolean match(Annotation annotation);
+
+    /**
+     * 获取注解
      *
      * @return
      */
-    T getAnnotationType();
-
-
+    Class<? extends Annotation> getAnnotation();
 }

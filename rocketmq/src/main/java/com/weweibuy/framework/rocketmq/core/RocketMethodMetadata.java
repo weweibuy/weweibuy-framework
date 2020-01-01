@@ -1,6 +1,12 @@
 package com.weweibuy.framework.rocketmq.core;
 
+import com.weweibuy.framework.rocketmq.support.MessageKeyGenerator;
+import com.weweibuy.framework.rocketmq.support.MethodParameterProcessor;
 import lombok.Data;
+
+import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 方法元数据
@@ -13,19 +19,31 @@ public class RocketMethodMetadata {
 
     private String topic;
 
-    private int bodyIndex;
+    private Method method;
 
-    private int tagIndex;
+    private Integer bodyIndex;
 
-    private int keyIndex;
+    private Integer tagIndex;
 
-    private boolean orderly;
+    private Integer keyIndex;
 
-    private boolean oneWay;
+    private Integer headerIndex;
 
-    private int timeout;
+    private Map<Integer, String> headerIndexName;
+
+    private Boolean orderly;
+
+    private Boolean oneWay;
+
+    private Boolean batch;
+
+    private Integer timeout;
 
     private String tag;
 
     private String keyExpression;
+
+    private MessageKeyGenerator messageKeyGenerator;
+
+    private Map<Integer, MethodParameterProcessor> methodParameterProcessorMap = new HashMap<>();
 }

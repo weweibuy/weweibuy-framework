@@ -1,6 +1,12 @@
 package com.weweibuy.framework.rocketmq.support;
 
+import com.weweibuy.framework.rocketmq.core.RocketMethodMetadata;
 import org.apache.rocketmq.client.producer.MQProducer;
+
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 代理的rocketMQ 生产者
@@ -12,22 +18,29 @@ public class ProxyRocketProvider {
 
     private final ProxyHandlerFactory proxyHandlerFactory;
 
-    public ProxyRocketProvider(ProxyHandlerFactory proxyHandlerFactory) {
+    private final TargetMethodMetaDataParser targetMethodMetaDataParser;
+
+    private final MQProducer mqProducer;
+
+    public ProxyRocketProvider(ProxyHandlerFactory proxyHandlerFactory, TargetMethodMetaDataParser targetMethodMetaDataParser, MQProducer mqProducer) {
         this.proxyHandlerFactory = proxyHandlerFactory;
+        this.targetMethodMetaDataParser = targetMethodMetaDataParser;
+        this.mqProducer = mqProducer;
     }
 
-    public Object newInstance(MQProducer mqProducer) {
+    public InvocationHandler newInstance(Class<?> target) {
+        Map<Method, RocketMethodMetadata> parser = targetMethodMetaDataParser.parser(target);
 
+        Map<Method, MethodHandler> methodMethodHandlerMap = new HashMap<>();
 
-        return "";
-    }
+        parser.forEach((k, v) -> {
+            DefaultRocketMethodHandler methodHandler = new DefaultRocketMethodHandler(mqProducer, v);
+            methodMethodHandlerMap.put(k, methodHandler);
+        });
 
+        InvocationHandler invocationHandler = proxyHandlerFactory.create(methodMethodHandlerMap);
 
-    /**
-     * 解析 methodHandler
-     */
-    private static class ParseHandlersByName {
-
+        return invocationHandler;
     }
 
 

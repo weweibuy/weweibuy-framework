@@ -1,5 +1,6 @@
 package com.weweibuy.framework.rocketmq.core;
 
+import com.weweibuy.framework.rocketmq.support.ProxyRocketProvider;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.FactoryBean;
@@ -20,14 +21,11 @@ public class RocketProviderFactoryBean implements FactoryBean<Object> {
 
     private String topic;
 
+    private ProxyRocketProvider proxyRocketProvider;
 
     @Override
     public Object getObject() throws Exception {
-        return  Proxy.newProxyInstance(type.getClassLoader(), new Class[]{type},
-                (a, b, c) -> {
-                    log.info("进入代理方法!!! 方法名: {}, 参数:{}", b.getName(), c);
-                    return b.invoke(c);
-                });
+        return Proxy.newProxyInstance(type.getClassLoader(), new Class[]{type}, proxyRocketProvider.newInstance(type));
     }
 
     @Override
