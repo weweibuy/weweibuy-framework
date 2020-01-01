@@ -1,9 +1,13 @@
 package com.weweibuy.framework.rocketmq.annotation;
 
+import com.weweibuy.framework.rocketmq.config.ProviderConfig;
 import com.weweibuy.framework.rocketmq.core.RocketProviderRegister;
 import org.springframework.context.annotation.Import;
 
-import java.lang.annotation.*;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * @author durenhao
@@ -11,7 +15,7 @@ import java.lang.annotation.*;
  **/
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-@Import(RocketProviderRegister.class)
+@Import({RocketProviderRegister.class, ProviderConfig.class})
 public @interface EnableRocketProvider {
 
     String[] value() default {};

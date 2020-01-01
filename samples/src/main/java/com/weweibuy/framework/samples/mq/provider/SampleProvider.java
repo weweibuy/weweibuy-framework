@@ -9,7 +9,7 @@ import org.apache.rocketmq.client.producer.SendResult;
  * @author durenhao
  * @date 2019/12/29 10:26
  **/
-@RocketProvider(topic = "${rocket-mq.provider.sampleProvider.topic}")
+@RocketProvider(topic = "${rocket-mq.provider.sample-provider.topic}")
 public interface SampleProvider {
 
     @RocketProviderHandler(tag = "TEST_TAG")

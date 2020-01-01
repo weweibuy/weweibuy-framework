@@ -2,6 +2,8 @@ package com.weweibuy.framework.rocketmq.support;
 
 import com.weweibuy.framework.rocketmq.core.RocketMethodMetadata;
 import org.apache.rocketmq.client.producer.MQProducer;
+import org.springframework.beans.factory.DisposableBean;
+import org.springframework.beans.factory.InitializingBean;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -14,16 +16,15 @@ import java.util.Map;
  * @author durenhao
  * @date 2019/12/29 23:17
  **/
-public class ProxyRocketProvider {
+public class ProxyRocketProvider implements InitializingBean, DisposableBean {
 
-    private final ProxyHandlerFactory proxyHandlerFactory;
+    private final ProxyHandlerFactory proxyHandlerFactory = new DefaultProxyHandlerFactory();
 
     private final TargetMethodMetaDataParser targetMethodMetaDataParser;
 
     private final MQProducer mqProducer;
 
-    public ProxyRocketProvider(ProxyHandlerFactory proxyHandlerFactory, TargetMethodMetaDataParser targetMethodMetaDataParser, MQProducer mqProducer) {
-        this.proxyHandlerFactory = proxyHandlerFactory;
+    public ProxyRocketProvider(TargetMethodMetaDataParser targetMethodMetaDataParser, MQProducer mqProducer) {
         this.targetMethodMetaDataParser = targetMethodMetaDataParser;
         this.mqProducer = mqProducer;
     }
@@ -44,4 +45,13 @@ public class ProxyRocketProvider {
     }
 
 
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        mqProducer.start();
+    }
+
+    @Override
+    public void destroy() throws Exception {
+        mqProducer.shutdown();
+    }
 }
