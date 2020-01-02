@@ -3,12 +3,21 @@ package com.weweibuy.framework.rocketmq.support;
 import com.weweibuy.framework.rocketmq.annotation.RocketProvider;
 import com.weweibuy.framework.rocketmq.annotation.RocketProviderHandler;
 import com.weweibuy.framework.rocketmq.core.RocketMethodMetadata;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.rocketmq.client.producer.SendCallback;
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.ResourceLoaderAware;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.util.Assert;
+import org.springframework.util.ClassUtils;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -17,11 +26,15 @@ import java.util.stream.Collectors;
  * @author durenhao
  * @date 2019/12/30 20:47
  **/
-public class TargetMethodMetaDataParser {
+public class TargetMethodMetaDataParser implements ResourceLoaderAware {
+
+    private ResourceLoader resourceLoader;
 
     private final RocketMethodMetadataFactory methodMetadataFactory;
 
     private final MessageBodyParameterProcessor methodParameterProcessor;
+
+    private final SendCallBackMethodParameterProcessor callBackMethodParameterProcessor = new SendCallBackMethodParameterProcessor();
 
     private final List<AnnotatedParameterProcessor> annotatedParameterProcessor;
 
@@ -40,6 +53,7 @@ public class TargetMethodMetaDataParser {
                 .filter(m -> Objects.nonNull(m.getAnnotation(RocketProviderHandler.class)))
                 .map(m -> {
                     RocketMethodMetadata rocketMethodMetadata = methodMetadataFactory.newInstance(target, m);
+                    parseAnnotationOnClass(rocketMethodMetadata, target);
                     parseAnnotationOnMethod(rocketMethodMetadata, m);
                     return parseAnnotationOnParameter(rocketMethodMetadata, m);
                 })
@@ -50,16 +64,16 @@ public class TargetMethodMetaDataParser {
 
     protected RocketMethodMetadata parseAnnotationOnClass(RocketMethodMetadata methodMetadata, Class<?> target) {
         Class<?>[] interfaces = target.getInterfaces();
-        RocketProvider annotation = interfaces[0].getAnnotation(RocketProvider.class);
+        RocketProvider annotation = target.getAnnotation(RocketProvider.class);
         String topic = annotation.topic();
-        methodMetadata.setTopic(topic);
+        methodMetadata.setTopic(resolve(topic));
         return methodMetadata;
     }
 
     protected RocketMethodMetadata parseAnnotationOnMethod(RocketMethodMetadata metadata, Method method) {
         RocketProviderHandler providerHandler = method.getAnnotation(RocketProviderHandler.class);
         metadata.setMethod(method);
-        metadata.setTag(providerHandler.tag());
+        metadata.setTag(resolve(providerHandler.tag()));
         metadata.setKeyExpression(providerHandler.key());
         metadata.setOneWay(providerHandler.oneWay());
         metadata.setOrderly(providerHandler.orderly());
@@ -72,7 +86,11 @@ public class TargetMethodMetaDataParser {
     private RocketMethodMetadata parseAnnotationOnParameter(RocketMethodMetadata metadata, Method method, Annotation[] annotations, int index) {
         Class<?>[] parameterTypes = method.getParameterTypes();
         if (annotations.length == 0) {
-            methodParameterProcessor.buildMetadata(metadata, parameterTypes[index], index);
+            if (ClassUtils.isAssignable(SendCallback.class, parameterTypes[index])) {
+                callBackMethodParameterProcessor.buildMetadata(metadata, parameterTypes[index], index);
+            } else {
+                methodParameterProcessor.buildMetadata(metadata, parameterTypes[index], index);
+            }
         } else {
             boolean annotationsMatched = false;
             for (int i = 0; i < annotations.length; i++) {
@@ -108,4 +126,17 @@ public class TargetMethodMetaDataParser {
     }
 
 
+    private String resolve(String value) {
+        if (StringUtils.isNoneBlank(value)
+                && this.resourceLoader instanceof ConfigurableApplicationContext) {
+            return ((ConfigurableApplicationContext) this.resourceLoader).getEnvironment()
+                    .resolvePlaceholders(value);
+        }
+        return value;
+    }
+
+    @Override
+    public void setResourceLoader(ResourceLoader resourceLoader) {
+        this.resourceLoader = resourceLoader;
+    }
 }

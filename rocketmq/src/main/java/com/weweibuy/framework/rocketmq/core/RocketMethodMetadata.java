@@ -29,6 +29,8 @@ public class RocketMethodMetadata {
 
     private Integer headerIndex;
 
+    private Integer asyncIndex;
+
     private Map<Integer, String> headerIndexName;
 
     private Boolean orderly;

@@ -2,6 +2,7 @@ package com.weweibuy.framework.samples.controller;
 
 import com.weweibuy.framework.samples.mq.provider.SampleProvider;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.rocketmq.client.producer.SendResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -21,7 +22,7 @@ public class HelloController {
 
     @GetMapping("/hello")
     public String hello(String msg) {
-        sampleProvider.send(msg);
+        SendResult send = sampleProvider.send(msg, "QQQ");
         return "hello";
     }
 

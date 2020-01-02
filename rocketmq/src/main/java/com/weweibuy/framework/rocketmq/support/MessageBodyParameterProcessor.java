@@ -24,6 +24,7 @@ public class MessageBodyParameterProcessor implements MethodParameterProcessor {
         Assert.isNull(methodMetadata.getBodyIndex(), "方法: " + methodMetadata.getMethod().getDeclaringClass().getSimpleName() + "."
                 + methodMetadata.getMethod().getName() + " 中有多个可以成为消息体的参数");
 
+
         methodMetadata.getMethodParameterProcessorMap()
                 .put(argIndex, this);
 

@@ -1,6 +1,7 @@
 package com.weweibuy.framework.rocketmq.support;
 
 import com.weweibuy.framework.rocketmq.core.RocketMethodMetadata;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.rocketmq.client.producer.MQProducer;
 import org.apache.rocketmq.common.message.Message;
 
@@ -33,6 +34,11 @@ public class DefaultRocketMethodHandler implements MethodHandler {
         Map<Integer, MethodParameterProcessor> methodParameterProcessorMap = metadata.getMethodParameterProcessorMap();
         MethodParameterProcessor parameterProcessor = methodParameterProcessorMap.get(bodyIndex);
         Message message = parameterProcessor.process(metadata, new Message(), arg, bodyIndex);
+
+        if (metadata.getTagIndex() == null && StringUtils.isNotBlank(metadata.getTag())) {
+            message.setTags(metadata.getTag());
+        }
+
         methodParameterProcessorMap.entrySet().stream()
                 .filter(e -> !e.getKey().equals(bodyIndex))
                 .forEach(e -> e.getValue().process(metadata, message, arg, e.getKey()));

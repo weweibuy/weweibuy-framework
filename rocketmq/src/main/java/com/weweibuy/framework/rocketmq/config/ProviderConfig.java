@@ -81,7 +81,7 @@ public class ProviderConfig {
 
 
     @Bean
-    @ConditionalOnBean(RocketMethodMetadataFactory.class)
+    @ConditionalOnMissingBean(RocketMethodMetadataFactory.class)
     public RocketMethodMetadataFactory rocketMethodMetadataFactory() {
         return new DefaultRocketMethodMetadataFactory();
     }
