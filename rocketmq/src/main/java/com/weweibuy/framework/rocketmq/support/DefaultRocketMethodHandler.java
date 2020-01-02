@@ -5,7 +5,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.rocketmq.client.producer.MQProducer;
 import org.apache.rocketmq.common.message.Message;
 
+import java.util.Collection;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @author durenhao
@@ -15,21 +17,32 @@ public class DefaultRocketMethodHandler implements MethodHandler {
 
     private final MQProducer mqProducer;
 
-    private final RocketMethodMetadata rocketMethodMetadata;
+    private final RocketMethodMetadata metadata;
 
     public DefaultRocketMethodHandler(MQProducer mqProducer, RocketMethodMetadata rocketMethodMetadata) {
         this.mqProducer = mqProducer;
-        this.rocketMethodMetadata = rocketMethodMetadata;
+        this.metadata = rocketMethodMetadata;
     }
 
 
     @Override
-    public Object invoke(Object[] arg) throws Throwable {
-        Message message = buildMsgFromMetadata(arg, rocketMethodMetadata);
-        return mqProducer.send(message);
+    public Object invoke(Object[] args) throws Throwable {
+        Boolean batch = metadata.getBatch();
+        if (batch) {
+            Integer bodyIndex = metadata.getBodyIndex();
+            Collection collection = (Collection) args[metadata.getBodyIndex()];
+            Collection<Message> messages = (Collection<Message>) collection.stream()
+                    .peek(a -> args[bodyIndex] = a)
+                    .map(a -> buildMsgFromMetadata(args))
+                    .collect(Collectors.toList());
+            return mqProducer.send(collection, metadata.getTimeout());
+        }
+
+        Message message = buildMsgFromMetadata(args);
+        return mqProducer.send(message, metadata.getTimeout());
     }
 
-    private Message buildMsgFromMetadata(Object[] arg, RocketMethodMetadata metadata) {
+    private Message buildMsgFromMetadata(Object[] arg) {
         Integer bodyIndex = metadata.getBodyIndex();
         Map<Integer, MethodParameterProcessor> methodParameterProcessorMap = metadata.getMethodParameterProcessorMap();
         MethodParameterProcessor parameterProcessor = methodParameterProcessorMap.get(bodyIndex);

@@ -1,14 +1,11 @@
 package com.weweibuy.framework.rocketmq.config;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.weweibuy.framework.rocketmq.core.JacksonRocketMqMessageConverter;
 import com.weweibuy.framework.rocketmq.core.MessageConverter;
 import com.weweibuy.framework.rocketmq.core.StringMessageConverter;
 import com.weweibuy.framework.rocketmq.support.*;
 import org.apache.rocketmq.client.AccessChannel;
 import org.apache.rocketmq.client.producer.DefaultMQProducer;
 import org.apache.rocketmq.client.producer.MQProducer;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -72,12 +69,6 @@ public class ProviderConfig {
         return new StringMessageConverter();
     }
 
-    @Bean
-    @ConditionalOnMissingBean(MessageConverter.class)
-    @ConditionalOnBean(ObjectMapper.class)
-    public MessageConverter jacksonRocketMqMessageConverter(ObjectMapper objectMapper) {
-        return new JacksonRocketMqMessageConverter(objectMapper);
-    }
 
 
     @Bean
