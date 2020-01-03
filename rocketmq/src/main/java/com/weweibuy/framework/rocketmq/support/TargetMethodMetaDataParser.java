@@ -38,6 +38,8 @@ public class TargetMethodMetaDataParser implements ResourceLoaderAware {
 
     private final List<AnnotatedParameterProcessor> annotatedParameterProcessor;
 
+    private ExpressionMessageGenerator expressionMessageGenerator = new ExpressionMessageGenerator();
+
     public TargetMethodMetaDataParser(RocketMethodMetadataFactory methodMetadataFactory, MessageBodyParameterProcessor methodParameterProcessor,
                                       List<AnnotatedParameterProcessor> annotatedParameterProcessor) {
         this.methodMetadataFactory = methodMetadataFactory;
@@ -55,7 +57,11 @@ public class TargetMethodMetaDataParser implements ResourceLoaderAware {
                     RocketMethodMetadata rocketMethodMetadata = methodMetadataFactory.newInstance(target, m);
                     parseAnnotationOnClass(rocketMethodMetadata, target);
                     parseAnnotationOnMethod(rocketMethodMetadata, m);
-                    return parseAnnotationOnParameter(rocketMethodMetadata, m);
+                    parseAnnotationOnParameter(rocketMethodMetadata, m);
+                    if (rocketMethodMetadata.getKeyIndex() == null && StringUtils.isNotBlank(rocketMethodMetadata.getKeyExpression())) {
+                        rocketMethodMetadata.setMessageKeyGenerator(expressionMessageGenerator);
+                    }
+                    return rocketMethodMetadata;
                 })
                 .peek(m -> Assert.isTrue(m.getBodyIndex() != null, m.getMethod().getName() + ", 无法匹配消息体!"))
                 .collect(Collectors.toMap(RocketMethodMetadata::getMethod, i -> i));

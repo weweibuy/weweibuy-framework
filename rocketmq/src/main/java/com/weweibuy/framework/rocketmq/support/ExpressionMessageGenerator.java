@@ -3,7 +3,6 @@ package com.weweibuy.framework.rocketmq.support;
 import com.weweibuy.framework.rocketmq.core.RocketMethodMetadata;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.expression.MethodBasedEvaluationContext;
 import org.springframework.core.DefaultParameterNameDiscoverer;
 import org.springframework.core.ParameterNameDiscoverer;
@@ -21,7 +20,6 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author durenhao
  * @date 2019/12/31 17:37
  **/
-@EnableCaching
 public class ExpressionMessageGenerator implements MessageKeyGenerator {
 
     private SpelExpressionParser spelExpressionParser = new SpelExpressionParser();
@@ -40,13 +38,17 @@ public class ExpressionMessageGenerator implements MessageKeyGenerator {
 
 
     private EvaluationContext createEvaluationContext(RocketMethodMetadata metadata, Object... args) {
-        ProviderMethodRootObject object = new ProviderMethodRootObject(metadata.getMethod(), args);
+        ProviderMethodRootObject object = new ProviderMethodRootObject(new String() ,metadata.getMethod().getDeclaringClass(), metadata.getMethod(), args);
         return new MethodBasedEvaluationContext(object, metadata.getMethod(), args, parameterNameDiscoverer);
     }
 
     @Data
     @AllArgsConstructor
     public static class ProviderMethodRootObject {
+
+        private final Object object;
+
+        private final Class targetClass;
 
         private final Method method;
 
