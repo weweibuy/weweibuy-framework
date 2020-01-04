@@ -7,7 +7,6 @@ import org.apache.rocketmq.client.producer.MQProducer;
 import org.apache.rocketmq.client.producer.MessageQueueSelector;
 import org.apache.rocketmq.client.producer.SendCallback;
 import org.apache.rocketmq.client.producer.SendResult;
-import org.apache.rocketmq.client.producer.selector.SelectMessageQueueByHash;
 import org.apache.rocketmq.common.message.Message;
 
 import java.util.Collection;
@@ -25,11 +24,13 @@ public class DefaultRocketMethodHandler implements MethodHandler {
 
     private final RocketMethodMetadata metadata;
 
-    private final MessageQueueSelector messageQueueSelector = new SelectMessageQueueByHash();
+    private final MessageQueueSelector messageQueueSelector;
 
-    public DefaultRocketMethodHandler(MQProducer mqProducer, RocketMethodMetadata rocketMethodMetadata) {
+    public DefaultRocketMethodHandler(MQProducer mqProducer, RocketMethodMetadata rocketMethodMetadata,
+                                      MessageQueueSelector messageQueueSelector) {
         this.mqProducer = mqProducer;
         this.metadata = rocketMethodMetadata;
+        this.messageQueueSelector = messageQueueSelector;
     }
 
 
@@ -45,6 +46,7 @@ public class DefaultRocketMethodHandler implements MethodHandler {
                     .collect(Collectors.toList());
             SendResult send = mqProducer.send(messages, metadata.getTimeout());
             log.info("发送MQ消息 Topic:【{}】, 结果: {}", metadata.getTopic(), send.getSendStatus());
+            return send;
         }
 
         Message message = buildMsgFromMetadata(args);
@@ -83,10 +85,6 @@ public class DefaultRocketMethodHandler implements MethodHandler {
 
         if (metadata.getTagIndex() == null && StringUtils.isNotBlank(metadata.getTag())) {
             message.setTags(metadata.getTag());
-        }
-
-        if (metadata.getKeyIndex() == null && StringUtils.isNotBlank(metadata.getKeyExpression())) {
-            message.setKeys(metadata.getMessageKeyGenerator().generatorKey(metadata, arg));
         }
 
         methodParameterProcessorMap.entrySet().stream()

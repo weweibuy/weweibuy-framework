@@ -6,6 +6,8 @@ import com.weweibuy.framework.rocketmq.support.*;
 import org.apache.rocketmq.client.AccessChannel;
 import org.apache.rocketmq.client.producer.DefaultMQProducer;
 import org.apache.rocketmq.client.producer.MQProducer;
+import org.apache.rocketmq.client.producer.MessageQueueSelector;
+import org.apache.rocketmq.client.producer.selector.SelectMessageQueueByHash;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -30,7 +32,13 @@ public class ProviderConfig {
 
     @Bean
     public ProxyRocketProvider proxyRocketProvider(List<AnnotatedParameterProcessor> parameterProcessorList, MessageConverter messageConverter) throws Exception {
-        return new ProxyRocketProvider(targetMethodMetaDataParser(parameterProcessorList, messageConverter), mqProducer());
+        return new ProxyRocketProvider(messageQueueSelector(), targetMethodMetaDataParser(parameterProcessorList, messageConverter), mqProducer());
+    }
+
+    @Bean
+    @ConditionalOnMissingBean(MessageQueueSelector.class)
+    public MessageQueueSelector messageQueueSelector() {
+        return new SelectMessageQueueByHash();
     }
 
     @Bean
@@ -68,7 +76,6 @@ public class ProviderConfig {
     public MessageConverter stringMessageConverter() {
         return new StringMessageConverter();
     }
-
 
 
     @Bean

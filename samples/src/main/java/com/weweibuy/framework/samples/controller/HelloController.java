@@ -3,11 +3,14 @@ package com.weweibuy.framework.samples.controller;
 import com.weweibuy.framework.samples.message.SampleUser;
 import com.weweibuy.framework.samples.mq.provider.SampleProvider;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.rocketmq.client.producer.SendCallback;
 import org.apache.rocketmq.client.producer.SendResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.UUID;
 
 /**
  * @author durenhao
@@ -25,14 +28,50 @@ public class HelloController {
 
     @GetMapping("/hello")
     public String hello(String msg) {
+        SampleUser user = user(msg);
+
+        SendResult send = sampleProvider.send(user, "QQQ", UUID.randomUUID().toString());
+
+        return "hello";
+    }
+
+    @GetMapping("/hello-async")
+    public String helloAsync(String msg) {
+        SampleUser user = user(msg);
+
+        sampleProvider.sendAsync(user, new SendCallback() {
+            @Override
+            public void onSuccess(SendResult sendResult) {
+                log.info("异步发送成功");
+            }
+
+            @Override
+            public void onException(Throwable e) {
+                log.info("异步发送失败");
+            }
+        }, UUID.randomUUID().toString());
+
+        return "hello";
+    }
+
+    @GetMapping("/hello-batch")
+    public String helloBatch(String msg) {
+        SampleUser user = user(msg);
+        SampleUser user1 = user(msg + "QQQ");
+        ArrayList<SampleUser> list = new ArrayList<>();
+        list.add(user);
+        list.add(user1);
+        sampleProvider.sendBatch(list);
+        return "hello";
+    }
+
+    private SampleUser user(String name) {
         SampleUser sampleUser = new SampleUser();
-        sampleUser.setUserName(msg);
+        sampleUser.setUserName(name);
         sampleUser.setAge(12);
         LocalDateTime of = LocalDateTime.of(1990, 12, 12, 21, 22);
         sampleUser.setBirthday(of);
-
-        SendResult send = sampleProvider.send(sampleUser, "QQQ");
-        return "hello";
+        return sampleUser;
     }
 
 }

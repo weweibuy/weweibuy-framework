@@ -38,8 +38,6 @@ public class TargetMethodMetaDataParser implements ResourceLoaderAware {
 
     private final List<AnnotatedParameterProcessor> annotatedParameterProcessor;
 
-    private ExpressionMessageGenerator expressionMessageGenerator = new ExpressionMessageGenerator();
-
     public TargetMethodMetaDataParser(RocketMethodMetadataFactory methodMetadataFactory, MessageBodyParameterProcessor methodParameterProcessor,
                                       List<AnnotatedParameterProcessor> annotatedParameterProcessor) {
         this.methodMetadataFactory = methodMetadataFactory;
@@ -58,13 +56,27 @@ public class TargetMethodMetaDataParser implements ResourceLoaderAware {
                     parseAnnotationOnClass(rocketMethodMetadata, target);
                     parseAnnotationOnMethod(rocketMethodMetadata, m);
                     parseAnnotationOnParameter(rocketMethodMetadata, m);
-                    if (rocketMethodMetadata.getKeyIndex() == null && StringUtils.isNotBlank(rocketMethodMetadata.getKeyExpression())) {
-                        rocketMethodMetadata.setMessageKeyGenerator(expressionMessageGenerator);
-                    }
                     return rocketMethodMetadata;
                 })
-                .peek(m -> Assert.isTrue(m.getBodyIndex() != null, m.getMethod().getName() + ", 无法匹配消息体!"))
+                .peek(m -> validateMeta(m))
                 .collect(Collectors.toMap(RocketMethodMetadata::getMethod, i -> i));
+
+    }
+
+    private void validateMeta(RocketMethodMetadata metadata) {
+        Assert.isTrue(metadata.getBodyIndex() != null, metadata.getMethod().getName() + ", 无法匹配消息体!");
+
+        Assert.isTrue(!(metadata.getOneWay() && metadata.getAsyncIndex() != null), metadata.getMethod().toString() + ", oneWay发送不支持回调!");
+
+        Assert.isTrue(!(metadata.getOrderly() && metadata.getKeyIndex() == null), metadata.getMethod().toString() + ", 顺序发送必须指定Key!");
+
+        Assert.isTrue(!(metadata.getBatch() && metadata.getOrderly()), metadata.getMethod().toString() + ", 批量消息目前不支持顺序发送");
+
+        Assert.isTrue(!(metadata.getBatch() && metadata.getAsyncIndex() != null), metadata.getMethod().toString() + ", 批量消息不支持异步回调");
+
+        Assert.isTrue(!(metadata.getBatch() && metadata.getOneWay()), metadata.getMethod().toString() + ", 批量消息oneWay 发送");
+
+
 
     }
 
@@ -80,7 +92,6 @@ public class TargetMethodMetaDataParser implements ResourceLoaderAware {
         RocketProviderHandler providerHandler = method.getAnnotation(RocketProviderHandler.class);
         metadata.setMethod(method);
         metadata.setTag(resolve(providerHandler.tag()));
-        metadata.setKeyExpression(providerHandler.key());
         metadata.setOneWay(providerHandler.oneWay());
         metadata.setOrderly(providerHandler.orderly());
         metadata.setTimeout(providerHandler.timeout());

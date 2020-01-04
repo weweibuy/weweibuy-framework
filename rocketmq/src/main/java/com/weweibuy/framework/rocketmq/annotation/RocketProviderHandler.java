@@ -20,12 +20,6 @@ public @interface RocketProviderHandler {
      */
     String tag() default "";
 
-    /**
-     * 消息key
-     *
-     * @return
-     */
-    String key() default "";
 
     /**
      * 发送超时

@@ -1,6 +1,5 @@
 package com.weweibuy.framework.rocketmq.core;
 
-import com.weweibuy.framework.rocketmq.support.MessageKeyGenerator;
 import com.weweibuy.framework.rocketmq.support.MethodParameterProcessor;
 import lombok.Data;
 
@@ -42,10 +41,6 @@ public class RocketMethodMetadata {
     private Integer timeout;
 
     private String tag;
-
-    private String keyExpression;
-
-    private MessageKeyGenerator messageKeyGenerator;
 
     private Map<Integer, MethodParameterProcessor> methodParameterProcessorMap = new HashMap<>();
 }

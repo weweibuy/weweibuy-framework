@@ -2,6 +2,7 @@ package com.weweibuy.framework.rocketmq.support;
 
 import com.weweibuy.framework.rocketmq.core.RocketMethodMetadata;
 import org.apache.rocketmq.client.producer.MQProducer;
+import org.apache.rocketmq.client.producer.MessageQueueSelector;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 
@@ -20,11 +21,16 @@ public class ProxyRocketProvider implements InitializingBean, DisposableBean {
 
     private final ProxyHandlerFactory proxyHandlerFactory = new DefaultProxyHandlerFactory();
 
+    private final MessageQueueSelector messageQueueSelector;
+
     private final TargetMethodMetaDataParser targetMethodMetaDataParser;
 
     private final MQProducer mqProducer;
 
-    public ProxyRocketProvider(TargetMethodMetaDataParser targetMethodMetaDataParser, MQProducer mqProducer) {
+    public ProxyRocketProvider(MessageQueueSelector messageQueueSelector,
+                               TargetMethodMetaDataParser targetMethodMetaDataParser,
+                               MQProducer mqProducer) {
+        this.messageQueueSelector = messageQueueSelector;
         this.targetMethodMetaDataParser = targetMethodMetaDataParser;
         this.mqProducer = mqProducer;
     }
@@ -35,7 +41,7 @@ public class ProxyRocketProvider implements InitializingBean, DisposableBean {
         Map<Method, MethodHandler> methodMethodHandlerMap = new HashMap<>();
 
         parser.forEach((k, v) -> {
-            DefaultRocketMethodHandler methodHandler = new DefaultRocketMethodHandler(mqProducer, v);
+            DefaultRocketMethodHandler methodHandler = new DefaultRocketMethodHandler(mqProducer, v, messageQueueSelector);
             methodMethodHandlerMap.put(k, methodHandler);
         });
 
