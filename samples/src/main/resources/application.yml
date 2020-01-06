@@ -9,3 +9,7 @@ rocket-mq:
     group: TEST_SAMPLE_01_P_GROUP
     sample-provider:
       topic: TEST_SAMPLE_01
+  consumer:
+    sample-consumer:
+      topic: TEST_SAMPLE_01
+      group: TEST_SAMPLE_01_C_GROUP

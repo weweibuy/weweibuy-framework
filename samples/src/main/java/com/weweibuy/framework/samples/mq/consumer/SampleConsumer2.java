@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 @RocketListener(topic = "TEST_SAMPLE_01", group = "TEST_SAMPLE_01_C_GROUP")
-public class SampleConsumer {
+public class SampleConsumer2 {
 
     @RocketConsumerHandler(tags = "QQQ")
     public void onMessage(@Payload SampleUser user) {
