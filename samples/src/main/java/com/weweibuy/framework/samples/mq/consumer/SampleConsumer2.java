@@ -21,5 +21,10 @@ public class SampleConsumer2 {
         log.info("收到消息: {}", user);
     }
 
+    @RocketConsumerHandler(tags = "AAA")
+    public void onMessage2(@Payload SampleUser user) {
+        log.info("收到消息: {}", user);
+    }
+
 
 }

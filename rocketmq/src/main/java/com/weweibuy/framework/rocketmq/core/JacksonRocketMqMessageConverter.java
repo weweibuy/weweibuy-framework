@@ -2,6 +2,7 @@ package com.weweibuy.framework.rocketmq.core;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.core.MethodParameter;
 
 /**
  * @author durenhao
@@ -23,4 +24,10 @@ public class JacksonRocketMqMessageConverter implements MessageConverter {
             throw new IllegalArgumentException(payload.toString() + " 无法转为Json");
         }
     }
+
+    @Override
+    public Object fromMessageBody(byte[] payload, MethodParameter parameter) {
+        return null;
+    }
+
 }

@@ -5,7 +5,6 @@
  */
 package com.weweibuy.framework.rocketmq.core.consumer;
 
-import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyStatus;
 import org.apache.rocketmq.common.message.MessageExt;
 
 import java.util.List;
@@ -17,7 +16,7 @@ import java.util.Map;
  * @author durenhao
  * @date 2020/1/8 11:49
  **/
-public interface RocketListenerContainer<T> {
+public interface RocketListenerContainer<T, R> {
 
     /**
      * 选项监听器
@@ -35,6 +34,6 @@ public interface RocketListenerContainer<T> {
      * @param context        orderly  or concurrently
      * @return
      */
-    ConsumeConcurrentlyStatus consume(List<MessageExt> messageExtList, T context);
+    R consume(List<MessageExt> messageExtList, T context);
 
 }

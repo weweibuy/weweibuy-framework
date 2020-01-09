@@ -1,5 +1,7 @@
 package com.weweibuy.framework.rocketmq.core;
 
+import org.springframework.core.MethodParameter;
+
 /**
  * RocketMQ 消息转化器
  *
@@ -15,6 +17,14 @@ public interface MessageConverter {
      * @return
      */
     byte[] toMessageBody(Object payload);
+
+    /**
+     * 消息转对象
+     *
+     * @param payload
+     * @return
+     */
+    Object fromMessageBody(byte[] payload, MethodParameter parameter);
 
 
 }

@@ -21,7 +21,7 @@ import java.util.Map;
  * @author durenhao
  * @date 2020/1/8 10:54
  **/
-public class ConcurrentlyRocketListenerContainer extends AbstractRocketListenerContainer<ConsumeConcurrentlyContext> {
+public class ConcurrentlyRocketListenerContainer extends AbstractRocketListenerContainer<ConsumeConcurrentlyContext, ConsumeConcurrentlyStatus> {
 
     private List<RocketMessageListener> rocketMessageListenerList;
 

@@ -13,7 +13,7 @@ import java.util.Map;
  * @author durenhao
  * @date 2020/1/8 11:54
  **/
-public abstract class AbstractRocketListenerContainer<T> implements RocketListenerContainer<T> {
+public abstract class AbstractRocketListenerContainer<T, R> implements RocketListenerContainer<T, R> {
 
     @Override
     public RocketMessageListener selectMessageListener(String tag, Map map) {
