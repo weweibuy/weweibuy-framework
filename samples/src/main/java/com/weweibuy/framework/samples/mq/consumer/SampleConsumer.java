@@ -30,12 +30,12 @@ public class SampleConsumer {
         log.info("收到消息: {}", user);
     }
 
-    @RocketConsumerHandler
+//    @RocketConsumerHandler
     public void onMessage3(@Payload Collection<SampleUser> user) {
         log.info("收到消息: {}", user);
     }
 
-    @RocketConsumerHandler
+//    @RocketConsumerHandler
     public void onMessage4(@Payload List<MessageExt> messageExt) {
         log.info("收到消息: {}", messageExt);
     }

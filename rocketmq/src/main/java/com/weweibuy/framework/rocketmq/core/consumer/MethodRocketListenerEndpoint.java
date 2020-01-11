@@ -21,6 +21,8 @@ public class MethodRocketListenerEndpoint {
 
     private boolean orderly;
 
+    private boolean msgTrace;
+
     private Long timeout;
 
     private Integer maxRetry;

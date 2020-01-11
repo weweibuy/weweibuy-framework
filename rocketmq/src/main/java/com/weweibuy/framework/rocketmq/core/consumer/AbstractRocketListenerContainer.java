@@ -1,9 +1,9 @@
-/*
- * All rights Reserved, Designed By baowei
- *
- * 注意：本内容仅限于内部传阅，禁止外泄以及用于其他的商业目的
- */
 package com.weweibuy.framework.rocketmq.core.consumer;
+
+import com.weweibuy.framework.rocketmq.core.MessageConverter;
+import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
+import org.apache.rocketmq.client.consumer.listener.MessageListener;
+import org.apache.rocketmq.client.exception.MQClientException;
 
 import java.util.Map;
 
@@ -15,9 +15,34 @@ import java.util.Map;
  **/
 public abstract class AbstractRocketListenerContainer<T, R> implements RocketListenerContainer<T, R> {
 
+    private MessageConverter messageConverter;
+
+    private DefaultMQPushConsumer mqPushConsumer;
+
+    public AbstractRocketListenerContainer(DefaultMQPushConsumer mqPushConsumer) {
+        this.mqPushConsumer = mqPushConsumer;
+        this.mqPushConsumer.setMessageListener(getMessageListener());
+    }
+
     @Override
     public RocketMessageListener selectMessageListener(String tag, Map map) {
         return null;
     }
 
+    /**
+     * 获取MQ 自身的MessageListener
+     *
+     * @return
+     */
+    protected abstract MessageListener getMessageListener();
+
+    @Override
+    public void start() throws MQClientException {
+        mqPushConsumer.start();
+    }
+
+    @Override
+    public void shutdown() {
+        mqPushConsumer.shutdown();
+    }
 }

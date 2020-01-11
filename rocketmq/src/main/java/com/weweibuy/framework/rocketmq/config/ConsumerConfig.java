@@ -1,5 +1,6 @@
 package com.weweibuy.framework.rocketmq.config;
 
+import com.weweibuy.framework.rocketmq.core.consumer.DefaultRocketListenerContainerFactory;
 import com.weweibuy.framework.rocketmq.core.consumer.RocketBeanPostProcessor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,7 +14,7 @@ public class ConsumerConfig {
 
     @Bean
     public RocketBeanPostProcessor rocketBeanPostProcessor() {
-        return new RocketBeanPostProcessor();
+        return new RocketBeanPostProcessor(new DefaultRocketListenerContainerFactory());
     }
 
 

@@ -1,8 +1,3 @@
-/*
- * All rights Reserved, Designed By baowei
- *
- * 注意：本内容仅限于内部传阅，禁止外泄以及用于其他的商业目的
- */
 package com.weweibuy.framework.rocketmq.core.consumer;
 
 import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
@@ -27,8 +22,6 @@ public class ConcurrentlyRocketListenerContainer extends AbstractRocketListenerC
 
     private Map<String, RocketMessageListener> messageListenerMap;
 
-    private DefaultMQPushConsumer defaultMQPushConsumer;
-
     private MessageListener messageListener = new MessageListenerConcurrently() {
         @Override
         public ConsumeConcurrentlyStatus consumeMessage(List<MessageExt> messageExtList, ConsumeConcurrentlyContext context) {
@@ -36,9 +29,19 @@ public class ConcurrentlyRocketListenerContainer extends AbstractRocketListenerC
         }
     };
 
+    public ConcurrentlyRocketListenerContainer(DefaultMQPushConsumer mqPushConsumer) {
+        super(mqPushConsumer);
+    }
+
+    @Override
+    protected MessageListener getMessageListener() {
+        return this.messageListener;
+    }
+
 
     @Override
     public ConsumeConcurrentlyStatus consume(List<MessageExt> list, ConsumeConcurrentlyContext context) {
+        // 消费消息
         return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
     }
 }
