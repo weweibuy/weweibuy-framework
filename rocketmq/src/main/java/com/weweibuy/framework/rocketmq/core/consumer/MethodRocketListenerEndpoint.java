@@ -1,11 +1,14 @@
 package com.weweibuy.framework.rocketmq.core.consumer;
 
+import lombok.Data;
+
 import java.lang.reflect.Method;
 
 /**
  * @author durenhao
  * @date 2020/1/6 22:54
  **/
+@Data
 public class MethodRocketListenerEndpoint {
 
     private String name;
@@ -18,7 +21,7 @@ public class MethodRocketListenerEndpoint {
 
     private boolean orderly;
 
-    private boolean timeout;
+    private Long timeout;
 
     private Integer maxRetry;
 
