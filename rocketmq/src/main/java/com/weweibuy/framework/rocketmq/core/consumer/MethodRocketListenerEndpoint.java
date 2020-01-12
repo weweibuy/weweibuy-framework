@@ -57,8 +57,18 @@ public class MethodRocketListenerEndpoint {
      * @return
      */
     public RocketMessageListener createRocketMessageListener(RocketListenerContainer listenerContainer) {
+        RocketMessageListener listener = createListener();
         RocketHandlerMethod handlerMethod = messageHandlerMethodFactory.createHandlerMethod(bean, method);
+        
         return null;
+    }
+
+
+    private RocketMessageListener createListener() {
+        if (orderly) {
+            return new OrderlyRocketMessageListener();
+        }
+        return new ConcurrentRocketMessageListener();
     }
 
 }
