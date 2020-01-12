@@ -26,7 +26,7 @@ public class MethodRocketListenerEndpoint {
 
     private Boolean msgTrace;
 
-    private String  traceTopic;
+    private String traceTopic;
 
     private Long timeout;
 
@@ -49,5 +49,16 @@ public class MethodRocketListenerEndpoint {
     private Method method;
 
     private MessageHandlerMethodFactory messageHandlerMethodFactory;
+
+    /**
+     * 创建每个方法对应的监听
+     *
+     * @param listenerContainer
+     * @return
+     */
+    public RocketMessageListener createRocketMessageListener(RocketListenerContainer listenerContainer) {
+        RocketHandlerMethod handlerMethod = messageHandlerMethodFactory.createHandlerMethod(bean, method);
+        return null;
+    }
 
 }

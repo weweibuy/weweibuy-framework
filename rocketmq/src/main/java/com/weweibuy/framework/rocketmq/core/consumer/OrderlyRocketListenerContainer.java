@@ -14,8 +14,9 @@ import java.util.List;
  **/
 public class OrderlyRocketListenerContainer extends AbstractRocketListenerContainer<ConsumeOrderlyContext, ConsumeOrderlyStatus> {
 
-    public OrderlyRocketListenerContainer(DefaultMQPushConsumer mqPushConsumer) {
-        super(mqPushConsumer);
+
+    public OrderlyRocketListenerContainer(DefaultMQPushConsumer mqPushConsumer,  Integer batchSize) {
+        super(mqPushConsumer, batchSize);
     }
 
     @Override

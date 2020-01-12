@@ -9,7 +9,6 @@ import org.apache.rocketmq.client.consumer.listener.MessageListenerConcurrently;
 import org.apache.rocketmq.common.message.MessageExt;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * 监听器容器
@@ -20,16 +19,12 @@ import java.util.Map;
 @Slf4j
 public class ConcurrentlyRocketListenerContainer extends AbstractRocketListenerContainer<ConsumeConcurrentlyContext, ConsumeConcurrentlyStatus> {
 
-    private List<RocketMessageListener> rocketMessageListenerList;
-
-    private Map<String, RocketMessageListener> messageListenerMap;
-
     private MessageListener messageListener;
 
-
-    public ConcurrentlyRocketListenerContainer(DefaultMQPushConsumer mqPushConsumer) {
-        super(mqPushConsumer);
+    public ConcurrentlyRocketListenerContainer(DefaultMQPushConsumer mqPushConsumer, Integer batchSize) {
+        super(mqPushConsumer, batchSize);
     }
+
 
     @Override
     protected synchronized MessageListener getMessageListener() {
@@ -47,8 +42,10 @@ public class ConcurrentlyRocketListenerContainer extends AbstractRocketListenerC
 
     @Override
     public ConsumeConcurrentlyStatus consume(List<MessageExt> list, ConsumeConcurrentlyContext context) {
-        log.info("消费消息: {}", list);
+        // 选择 listener
+        RocketMessageListener rocketMessageListener = selectMessageListener(list);
         // 消费消息
+        rocketMessageListener.onMessage(list);
         return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
     }
 }

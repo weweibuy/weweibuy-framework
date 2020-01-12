@@ -4,7 +4,6 @@ import org.apache.rocketmq.client.exception.MQClientException;
 import org.apache.rocketmq.common.message.MessageExt;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * listener 容器
@@ -17,11 +16,10 @@ public interface RocketListenerContainer<T, R> {
     /**
      * 选项监听器
      *
-     * @param tag
-     * @param listenerMap
+     * @param list
      * @return
      */
-    RocketMessageListener selectMessageListener(String tag, Map<String, RocketMessageListener> listenerMap);
+    RocketMessageListener selectMessageListener(List<MessageExt> list);
 
     /**
      * 消费消息
@@ -41,5 +39,7 @@ public interface RocketListenerContainer<T, R> {
      * 关闭
      */
     void shutdown();
+
+    void setListeners(List<RocketMessageListener> listenerList);
 
 }

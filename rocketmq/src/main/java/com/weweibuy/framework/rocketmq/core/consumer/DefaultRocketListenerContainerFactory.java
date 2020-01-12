@@ -7,6 +7,7 @@ import org.apache.rocketmq.remoting.RPCHook;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * RocketListenerContainerFactory 默认实现
@@ -21,42 +22,48 @@ public class DefaultRocketListenerContainerFactory implements RocketListenerCont
     public RocketListenerContainer createListenerContainer(List<MethodRocketListenerEndpoint> endpointList) {
 
         boolean orderly = endpointList.get(0).getOrderly();
-
+        RocketListenerContainer container = null;
         if (orderly) {
-            return createOrderlyContainer(endpointList);
+            container = createOrderlyContainer(endpointList);
         }
-        return createConcurrentlyContainer(endpointList);
-
+        container = createConcurrentlyContainer(endpointList);
+        List<RocketMessageListener> listenerList = createListener(endpointList, container);
+        container.setListeners(listenerList);
+        return container;
     }
 
+
+    private List<RocketMessageListener> createListener(List<MethodRocketListenerEndpoint> endpointList, RocketListenerContainer container) {
+        return endpointList.stream()
+                .map(endpoint -> endpoint.createRocketMessageListener(container))
+                .collect(Collectors.toList());
+
+    }
 
     private RocketListenerContainer createOrderlyContainer(List<MethodRocketListenerEndpoint> endpointList) {
         if (endpointList.size() == 1) {
             MethodRocketListenerEndpoint endpoint = endpointList.get(0);
-            return new OrderlyRocketListenerContainer(createMqConsumer(endpoint, endpoint.getTags()));
+            return new OrderlyRocketListenerContainer(createMqConsumer(endpoint, endpoint.getTags()), endpoint.getConsumeMessageBatchMaxSize());
         }
         String tags = mergeTags(endpointList);
-        return new OrderlyRocketListenerContainer(createMqConsumer(endpointList.get(0), tags));
+        return new OrderlyRocketListenerContainer(createMqConsumer(endpointList.get(0), tags), endpointList.get(0).getConsumeMessageBatchMaxSize());
     }
 
 
     private RocketListenerContainer createConcurrentlyContainer(List<MethodRocketListenerEndpoint> endpointList) {
         if (endpointList.size() == 1) {
             MethodRocketListenerEndpoint endpoint = endpointList.get(0);
-            return new ConcurrentlyRocketListenerContainer(createMqConsumer(endpoint, endpoint.getTags()));
+            return new ConcurrentlyRocketListenerContainer(createMqConsumer(endpoint, endpoint.getTags()), endpoint.getConsumeMessageBatchMaxSize());
         }
         String tags = mergeTags(endpointList);
-        return new ConcurrentlyRocketListenerContainer(createMqConsumer(endpointList.get(0), tags));
+        return new ConcurrentlyRocketListenerContainer(createMqConsumer(endpointList.get(0), tags), endpointList.get(0).getConsumeMessageBatchMaxSize());
     }
 
     private DefaultMQPushConsumer createMqConsumer(MethodRocketListenerEndpoint endpoint, String tags) {
         RPCHook rpcHook = null;
-//        if (StringUtils.isBlank(endpoint.getAccessKey()) || StringUtils.isBlank(endpoint.getSecretKey())) {
-//            rpcHook =  new AclClientRPCHook(new SessionCredentials(ak, sk));
-//        }
         DefaultMQPushConsumer pushConsumer = new DefaultMQPushConsumer(endpoint.getGroup(), rpcHook, new AllocateMessageQueueAveragely(),
                 Optional.ofNullable(endpoint.getMsgTrace()).orElse(false), endpoint.getTraceTopic());
-        pushConsumer.setNamesrvAddr("");
+        pushConsumer.setNamesrvAddr(endpoint.getNameServer());
         pushConsumer.setAccessChannel(endpoint.getAccessChannel());
         pushConsumer.setConsumeThreadMin(endpoint.getThreadMin());
         pushConsumer.setConsumeThreadMin(endpoint.getThreadMax());
