@@ -13,12 +13,6 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 public @interface RocketListener {
 
-    String NAME_SERVER_PLACEHOLDER = "${rocket-mq.name-server:}";
-    String ACCESS_KEY_PLACEHOLDER = "${rocket-mq.consumer.access-key:}";
-    String SECRET_KEY_PLACEHOLDER = "${rocket-mq.consumer.secret-key:}";
-    String TRACE_TOPIC_PLACEHOLDER = "${rocket-mq.consumer.customized-trace-topic:}";
-    String ACCESS_CHANNEL_PLACEHOLDER = "${rocket-mq.access-channel:}";
-
     String name() default "";
 
     String topic();
@@ -36,12 +30,6 @@ public @interface RocketListener {
     int threadMax() default 10;
 
     int consumeMessageBatchMaxSize() default 1;
-
-    String accessKey() default ACCESS_KEY_PLACEHOLDER;
-
-    String secretKey() default SECRET_KEY_PLACEHOLDER;
-
-    String accessChannel() default ACCESS_CHANNEL_PLACEHOLDER;
 
 
 }

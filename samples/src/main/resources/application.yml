@@ -11,7 +11,7 @@ rocket-mq:
       topic: TEST_SAMPLE_01
   consumer:
     sample-consumer:
-      trace: true
+      trace: false
       customized-trace-topic: qaz
       topic: TEST_SAMPLE_01
       group: TEST_SAMPLE_01_C_GROUP

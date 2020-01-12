@@ -1,5 +1,6 @@
 package com.weweibuy.framework.rocketmq.core.consumer;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
 import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyContext;
 import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyStatus;
@@ -16,31 +17,37 @@ import java.util.Map;
  * @author durenhao
  * @date 2020/1/8 10:54
  **/
+@Slf4j
 public class ConcurrentlyRocketListenerContainer extends AbstractRocketListenerContainer<ConsumeConcurrentlyContext, ConsumeConcurrentlyStatus> {
 
     private List<RocketMessageListener> rocketMessageListenerList;
 
     private Map<String, RocketMessageListener> messageListenerMap;
 
-    private MessageListener messageListener = new MessageListenerConcurrently() {
-        @Override
-        public ConsumeConcurrentlyStatus consumeMessage(List<MessageExt> messageExtList, ConsumeConcurrentlyContext context) {
-            return consume(messageExtList, context);
-        }
-    };
+    private MessageListener messageListener;
+
 
     public ConcurrentlyRocketListenerContainer(DefaultMQPushConsumer mqPushConsumer) {
         super(mqPushConsumer);
     }
 
     @Override
-    protected MessageListener getMessageListener() {
-        return this.messageListener;
+    protected synchronized MessageListener getMessageListener() {
+        if (this.messageListener == null) {
+            messageListener = new MessageListenerConcurrently() {
+                @Override
+                public ConsumeConcurrentlyStatus consumeMessage(List<MessageExt> messageExtList, ConsumeConcurrentlyContext context) {
+                    return consume(messageExtList, context);
+                }
+            };
+        }
+        return messageListener;
     }
 
 
     @Override
     public ConsumeConcurrentlyStatus consume(List<MessageExt> list, ConsumeConcurrentlyContext context) {
+        log.info("消费消息: {}", list);
         // 消费消息
         return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
     }

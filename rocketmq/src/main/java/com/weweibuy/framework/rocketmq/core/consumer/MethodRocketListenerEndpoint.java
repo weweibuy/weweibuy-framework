@@ -1,6 +1,7 @@
 package com.weweibuy.framework.rocketmq.core.consumer;
 
 import lombok.Data;
+import org.apache.rocketmq.client.AccessChannel;
 
 import java.lang.reflect.Method;
 
@@ -13,15 +14,19 @@ public class MethodRocketListenerEndpoint {
 
     private String name;
 
+    private String nameServer;
+
     private String topic;
 
     private String group;
 
     private String tags;
 
-    private boolean orderly;
+    private Boolean orderly;
 
-    private boolean msgTrace;
+    private Boolean msgTrace;
+
+    private String  traceTopic;
 
     private Long timeout;
 
@@ -37,7 +42,7 @@ public class MethodRocketListenerEndpoint {
 
     private String secretKey;
 
-    private String accessChannel;
+    private AccessChannel accessChannel;
 
     private Object bean;
 

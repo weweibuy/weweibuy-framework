@@ -12,9 +12,10 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class ConsumerConfig {
 
+
     @Bean
-    public RocketBeanPostProcessor rocketBeanPostProcessor() {
-        return new RocketBeanPostProcessor(new DefaultRocketListenerContainerFactory());
+    public RocketBeanPostProcessor rocketBeanPostProcessor(RocketMqProperties rocketMqProperties) {
+        return new RocketBeanPostProcessor(new DefaultRocketListenerContainerFactory(), rocketMqProperties);
     }
 
 

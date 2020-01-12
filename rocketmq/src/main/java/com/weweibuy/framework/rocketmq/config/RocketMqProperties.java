@@ -5,6 +5,8 @@ import org.apache.rocketmq.client.AccessChannel;
 import org.apache.rocketmq.common.MixAll;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
+import java.util.Map;
+
 /**
  * @author durenhao
  * @date 2020/1/1 23:08
@@ -15,9 +17,9 @@ public class RocketMqProperties {
 
     private String nameServer;
 
-    private AccessChannel accessChannel = AccessChannel.LOCAL;
-
     private Provider provider;
+
+    private Map<String, Consumer> consumer;
 
 
     @Data
@@ -25,26 +27,55 @@ public class RocketMqProperties {
 
         private String group;
 
-        private int sendMessageTimeout = 3000;
+        private AccessChannel accessChannel = AccessChannel.LOCAL;
 
-        private int compressMessageBodyThreshold = 1024 * 4;
+        private Integer sendMessageTimeout = 3000;
 
-        private int retryTimesWhenSendFailed = 2;
+        private Integer compressMessageBodyThreshold = 1024 * 4;
 
-        private int retryTimesWhenSendAsyncFailed = 2;
+        private Integer retryTimesWhenSendFailed = 2;
 
-        private boolean retryNextServer = false;
+        private Integer retryTimesWhenSendAsyncFailed = 2;
 
-        private int maxMessageSize = 1024 * 1024 * 4;
+        private Boolean retryNextServer = false;
+
+        private Integer maxMessageSize = 1024 * 1024 * 4;
 
         private String accessKey;
 
         private String secretKey;
 
-        private boolean enableMsgTrace = true;
+        private Boolean enableMsgTrace = true;
 
         private String customizedTraceTopic = MixAll.RMQ_SYS_TRACE_TOPIC;
 
+    }
+
+
+    @Data
+    public static class Consumer {
+
+        private Boolean enableMsgTrace = false;
+
+        private String customizedTraceTopic;
+
+        private AccessChannel accessChannel = AccessChannel.LOCAL;
+
+        private String topic;
+
+        private String group;
+
+        private Long timeout;
+
+        private Integer maxRetry;
+
+        private Integer threadMin;
+
+        private Integer threadMax;
+
+        private String accessKey;
+
+        private String secretKey;
 
     }
 }

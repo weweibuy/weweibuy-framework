@@ -2,8 +2,10 @@ package com.weweibuy.framework.rocketmq.core.consumer;
 
 import com.weweibuy.framework.rocketmq.annotation.RocketConsumerHandler;
 import com.weweibuy.framework.rocketmq.annotation.RocketListener;
+import com.weweibuy.framework.rocketmq.config.RocketMqProperties;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.DisposableBean;
@@ -24,15 +26,17 @@ import java.util.stream.Collectors;
  **/
 public class RocketBeanPostProcessor implements BeanPostProcessor, SmartInitializingSingleton, DisposableBean {
 
-
     private List<MethodRocketListenerEndpoint> endpointList;
 
     private MessageHandlerMethodFactory messageHandlerMethodFactory;
 
     private RocketEndpointRegistrar rocketEndpointRegistrar;
 
-    public RocketBeanPostProcessor(RocketListenerContainerFactory containerFactory) {
+    private RocketMqProperties rocketMqProperties;
+
+    public RocketBeanPostProcessor(RocketListenerContainerFactory containerFactory, RocketMqProperties rocketMqProperties) {
         this.rocketEndpointRegistrar = new RocketEndpointRegistrar(containerFactory);
+        this.rocketMqProperties = rocketMqProperties;
     }
 
 
@@ -62,21 +66,74 @@ public class RocketBeanPostProcessor implements BeanPostProcessor, SmartInitiali
     private MethodRocketListenerEndpoint buildEndpoint(RocketListener rocketListener, RocketConsumerHandler consumerHandler,
                                                        Object bean, String beanName, Method method) {
         MethodRocketListenerEndpoint listenerEndpoint = new MethodRocketListenerEndpoint();
-        listenerEndpoint.setName(beanName);
-        listenerEndpoint.setTopic(rocketListener.topic());
-        listenerEndpoint.setGroup(rocketListener.group());
-        listenerEndpoint.setThreadMin(rocketListener.threadMin());
-        listenerEndpoint.setThreadMax(rocketListener.threadMax());
+        String name = rocketListener.name();
+        if (StringUtils.isBlank(name)) {
+            name = beanName;
+        }
+
+        listenerEndpoint.setName(name);
         listenerEndpoint.setBean(bean);
-        listenerEndpoint.setAccessChannel(rocketListener.accessChannel());
-        listenerEndpoint.setAccessKey(rocketListener.accessKey());
+        listenerEndpoint.setNameServer(rocketMqProperties.getNameServer());
         listenerEndpoint.setMethod(method);
-        listenerEndpoint.setMaxRetry(rocketListener.maxRetry());
-        listenerEndpoint.setConsumeMessageBatchMaxSize(rocketListener.consumeMessageBatchMaxSize());
-        listenerEndpoint.setOrderly(rocketListener.orderly());
-        listenerEndpoint.setTimeout(rocketListener.timeout());
-        listenerEndpoint.setTags(consumerHandler.tags());
         listenerEndpoint.setMessageHandlerMethodFactory(messageHandlerMethodFactory);
+        listenerEndpoint.setTags(consumerHandler.tags());
+        listenerEndpoint.setOrderly(rocketListener.orderly());
+        listenerEndpoint.setConsumeMessageBatchMaxSize(rocketListener.consumeMessageBatchMaxSize());
+
+
+        if (rocketMqProperties.getConsumer() != null && rocketMqProperties.getConsumer().get(name) != null) {
+            RocketMqProperties.Consumer consumer = rocketMqProperties.getConsumer().get(name);
+            listenerEndpoint.setAccessChannel(consumer.getAccessChannel());
+            listenerEndpoint.setAccessKey(consumer.getAccessKey());
+            listenerEndpoint.setSecretKey(consumer.getSecretKey());
+            listenerEndpoint.setMsgTrace(consumer.getEnableMsgTrace());
+            listenerEndpoint.setTraceTopic(consumer.getCustomizedTraceTopic());
+
+            if (StringUtils.isNotBlank(consumer.getTopic())) {
+                listenerEndpoint.setTopic(consumer.getTopic());
+            } else {
+                listenerEndpoint.setTopic(rocketListener.topic());
+            }
+
+            if (StringUtils.isNotBlank(consumer.getGroup())) {
+                listenerEndpoint.setGroup(consumer.getGroup());
+            } else {
+                listenerEndpoint.setGroup(rocketListener.topic());
+            }
+
+            if (consumer.getTimeout() != null) {
+                listenerEndpoint.setTimeout(consumer.getTimeout());
+            } else {
+                listenerEndpoint.setTimeout(rocketListener.timeout());
+            }
+
+            if (consumer.getThreadMax() != null) {
+                listenerEndpoint.setThreadMax(consumer.getThreadMax());
+            } else {
+                listenerEndpoint.setThreadMax(rocketListener.threadMax());
+            }
+
+            if (consumer.getThreadMin() != null) {
+                listenerEndpoint.setThreadMin(consumer.getThreadMin());
+            } else {
+                listenerEndpoint.setThreadMin(rocketListener.threadMin());
+            }
+
+            if (consumer.getMaxRetry() != null) {
+                listenerEndpoint.setMaxRetry(consumer.getMaxRetry());
+            } else {
+                listenerEndpoint.setMaxRetry(rocketListener.maxRetry());
+            }
+
+        } else {
+            listenerEndpoint.setTopic(rocketListener.topic());
+            listenerEndpoint.setGroup(rocketListener.topic());
+
+            listenerEndpoint.setThreadMin(rocketListener.threadMin());
+            listenerEndpoint.setThreadMax(rocketListener.threadMax());
+            listenerEndpoint.setMaxRetry(rocketListener.maxRetry());
+            listenerEndpoint.setTimeout(rocketListener.timeout());
+        }
         return listenerEndpoint;
     }
 

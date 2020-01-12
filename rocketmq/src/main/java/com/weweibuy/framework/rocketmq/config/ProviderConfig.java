@@ -9,6 +9,7 @@ import org.apache.rocketmq.client.producer.MQProducer;
 import org.apache.rocketmq.client.producer.MessageQueueSelector;
 import org.apache.rocketmq.client.producer.selector.SelectMessageQueueByHash;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,6 +23,7 @@ import java.util.List;
  **/
 @Configuration
 @EnableConfigurationProperties(RocketMqProperties.class)
+@ConditionalOnProperty(prefix = "rocket-mq", name = {"name-server", "provider.group"})
 public class ProviderConfig {
 
     private final RocketMqProperties rocketMqProperties;
@@ -92,10 +94,10 @@ public class ProviderConfig {
         Assert.hasText(nameServer, "[rocketmq.name-server] must not be null");
         Assert.hasText(groupName, "[rocketmq.producer.group] must not be null");
 
-        AccessChannel accessChannel = rocketMqProperties.getAccessChannel();
+        AccessChannel accessChannel = producerConfig.getAccessChannel();
 
         DefaultMQProducer producer;
-        producer = new DefaultMQProducer(groupName, rocketMqProperties.getProvider().isEnableMsgTrace(),
+        producer = new DefaultMQProducer(groupName, rocketMqProperties.getProvider().getEnableMsgTrace(),
                 rocketMqProperties.getProvider().getCustomizedTraceTopic());
 
         producer.setNamesrvAddr(nameServer);
@@ -105,7 +107,7 @@ public class ProviderConfig {
         producer.setRetryTimesWhenSendAsyncFailed(producerConfig.getRetryTimesWhenSendAsyncFailed());
         producer.setMaxMessageSize(producerConfig.getMaxMessageSize());
         producer.setCompressMsgBodyOverHowmuch(producerConfig.getCompressMessageBodyThreshold());
-        producer.setRetryAnotherBrokerWhenNotStoreOK(producerConfig.isRetryNextServer());
+        producer.setRetryAnotherBrokerWhenNotStoreOK(producerConfig.getRetryNextServer());
         return producer;
     }
 

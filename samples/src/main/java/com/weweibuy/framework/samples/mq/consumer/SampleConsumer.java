@@ -17,7 +17,7 @@ import java.util.List;
  **/
 @Slf4j
 @Component
-@RocketListener(topic = "TEST_SAMPLE_01", group = "TEST_SAMPLE_01_C_GROUP", consumeMessageBatchMaxSize = 10)
+@RocketListener(topic = "TEST_SAMPLE_01", group = "TEST_SAMPLE_01_C_GROUP")
 public class SampleConsumer {
 
     @RocketConsumerHandler(tags = "QQQ")

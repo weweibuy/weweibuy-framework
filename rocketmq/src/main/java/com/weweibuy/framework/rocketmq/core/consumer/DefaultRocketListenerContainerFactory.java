@@ -1,12 +1,12 @@
 package com.weweibuy.framework.rocketmq.core.consumer;
 
-import org.apache.rocketmq.client.AccessChannel;
 import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
 import org.apache.rocketmq.client.consumer.rebalance.AllocateMessageQueueAveragely;
 import org.apache.rocketmq.client.exception.MQClientException;
 import org.apache.rocketmq.remoting.RPCHook;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * RocketListenerContainerFactory 默认实现
@@ -20,7 +20,7 @@ public class DefaultRocketListenerContainerFactory implements RocketListenerCont
     @Override
     public RocketListenerContainer createListenerContainer(List<MethodRocketListenerEndpoint> endpointList) {
 
-        boolean orderly = endpointList.get(0).isOrderly();
+        boolean orderly = endpointList.get(0).getOrderly();
 
         if (orderly) {
             return createOrderlyContainer(endpointList);
@@ -55,9 +55,9 @@ public class DefaultRocketListenerContainerFactory implements RocketListenerCont
 //            rpcHook =  new AclClientRPCHook(new SessionCredentials(ak, sk));
 //        }
         DefaultMQPushConsumer pushConsumer = new DefaultMQPushConsumer(endpoint.getGroup(), rpcHook, new AllocateMessageQueueAveragely(),
-                false, null);
+                Optional.ofNullable(endpoint.getMsgTrace()).orElse(false), endpoint.getTraceTopic());
         pushConsumer.setNamesrvAddr("");
-        pushConsumer.setAccessChannel(AccessChannel.valueOf(endpoint.getAccessChannel()));
+        pushConsumer.setAccessChannel(endpoint.getAccessChannel());
         pushConsumer.setConsumeThreadMin(endpoint.getThreadMin());
         pushConsumer.setConsumeThreadMin(endpoint.getThreadMax());
         pushConsumer.setConsumeTimeout(endpoint.getTimeout());
