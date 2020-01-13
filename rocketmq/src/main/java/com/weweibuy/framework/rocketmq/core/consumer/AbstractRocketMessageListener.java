@@ -49,9 +49,6 @@ public abstract class AbstractRocketMessageListener<R> implements RocketMessageL
     }
 
 
-    protected abstract R doOnMessage(List<MessageExt> messageExtList);
-
-
     /**
      * 处理结果
      */

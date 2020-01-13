@@ -3,6 +3,7 @@ package com.weweibuy.framework.rocketmq.core.consumer;
 import com.weweibuy.framework.rocketmq.annotation.RocketConsumerHandler;
 import com.weweibuy.framework.rocketmq.annotation.RocketListener;
 import com.weweibuy.framework.rocketmq.config.RocketMqProperties;
+import com.weweibuy.framework.rocketmq.core.MessageConverter;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.apache.commons.lang3.StringUtils;
@@ -11,6 +12,8 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.SmartInitializingSingleton;
 import org.springframework.beans.factory.config.BeanPostProcessor;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
@@ -24,7 +27,9 @@ import java.util.stream.Collectors;
  * @author durenhao
  * @date 2020/1/4 20:31
  **/
-public class RocketBeanPostProcessor implements BeanPostProcessor, SmartInitializingSingleton, DisposableBean {
+public class RocketBeanPostProcessor implements BeanPostProcessor, SmartInitializingSingleton, DisposableBean, ApplicationContextAware {
+
+    private ApplicationContext applicationContext;
 
     private List<MethodRocketListenerEndpoint> endpointList;
 
@@ -34,9 +39,16 @@ public class RocketBeanPostProcessor implements BeanPostProcessor, SmartInitiali
 
     private RocketMqProperties rocketMqProperties;
 
-    public RocketBeanPostProcessor(RocketListenerContainerFactory containerFactory, RocketMqProperties rocketMqProperties) {
+    private MessageConverter messageConverter;
+
+    private RocketListenerErrorHandler errorHandler;
+
+    public RocketBeanPostProcessor(RocketListenerContainerFactory containerFactory, RocketMqProperties rocketMqProperties,
+                                   MessageConverter messageConverter, RocketListenerErrorHandler errorHandler) {
         this.rocketEndpointRegistrar = new RocketEndpointRegistrar(containerFactory);
         this.rocketMqProperties = rocketMqProperties;
+        this.messageConverter = messageConverter;
+        this.errorHandler = errorHandler;
     }
 
 
@@ -71,6 +83,7 @@ public class RocketBeanPostProcessor implements BeanPostProcessor, SmartInitiali
             name = beanName;
         }
 
+
         listenerEndpoint.setName(name);
         listenerEndpoint.setBean(bean);
         listenerEndpoint.setNameServer(rocketMqProperties.getNameServer());
@@ -79,7 +92,8 @@ public class RocketBeanPostProcessor implements BeanPostProcessor, SmartInitiali
         listenerEndpoint.setTags(consumerHandler.tags());
         listenerEndpoint.setOrderly(rocketListener.orderly());
         listenerEndpoint.setConsumeMessageBatchMaxSize(rocketListener.consumeMessageBatchMaxSize());
-
+        listenerEndpoint.setMessageConverter(messageConverter);
+        listenerEndpoint.setErrorHandler(errorHandler);
 
         if (rocketMqProperties.getConsumer() != null && rocketMqProperties.getConsumer().get(name) != null) {
             RocketMqProperties.Consumer consumer = rocketMqProperties.getConsumer().get(name);
@@ -207,6 +221,11 @@ public class RocketBeanPostProcessor implements BeanPostProcessor, SmartInitiali
     @Override
     public void destroy() throws Exception {
         rocketEndpointRegistrar.shutdownAllContainer();
+    }
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext = applicationContext;
     }
 
     @Data
