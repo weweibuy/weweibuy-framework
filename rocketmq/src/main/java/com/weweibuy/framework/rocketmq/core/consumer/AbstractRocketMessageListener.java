@@ -13,31 +13,39 @@ import java.util.List;
  **/
 public abstract class AbstractRocketMessageListener<R> implements RocketMessageListener<R> {
 
-    private Boolean orderly;
-
     private Integer batchSize;
 
     private MessageConverter messageConverter;
 
     private RocketListenerErrorHandler errorHandler;
 
+    private RocketHandlerMethod rocketHandlerMethod;
+
+    public AbstractRocketMessageListener(Integer batchSize, MessageConverter messageConverter,
+                                         RocketListenerErrorHandler errorHandler,
+                                         RocketHandlerMethod rocketHandlerMethod) {
+        this.batchSize = batchSize;
+        this.messageConverter = messageConverter;
+        this.errorHandler = errorHandler;
+        this.rocketHandlerMethod = rocketHandlerMethod;
+    }
 
     @Override
     public R onMessage(List<MessageExt> messageExtList) {
         Object reValue = null;
         try {
-            reValue = doOnMessage(messageExtList);
+            reValue = rocketHandlerMethod.invoke(messageExtList);
         } catch (Exception e) {
             if (errorHandler != null) {
-                return (R) errorHandler.handlerException(e, orderly);
-            } else if (orderly) {
+                return (R) errorHandler.handlerException(e, isOrderly());
+            } else if (isOrderly()) {
                 return (R) ConsumeOrderlyStatus.SUSPEND_CURRENT_QUEUE_A_MOMENT;
             } else {
                 return (R) ConsumeConcurrentlyStatus.RECONSUME_LATER;
             }
 
         }
-        return handleResult();
+        return handleResult(reValue);
     }
 
 
@@ -47,7 +55,7 @@ public abstract class AbstractRocketMessageListener<R> implements RocketMessageL
     /**
      * 处理结果
      */
-    protected R handleResult() {
+    protected R handleResult(Object reValue) {
         return null;
     }
 
@@ -64,5 +72,11 @@ public abstract class AbstractRocketMessageListener<R> implements RocketMessageL
         }
         return message;
     }
+
+    public Integer getBatchSize() {
+        return this.batchSize;
+    }
+
+    protected abstract boolean isOrderly();
 
 }
