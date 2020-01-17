@@ -55,6 +55,8 @@ public class MethodRocketListenerEndpoint {
 
     private MessageHandlerMethodFactory messageHandlerMethodFactory;
 
+    private HandlerMethodArgumentResolverComposite argumentResolverComposite;
+
     /**
      * 创建每个方法对应的监听
      *
@@ -62,7 +64,7 @@ public class MethodRocketListenerEndpoint {
      * @return
      */
     public RocketMessageListener createRocketMessageListener(RocketListenerContainer listenerContainer) {
-        RocketHandlerMethod handlerMethod = messageHandlerMethodFactory.createHandlerMethod(bean, method);
+        RocketHandlerMethod handlerMethod = messageHandlerMethodFactory.createHandlerMethod(bean, method, argumentResolverComposite);
 
         RocketMessageListener listener = createListener(handlerMethod);
 

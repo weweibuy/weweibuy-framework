@@ -43,12 +43,15 @@ public class RocketBeanPostProcessor implements BeanPostProcessor, SmartInitiali
 
     private RocketListenerErrorHandler errorHandler;
 
-    public RocketBeanPostProcessor(RocketListenerContainerFactory containerFactory, RocketMqProperties rocketMqProperties,
-                                   MessageConverter messageConverter, RocketListenerErrorHandler errorHandler) {
+    private HandlerMethodArgumentResolverComposite argumentResolverComposite;
+
+    public RocketBeanPostProcessor(RocketListenerContainerFactory containerFactory, MessageHandlerMethodFactory messageHandlerMethodFactory, RocketMqProperties rocketMqProperties,
+                                   MessageConverter messageConverter, RocketListenerErrorHandler errorHandler, HandlerMethodArgumentResolverComposite argumentResolverComposite) {
         this.rocketEndpointRegistrar = new RocketEndpointRegistrar(containerFactory);
         this.rocketMqProperties = rocketMqProperties;
         this.messageConverter = messageConverter;
         this.errorHandler = errorHandler;
+        this.argumentResolverComposite = addCustomArgumentResolver(argumentResolverComposite);
     }
 
 
@@ -94,6 +97,7 @@ public class RocketBeanPostProcessor implements BeanPostProcessor, SmartInitiali
         listenerEndpoint.setConsumeMessageBatchMaxSize(rocketListener.consumeMessageBatchMaxSize());
         listenerEndpoint.setMessageConverter(messageConverter);
         listenerEndpoint.setErrorHandler(errorHandler);
+        listenerEndpoint.setArgumentResolverComposite(argumentResolverComposite);
 
         if (rocketMqProperties.getConsumer() != null && rocketMqProperties.getConsumer().get(name) != null) {
             RocketMqProperties.Consumer consumer = rocketMqProperties.getConsumer().get(name);
@@ -227,6 +231,27 @@ public class RocketBeanPostProcessor implements BeanPostProcessor, SmartInitiali
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         this.applicationContext = applicationContext;
     }
+
+
+    private HandlerMethodArgumentResolverComposite addCustomArgumentResolver(HandlerMethodArgumentResolverComposite argumentResolverComposite) {
+        HandlerMethodArgumentResolverComposite resolverComposite = new HandlerMethodArgumentResolverComposite();
+        if (argumentResolverComposite == null) {
+            resolverComposite.addResolvers(getDefaultResolver());
+        } else {
+            resolverComposite.addResolvers(getDefaultResolver());
+            resolverComposite.addResolvers(argumentResolverComposite.getArgumentResolvers());
+        }
+        return resolverComposite;
+
+    }
+
+    private List<HandlerMethodArgumentResolver> getDefaultResolver() {
+        List<HandlerMethodArgumentResolver> linkedList = new LinkedList<>();
+        linkedList.add(new PayloadMethodArgumentResolver(messageConverter));
+        linkedList.add(new HeaderMethodArgumentResolver());
+        return linkedList;
+    }
+
 
     @Data
     @EqualsAndHashCode

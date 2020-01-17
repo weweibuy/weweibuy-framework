@@ -45,7 +45,7 @@ public class HandlerMethodArgumentResolverComposite {
     }
 
 
-    private HandlerMethodArgumentResolver getArgumentResolver(MethodParameter parameter) {
+    public HandlerMethodArgumentResolver getArgumentResolver(MethodParameter parameter) {
         HandlerMethodArgumentResolver result = this.argumentResolverCache.get(parameter);
         if (result == null) {
             for (HandlerMethodArgumentResolver resolver : this.argumentResolvers) {
@@ -57,6 +57,10 @@ public class HandlerMethodArgumentResolverComposite {
             }
         }
         return result;
+    }
+
+    public List<HandlerMethodArgumentResolver> getArgumentResolvers() {
+        return argumentResolvers;
     }
 
 }

@@ -17,11 +17,11 @@ public class HeaderMethodArgumentResolver implements HandlerMethodArgumentResolv
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
-        return parameter.hasMethodAnnotation(Header.class);
+        return parameter.hasParameterAnnotation(Header.class);
     }
 
     @Override
-    public Object resolveArgument(MethodParameter parameter, List<MessageExt> message) throws Exception {
+    public Object resolveArgument(MethodParameter parameter, List<MessageExt> message) {
         return null;
     }
 }

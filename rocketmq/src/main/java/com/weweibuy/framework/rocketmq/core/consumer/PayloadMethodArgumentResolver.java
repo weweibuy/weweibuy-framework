@@ -26,7 +26,7 @@ public class PayloadMethodArgumentResolver implements HandlerMethodArgumentResol
     }
 
     @Override
-    public Object resolveArgument(MethodParameter parameter, List<MessageExt> message) throws Exception {
+    public Object resolveArgument(MethodParameter parameter, List<MessageExt> message) {
         if (message.size() == 1) {
             return messageConverter.fromMessageBody(message.get(0).getBody(), parameter);
         }

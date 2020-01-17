@@ -15,6 +15,6 @@ public interface MessageHandlerMethodFactory {
      * @param method
      * @return
      */
-    RocketHandlerMethod createHandlerMethod(Object bean, Method method);
+    RocketHandlerMethod createHandlerMethod(Object bean, Method method,  HandlerMethodArgumentResolverComposite argumentResolverComposite);
 
 }

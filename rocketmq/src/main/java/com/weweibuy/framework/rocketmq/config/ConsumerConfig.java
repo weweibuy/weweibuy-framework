@@ -1,9 +1,7 @@
 package com.weweibuy.framework.rocketmq.config;
 
 import com.weweibuy.framework.rocketmq.core.MessageConverter;
-import com.weweibuy.framework.rocketmq.core.consumer.DefaultRocketListenerContainerFactory;
-import com.weweibuy.framework.rocketmq.core.consumer.RocketBeanPostProcessor;
-import com.weweibuy.framework.rocketmq.core.consumer.RocketListenerErrorHandler;
+import com.weweibuy.framework.rocketmq.core.consumer.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,9 +16,19 @@ public class ConsumerConfig {
     @Autowired(required = false)
     private RocketListenerErrorHandler errorHandler;
 
+    @Autowired(required = false)
+    private HandlerMethodArgumentResolverComposite argumentResolverComposite;
+
     @Bean
     public RocketBeanPostProcessor rocketBeanPostProcessor(RocketMqProperties rocketMqProperties, MessageConverter messageConverter) {
-        return new RocketBeanPostProcessor(new DefaultRocketListenerContainerFactory(), rocketMqProperties, messageConverter, errorHandler);
+
+        return new RocketBeanPostProcessor(new DefaultRocketListenerContainerFactory(), messageHandlerMethodFactory(),
+                rocketMqProperties, messageConverter, errorHandler, argumentResolverComposite);
+    }
+
+    @Bean
+    public MessageHandlerMethodFactory messageHandlerMethodFactory() {
+        return new DefaultMessageHandlerMethodFactory();
     }
 
 

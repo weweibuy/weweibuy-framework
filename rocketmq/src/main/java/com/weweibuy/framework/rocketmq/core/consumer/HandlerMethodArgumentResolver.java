@@ -13,9 +13,22 @@ import java.util.List;
  **/
 public interface HandlerMethodArgumentResolver {
 
+    /**
+     * 是否支持参数
+     *
+     * @param parameter
+     * @return
+     */
     boolean supportsParameter(MethodParameter parameter);
 
-    Object resolveArgument(MethodParameter parameter, List<MessageExt> message) throws Exception;
+    /**
+     * 解析参数
+     *
+     * @param parameter
+     * @param message
+     * @return
+     */
+    Object resolveArgument(MethodParameter parameter, List<MessageExt> message);
 
 
 }
