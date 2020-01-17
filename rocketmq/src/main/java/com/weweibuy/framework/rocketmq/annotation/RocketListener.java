@@ -1,5 +1,7 @@
 package com.weweibuy.framework.rocketmq.annotation;
 
+import org.apache.rocketmq.common.protocol.heartbeat.MessageModel;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -31,5 +33,10 @@ public @interface RocketListener {
 
     int consumeMessageBatchMaxSize() default 1;
 
-
+    /**
+     * 消费模式
+     *
+     * @return
+     */
+    MessageModel messageModel() default MessageModel.CLUSTERING;
 }

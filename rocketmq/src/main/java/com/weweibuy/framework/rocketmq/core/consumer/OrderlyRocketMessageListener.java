@@ -9,9 +9,9 @@ import org.apache.rocketmq.client.consumer.listener.ConsumeOrderlyStatus;
  **/
 public class OrderlyRocketMessageListener extends AbstractRocketMessageListener<ConsumeOrderlyStatus> {
 
-    public OrderlyRocketMessageListener(Integer batchSize, MessageConverter messageConverter,
+    public OrderlyRocketMessageListener(Integer batchSize, String tags, MessageConverter messageConverter,
                                         RocketListenerErrorHandler errorHandler, RocketHandlerMethod handlerMethod) {
-        super(batchSize, messageConverter, errorHandler, handlerMethod);
+        super(batchSize, tags, messageConverter, errorHandler, handlerMethod);
     }
 
 

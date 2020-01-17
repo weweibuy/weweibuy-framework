@@ -45,7 +45,7 @@ public class ConcurrentlyRocketListenerContainer extends AbstractRocketListenerC
         // 选择 listener
         RocketMessageListener rocketMessageListener = selectMessageListener(list);
         // 消费消息
-        rocketMessageListener.onMessage(list);
+        rocketMessageListener.onMessage(list, context);
         return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
     }
 }

@@ -8,6 +8,7 @@ import org.apache.rocketmq.common.message.MessageExt;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * 抽象监听容器
@@ -69,5 +70,7 @@ public abstract class AbstractRocketListenerContainer<T, R> implements RocketLis
     @Override
     public void setListeners(List<RocketMessageListener> listenerList) {
         this.rocketMessageListenerList = listenerList;
+        this.listenerMap = listenerList.stream()
+                .collect(Collectors.toMap(l -> ((AbstractRocketMessageListener) l).getTag(), i -> i));
     }
 }

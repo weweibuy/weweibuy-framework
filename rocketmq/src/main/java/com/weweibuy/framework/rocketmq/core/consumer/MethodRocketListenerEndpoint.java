@@ -3,6 +3,7 @@ package com.weweibuy.framework.rocketmq.core.consumer;
 import com.weweibuy.framework.rocketmq.core.MessageConverter;
 import lombok.Data;
 import org.apache.rocketmq.client.AccessChannel;
+import org.apache.rocketmq.common.protocol.heartbeat.MessageModel;
 
 import java.lang.reflect.Method;
 
@@ -45,6 +46,8 @@ public class MethodRocketListenerEndpoint {
 
     private AccessChannel accessChannel;
 
+    private MessageModel messageModel;
+
     private Object bean;
 
     private Method method;
@@ -64,7 +67,7 @@ public class MethodRocketListenerEndpoint {
      * @return
      */
     public RocketMessageListener createRocketMessageListener(RocketListenerContainer listenerContainer) {
-        RocketHandlerMethod handlerMethod = messageHandlerMethodFactory.createHandlerMethod(bean, method, argumentResolverComposite);
+        RocketHandlerMethod handlerMethod = messageHandlerMethodFactory.createHandlerMethod(this);
 
         RocketMessageListener listener = createListener(handlerMethod);
 
@@ -74,9 +77,9 @@ public class MethodRocketListenerEndpoint {
 
     private RocketMessageListener createListener(RocketHandlerMethod handlerMethod) {
         if (orderly) {
-            return new OrderlyRocketMessageListener(consumeMessageBatchMaxSize, messageConverter, errorHandler, handlerMethod);
+            return new OrderlyRocketMessageListener(consumeMessageBatchMaxSize, tags, messageConverter, errorHandler, handlerMethod);
         }
-        return new ConcurrentRocketMessageListener(consumeMessageBatchMaxSize, messageConverter, errorHandler, handlerMethod);
+        return new ConcurrentRocketMessageListener(consumeMessageBatchMaxSize, tags, messageConverter, errorHandler, handlerMethod);
     }
 
 }

@@ -14,7 +14,7 @@ import java.lang.reflect.Method;
 public class DefaultMessageHandlerMethodFactory implements MessageHandlerMethodFactory {
 
     @Override
-    public RocketHandlerMethod createHandlerMethod(Object bean, Method method, HandlerMethodArgumentResolverComposite argumentResolverComposite) {
-        return new RocketHandlerMethod(bean, method, argumentResolverComposite);
+    public RocketHandlerMethod createHandlerMethod(MethodRocketListenerEndpoint endpoint) {
+        return new RocketHandlerMethod(endpoint);
     }
 }

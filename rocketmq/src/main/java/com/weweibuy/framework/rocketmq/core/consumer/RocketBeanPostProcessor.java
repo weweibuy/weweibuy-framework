@@ -51,6 +51,7 @@ public class RocketBeanPostProcessor implements BeanPostProcessor, SmartInitiali
         this.rocketMqProperties = rocketMqProperties;
         this.messageConverter = messageConverter;
         this.errorHandler = errorHandler;
+        this.messageHandlerMethodFactory = messageHandlerMethodFactory;
         this.argumentResolverComposite = addCustomArgumentResolver(argumentResolverComposite);
     }
 
@@ -151,6 +152,7 @@ public class RocketBeanPostProcessor implements BeanPostProcessor, SmartInitiali
             listenerEndpoint.setThreadMax(rocketListener.threadMax());
             listenerEndpoint.setMaxRetry(rocketListener.maxRetry());
             listenerEndpoint.setTimeout(rocketListener.timeout());
+            listenerEndpoint.setMessageModel(rocketListener.messageModel());
         }
         return listenerEndpoint;
     }

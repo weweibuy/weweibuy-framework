@@ -4,7 +4,6 @@ import org.apache.rocketmq.common.message.MessageExt;
 import org.springframework.core.BridgeMethodResolver;
 import org.springframework.core.MethodParameter;
 import org.springframework.core.annotation.SynthesizingMethodParameter;
-import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.ReflectionUtils;
@@ -31,15 +30,17 @@ public class RocketHandlerMethod {
 
     private MethodParameter[] methodParameters;
 
-    public RocketHandlerMethod(Object bean, Method method, HandlerMethodArgumentResolverComposite argumentResolverComposite) {
-        Assert.notNull(bean, "Bean is required");
-        Assert.notNull(method, "Method is required");
-        this.bean = bean;
+    private Integer batchMaxSize;
+
+
+    public RocketHandlerMethod(MethodRocketListenerEndpoint endpoint) {
+        this.bean = endpoint.getBean();
         this.beanType = ClassUtils.getUserClass(bean);
-        this.method = method;
-        this.bridgedMethod = BridgeMethodResolver.findBridgedMethod(method);
+        this.method = endpoint.getMethod();
+        this.bridgedMethod = BridgeMethodResolver.findBridgedMethod(endpoint.getMethod());
         this.methodParameters = initMethodParameters();
     }
+
 
     public Object invoke(List<MessageExt> messageExtList, Object... providedArgs) throws Exception {
         Object[] args = getMethodArgumentValues(messageExtList, providedArgs);
@@ -76,7 +77,7 @@ public class RocketHandlerMethod {
     }
 
 
-    protected static Object findProvidedArgument(MethodParameter parameter, List<MessageExt> messageExtList, Object... providedArgs) {
+    protected Object findProvidedArgument(MethodParameter parameter, List<MessageExt> messageExtList, Object... providedArgs) {
 
         if (parameter.getParameterType().isInstance(messageExtList)) {
             return messageExtList;

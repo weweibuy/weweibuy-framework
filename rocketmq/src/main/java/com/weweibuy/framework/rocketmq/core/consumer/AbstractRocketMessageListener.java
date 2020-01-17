@@ -15,26 +15,29 @@ public abstract class AbstractRocketMessageListener<R> implements RocketMessageL
 
     private Integer batchSize;
 
+    private String tags;
+
     private MessageConverter messageConverter;
 
     private RocketListenerErrorHandler errorHandler;
 
     private RocketHandlerMethod rocketHandlerMethod;
 
-    public AbstractRocketMessageListener(Integer batchSize, MessageConverter messageConverter,
+    public AbstractRocketMessageListener(Integer batchSize, String tags, MessageConverter messageConverter,
                                          RocketListenerErrorHandler errorHandler,
                                          RocketHandlerMethod rocketHandlerMethod) {
         this.batchSize = batchSize;
         this.messageConverter = messageConverter;
         this.errorHandler = errorHandler;
         this.rocketHandlerMethod = rocketHandlerMethod;
+        this.tags = tags;
     }
 
     @Override
-    public R onMessage(List<MessageExt> messageExtList) {
+    public R onMessage(List<MessageExt> messageExtList, Object ... args) {
         Object reValue = null;
         try {
-            reValue = rocketHandlerMethod.invoke(messageExtList);
+            reValue = rocketHandlerMethod.invoke(messageExtList, args);
         } catch (Exception e) {
             if (errorHandler != null) {
                 return (R) errorHandler.handlerException(e, isOrderly());
@@ -73,6 +76,11 @@ public abstract class AbstractRocketMessageListener<R> implements RocketMessageL
     public Integer getBatchSize() {
         return this.batchSize;
     }
+
+    public String getTag() {
+        return this.tags;
+    }
+
 
     protected abstract boolean isOrderly();
 

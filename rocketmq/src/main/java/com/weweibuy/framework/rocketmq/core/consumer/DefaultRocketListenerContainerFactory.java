@@ -68,6 +68,7 @@ public class DefaultRocketListenerContainerFactory implements RocketListenerCont
         pushConsumer.setConsumeThreadMin(endpoint.getThreadMin());
         pushConsumer.setConsumeThreadMin(endpoint.getThreadMax());
         pushConsumer.setConsumeTimeout(endpoint.getTimeout());
+        pushConsumer.setMessageModel(endpoint.getMessageModel());
         try {
             pushConsumer.subscribe(endpoint.getTopic(), tags);
         } catch (MQClientException e) {

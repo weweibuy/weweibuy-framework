@@ -16,7 +16,7 @@ public interface RocketMessageListener<R> {
      * @param messageExtList
      * @return
      */
-    R onMessage(List<MessageExt> messageExtList);
+    R onMessage(List<MessageExt> messageExtList, Object... args);
 
 
 }
