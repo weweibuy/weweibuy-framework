@@ -22,10 +22,10 @@ public interface HandlerMethodArgumentResolver {
      * 解析参数
      *
      * @param parameter
-     * @param message
+     * @param messageObject
      * @return
      */
-    Object resolveArgument(MethodParameter parameter, Object message);
+    Object resolveArgument(MethodParameter parameter, Object messageObject);
 
 
 
