@@ -1,5 +1,6 @@
 package com.weweibuy.framework.rocketmq.core.consumer;
 
+import com.weweibuy.framework.rocketmq.annotation.BatchHandlerModel;
 import com.weweibuy.framework.rocketmq.core.MessageConverter;
 import lombok.Data;
 import org.apache.rocketmq.client.AccessChannel;
@@ -40,6 +41,8 @@ public class MethodRocketListenerEndpoint {
 
     private Integer consumeMessageBatchMaxSize;
 
+    private BatchHandlerModel batchHandlerModel;
+
     private String accessKey;
 
     private String secretKey;
@@ -77,9 +80,9 @@ public class MethodRocketListenerEndpoint {
 
     private RocketMessageListener createListener(RocketHandlerMethod handlerMethod) {
         if (orderly) {
-            return new OrderlyRocketMessageListener(consumeMessageBatchMaxSize, tags, messageConverter, errorHandler, handlerMethod);
+            return new OrderlyRocketMessageListener(consumeMessageBatchMaxSize, tags, errorHandler, handlerMethod);
         }
-        return new ConcurrentRocketMessageListener(consumeMessageBatchMaxSize, tags, messageConverter, errorHandler, handlerMethod);
+        return new ConcurrentRocketMessageListener(consumeMessageBatchMaxSize, tags, errorHandler, handlerMethod);
     }
 
 }

@@ -1,7 +1,9 @@
 package com.weweibuy.framework.rocketmq.core.consumer;
 
+import com.weweibuy.framework.rocketmq.annotation.BatchHandlerModel;
 import com.weweibuy.framework.rocketmq.core.MessageConverter;
 import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
+import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyStatus;
 import org.apache.rocketmq.client.consumer.listener.MessageListener;
 import org.apache.rocketmq.client.exception.MQClientException;
 import org.apache.rocketmq.common.message.MessageExt;
@@ -22,22 +24,25 @@ public abstract class AbstractRocketListenerContainer<T, R> implements RocketLis
 
     private DefaultMQPushConsumer mqPushConsumer;
 
-    private List<RocketMessageListener> rocketMessageListenerList;
+    private List<RocketMessageListener<R>> rocketMessageListenerList;
 
-    private Map<String, RocketMessageListener> listenerMap;
+    private Map<String, RocketMessageListener<R>> listenerMap;
 
     private Integer batchSize;
 
+    private BatchHandlerModel batchHandlerModel;
+
     public AbstractRocketListenerContainer(DefaultMQPushConsumer mqPushConsumer,
-                                           Integer batchSize) {
+                                           Integer batchSize, BatchHandlerModel batchHandlerModel) {
         this.mqPushConsumer = mqPushConsumer;
         this.mqPushConsumer.setMessageListener(getMessageListener());
         this.batchSize = batchSize;
+        this.batchHandlerModel = batchHandlerModel;
     }
 
 
     @Override
-    public RocketMessageListener selectMessageListener(List<MessageExt> list) {
+    public RocketMessageListener<R> selectMessageListener(List<MessageExt> list) {
         if (batchSize == 1) {
             if (listenerMap.containsKey("*")) {
                 return rocketMessageListenerList.get(0);
@@ -48,6 +53,33 @@ public abstract class AbstractRocketListenerContainer<T, R> implements RocketLis
         }
 
     }
+
+    @Override
+    public RocketMessageListener<R> selectMessageListener(String tag) {
+        return listenerMap.get(tag);
+    }
+
+    @Override
+    public R consume(List<MessageExt> list, T context) {
+
+        if (batchSize == 1) {
+            // 单个消费
+            MessageExt messageExt = list.get(0);
+            String tags = messageExt.getTags();
+            RocketMessageListener<R> rocketMessageListener = selectMessageListener(tags);
+            return rocketMessageListener.onMessage(messageExt, context);
+        } else if (batchHandlerModel.equals(BatchHandlerModel.FOREACH)) {
+            // 批量迭代消费 TODO 返回值处理
+            list.stream()
+                    .forEach(m -> selectMessageListener(m.getTags()).onMessage(m));
+            return (R) ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
+        } else {
+            // 批量一起消费
+            return selectMessageListener(list)
+                    .onMessage(list, context);
+        }
+    }
+
 
     /**
      * 获取MQ 自身的MessageListener
@@ -68,7 +100,7 @@ public abstract class AbstractRocketListenerContainer<T, R> implements RocketLis
     }
 
     @Override
-    public void setListeners(List<RocketMessageListener> listenerList) {
+    public void setListeners(List<RocketMessageListener<R>> listenerList) {
         this.rocketMessageListenerList = listenerList;
         this.listenerMap = listenerList.stream()
                 .collect(Collectors.toMap(l -> ((AbstractRocketMessageListener) l).getTag(), i -> i));

@@ -19,4 +19,8 @@ public interface RocketMessageListener<R> {
     R onMessage(List<MessageExt> messageExtList, Object... args);
 
 
+    R onMessage(MessageExt messageExt, Object... args);
+
+
+
 }

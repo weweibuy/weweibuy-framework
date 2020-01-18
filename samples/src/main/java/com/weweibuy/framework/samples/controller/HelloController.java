@@ -30,7 +30,7 @@ public class HelloController {
     public String hello(String msg) {
         SampleUser user = user(msg);
 
-        SendResult send = sampleProvider.send(user, "QQQ", UUID.randomUUID().toString());
+        SendResult send = sampleProvider.send(user, "AAA", UUID.randomUUID().toString());
 
         return "hello";
     }
@@ -60,6 +60,10 @@ public class HelloController {
         SampleUser user1 = user(msg + "QQQ");
         ArrayList<SampleUser> list = new ArrayList<>();
         list.add(user);
+        list.add(user1);
+        list.add(user1);
+        list.add(user1);
+        list.add(user1);
         list.add(user1);
         sampleProvider.sendBatch(list);
         return "hello";

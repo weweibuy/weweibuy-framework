@@ -19,4 +19,9 @@ public class StringMessageConverter implements MessageConverter {
         return null;
     }
 
+    @Override
+    public Object fromMessageBody(byte[] payload, Class type) {
+        return null;
+    }
+
 }

@@ -2,12 +2,16 @@ package com.weweibuy.framework.rocketmq.core;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.MethodParameter;
+
+import java.io.IOException;
 
 /**
  * @author durenhao
  * @date 2020/1/1 23:33
  **/
+@Slf4j
 public class JacksonRocketMqMessageConverter implements MessageConverter {
 
     private final ObjectMapper objectMapper;
@@ -27,7 +31,23 @@ public class JacksonRocketMqMessageConverter implements MessageConverter {
 
     @Override
     public Object fromMessageBody(byte[] payload, MethodParameter parameter) {
-        return null;
+        try {
+            return objectMapper.readValue(payload, parameter.getParameterType());
+        } catch (IOException e) {
+            log.error("json 解析错误", e);
+            throw new IllegalArgumentException(e);
+        }
+    }
+
+    @Override
+    public Object fromMessageBody(byte[] payload, Class type) {
+        try {
+            return objectMapper.readValue(payload, type);
+        } catch (IOException e) {
+            log.error("json 解析错误", e);
+            throw new IllegalArgumentException(e);
+        }
+
     }
 
 }

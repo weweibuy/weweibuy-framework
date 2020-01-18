@@ -26,5 +26,8 @@ public interface MessageConverter {
      */
     Object fromMessageBody(byte[] payload, MethodParameter parameter);
 
+    Object fromMessageBody(byte[] payload, Class type);
+
+
 
 }

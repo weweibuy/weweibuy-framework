@@ -99,6 +99,7 @@ public class RocketBeanPostProcessor implements BeanPostProcessor, SmartInitiali
         listenerEndpoint.setMessageConverter(messageConverter);
         listenerEndpoint.setErrorHandler(errorHandler);
         listenerEndpoint.setArgumentResolverComposite(argumentResolverComposite);
+        listenerEndpoint.setBatchHandlerModel(consumerHandler.batchHandlerModel());
 
         if (rocketMqProperties.getConsumer() != null && rocketMqProperties.getConsumer().get(name) != null) {
             RocketMqProperties.Consumer consumer = rocketMqProperties.getConsumer().get(name);

@@ -43,20 +43,20 @@ public class DefaultRocketListenerContainerFactory implements RocketListenerCont
     private RocketListenerContainer createOrderlyContainer(List<MethodRocketListenerEndpoint> endpointList) {
         if (endpointList.size() == 1) {
             MethodRocketListenerEndpoint endpoint = endpointList.get(0);
-            return new OrderlyRocketListenerContainer(createMqConsumer(endpoint, endpoint.getTags()), endpoint.getConsumeMessageBatchMaxSize());
+            return new OrderlyRocketListenerContainer(createMqConsumer(endpoint, endpoint.getTags()), endpoint.getConsumeMessageBatchMaxSize(), endpoint.getBatchHandlerModel());
         }
         String tags = mergeTags(endpointList);
-        return new OrderlyRocketListenerContainer(createMqConsumer(endpointList.get(0), tags), endpointList.get(0).getConsumeMessageBatchMaxSize());
+        return new OrderlyRocketListenerContainer(createMqConsumer(endpointList.get(0), tags), endpointList.get(0).getConsumeMessageBatchMaxSize(), endpointList.get(0).getBatchHandlerModel());
     }
 
 
     private RocketListenerContainer createConcurrentlyContainer(List<MethodRocketListenerEndpoint> endpointList) {
         if (endpointList.size() == 1) {
             MethodRocketListenerEndpoint endpoint = endpointList.get(0);
-            return new ConcurrentlyRocketListenerContainer(createMqConsumer(endpoint, endpoint.getTags()), endpoint.getConsumeMessageBatchMaxSize());
+            return new ConcurrentlyRocketListenerContainer(createMqConsumer(endpoint, endpoint.getTags()), endpoint.getConsumeMessageBatchMaxSize(), endpoint.getBatchHandlerModel());
         }
         String tags = mergeTags(endpointList);
-        return new ConcurrentlyRocketListenerContainer(createMqConsumer(endpointList.get(0), tags), endpointList.get(0).getConsumeMessageBatchMaxSize());
+        return new ConcurrentlyRocketListenerContainer(createMqConsumer(endpointList.get(0), tags), endpointList.get(0).getConsumeMessageBatchMaxSize(), endpointList.get(0).getBatchHandlerModel());
     }
 
     private DefaultMQPushConsumer createMqConsumer(MethodRocketListenerEndpoint endpoint, String tags) {
@@ -69,6 +69,8 @@ public class DefaultRocketListenerContainerFactory implements RocketListenerCont
         pushConsumer.setConsumeThreadMin(endpoint.getThreadMax());
         pushConsumer.setConsumeTimeout(endpoint.getTimeout());
         pushConsumer.setMessageModel(endpoint.getMessageModel());
+        pushConsumer.setConsumeMessageBatchMaxSize(endpoint.getConsumeMessageBatchMaxSize());
+
         try {
             pushConsumer.subscribe(endpoint.getTopic(), tags);
         } catch (MQClientException e) {

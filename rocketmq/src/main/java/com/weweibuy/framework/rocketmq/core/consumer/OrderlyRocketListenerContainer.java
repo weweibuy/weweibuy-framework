@@ -1,5 +1,6 @@
 package com.weweibuy.framework.rocketmq.core.consumer;
 
+import com.weweibuy.framework.rocketmq.annotation.BatchHandlerModel;
 import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
 import org.apache.rocketmq.client.consumer.listener.ConsumeOrderlyContext;
 import org.apache.rocketmq.client.consumer.listener.ConsumeOrderlyStatus;
@@ -15,8 +16,8 @@ import java.util.List;
 public class OrderlyRocketListenerContainer extends AbstractRocketListenerContainer<ConsumeOrderlyContext, ConsumeOrderlyStatus> {
 
 
-    public OrderlyRocketListenerContainer(DefaultMQPushConsumer mqPushConsumer,  Integer batchSize) {
-        super(mqPushConsumer, batchSize);
+    public OrderlyRocketListenerContainer(DefaultMQPushConsumer mqPushConsumer, Integer batchSize, BatchHandlerModel batchHandlerModel) {
+        super(mqPushConsumer, batchSize, batchHandlerModel);
     }
 
     @Override

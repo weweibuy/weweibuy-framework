@@ -5,7 +5,9 @@ import com.weweibuy.framework.rocketmq.core.MessageConverter;
 import org.apache.rocketmq.common.message.MessageExt;
 import org.springframework.core.MethodParameter;
 
+import java.lang.reflect.ParameterizedType;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author durenhao
@@ -26,10 +28,29 @@ public class PayloadMethodArgumentResolver implements HandlerMethodArgumentResol
     }
 
     @Override
-    public Object resolveArgument(MethodParameter parameter, List<MessageExt> message) {
-        if (message.size() == 1) {
-            return messageConverter.fromMessageBody(message.get(0).getBody(), parameter);
+    public Object resolveArgument(MethodParameter parameter, Object messageObject) {
+
+        if (messageObject instanceof MessageExt) {
+            MessageExt message = (MessageExt) messageObject;
+            return messageConverter.fromMessageBody(message.getBody(), parameter);
+        } else if (messageObject instanceof List) {
+            // 批量消费
+            List<MessageExt> messageExtList = (List<MessageExt>) messageObject;
+
+            RocketMethodParameter rocketMethodParameter = (RocketMethodParameter) parameter;
+            Class<?> parameterType = parameter.getParameterType();
+
+            // 批量消息用泛型转
+            ParameterizedType genericParameterType = (ParameterizedType) parameter.getGenericParameterType();
+            Class type = (Class) genericParameterType.getActualTypeArguments()[0];
+
+            return messageExtList.stream()
+                    .map(m -> messageConverter.fromMessageBody(m.getBody(), type))
+                    .collect(Collectors.toList());
+        } else {
+            throw new IllegalStateException("消费方法错误");
         }
-        return null;
+
     }
+
 }

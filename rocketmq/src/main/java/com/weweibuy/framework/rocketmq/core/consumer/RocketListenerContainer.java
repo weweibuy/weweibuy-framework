@@ -19,7 +19,16 @@ public interface RocketListenerContainer<T, R> {
      * @param list
      * @return
      */
-    RocketMessageListener selectMessageListener(List<MessageExt> list);
+    RocketMessageListener<R> selectMessageListener(List<MessageExt> list);
+
+    /**
+     * 选项监听器
+     *
+     * @param tag
+     * @return
+     */
+    RocketMessageListener<R> selectMessageListener(String tag);
+
 
     /**
      * 消费消息
@@ -40,6 +49,6 @@ public interface RocketListenerContainer<T, R> {
      */
     void shutdown();
 
-    void setListeners(List<RocketMessageListener> listenerList);
+    void setListeners(List<RocketMessageListener<R>> listenerList);
 
 }

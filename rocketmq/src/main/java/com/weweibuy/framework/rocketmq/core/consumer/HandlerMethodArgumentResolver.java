@@ -1,9 +1,6 @@
 package com.weweibuy.framework.rocketmq.core.consumer;
 
-import org.apache.rocketmq.common.message.MessageExt;
 import org.springframework.core.MethodParameter;
-
-import java.util.List;
 
 /**
  * 参数解析器
@@ -28,7 +25,8 @@ public interface HandlerMethodArgumentResolver {
      * @param message
      * @return
      */
-    Object resolveArgument(MethodParameter parameter, List<MessageExt> message);
+    Object resolveArgument(MethodParameter parameter, Object message);
+
 
 
 }
