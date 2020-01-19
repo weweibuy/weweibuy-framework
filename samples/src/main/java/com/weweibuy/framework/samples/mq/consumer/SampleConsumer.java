@@ -27,7 +27,7 @@ public class SampleConsumer {
     }
 
     @RocketConsumerHandler(tags = "AAA")
-    public void onMessage2(@Payload SampleUser user, @Header(MessageConst.PROPERTY_TAGS) String tag, @Header Map<String, String> headerMap, @Key String key) {
+    public void onMessage2(@Payload SampleUser user, @Header(MessageConst.PROPERTY_TAGS) String tag, @Header Map<String, String> headerMap) {
         log.info("收到消息: {}", user);
     }
 

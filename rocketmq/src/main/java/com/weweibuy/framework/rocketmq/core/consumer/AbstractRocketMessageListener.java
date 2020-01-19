@@ -1,11 +1,6 @@
 package com.weweibuy.framework.rocketmq.core.consumer;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyStatus;
-import org.apache.rocketmq.client.consumer.listener.ConsumeOrderlyStatus;
-import org.apache.rocketmq.common.message.MessageExt;
-
-import java.util.List;
 
 /**
  * @author durenhao
@@ -32,42 +27,35 @@ public abstract class AbstractRocketMessageListener<R> implements RocketMessageL
     }
 
     @Override
-    public R onMessage(List<MessageExt> messageExtList, Object... args) {
+    public R onMessage(Object messageObject, Object... args) {
         Object reValue = null;
         try {
-            reValue = rocketHandlerMethod.invoke(messageExtList, args);
+            reValue = rocketHandlerMethod.invoke(messageObject, args);
         } catch (Exception e) {
-            log.error("出席异常", e);
             if (errorHandler != null) {
-                return (R) errorHandler.handlerException(e, isOrderly());
-            } else if (isOrderly()) {
-                return (R) ConsumeOrderlyStatus.SUSPEND_CURRENT_QUEUE_A_MOMENT;
-            } else {
-                return (R) ConsumeConcurrentlyStatus.RECONSUME_LATER;
+                return (R) errorHandler.handlerException(e, messageObject, isOrderly());
             }
-
+            return getFailReturnValue();
         }
         return handleResult(reValue);
     }
 
-
-    @Override
-    public R onMessage(MessageExt messageExt, Object... args) {
-        Object reValue = null;
-        try {
-            reValue = rocketHandlerMethod.invoke(messageExt, args);
-        } catch (Exception e) {
-
-        }
-        return handleResult(reValue);
-    }
 
 
     /**
      * 处理结果
      */
     protected R handleResult(Object reValue) {
-        return null;
+        if (reValue == null) {
+            return getSuccessReturnValue();
+        }
+        if (getSuccessReturnValue().equals(reValue)) {
+            return getSuccessReturnValue();
+        }
+        if (getFailReturnValue().equals(reValue)) {
+            return getFailReturnValue();
+        }
+        return getSuccessReturnValue();
     }
 
 
@@ -81,5 +69,10 @@ public abstract class AbstractRocketMessageListener<R> implements RocketMessageL
 
 
     protected abstract boolean isOrderly();
+
+    protected abstract R getSuccessReturnValue();
+
+    protected abstract R getFailReturnValue();
+
 
 }

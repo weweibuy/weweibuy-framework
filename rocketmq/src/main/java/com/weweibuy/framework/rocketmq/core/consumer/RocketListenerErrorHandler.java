@@ -13,7 +13,8 @@ public interface RocketListenerErrorHandler {
      *
      * @return
      */
-    Object handlerException(Exception e, Boolean orderly);
+    Object handlerException(Exception e, Object messageObject, Boolean orderly);
+
 
 
 }

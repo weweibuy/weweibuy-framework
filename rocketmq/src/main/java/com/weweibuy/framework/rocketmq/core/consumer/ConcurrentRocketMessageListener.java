@@ -19,5 +19,15 @@ public class ConcurrentRocketMessageListener extends AbstractRocketMessageListen
         return false;
     }
 
+    @Override
+    protected ConsumeConcurrentlyStatus getSuccessReturnValue() {
+        return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
+    }
+
+    @Override
+    protected ConsumeConcurrentlyStatus getFailReturnValue() {
+        return ConsumeConcurrentlyStatus.RECONSUME_LATER;
+    }
+
 
 }

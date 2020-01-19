@@ -3,7 +3,6 @@ package com.weweibuy.framework.rocketmq.core.consumer;
 import com.weweibuy.framework.rocketmq.annotation.BatchHandlerModel;
 import com.weweibuy.framework.rocketmq.core.MessageConverter;
 import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
-import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyStatus;
 import org.apache.rocketmq.client.consumer.listener.MessageListener;
 import org.apache.rocketmq.client.exception.MQClientException;
 import org.apache.rocketmq.common.message.MessageExt;
@@ -32,8 +31,12 @@ public abstract class AbstractRocketListenerContainer<T, R> implements RocketLis
 
     private BatchHandlerModel batchHandlerModel;
 
+    private R success;
+
+    private R fail;
+
     public AbstractRocketListenerContainer(DefaultMQPushConsumer mqPushConsumer,
-                                           Integer batchSize, BatchHandlerModel batchHandlerModel) {
+                                           Integer batchSize, BatchHandlerModel batchHandlerModel, R success, R fail) {
         this.mqPushConsumer = mqPushConsumer;
         this.mqPushConsumer.setMessageListener(getMessageListener());
         this.batchSize = batchSize;
@@ -69,10 +72,13 @@ public abstract class AbstractRocketListenerContainer<T, R> implements RocketLis
             RocketMessageListener<R> rocketMessageListener = selectMessageListener(tags);
             return rocketMessageListener.onMessage(messageExt, context);
         } else if (batchHandlerModel.equals(BatchHandlerModel.FOREACH)) {
-            // 批量迭代消费 TODO 返回值处理
-            list.stream()
-                    .forEach(m -> selectMessageListener(m.getTags()).onMessage(m));
-            return (R) ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
+            boolean match = list.stream()
+                    .map(m -> selectMessageListener(m.getTags()).onMessage(m))
+                    .anyMatch(r -> !isSuccess(r));
+            if (match) {
+                return fail;
+            }
+            return success;
         } else {
             // 批量一起消费
             return selectMessageListener(list)
@@ -88,6 +94,7 @@ public abstract class AbstractRocketListenerContainer<T, R> implements RocketLis
      */
     protected abstract MessageListener getMessageListener();
 
+    protected abstract boolean isSuccess(R r);
 
     @Override
     public void start() throws MQClientException {

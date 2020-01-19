@@ -23,12 +23,12 @@ public class ConcurrentlyRocketListenerContainer extends AbstractRocketListenerC
     private MessageListener messageListener;
 
     public ConcurrentlyRocketListenerContainer(DefaultMQPushConsumer mqPushConsumer, Integer batchSize, BatchHandlerModel batchHandlerModel) {
-        super(mqPushConsumer, batchSize, batchHandlerModel);
+        super(mqPushConsumer, batchSize, batchHandlerModel, ConsumeConcurrentlyStatus.CONSUME_SUCCESS, ConsumeConcurrentlyStatus.RECONSUME_LATER);
     }
 
 
     @Override
-    protected synchronized MessageListener getMessageListener() {
+    protected MessageListener getMessageListener() {
         if (this.messageListener == null) {
             messageListener = new MessageListenerConcurrently() {
                 @Override
@@ -38,6 +38,11 @@ public class ConcurrentlyRocketListenerContainer extends AbstractRocketListenerC
             };
         }
         return messageListener;
+    }
+
+    @Override
+    protected boolean isSuccess(ConsumeConcurrentlyStatus consumeConcurrentlyStatus) {
+        return ConsumeConcurrentlyStatus.CONSUME_SUCCESS.equals(consumeConcurrentlyStatus);
     }
 
 

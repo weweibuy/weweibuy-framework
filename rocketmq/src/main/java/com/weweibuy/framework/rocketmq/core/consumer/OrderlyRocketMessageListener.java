@@ -18,4 +18,14 @@ public class OrderlyRocketMessageListener extends AbstractRocketMessageListener<
     protected boolean isOrderly() {
         return true;
     }
+
+    @Override
+    protected ConsumeOrderlyStatus getSuccessReturnValue() {
+        return ConsumeOrderlyStatus.SUCCESS;
+    }
+
+    @Override
+    protected ConsumeOrderlyStatus getFailReturnValue() {
+        return ConsumeOrderlyStatus.SUSPEND_CURRENT_QUEUE_A_MOMENT;
+    }
 }
