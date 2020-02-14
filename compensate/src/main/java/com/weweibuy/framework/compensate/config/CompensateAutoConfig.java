@@ -3,8 +3,10 @@ package com.weweibuy.framework.compensate.config;
 import com.weweibuy.framework.compensate.interceptor.CompensateBeanFactoryPointcutAdvisor;
 import com.weweibuy.framework.compensate.interceptor.CompensateInterceptor;
 import com.weweibuy.framework.compensate.interceptor.CompensatePointcut;
+import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Role;
 
 /**
  * @author durenhao
@@ -13,7 +15,9 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class CompensateAutoConfig extends AbstractCompensateConfig {
 
+
     @Bean
+    @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
     public CompensateBeanFactoryPointcutAdvisor compensateBeanFactoryPointcutAdvisor() {
         CompensateBeanFactoryPointcutAdvisor advisor = new CompensateBeanFactoryPointcutAdvisor();
         advisor.setPc(new CompensatePointcut());

@@ -4,6 +4,7 @@ package com.weweibuy.framework.compensate.interceptor;
 import com.weweibuy.framework.compensate.annotation.Compensate;
 import com.weweibuy.framework.compensate.core.CompensateInfo;
 import com.weweibuy.framework.compensate.core.CompensateStore;
+import com.weweibuy.framework.compensate.support.CompensateAnnotationMetaDataParser;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 
@@ -17,14 +18,18 @@ public class CompensateInterceptor implements MethodInterceptor {
 
     private CompensateStore compensateStore;
 
+    private CompensateAnnotationMetaDataParser metaDataParser = new CompensateAnnotationMetaDataParser();
+
     @Override
     public Object invoke(MethodInvocation methodInvocation) throws Throwable {
         try {
             return methodInvocation.proceed();
         } catch (Exception e) {
             Compensate annotation = methodInvocation.getMethod().getAnnotation(Compensate.class);
-            Object[] arguments = methodInvocation.getArguments();
-            compensateStore.saveCompensateInfo(new CompensateInfo());
+            if (metaDataParser.shouldCompensate(annotation, e)) {
+                CompensateInfo compensateInfo = metaDataParser.parseCompensate(annotation, methodInvocation.getMethod());
+                compensateStore.saveCompensateInfo(compensateInfo);
+            }
             throw e;
         }
     }
