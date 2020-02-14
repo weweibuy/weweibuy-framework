@@ -29,7 +29,7 @@ public @interface Compensate {
      *
      * @return
      */
-    Class<? extends Throwable>[] include() default {};
+    Class<? extends Throwable>[] include() default {Exception.class};
 
     /**
      * 补偿不包含的异常

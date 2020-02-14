@@ -16,9 +16,15 @@ import org.aopalliance.intercept.MethodInvocation;
  **/
 public class CompensateInterceptor implements MethodInterceptor {
 
-    private CompensateStore compensateStore;
+    private final CompensateStore compensateStore;
 
-    private CompensateAnnotationMetaDataParser metaDataParser = new CompensateAnnotationMetaDataParser();
+    private final CompensateAnnotationMetaDataParser metaDataParser;
+
+    public CompensateInterceptor(CompensateStore compensateStore,
+                                 CompensateAnnotationMetaDataParser metaDataParser) {
+        this.compensateStore = compensateStore;
+        this.metaDataParser = metaDataParser;
+    }
 
     @Override
     public Object invoke(MethodInvocation methodInvocation) throws Throwable {
@@ -27,7 +33,7 @@ public class CompensateInterceptor implements MethodInterceptor {
         } catch (Exception e) {
             Compensate annotation = methodInvocation.getMethod().getAnnotation(Compensate.class);
             if (metaDataParser.shouldCompensate(annotation, e)) {
-                CompensateInfo compensateInfo = metaDataParser.parseCompensate(annotation, methodInvocation.getThis(),
+                CompensateInfo compensateInfo = metaDataParser.toCompensateInfo(annotation, methodInvocation.getThis(),
                         methodInvocation.getMethod(), methodInvocation.getArguments());
                 compensateStore.saveCompensateInfo(compensateInfo);
             }

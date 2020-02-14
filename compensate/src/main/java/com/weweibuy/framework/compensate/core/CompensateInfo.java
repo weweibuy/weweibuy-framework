@@ -13,7 +13,10 @@ public class CompensateInfo {
 
     private String bizId;
 
-    private Object[] args;
+    private String args;
 
+    private Integer retryCount;
+
+    private Integer alarmCount;
 
 }

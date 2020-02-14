@@ -11,6 +11,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * 补偿方法注册器
+ *
  * @author durenhao
  * @date 2020/2/14 19:58
  **/

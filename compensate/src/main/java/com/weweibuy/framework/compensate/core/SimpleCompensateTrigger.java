@@ -10,7 +10,6 @@ public class SimpleCompensateTrigger implements CompensateTrigger {
 
     @Override
     public void trigger(Object... args) {
-        Object[] objects = compensateStore.queryCompensateInfo();
         // 触发补偿
     }
 }

@@ -4,6 +4,7 @@ import com.weweibuy.framework.compensate.annotation.Compensate;
 import com.weweibuy.framework.compensate.core.CompensateConfigProperties;
 import com.weweibuy.framework.compensate.core.CompensateConfigStore;
 import com.weweibuy.framework.compensate.core.CompensateInfo;
+import org.springframework.util.Assert;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -18,29 +19,56 @@ import java.util.concurrent.ConcurrentHashMap;
  **/
 public class CompensateAnnotationMetaDataParser {
 
-    private CompensateConfigStore compensateConfigStore;
-
     private Map<String, BinaryExceptionClassifier> shouldCompensateMap = new ConcurrentHashMap<>();
 
+    private final CompensateConfigStore compensateConfigStore;
 
-    public CompensateInfo parseCompensate(Compensate annotation, Object target, Method method, Object[] args) {
-        CompensateInfo compensateInfo = new CompensateInfo();
-        String key = annotation.key();
-        compensateInfo.setCompensateKey(key);
-        CompensateConfigProperties configProperties = compensateConfigStore.compensateConfig(key);
-        if (configProperties == null) {
-            throw new IllegalStateException("补偿Key " + key + ",必须有对应的配置");
-        }
-        Integer compensateType = configProperties.getCompensateType();
+    private final CompensateTypeResolverComposite resolverComposite;
 
-        return compensateInfo;
+    public CompensateAnnotationMetaDataParser(CompensateConfigStore compensateConfigStore,
+                                              CompensateTypeResolverComposite resolverComposite) {
+        this.compensateConfigStore = compensateConfigStore;
+        this.resolverComposite = resolverComposite;
     }
 
 
-    public boolean shouldCompensate(Compensate annotation, Exception e) {
+    public CompensateInfo toCompensateInfo(Compensate annotation, Object target, Method method, Object[] args) {
         String key = annotation.key();
+        CompensateConfigProperties configProperties = compensateConfigStore.compensateConfig(key);
+        if (configProperties == null) {
+            throw new IllegalStateException("补偿Key: " + key + ",必须有对应的配置");
+        }
+        Integer compensateType = configProperties.getCompensateType();
 
-        BinaryExceptionClassifier classifier = shouldCompensateMap.computeIfAbsent(key, k -> {
+        CompensateTypeResolver argumentResolver = resolverComposite.getArgumentResolver(compensateType);
+        Assert.notNull(argumentResolver, "补偿类型: " + compensateType + ",没有对应的解析器");
+        CompensateInfo info = argumentResolver.resolver(key, target, method, args);
+        return info;
+    }
+
+    /**
+     * 解析补偿信息为 方法参数
+     *
+     * @param compensateInfo
+     * @return
+     */
+    public Object[] parserCompensateInfo(CompensateInfo compensateInfo) {
+        CompensateConfigProperties configProperties = compensateConfigStore.compensateConfig(compensateInfo.getCompensateKey());
+        Integer compensateType = configProperties.getCompensateType();
+        CompensateTypeResolver argumentResolver = resolverComposite.getArgumentResolver(compensateType);
+        return argumentResolver.deResolver(compensateInfo);
+    }
+
+    /**
+     * 根据异常判断是否补偿
+     *
+     * @param annotation
+     * @param e
+     * @return
+     */
+    public boolean shouldCompensate(Compensate annotation, Exception e) {
+
+        BinaryExceptionClassifier classifier = shouldCompensateMap.computeIfAbsent(annotation.key(), k -> {
             Map<Class<? extends Throwable>, Boolean> compensateMap = new HashMap<>(8);
             Class<? extends Throwable>[] include = annotation.include();
             Class<? extends Throwable>[] exclude = annotation.exclude();
@@ -55,5 +83,6 @@ public class CompensateAnnotationMetaDataParser {
 
         return classifier.classify(e);
     }
+
 
 }

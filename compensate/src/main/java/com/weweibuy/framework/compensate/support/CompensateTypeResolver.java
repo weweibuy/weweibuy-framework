@@ -3,7 +3,6 @@ package com.weweibuy.framework.compensate.support;
 import com.weweibuy.framework.compensate.core.CompensateInfo;
 
 import java.lang.reflect.Method;
-import java.util.Objects;
 
 /**
  * 补仓类型解析器
@@ -24,12 +23,13 @@ public interface CompensateTypeResolver {
     /**
      * 解析补偿信息
      *
+     * @param key
      * @param target
      * @param method
      * @param args
      * @return
      */
-    CompensateInfo resolver(Object target, Method method, Object[] args);
+    CompensateInfo resolver(String key, Object target, Method method, Object[] args);
 
     /**
      * 反解析补偿信息
@@ -37,5 +37,5 @@ public interface CompensateTypeResolver {
      * @param compensateInfo
      * @return
      */
-    Objects[] deResolver(CompensateInfo compensateInfo);
+    Object[] deResolver(CompensateInfo compensateInfo);
 }

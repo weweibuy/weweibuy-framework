@@ -15,3 +15,7 @@ rocket-mq:
       customized-trace-topic: qaz
       topic: TEST_SAMPLE_01
       group: TEST_SAMPLE_01_C_GROUP
+
+compensate:
+  CompensateSimpleService:
+    compensateType: 0
