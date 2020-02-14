@@ -18,6 +18,13 @@ public @interface Compensate {
     String key();
 
     /**
+     * 业务ID
+     *
+     * @return
+     */
+    String bizId() default "";
+
+    /**
      * 补偿包含的异常
      *
      * @return

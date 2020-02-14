@@ -27,7 +27,8 @@ public class CompensateInterceptor implements MethodInterceptor {
         } catch (Exception e) {
             Compensate annotation = methodInvocation.getMethod().getAnnotation(Compensate.class);
             if (metaDataParser.shouldCompensate(annotation, e)) {
-                CompensateInfo compensateInfo = metaDataParser.parseCompensate(annotation, methodInvocation.getMethod());
+                CompensateInfo compensateInfo = metaDataParser.parseCompensate(annotation, methodInvocation.getThis(),
+                        methodInvocation.getMethod(), methodInvocation.getArguments());
                 compensateStore.saveCompensateInfo(compensateInfo);
             }
             throw e;

@@ -14,6 +14,6 @@ public interface CompensateConfigStore {
      * @param compensateKey
      * @return
      */
-    CompensateConfig compensateConfig(String compensateKey);
+    CompensateConfigProperties compensateConfig(String compensateKey);
 
 }

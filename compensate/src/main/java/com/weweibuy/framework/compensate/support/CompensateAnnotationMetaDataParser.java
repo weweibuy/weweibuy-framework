@@ -1,6 +1,8 @@
 package com.weweibuy.framework.compensate.support;
 
 import com.weweibuy.framework.compensate.annotation.Compensate;
+import com.weweibuy.framework.compensate.core.CompensateConfigProperties;
+import com.weweibuy.framework.compensate.core.CompensateConfigStore;
 import com.weweibuy.framework.compensate.core.CompensateInfo;
 
 import java.lang.reflect.Method;
@@ -9,17 +11,28 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
+ * 注解数据解析器
+ *
  * @author durenhao
  * @date 2020/2/14 16:56
  **/
 public class CompensateAnnotationMetaDataParser {
 
+    private CompensateConfigStore compensateConfigStore;
+
     private Map<String, BinaryExceptionClassifier> shouldCompensateMap = new ConcurrentHashMap<>();
 
 
-    public CompensateInfo parseCompensate(Compensate annotation, Method method) {
+    public CompensateInfo parseCompensate(Compensate annotation, Object target, Method method, Object[] args) {
         CompensateInfo compensateInfo = new CompensateInfo();
-        compensateInfo.setCompensateKey(annotation.key());
+        String key = annotation.key();
+        compensateInfo.setCompensateKey(key);
+        CompensateConfigProperties configProperties = compensateConfigStore.compensateConfig(key);
+        if (configProperties == null) {
+            throw new IllegalStateException("补偿Key " + key + ",必须有对应的配置");
+        }
+        Integer compensateType = configProperties.getCompensateType();
+
         return compensateInfo;
     }
 

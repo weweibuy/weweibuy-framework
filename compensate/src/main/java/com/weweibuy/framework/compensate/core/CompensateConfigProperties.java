@@ -9,7 +9,9 @@ import lombok.Data;
  * @date 2020/2/13 20:43
  **/
 @Data
-public class CompensateConfig {
+public class CompensateConfigProperties {
+
+    private Integer compensateType;
 
     private String retryRule;
 
