@@ -36,7 +36,7 @@ public class SimpleCompensateTrigger implements CompensateTrigger {
     @Override
     public void trigger(Object... args) {
         // 触发补偿
-        Collection<CompensateInfo> compensateInfoCollection = compensateStore.queryCompensateInfo();
+        Collection<CompensateInfoExt> compensateInfoCollection = compensateStore.queryCompensateInfo();
         compensateHandlerService.compensate(compensateInfoCollection);
     }
 }

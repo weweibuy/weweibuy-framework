@@ -1,6 +1,8 @@
 package com.weweibuy.framework.samples.controller;
 
 import com.weweibuy.framework.samples.compensate.CompensateSimpleService;
+import com.weweibuy.framework.samples.model.Dog;
+import com.weweibuy.framework.samples.model.User;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -19,7 +21,14 @@ public class CompensateController {
 
     @GetMapping("/compensate")
     public String run(String args) {
-        return simpleService.run();
+        User user = new User();
+        Dog dog = new Dog();
+        user.setName("Jack");
+        user.setAge(12);
+        dog.setName("tom");
+        dog.setAge(12);
+        user.setDog(dog);
+        return simpleService.run(user, dog);
     }
 
 }

@@ -24,14 +24,22 @@ public class CompensateHandlerMethod {
     private Method recoverMethod;
 
 
-    public Object invoke(Object[] args) throws InvocationTargetException, IllegalAccessException {
+    public Object invoke(Object[] args) throws InvocationTargetException {
         ReflectionUtils.makeAccessible(method);
-        return method.invoke(bean, args);
+        try {
+            return method.invoke(bean, args);
+        } catch (IllegalAccessException e) {
+            throw new IllegalStateException(e);
+        }
     }
 
-    public Object invokeRecover(Object[] args) throws InvocationTargetException, IllegalAccessException {
+    public Object invokeRecover(Object[] args) throws InvocationTargetException {
         ReflectionUtils.makeAccessible(method);
-        return recoverMethod.invoke(recoverBean, args);
+        try {
+            return recoverMethod.invoke(recoverBean, args);
+        } catch (IllegalAccessException e) {
+            throw new IllegalStateException(e);
+        }
     }
 
     public boolean hasRecoverMethod() {

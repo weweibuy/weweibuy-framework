@@ -22,7 +22,7 @@ public interface CompensateStore {
      *
      * @return
      */
-    Collection<CompensateInfo> queryCompensateInfo();
+    Collection<CompensateInfoExt> queryCompensateInfo();
 
     /**
      * 更新

@@ -56,8 +56,8 @@ public class CompensateAutoConfig extends AbstractCompensateConfig {
 
     @Bean
     @ConditionalOnMissingBean(CompensateStore.class)
-    public CompensateStore compensateStore() {
-        return new SimpleCompensateStore();
+    public CompensateStore compensateStore(CompensateConfigStore compensateConfigStore) {
+        return new SimpleCompensateStore(compensateConfigStore);
     }
 
     @Bean
@@ -99,10 +99,9 @@ public class CompensateAutoConfig extends AbstractCompensateConfig {
     }
 
     @Bean
-    public CompensateHandlerService compensateHandlerService(CompensateMethodRegister compensateMethodRegister,
-                                                             CompensateConfigStore compensateConfigStore, CompensateStore compensateStore,
+    public CompensateHandlerService compensateHandlerService(CompensateMethodRegister compensateMethodRegister, CompensateStore compensateStore,
                                                              CompensateTypeResolverComposite composite) {
-        return new CompensateHandlerService(compensateMethodRegister, compensateConfigStore, compensateStore, composite);
+        return new CompensateHandlerService(compensateMethodRegister,  compensateStore, composite);
     }
 
 }
