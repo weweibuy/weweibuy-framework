@@ -26,6 +26,9 @@ public class CompensateAutoConfig extends AbstractCompensateConfig {
     @Autowired(required = false)
     private List<CompensateTypeResolver> compensateTypeResolverList;
 
+    @Autowired(required = false)
+    private List<RecoverMethodArgsResolver> recoverMethodArgsResolverList;
+
     @Autowired
     private ApplicationContext applicationContext;
 
@@ -88,8 +91,8 @@ public class CompensateAutoConfig extends AbstractCompensateConfig {
     }
 
     @Bean
-    public CompensateMethodRegister compensateMethodRegister() {
-        return new CompensateMethodRegister(applicationContext);
+    public CompensateMethodRegister compensateMethodRegister(RecoverMethodArgsResolverComposite composite) {
+        return new CompensateMethodRegister(applicationContext, composite);
     }
 
     @Bean
@@ -108,6 +111,16 @@ public class CompensateAutoConfig extends AbstractCompensateConfig {
     @ConditionalOnMissingBean(CompensateAlarmService.class)
     public CompensateAlarmService compensateAlarmService() {
         return new LogCompensateAlarmService();
+    }
+
+    @Bean
+    public RecoverMethodArgsResolverComposite recoverMethodArgsResolverComposite() {
+        RecoverMethodArgsResolverComposite composite = new RecoverMethodArgsResolverComposite();
+        if (recoverMethodArgsResolverList != null) {
+            composite.addResolvers(recoverMethodArgsResolverList);
+        }
+        composite.addResolver(new AppendArgsRecoverMethodArgsResolver());
+        return composite;
     }
 
 }

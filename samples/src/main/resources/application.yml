@@ -19,5 +19,5 @@ rocket-mq:
 compensate:
   CompensateSimpleService:
     compensate-type: 0
-    retry-rule: 10s
+    retry-rule: 10s 10s 10s
     alarm-rule: 10s ...

@@ -4,12 +4,15 @@ import com.weweibuy.framework.compensate.exception.CompensateException;
 import com.weweibuy.framework.compensate.support.CompensateAlarmService;
 import com.weweibuy.framework.compensate.support.CompensateTypeResolverComposite;
 import com.weweibuy.framework.compensate.support.LogCompensateAlarmService;
+import com.weweibuy.framework.compensate.support.RecoverMethodArgsResolver;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.concurrent.ExecutorService;
 
 /**
+ * 补偿处理服务
+ *
  * @author durenhao
  * @date 2020/2/15 13:45
  **/
@@ -53,7 +56,7 @@ public class CompensateHandlerService {
     }
 
     public void compensate(CompensateInfoExt compensateInfo) {
-        // 判断是否重试
+        // 补偿状态
         CompensateInfoExt.CompensateStatus compensateStatus = compensateInfo.parserCompensateStatus();
 
         switch (compensateStatus) {
@@ -97,8 +100,10 @@ public class CompensateHandlerService {
         CompensateHandlerMethod compensateHandlerMethod = compensateMethodRegister.getCompensateHandlerMethod(compensateInfo.getCompensateKey());
         Object invoke = compensateHandlerMethod.invoke(objects);
         if (compensateHandlerMethod.hasRecoverMethod()) {
+            RecoverMethodArgsResolver argumentResolver = compensateHandlerMethod.getComposite().getArgumentResolver(compensateInfo.getCompensateKey());
+            Object[] resolver = argumentResolver.resolver(invoke, objects);
             // 转为Recover 方法参数
-            compensateHandlerMethod.invokeRecover(null);
+            compensateHandlerMethod.invokeRecover(resolver);
         }
     }
 

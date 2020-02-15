@@ -28,7 +28,8 @@ public class CompensateController {
         dog.setName("tom");
         dog.setAge(12);
         user.setDog(dog);
-        return simpleService.run(user, dog);
+        simpleService.run( );
+        return "success";
     }
 
 }

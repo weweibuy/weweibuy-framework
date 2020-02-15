@@ -1,5 +1,6 @@
 package com.weweibuy.framework.compensate.core;
 
+import com.weweibuy.framework.compensate.support.RecoverMethodArgsResolverComposite;
 import lombok.Builder;
 import lombok.Data;
 import org.springframework.util.ReflectionUtils;
@@ -23,6 +24,8 @@ public class CompensateHandlerMethod {
 
     private Method recoverMethod;
 
+    private RecoverMethodArgsResolverComposite composite;
+
 
     public Object invoke(Object[] args) throws InvocationTargetException {
         ReflectionUtils.makeAccessible(method);
@@ -34,7 +37,7 @@ public class CompensateHandlerMethod {
     }
 
     public Object invokeRecover(Object[] args) throws InvocationTargetException {
-        ReflectionUtils.makeAccessible(method);
+        ReflectionUtils.makeAccessible(recoverMethod);
         try {
             return recoverMethod.invoke(recoverBean, args);
         } catch (IllegalAccessException e) {

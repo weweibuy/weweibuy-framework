@@ -1,6 +1,7 @@
 package com.weweibuy.framework.compensate.core;
 
 import com.weweibuy.framework.compensate.annotation.Compensate;
+import com.weweibuy.framework.compensate.support.RecoverMethodArgsResolverComposite;
 import org.springframework.context.ApplicationContext;
 import org.springframework.util.Assert;
 import org.springframework.util.ReflectionUtils;
@@ -22,8 +23,11 @@ public class CompensateMethodRegister {
 
     private ApplicationContext applicationContext;
 
-    public CompensateMethodRegister(ApplicationContext applicationContext) {
+    private RecoverMethodArgsResolverComposite composite;
+
+    public CompensateMethodRegister(ApplicationContext applicationContext, RecoverMethodArgsResolverComposite composite) {
         this.applicationContext = applicationContext;
+        this.composite = composite;
     }
 
     public synchronized void register(Method method, Object bean, Compensate compensate) {
@@ -39,8 +43,8 @@ public class CompensateMethodRegister {
 
         if (!StringUtils.isEmpty(recoverBeanName) && !StringUtils.isEmpty(recoverMethodName)) {
             Object recoverBean = applicationContext.getBean(recoverBeanName);
-            Assert.isNull(recoverBean, bean.getClass().getCanonicalName() + method.getName() + " 补偿指定的 recoverBean 不存在");
-            Method[] declaredMethods = ReflectionUtils.getDeclaredMethods(recoverBean.getClass());
+            Assert.notNull(recoverBean, bean.getClass().getCanonicalName() + method.getName() + " 补偿指定的 recoverBean  " + recoverBeanName + "不存在");
+            Method[] declaredMethods = ReflectionUtils.getAllDeclaredMethods(recoverBean.getClass());
             boolean hashMethod = false;
             for (Method recoverMethod : declaredMethods) {
                 if (recoverMethod.getName().equals(recoverMethodName)) {
@@ -49,11 +53,11 @@ public class CompensateMethodRegister {
                     break;
                 }
             }
-            Assert.isTrue(hashMethod, bean.getClass().getCanonicalName() + method.getName() + " 补偿指定的 recoverMethod 不存在");
-            handlerMethodBuilder.recoverBean(recoverBean);
+            Assert.isTrue(hashMethod, bean.getClass().getCanonicalName() + method.getName() + " 补偿指定的 recoverMethod: " + recoverMethodName + " 不存在");
+            handlerMethodBuilder.recoverBean(recoverBean)
+                    .composite(composite);
         }
-        compensateHandlerMethodMap.put(key, CompensateHandlerMethod.builder().bean(bean)
-                .method(method).build());
+        compensateHandlerMethodMap.put(key, handlerMethodBuilder.build());
     }
 
 
