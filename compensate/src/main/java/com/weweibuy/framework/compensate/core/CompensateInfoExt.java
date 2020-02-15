@@ -32,31 +32,23 @@ public class CompensateInfoExt extends CompensateInfo {
         COPIER.copy(compensateInfo, this, null);
     }
 
-    /**
-     * 是否应该补偿
-     *
-     * @return
-     */
-    public boolean shouldCompensate() {
-        long parser = RuleParser.parser(getRetryCount(), retryRule);
-        if (parser == -1) {
-            return false;
-        }
-        return System.currentTimeMillis() - DateUtils.localDateTimeToTimestamp(getUpdateTime()) > parser;
-    }
 
-    /**
-     * 是否应该报警
-     *
-     * @return
-     */
-    public boolean shouldAlarm() {
-        long parser = RuleParser.parser(getAlarmCount(), alarmRule);
-        if (parser == -1) {
-            return false;
+    public CompensateStatus parserCompensateStatus() {
+        long retryTime = RuleParser.parser(getRetryCount(), retryRule);
+        if (retryTime == -1) {
+            long alarmTime = RuleParser.parser(getAlarmCount(), alarmRule);
+            if (alarmTime == -1) {
+                return CompensateStatus.OVER_ALARM_COUNT;
+            }
+            if (DateUtils.isCurrentTimeOverInterval(getUpdateTime(), alarmTime)) {
+                return CompensateStatus.ALARM_ABLE;
+            }
+            return CompensateStatus.NOT_IN_ALARM_TIME;
+        } else if (DateUtils.isCurrentTimeOverInterval(getUpdateTime(), retryTime)) {
+            return CompensateStatus.RETRY_ABLE;
+        } else {
+            return CompensateStatus.NOT_IN_RETRY_TIME;
         }
-        return System.currentTimeMillis() - DateUtils.localDateTimeToTimestamp(getUpdateTime()) > parser;
-
     }
 
 
@@ -82,5 +74,35 @@ public class CompensateInfoExt extends CompensateInfo {
         return compensateInfo;
     }
 
+    /**
+     * 补偿状态
+     */
+    public static enum CompensateStatus {
+        /**
+         * 可以重试
+         */
+        RETRY_ABLE,
+
+        /**
+         * 不在重试时间内
+         */
+        NOT_IN_RETRY_TIME,
+
+        /**
+         * 可以报警
+         */
+        ALARM_ABLE,
+
+        /**
+         * 不在报警时间内
+         */
+        NOT_IN_ALARM_TIME,
+
+        /**
+         * 超出报警次数
+         */
+        OVER_ALARM_COUNT,
+
+    }
 
 }

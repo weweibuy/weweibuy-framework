@@ -1,16 +1,13 @@
 package com.weweibuy.framework.compensate.core;
 
+import com.weweibuy.framework.compensate.exception.CompensateException;
 import com.weweibuy.framework.compensate.support.CompensateAlarmService;
 import com.weweibuy.framework.compensate.support.CompensateTypeResolverComposite;
 import com.weweibuy.framework.compensate.support.LogCompensateAlarmService;
-import org.springframework.scheduling.concurrent.CustomizableThreadFactory;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @author durenhao
@@ -28,13 +25,14 @@ public class CompensateHandlerService {
 
     private CompensateAlarmService compensateAlarmService;
 
+
     public CompensateHandlerService(CompensateMethodRegister compensateMethodRegister,
-                                    CompensateStore compensateStore, CompensateTypeResolverComposite composite) {
+                                    CompensateStore compensateStore, CompensateTypeResolverComposite composite,
+                                    CompensateAlarmService compensateAlarmService) {
         this.compensateMethodRegister = compensateMethodRegister;
         this.compensateStore = compensateStore;
         this.composite = composite;
-        this.executorService = new ThreadPoolExecutor(3, 3, 0L, TimeUnit.SECONDS,
-                new LinkedBlockingQueue<>(100), new CustomizableThreadFactory("compensate-thread-"), new ThreadPoolExecutor.CallerRunsPolicy());
+        this.compensateAlarmService = compensateAlarmService;
     }
 
     public CompensateHandlerService(ExecutorService executorService, CompensateMethodRegister compensateMethodRegister,
@@ -47,35 +45,61 @@ public class CompensateHandlerService {
     }
 
     public void compensate(Collection<CompensateInfoExt> compensateInfoCollection) {
-        compensateInfoCollection.forEach(c -> executorService.execute(() -> compensate(c)));
+        if (executorService != null) {
+            compensateInfoCollection.forEach(c -> executorService.execute(() -> compensate(c)));
+        } else {
+            compensateInfoCollection.forEach(this::compensate);
+        }
     }
 
     public void compensate(CompensateInfoExt compensateInfo) {
         // 判断是否重试
-        if (!compensateInfo.shouldCompensate()) {
-            if (compensateInfo.shouldAlarm()) {
-                compensateAlarmService.sendAlarm(compensateInfo);
-                // 更新
-                compensateStore.updateCompensateInfo(compensateInfo.getId(), compensateInfo.addAlarmToCompensateInfo());
+        CompensateInfoExt.CompensateStatus compensateStatus = compensateInfo.parserCompensateStatus();
+
+        switch (compensateStatus) {
+            case RETRY_ABLE:
+                execCompensate(compensateInfo);
                 return;
-            }
+            case NOT_IN_RETRY_TIME:
+                return;
+            case ALARM_ABLE:
+                execAlarm(compensateInfo);
+                return;
+            case NOT_IN_ALARM_TIME:
+                return;
+            case OVER_ALARM_COUNT:
+                compensateStore.deleteCompensateInfo(compensateInfo.getId());
+                return;
+            default:
+                return;
         }
-        // 判读是否报警
-        Object[] objects = composite.getArgumentResolver(compensateInfo.getType()).deResolver(compensateInfo);
-        CompensateHandlerMethod compensateHandlerMethod = compensateMethodRegister.getCompensateHandlerMethod(compensateInfo.getCompensateKey());
-        Object invoke = null;
+    }
+
+
+    private void execAlarm(CompensateInfoExt compensateInfo) {
+        compensateAlarmService.sendAlarm(compensateInfo);
+        compensateStore.updateCompensateInfo(compensateInfo.getId(), compensateInfo.addAlarmToCompensateInfo());
+    }
+
+
+    private void execCompensate(CompensateInfoExt compensateInfo) {
         try {
-            invoke = compensateHandlerMethod.invoke(objects);
-            if (compensateHandlerMethod.hasRecoverMethod()) {
-                // 转为Recover 方法参数
-                compensateHandlerMethod.invokeRecover(null);
-            }
-        } catch (InvocationTargetException e) {
+            doCompensate(compensateInfo);
+        } catch (Exception e) {
             compensateStore.updateCompensateInfo(compensateInfo.getId(), compensateInfo.addRetryToCompensateInfo());
-            // 更新重试次数
-            throw new RuntimeException(e);
+            throw new CompensateException(e);
         }
         compensateStore.deleteCompensateInfo(compensateInfo.getId());
+    }
+
+    private void doCompensate(CompensateInfoExt compensateInfo) throws InvocationTargetException {
+        Object[] objects = composite.getArgumentResolver(compensateInfo.getType()).deResolver(compensateInfo);
+        CompensateHandlerMethod compensateHandlerMethod = compensateMethodRegister.getCompensateHandlerMethod(compensateInfo.getCompensateKey());
+        Object invoke = compensateHandlerMethod.invoke(objects);
+        if (compensateHandlerMethod.hasRecoverMethod()) {
+            // 转为Recover 方法参数
+            compensateHandlerMethod.invokeRecover(null);
+        }
     }
 
 }

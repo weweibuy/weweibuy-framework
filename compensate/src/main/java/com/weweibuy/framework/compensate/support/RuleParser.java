@@ -16,7 +16,6 @@ public class RuleParser {
 
     public static long parser(Integer count, String rule) {
         String[] spiltRule = spiltRule(rule);
-        String current = spiltRule[count];
         if (spiltRule.length < count + 1) {
             if (UN_LIMIT.equals(spiltRule[spiltRule.length - 1])) {
                 if (spiltRule.length > 1) {
@@ -27,6 +26,10 @@ public class RuleParser {
                 }
             }
             return -1;
+        }
+        String current = spiltRule[count];
+        if (UN_LIMIT.equals(current) && spiltRule.length > 1) {
+            return parserTime(spiltRule[spiltRule.length - 2]);
         }
         return parserTime(current);
     }

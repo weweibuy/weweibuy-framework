@@ -12,6 +12,6 @@ public class LogCompensateAlarmService implements CompensateAlarmService {
 
     @Override
     public void sendAlarm(CompensateInfoExt compensateInfoExt) {
-        log.info("补偿信息: {}, 重试超出上限", compensateInfoExt);
+        log.warn("补偿信息: {}, 重试超出上限", compensateInfoExt);
     }
 }

@@ -16,8 +16,4 @@ public class CompensateConfigProperties {
     private String retryRule;
 
     private String alarmRule;
-
-    private Integer maxRetry;
-
-    private Integer maxAlarm;
 }

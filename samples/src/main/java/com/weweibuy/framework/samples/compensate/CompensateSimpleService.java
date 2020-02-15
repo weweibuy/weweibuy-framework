@@ -19,7 +19,7 @@ public class CompensateSimpleService {
     @Compensate(key = "CompensateSimpleService")
     public String run(User user, Dog dog) {
         log.info("输入参数为: {}, {}", user, dog);
-        if (integer == 0) {
+        if (true) {
             integer++;
             throw new RuntimeException("....");
         }

@@ -100,8 +100,14 @@ public class CompensateAutoConfig extends AbstractCompensateConfig {
 
     @Bean
     public CompensateHandlerService compensateHandlerService(CompensateMethodRegister compensateMethodRegister, CompensateStore compensateStore,
-                                                             CompensateTypeResolverComposite composite) {
-        return new CompensateHandlerService(compensateMethodRegister,  compensateStore, composite);
+                                                             CompensateTypeResolverComposite composite, CompensateAlarmService alarmService) {
+        return new CompensateHandlerService(compensateMethodRegister, compensateStore, composite, alarmService);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean(CompensateAlarmService.class)
+    public CompensateAlarmService compensateAlarmService() {
+        return new LogCompensateAlarmService();
     }
 
 }

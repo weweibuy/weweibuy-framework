@@ -20,5 +20,9 @@ public class DateUtils {
         return timeUnit.toMillis(duration);
     }
 
+    public static boolean isCurrentTimeOverInterval(LocalDateTime localDateTime, long interval) {
+        return System.currentTimeMillis() - localDateTimeToTimestamp(localDateTime) > interval;
+    }
+
 
 }
