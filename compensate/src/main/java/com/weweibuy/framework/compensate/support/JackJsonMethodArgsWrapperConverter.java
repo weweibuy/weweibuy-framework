@@ -2,6 +2,9 @@ package com.weweibuy.framework.compensate.support;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.weweibuy.framework.compensate.core.CompensateInfo;
+
+import java.util.List;
 
 /**
  * @author durenhao
@@ -11,25 +14,43 @@ public class JackJsonMethodArgsWrapperConverter implements MethodArgsWrapperConv
 
     private final ObjectMapper objectMapper;
 
-    public JackJsonMethodArgsWrapperConverter(ObjectMapper objectMapper) {
+    private MethodArgsTypeHolder methodArgsTypeHolder;
+
+    public JackJsonMethodArgsWrapperConverter(ObjectMapper objectMapper, MethodArgsTypeHolder methodArgsTypeHolder) {
         this.objectMapper = objectMapper;
+        this.methodArgsTypeHolder = methodArgsTypeHolder;
     }
 
     @Override
-    public String convert(MethodArgsWrapper methodArgs) {
+    public String convert(String compensateKey, Object[] args) {
         try {
-            return objectMapper.writeValueAsString(methodArgs);
+            return objectMapper.writeValueAsString(args);
         } catch (JsonProcessingException e) {
-            throw new IllegalArgumentException(methodArgs + "无法转为JSON");
+            throw new IllegalArgumentException(args + "无法转为JSON");
         }
     }
 
     @Override
-    public MethodArgsWrapper parser(String str) {
+    public Object[] parser(CompensateInfo compensateInfo) {
         try {
-            return objectMapper.readValue(str, MethodArgsWrapper.class);
+            List list = objectMapper.readValue(compensateInfo.getArgs(), List.class);
+            if (list == null || list.size() == 0) {
+                return null;
+            }
+            Object[] objects = new Object[list.size()];
+            for (int i = 0; i < list.size(); i++) {
+                String string = objectMapper.writeValueAsString(list.get(0));
+                Object value = objectMapper.readValue(string, methodArgsTypeHolder.getType(generateKey(compensateInfo.getCompensateKey(), i)));
+                objects[i] = value;
+            }
+            return objects;
         } catch (JsonProcessingException e) {
-            throw new IllegalArgumentException(str + "无法转为MethodArgsWrapper 对象");
+            throw new IllegalArgumentException(compensateInfo.getArgs() + "无法转为MethodArgsWrapper 对象");
         }
+    }
+
+
+    private String generateKey(String compensateKey, Integer argsIndex) {
+        return compensateKey + "_" + argsIndex;
     }
 }

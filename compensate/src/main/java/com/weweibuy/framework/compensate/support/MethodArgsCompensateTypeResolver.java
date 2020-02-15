@@ -26,13 +26,12 @@ public class MethodArgsCompensateTypeResolver implements CompensateTypeResolver 
     public CompensateInfo resolver(String key, Object target, Method method, Object[] args) {
         CompensateInfo compensateInfo = new CompensateInfo();
         compensateInfo.setCompensateKey(key);
-        compensateInfo.setArgs(methodArgsWrapperConverter.convert(new MethodArgsWrapper(args)));
+        compensateInfo.setArgs(methodArgsWrapperConverter.convert(key, args));
         return compensateInfo;
     }
 
     @Override
     public Object[] deResolver(CompensateInfo compensateInfo) {
-        MethodArgsWrapper parser = methodArgsWrapperConverter.parser(compensateInfo.getArgs());
-        return parser.getArgs();
+        return methodArgsWrapperConverter.parser(compensateInfo);
     }
 }

@@ -1,5 +1,7 @@
 package com.weweibuy.framework.compensate.support;
 
+import com.weweibuy.framework.compensate.core.CompensateInfo;
+
 /**
  * 方法参数转化
  *
@@ -11,16 +13,16 @@ public interface MethodArgsWrapperConverter {
     /**
      * 法法参数转 string  便于存储
      *
-     * @param methodArgs
+     * @param args
      * @return
      */
-    String convert(MethodArgsWrapper methodArgs);
+    String convert(String compensateKey, Object[] args);
 
     /**
      * String 转方法参数
      *
-     * @param str
+     * @param compensateInfo
      * @return
      */
-    MethodArgsWrapper parser(String str);
+    Object[] parser(CompensateInfo compensateInfo);
 }

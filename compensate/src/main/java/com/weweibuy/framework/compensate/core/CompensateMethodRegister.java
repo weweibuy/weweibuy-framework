@@ -22,6 +22,10 @@ public class CompensateMethodRegister {
 
     private ApplicationContext applicationContext;
 
+    public CompensateMethodRegister(ApplicationContext applicationContext) {
+        this.applicationContext = applicationContext;
+    }
+
     public synchronized void register(Method method, Object bean, Compensate compensate) {
         String key = compensate.key();
         CompensateHandlerMethod handlerMethod = compensateHandlerMethodMap.get(key);

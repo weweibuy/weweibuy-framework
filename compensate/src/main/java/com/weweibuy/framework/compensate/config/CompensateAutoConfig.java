@@ -1,10 +1,7 @@
 package com.weweibuy.framework.compensate.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.weweibuy.framework.compensate.core.CompensateConfigStore;
-import com.weweibuy.framework.compensate.core.CompensateStore;
-import com.weweibuy.framework.compensate.core.SimpleCompensateConfigStore;
-import com.weweibuy.framework.compensate.core.SimpleCompensateStore;
+import com.weweibuy.framework.compensate.core.*;
 import com.weweibuy.framework.compensate.interceptor.CompensateBeanFactoryPointcutAdvisor;
 import com.weweibuy.framework.compensate.interceptor.CompensateInterceptor;
 import com.weweibuy.framework.compensate.interceptor.CompensatePointcut;
@@ -12,6 +9,7 @@ import com.weweibuy.framework.compensate.support.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Role;
@@ -27,6 +25,12 @@ public class CompensateAutoConfig extends AbstractCompensateConfig {
 
     @Autowired(required = false)
     private List<CompensateTypeResolver> compensateTypeResolverList;
+
+    @Autowired
+    private ApplicationContext applicationContext;
+
+    @Autowired
+    private MethodArgsTypeHolder methodArgsTypeHolder;
 
     @Bean
     @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
@@ -68,8 +72,24 @@ public class CompensateAutoConfig extends AbstractCompensateConfig {
 
     @Bean
     public MethodArgsWrapperConverter jsonMethodArgsWrapperConverter(ObjectMapper objectMapper) {
-        return new JackJsonMethodArgsWrapperConverter(objectMapper);
+        return new JackJsonMethodArgsWrapperConverter(objectMapper, methodArgsTypeHolder);
     }
 
+    @Bean
+    public MethodArgsTypeHolder methodArgsTypeHolder(ObjectMapper objectMapper) {
+        return new MethodArgsTypeHolder(objectMapper);
+    }
+
+    @Bean
+    public CompensateBeanPostProcessor compensateBeanPostProcessor(CompensateMethodRegister register) {
+        CompensateBeanPostProcessor compensateBeanPostProcessor = new CompensateBeanPostProcessor(register);
+        compensateBeanPostProcessor.setMethodArgsTypeHolder(methodArgsTypeHolder);
+        return compensateBeanPostProcessor;
+    }
+
+    @Bean
+    public CompensateMethodRegister compensateMethodRegister() {
+        return new CompensateMethodRegister(applicationContext);
+    }
 
 }
