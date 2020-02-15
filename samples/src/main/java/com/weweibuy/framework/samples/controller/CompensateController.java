@@ -19,7 +19,7 @@ public class CompensateController {
 
     @GetMapping("/compensate")
     public String run(String args) {
-        return simpleService.run(args);
+        return simpleService.run();
     }
 
 }

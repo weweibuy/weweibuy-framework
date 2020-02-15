@@ -12,10 +12,13 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class CompensateSimpleService {
 
+    private Integer integer = 0;
+
     @Compensate(key = "CompensateSimpleService")
-    public String run(String args) {
-        log.info("输入参数为: {}", args);
-        if (true) {
+    public String run() {
+        log.info("输入参数为: {}");
+        if (integer == 0) {
+            integer ++;
             throw new RuntimeException("....");
         }
         return "success";

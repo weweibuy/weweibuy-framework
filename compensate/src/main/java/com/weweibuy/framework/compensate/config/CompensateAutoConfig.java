@@ -92,4 +92,17 @@ public class CompensateAutoConfig extends AbstractCompensateConfig {
         return new CompensateMethodRegister(applicationContext);
     }
 
+    @Bean
+    @ConditionalOnMissingBean(CompensateTrigger.class)
+    public CompensateTrigger simpleCompensateTrigger(CompensateStore compensateStore, CompensateHandlerService service) {
+        return new SimpleCompensateTrigger(compensateStore, service);
+    }
+
+    @Bean
+    public CompensateHandlerService compensateHandlerService(CompensateMethodRegister compensateMethodRegister,
+                                                             CompensateConfigStore compensateConfigStore, CompensateStore compensateStore,
+                                                             CompensateTypeResolverComposite composite) {
+        return new CompensateHandlerService(compensateMethodRegister, compensateConfigStore, compensateStore, composite);
+    }
+
 }

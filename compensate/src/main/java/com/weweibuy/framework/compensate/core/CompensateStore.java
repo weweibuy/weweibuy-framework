@@ -1,6 +1,6 @@
 package com.weweibuy.framework.compensate.core;
 
-import java.util.List;
+import java.util.Collection;
 
 /**
  * 补偿存储器
@@ -22,7 +22,7 @@ public interface CompensateStore {
      *
      * @return
      */
-    List<CompensateInfo> queryCompensateInfo();
+    Collection<CompensateInfo> queryCompensateInfo();
 
     /**
      * 更新
@@ -32,5 +32,13 @@ public interface CompensateStore {
      * @return
      */
     int updateCompensateInfo(String id, CompensateInfo compensateInfo);
+
+    /**
+     * 删除
+     *
+     * @param id
+     * @return
+     */
+    int deleteCompensateInfo(String id);
 
 }

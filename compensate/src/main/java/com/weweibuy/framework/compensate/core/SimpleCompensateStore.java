@@ -1,6 +1,9 @@
 package com.weweibuy.framework.compensate.core;
 
-import java.util.List;
+import java.util.Collection;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author durenhao
@@ -8,18 +11,31 @@ import java.util.List;
  **/
 public class SimpleCompensateStore implements CompensateStore {
 
+    private AtomicInteger atomicInteger = new AtomicInteger();
+
+    private Map<String, CompensateInfo> compensateInfoMap = new ConcurrentHashMap<>();
+
     @Override
     public int saveCompensateInfo(CompensateInfo compensateInfo) {
-        return 0;
+        int andDecrement = atomicInteger.getAndDecrement();
+        compensateInfoMap.put(andDecrement + "", compensateInfo);
+        return 1;
     }
 
     @Override
-    public List<CompensateInfo> queryCompensateInfo() {
-        return null;
+    public Collection<CompensateInfo> queryCompensateInfo() {
+        return compensateInfoMap.values();
     }
 
     @Override
     public int updateCompensateInfo(String id, CompensateInfo compensateInfo) {
-        return 0;
+        compensateInfoMap.put(id, compensateInfo);
+        return 1;
+    }
+
+    @Override
+    public int deleteCompensateInfo(String id) {
+        compensateInfoMap.remove(id);
+        return 1;
     }
 }
