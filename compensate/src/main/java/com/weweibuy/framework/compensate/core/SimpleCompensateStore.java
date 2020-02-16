@@ -1,11 +1,11 @@
 package com.weweibuy.framework.compensate.core;
 
-import java.util.ArrayList;
+import java.time.LocalDateTime;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 /**
  * @author durenhao
@@ -15,7 +15,7 @@ public class SimpleCompensateStore implements CompensateStore {
 
     private AtomicInteger atomicInteger = new AtomicInteger();
 
-    private Map<String, CompensateInfo> compensateInfoMap = new ConcurrentHashMap<>();
+    private Map<String, CompensateInfoExt> compensateInfoMap = new ConcurrentHashMap<>();
 
     private CompensateConfigStore compensateConfigStore;
 
@@ -25,24 +25,22 @@ public class SimpleCompensateStore implements CompensateStore {
 
     @Override
     public int saveCompensateInfo(CompensateInfo compensateInfo) {
-        int andDecrement = atomicInteger.getAndDecrement();
-        compensateInfoMap.put(andDecrement + "", compensateInfo);
+        String id = atomicInteger.getAndDecrement() + "";
+        compensateInfoMap.put(id, toCompensateInfoExt(id, compensateInfo));
         return 1;
     }
 
     @Override
     public Collection<CompensateInfoExt> queryCompensateInfo() {
-        List<CompensateInfoExt> infoExtArrayList = new ArrayList<>();
-        compensateInfoMap.forEach((k, v) -> {
-            CompensateConfigProperties configProperties = compensateConfigStore.compensateConfig(v.getCompensateKey());
-            infoExtArrayList.add(new CompensateInfoExt(k, v, configProperties));
-        });
-        return infoExtArrayList;
+        return compensateInfoMap.values().stream()
+                .filter(c -> c.getNextTriggerTime().isBefore(LocalDateTime.now()))
+                .collect(Collectors.toList());
     }
 
     @Override
-    public int updateCompensateInfo(String id, CompensateInfo compensateInfo) {
-        compensateInfoMap.put(id, compensateInfo);
+    public int updateCompensateInfo(String id, CompensateInfoExt ext) {
+        ext.setUpdateTime(LocalDateTime.now());
+        compensateInfoMap.put(id, ext);
         return 1;
     }
 
@@ -51,4 +49,10 @@ public class SimpleCompensateStore implements CompensateStore {
         compensateInfoMap.remove(id);
         return 1;
     }
+
+
+    private CompensateInfoExt toCompensateInfoExt(String id, CompensateInfo compensateInfo) {
+        return new CompensateInfoExt(id, compensateInfo, compensateConfigStore.compensateConfig(compensateInfo.getCompensateKey()));
+    }
+
 }

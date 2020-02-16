@@ -36,8 +36,11 @@ public class CompensateInfoExt extends CompensateInfo {
     public CompensateInfoExt(String id, CompensateInfo compensateInfo, CompensateConfigProperties configProperties) {
         this.id = id;
         this.type = configProperties.getCompensateType();
+        this.retryCount = 0;
+        this.alarmCount = 0;
         this.alarmRule = configProperties.getAlarmRule();
         this.retryRule = configProperties.getRetryRule();
+        this.updateTime = LocalDateTime.now();
         COPIER.copy(compensateInfo, this, null);
     }
 
@@ -61,26 +64,14 @@ public class CompensateInfoExt extends CompensateInfo {
     }
 
 
-    public CompensateInfo addRetryToCompensateInfo() {
-        CompensateInfo compensateInfo = new CompensateInfo();
-        compensateInfo.setArgs(getArgs());
-        compensateInfo.setCompensateKey(getCompensateKey());
-        compensateInfo.setBizId(getBizId());
-        compensateInfo.setRetryCount(getRetryCount() + 1);
-        compensateInfo.setAlarmCount(getAlarmCount());
-        compensateInfo.setUpdateTime(LocalDateTime.now());
-        return compensateInfo;
+    public CompensateInfoExt addRetryToCompensateInfo() {
+        retryCount += 1;
+        return this;
     }
 
-    public CompensateInfo addAlarmToCompensateInfo() {
-        CompensateInfo compensateInfo = new CompensateInfo();
-        compensateInfo.setArgs(getArgs());
-        compensateInfo.setCompensateKey(getCompensateKey());
-        compensateInfo.setBizId(getBizId());
-        compensateInfo.setRetryCount(getRetryCount());
-        compensateInfo.setAlarmCount(getAlarmCount() + 1);
-        compensateInfo.setUpdateTime(LocalDateTime.now());
-        return compensateInfo;
+    public CompensateInfoExt addAlarmToCompensateInfo() {
+        alarmCount += 1;
+        return this;
     }
 
     /**

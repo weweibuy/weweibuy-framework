@@ -1,9 +1,13 @@
 package com.weweibuy.framework.compensate.support;
 
 import com.weweibuy.framework.compensate.annotation.Compensate;
+import com.weweibuy.framework.compensate.core.CompensateConfigProperties;
+import com.weweibuy.framework.compensate.core.CompensateConfigStore;
 import com.weweibuy.framework.compensate.core.CompensateInfo;
 
 import java.lang.reflect.Method;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 /**
  * @author durenhao
@@ -13,8 +17,11 @@ public class MethodArgsCompensateTypeResolver implements CompensateTypeResolver 
 
     private final MethodArgsConverter methodArgsWrapperConverter;
 
-    public MethodArgsCompensateTypeResolver(MethodArgsConverter methodArgsWrapperConverter) {
+    private final CompensateConfigStore compensateConfigStore;
+
+    public MethodArgsCompensateTypeResolver(MethodArgsConverter methodArgsWrapperConverter, CompensateConfigStore compensateConfigStore) {
         this.methodArgsWrapperConverter = methodArgsWrapperConverter;
+        this.compensateConfigStore = compensateConfigStore;
     }
 
 
@@ -29,6 +36,9 @@ public class MethodArgsCompensateTypeResolver implements CompensateTypeResolver 
         String key = annotation.key();
         compensateInfo.setCompensateKey(key);
         compensateInfo.setArgs(methodArgsWrapperConverter.convert(key, args));
+        CompensateConfigProperties configProperties = compensateConfigStore.compensateConfig(key);
+        long parser = RuleParser.parser(0, configProperties.getRetryRule());
+        compensateInfo.setNextTriggerTime(LocalDateTime.now().plus(parser, ChronoUnit.MILLIS));
         return compensateInfo;
     }
 
@@ -36,4 +46,7 @@ public class MethodArgsCompensateTypeResolver implements CompensateTypeResolver 
     public Object[] deResolver(CompensateInfo compensateInfo) {
         return methodArgsWrapperConverter.parser(compensateInfo);
     }
+
+
+
 }

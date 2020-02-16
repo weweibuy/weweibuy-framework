@@ -31,7 +31,7 @@ public interface CompensateStore {
      * @param compensateInfo
      * @return
      */
-    int updateCompensateInfo(String id, CompensateInfo compensateInfo);
+    int updateCompensateInfo(String id, CompensateInfoExt compensateInfo);
 
     /**
      * 删除
