@@ -20,6 +20,12 @@ public class CompensateInfoExt extends CompensateInfo {
 
     private Integer type;
 
+    private Integer retryCount;
+
+    private Integer alarmCount;
+
+    private LocalDateTime updateTime;
+
     private String alarmRule;
 
     private String retryRule;
