@@ -1,11 +1,11 @@
 package com.weweibuy.framework.compensate.core;
 
 import com.weweibuy.framework.compensate.support.RuleParser;
-import com.weweibuy.framework.compensate.utils.DateUtils;
 import lombok.Data;
 import org.springframework.cglib.beans.BeanCopier;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 /**
  * @author durenhao
@@ -52,51 +52,45 @@ public class CompensateInfoExt extends CompensateInfo {
             if (alarmTime == -1) {
                 return CompensateStatus.OVER_ALARM_COUNT;
             }
-            if (DateUtils.isCurrentTimeOverInterval(getUpdateTime(), alarmTime)) {
-                return CompensateStatus.ALARM_ABLE;
-            }
-            return CompensateStatus.NOT_IN_ALARM_TIME;
-        } else if (DateUtils.isCurrentTimeOverInterval(getUpdateTime(), retryTime)) {
-            return CompensateStatus.RETRY_ABLE;
-        } else {
-            return CompensateStatus.NOT_IN_RETRY_TIME;
+            return CompensateStatus.ALARM_ABLE;
         }
+        return CompensateStatus.RETRY_ABLE;
     }
 
 
     public CompensateInfoExt addRetryToCompensateInfo() {
         retryCount += 1;
+        long time = RuleParser.parser(getRetryCount(), retryRule);
+        if (time == -1) {
+            time = RuleParser.parser(getAlarmCount(), alarmRule);
+        }
+        // 计算下次触发时间
+        setNextTriggerTime(LocalDateTime.now().plus(time, ChronoUnit.MILLIS));
         return this;
     }
 
+
     public CompensateInfoExt addAlarmToCompensateInfo() {
         alarmCount += 1;
+        long time = RuleParser.parser(getAlarmCount(), alarmRule);
+        // 计算下次触发时间
+        setNextTriggerTime(LocalDateTime.now().plus(time, ChronoUnit.MILLIS));
         return this;
     }
 
     /**
      * 补偿状态
      */
-    public static enum CompensateStatus {
+    public enum CompensateStatus {
         /**
          * 可以重试
          */
         RETRY_ABLE,
 
         /**
-         * 不在重试时间内
-         */
-        NOT_IN_RETRY_TIME,
-
-        /**
          * 可以报警
          */
         ALARM_ABLE,
-
-        /**
-         * 不在报警时间内
-         */
-        NOT_IN_ALARM_TIME,
 
         /**
          * 超出报警次数

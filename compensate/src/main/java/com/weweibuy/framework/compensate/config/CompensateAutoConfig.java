@@ -59,9 +59,9 @@ public class CompensateAutoConfig extends AbstractCompensateConfig {
 
 
     @Bean
-    public CompensateTypeResolverComposite compensateTypeResolverComposite(MethodArgsConverter converter) {
+    public CompensateTypeResolverComposite compensateTypeResolverComposite(MethodArgsConverter converter, CompensateConfigStore configStore) {
         CompensateTypeResolverComposite composite = new CompensateTypeResolverComposite();
-        composite.addResolver(new MethodArgsCompensateTypeResolver(converter, compensateConfigStore));
+        composite.addResolver(new MethodArgsCompensateTypeResolver(converter, configStore));
         if (compensateTypeResolverList != null) {
             composite.addResolvers(compensateTypeResolverList);
         }

@@ -63,12 +63,8 @@ public class CompensateHandlerService {
             case RETRY_ABLE:
                 execCompensate(compensateInfo);
                 return;
-            case NOT_IN_RETRY_TIME:
-                return;
             case ALARM_ABLE:
                 execAlarm(compensateInfo);
-                return;
-            case NOT_IN_ALARM_TIME:
                 return;
             case OVER_ALARM_COUNT:
                 compensateStore.deleteCompensateInfo(compensateInfo.getId());
