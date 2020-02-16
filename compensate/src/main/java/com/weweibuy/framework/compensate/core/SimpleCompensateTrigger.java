@@ -18,7 +18,7 @@ public class SimpleCompensateTrigger implements CompensateTrigger {
     private CompensateHandlerService compensateHandlerService;
 
     private final Timer connectionManagerTimer = new Timer(
-            "com.weweibuy.framework.compensate.core.SimpleCompensateTrigger", true);
+            "SimpleCompensateTrigger", true);
 
     public SimpleCompensateTrigger(CompensateStore compensateStore, CompensateHandlerService compensateHandlerService) {
         this.compensateStore = compensateStore;
@@ -43,7 +43,7 @@ public class SimpleCompensateTrigger implements CompensateTrigger {
             Collection<CompensateInfoExt> compensateInfoCollection = compensateStore.queryCompensateInfo();
             compensateHandlerService.compensate(compensateInfoCollection);
         } catch (Exception e) {
-            log.warn("补偿是发生异常: {}", e);
+            log.warn("补偿时发生异常: {}", e);
         }
     }
 }

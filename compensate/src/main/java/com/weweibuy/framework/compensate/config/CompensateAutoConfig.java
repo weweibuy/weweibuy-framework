@@ -57,11 +57,6 @@ public class CompensateAutoConfig extends AbstractCompensateConfig {
         return new SimpleCompensateConfigStore();
     }
 
-    @Bean
-    @ConditionalOnMissingBean(CompensateStore.class)
-    public CompensateStore compensateStore(CompensateConfigStore compensateConfigStore) {
-        return new SimpleCompensateStore(compensateConfigStore);
-    }
 
     @Bean
     public CompensateTypeResolverComposite compensateTypeResolverComposite(MethodArgsConverter converter) {
