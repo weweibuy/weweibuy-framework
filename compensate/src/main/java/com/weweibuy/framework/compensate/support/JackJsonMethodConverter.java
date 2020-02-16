@@ -33,7 +33,7 @@ public class JackJsonMethodConverter implements MethodArgsConverter {
     @Override
     public Object[] parser(CompensateInfo compensateInfo) {
         try {
-            List list = objectMapper.readValue(compensateInfo.getArgs(), List.class);
+            List list = objectMapper.readValue(compensateInfo.getMethodArgs(), List.class);
             if (list == null || list.size() == 0) {
                 return null;
             }
@@ -45,7 +45,7 @@ public class JackJsonMethodConverter implements MethodArgsConverter {
             }
             return objects;
         } catch (JsonProcessingException e) {
-            throw new IllegalArgumentException(compensateInfo.getArgs() + "无法转为MethodArgsWrapper 对象");
+            throw new IllegalArgumentException(compensateInfo.getMethodArgs() + "无法转为MethodArgsWrapper 对象");
         }
     }
 

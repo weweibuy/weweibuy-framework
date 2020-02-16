@@ -5,9 +5,9 @@
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="compensate_key" jdbcType="VARCHAR" property="compensateKey" />
     <result column="biz_id" jdbcType="VARCHAR" property="bizId" />
+    <result column="next_trigger_time" jdbcType="TIMESTAMP" property="nextTriggerTime" />
     <result column="retry_count" jdbcType="TINYINT" property="retryCount" />
     <result column="alarm_count" jdbcType="TINYINT" property="alarmCount" />
-    <result column="compensate_status" jdbcType="TINYINT" property="compensateStatus" />
     <result column="is_delete" jdbcType="BIT" property="isDelete" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
@@ -74,7 +74,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, compensate_key, biz_id, retry_count, alarm_count, compensate_status, is_delete, 
+    id, compensate_key, biz_id, next_trigger_time, retry_count, alarm_count, is_delete, 
     create_time, update_time
   </sql>
   <sql id="Blob_Column_List">
@@ -132,12 +132,12 @@
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
       SELECT LAST_INSERT_ID()
     </selectKey>
-    insert into compensate (compensate_key, biz_id, retry_count, 
-      alarm_count, compensate_status, is_delete, 
+    insert into compensate (compensate_key, biz_id, next_trigger_time, 
+      retry_count, alarm_count, is_delete, 
       create_time, update_time, method_args
       )
-    values (#{compensateKey,jdbcType=VARCHAR}, #{bizId,jdbcType=VARCHAR}, #{retryCount,jdbcType=TINYINT}, 
-      #{alarmCount,jdbcType=TINYINT}, #{compensateStatus,jdbcType=TINYINT}, #{isDelete,jdbcType=BIT}, 
+    values (#{compensateKey,jdbcType=VARCHAR}, #{bizId,jdbcType=VARCHAR}, #{nextTriggerTime,jdbcType=TIMESTAMP}, 
+      #{retryCount,jdbcType=TINYINT}, #{alarmCount,jdbcType=TINYINT}, #{isDelete,jdbcType=BIT}, 
       #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{methodArgs,jdbcType=LONGVARCHAR}
       )
   </insert>
@@ -153,14 +153,14 @@
       <if test="bizId != null">
         biz_id,
       </if>
+      <if test="nextTriggerTime != null">
+        next_trigger_time,
+      </if>
       <if test="retryCount != null">
         retry_count,
       </if>
       <if test="alarmCount != null">
         alarm_count,
-      </if>
-      <if test="compensateStatus != null">
-        compensate_status,
       </if>
       <if test="isDelete != null">
         is_delete,
@@ -182,14 +182,14 @@
       <if test="bizId != null">
         #{bizId,jdbcType=VARCHAR},
       </if>
+      <if test="nextTriggerTime != null">
+        #{nextTriggerTime,jdbcType=TIMESTAMP},
+      </if>
       <if test="retryCount != null">
         #{retryCount,jdbcType=TINYINT},
       </if>
       <if test="alarmCount != null">
         #{alarmCount,jdbcType=TINYINT},
-      </if>
-      <if test="compensateStatus != null">
-        #{compensateStatus,jdbcType=TINYINT},
       </if>
       <if test="isDelete != null">
         #{isDelete,jdbcType=BIT},
@@ -223,14 +223,14 @@
       <if test="record.bizId != null">
         biz_id = #{record.bizId,jdbcType=VARCHAR},
       </if>
+      <if test="record.nextTriggerTime != null">
+        next_trigger_time = #{record.nextTriggerTime,jdbcType=TIMESTAMP},
+      </if>
       <if test="record.retryCount != null">
         retry_count = #{record.retryCount,jdbcType=TINYINT},
       </if>
       <if test="record.alarmCount != null">
         alarm_count = #{record.alarmCount,jdbcType=TINYINT},
-      </if>
-      <if test="record.compensateStatus != null">
-        compensate_status = #{record.compensateStatus,jdbcType=TINYINT},
       </if>
       <if test="record.isDelete != null">
         is_delete = #{record.isDelete,jdbcType=BIT},
@@ -254,9 +254,9 @@
     set id = #{record.id,jdbcType=BIGINT},
       compensate_key = #{record.compensateKey,jdbcType=VARCHAR},
       biz_id = #{record.bizId,jdbcType=VARCHAR},
+      next_trigger_time = #{record.nextTriggerTime,jdbcType=TIMESTAMP},
       retry_count = #{record.retryCount,jdbcType=TINYINT},
       alarm_count = #{record.alarmCount,jdbcType=TINYINT},
-      compensate_status = #{record.compensateStatus,jdbcType=TINYINT},
       is_delete = #{record.isDelete,jdbcType=BIT},
       create_time = #{record.createTime,jdbcType=TIMESTAMP},
       update_time = #{record.updateTime,jdbcType=TIMESTAMP},
@@ -270,9 +270,9 @@
     set id = #{record.id,jdbcType=BIGINT},
       compensate_key = #{record.compensateKey,jdbcType=VARCHAR},
       biz_id = #{record.bizId,jdbcType=VARCHAR},
+      next_trigger_time = #{record.nextTriggerTime,jdbcType=TIMESTAMP},
       retry_count = #{record.retryCount,jdbcType=TINYINT},
       alarm_count = #{record.alarmCount,jdbcType=TINYINT},
-      compensate_status = #{record.compensateStatus,jdbcType=TINYINT},
       is_delete = #{record.isDelete,jdbcType=BIT},
       create_time = #{record.createTime,jdbcType=TIMESTAMP},
       update_time = #{record.updateTime,jdbcType=TIMESTAMP}
@@ -289,14 +289,14 @@
       <if test="bizId != null">
         biz_id = #{bizId,jdbcType=VARCHAR},
       </if>
+      <if test="nextTriggerTime != null">
+        next_trigger_time = #{nextTriggerTime,jdbcType=TIMESTAMP},
+      </if>
       <if test="retryCount != null">
         retry_count = #{retryCount,jdbcType=TINYINT},
       </if>
       <if test="alarmCount != null">
         alarm_count = #{alarmCount,jdbcType=TINYINT},
-      </if>
-      <if test="compensateStatus != null">
-        compensate_status = #{compensateStatus,jdbcType=TINYINT},
       </if>
       <if test="isDelete != null">
         is_delete = #{isDelete,jdbcType=BIT},
@@ -317,9 +317,9 @@
     update compensate
     set compensate_key = #{compensateKey,jdbcType=VARCHAR},
       biz_id = #{bizId,jdbcType=VARCHAR},
+      next_trigger_time = #{nextTriggerTime,jdbcType=TIMESTAMP},
       retry_count = #{retryCount,jdbcType=TINYINT},
       alarm_count = #{alarmCount,jdbcType=TINYINT},
-      compensate_status = #{compensateStatus,jdbcType=TINYINT},
       is_delete = #{isDelete,jdbcType=BIT},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       update_time = #{updateTime,jdbcType=TIMESTAMP},
@@ -330,9 +330,9 @@
     update compensate
     set compensate_key = #{compensateKey,jdbcType=VARCHAR},
       biz_id = #{bizId,jdbcType=VARCHAR},
+      next_trigger_time = #{nextTriggerTime,jdbcType=TIMESTAMP},
       retry_count = #{retryCount,jdbcType=TINYINT},
       alarm_count = #{alarmCount,jdbcType=TINYINT},
-      compensate_status = #{compensateStatus,jdbcType=TINYINT},
       is_delete = #{isDelete,jdbcType=BIT},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       update_time = #{updateTime,jdbcType=TIMESTAMP}

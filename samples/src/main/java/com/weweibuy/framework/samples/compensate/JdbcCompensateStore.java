@@ -6,6 +6,7 @@ import com.weweibuy.framework.samples.compensate.model.po.Compensate;
 import com.weweibuy.framework.samples.compensate.model.po.CompensateExample;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -22,9 +23,6 @@ public class JdbcCompensateStore implements CompensateStore {
     @Autowired
     private CompensateConfigStore compensateConfigStore;
 
-    public JdbcCompensateStore() {
-    }
-
     @Override
     public int saveCompensateInfo(CompensateInfo compensateInfo) {
         return compensateMapper.insertSelective(toCompensate(compensateInfo));
@@ -33,7 +31,8 @@ public class JdbcCompensateStore implements CompensateStore {
     @Override
     public Collection<CompensateInfoExt> queryCompensateInfo() {
         CompensateExample compensateExample = new CompensateExample();
-        compensateExample.createCriteria().andIsDeleteEqualTo(false);
+        compensateExample.createCriteria().andIsDeleteEqualTo(false)
+                .andNextTriggerTimeLessThan(LocalDateTime.now());
         List<Compensate> compensates = compensateMapper.selectByExampleWithBLOBs(compensateExample);
         return compensates.stream()
                 .map(this::toCompensateInfoExt)
@@ -41,8 +40,8 @@ public class JdbcCompensateStore implements CompensateStore {
     }
 
     @Override
-    public int updateCompensateInfo(String id, CompensateInfo compensateInfo) {
-        Compensate compensate = toCompensate(compensateInfo);
+    public int updateCompensateInfo(String id, CompensateInfoExt compensateInfo) {
+        Compensate compensate = toCompensate2(compensateInfo);
         compensate.setId(Long.valueOf(id));
         return compensateMapper.updateByPrimaryKeySelective(compensate);
     }
@@ -63,11 +62,12 @@ public class JdbcCompensateStore implements CompensateStore {
         infoExt.setBizId(compensate.getBizId());
         infoExt.setCompensateKey(compensate.getCompensateKey());
         infoExt.setUpdateTime(compensate.getUpdateTime());
-        infoExt.setArgs(compensate.getMethodArgs());
+        infoExt.setMethodArgs(compensate.getMethodArgs());
         CompensateConfigProperties properties = compensateConfigStore.compensateConfig(compensate.getCompensateKey());
         infoExt.setType(properties.getCompensateType());
         infoExt.setAlarmRule(properties.getAlarmRule());
         infoExt.setRetryRule(properties.getRetryRule());
+        infoExt.setNextTriggerTime(compensate.getNextTriggerTime());
         return infoExt;
     }
 
@@ -75,12 +75,16 @@ public class JdbcCompensateStore implements CompensateStore {
         Compensate compensate = new Compensate();
         compensate.setCompensateKey(compensateInfo.getCompensateKey());
         compensate.setBizId(compensateInfo.getBizId());
-        compensate.setMethodArgs(compensateInfo.getArgs());
-        compensate.setUpdateTime(compensateInfo.getUpdateTime());
-        compensate.setAlarmCount(compensateInfo.getAlarmCount());
-        compensate.setRetryCount(compensateInfo.getRetryCount());
+        compensate.setMethodArgs(compensateInfo.getMethodArgs());
+        compensate.setNextTriggerTime(compensateInfo.getNextTriggerTime());
         return compensate;
     }
 
+    private Compensate toCompensate2(CompensateInfoExt compensateInfo) {
+        Compensate compensate = toCompensate(compensateInfo);
+        compensate.setRetryCount(compensateInfo.getRetryCount());
+        compensate.setAlarmCount(compensateInfo.getAlarmCount());
+        return compensate;
+    }
 
 }

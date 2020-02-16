@@ -2,26 +2,20 @@ package com.weweibuy.framework.compensate.support;
 
 import com.weweibuy.framework.compensate.annotation.Compensate;
 import com.weweibuy.framework.compensate.core.CompensateConfigProperties;
-import com.weweibuy.framework.compensate.core.CompensateConfigStore;
 import com.weweibuy.framework.compensate.core.CompensateInfo;
 
 import java.lang.reflect.Method;
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 
 /**
  * @author durenhao
  * @date 2020/2/14 22:04
  **/
-public class MethodArgsCompensateTypeResolver implements CompensateTypeResolver {
+public class MethodArgsCompensateTypeResolver extends AbstractCompensateTypeResolver {
 
     private final MethodArgsConverter methodArgsWrapperConverter;
 
-    private final CompensateConfigStore compensateConfigStore;
-
-    public MethodArgsCompensateTypeResolver(MethodArgsConverter methodArgsWrapperConverter, CompensateConfigStore compensateConfigStore) {
+    public MethodArgsCompensateTypeResolver(MethodArgsConverter methodArgsWrapperConverter) {
         this.methodArgsWrapperConverter = methodArgsWrapperConverter;
-        this.compensateConfigStore = compensateConfigStore;
     }
 
 
@@ -31,22 +25,14 @@ public class MethodArgsCompensateTypeResolver implements CompensateTypeResolver 
     }
 
     @Override
-    public CompensateInfo resolver(Compensate annotation, Object target, Method method, Object[] args) {
-        CompensateInfo compensateInfo = new CompensateInfo();
-        String key = annotation.key();
-        compensateInfo.setCompensateKey(key);
-        compensateInfo.setArgs(methodArgsWrapperConverter.convert(key, args));
-        CompensateConfigProperties configProperties = compensateConfigStore.compensateConfig(key);
-        long parser = RuleParser.parser(0, configProperties.getRetryRule());
-        compensateInfo.setNextTriggerTime(LocalDateTime.now().plus(parser, ChronoUnit.MILLIS));
-        return compensateInfo;
+    public CompensateInfo.CompensateInfoBuilder resolverCustom(Compensate annotation, Object target, Method method, Object[] args, CompensateConfigProperties configProperties) {
+        return CompensateInfo.builder().methodArgs(methodArgsWrapperConverter.convert(annotation.key(), args));
     }
 
     @Override
     public Object[] deResolver(CompensateInfo compensateInfo) {
         return methodArgsWrapperConverter.parser(compensateInfo);
     }
-
 
 
 }

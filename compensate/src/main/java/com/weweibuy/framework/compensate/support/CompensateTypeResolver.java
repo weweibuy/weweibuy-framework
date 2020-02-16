@@ -1,6 +1,7 @@
 package com.weweibuy.framework.compensate.support;
 
 import com.weweibuy.framework.compensate.annotation.Compensate;
+import com.weweibuy.framework.compensate.core.CompensateConfigProperties;
 import com.weweibuy.framework.compensate.core.CompensateInfo;
 
 import java.lang.reflect.Method;
@@ -28,9 +29,10 @@ public interface CompensateTypeResolver {
      * @param target
      * @param method
      * @param args
+     * @param configProperties
      * @return
      */
-    CompensateInfo resolver(Compensate annotation, Object target, Method method, Object[] args);
+    CompensateInfo resolver(Compensate annotation, Object target, Method method, Object[] args, CompensateConfigProperties configProperties);
 
     /**
      * 反解析补偿信息

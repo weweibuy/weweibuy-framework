@@ -26,7 +26,7 @@ public class CompensateSimpleService {
         return "success";
     }
 
-    @Compensate(key = "CompensateSimpleService_2")
+    @Compensate(key = "CompensateSimpleService_2", bizId = "#user.name + '_' + #dog.age")
     public String run3(User user, Dog dog) {
         if (integer < 2) {
             integer++;

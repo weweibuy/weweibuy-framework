@@ -1,6 +1,7 @@
 package com.weweibuy.framework.compensate.support;
 
 import com.weweibuy.framework.compensate.annotation.Compensate;
+import com.weweibuy.framework.compensate.core.CompensateConfigProperties;
 import com.weweibuy.framework.compensate.core.CompensateInfo;
 
 import java.lang.reflect.Method;
@@ -11,7 +12,7 @@ import java.lang.reflect.Method;
  * @author durenhao
  * @date 2020/2/16 11:10
  **/
-public class BizIdCompensateTypeResolver implements CompensateTypeResolver {
+public class BizIdCompensateTypeResolver extends AbstractCompensateTypeResolver {
 
     private CompensateCachedExpressionEvaluator expressionEvaluator = new CompensateCachedExpressionEvaluator();
 
@@ -26,13 +27,10 @@ public class BizIdCompensateTypeResolver implements CompensateTypeResolver {
         return compensateType == 1;
     }
 
+
     @Override
-    public CompensateInfo resolver(Compensate annotation, Object target, Method method, Object[] args) {
-        String bizId = expressionEvaluator.evaluatorBizId(annotation, target, method, args);
-        CompensateInfo compensateInfo = new CompensateInfo();
-        compensateInfo.setBizId(bizId);
-        compensateInfo.setCompensateKey(annotation.key());
-        return compensateInfo;
+    public CompensateInfo.CompensateInfoBuilder resolverCustom(Compensate annotation, Object target, Method method, Object[] args, CompensateConfigProperties configProperties) {
+        return CompensateInfo.builder().bizId(expressionEvaluator.evaluatorBizId(annotation, target, method, args));
     }
 
     @Override

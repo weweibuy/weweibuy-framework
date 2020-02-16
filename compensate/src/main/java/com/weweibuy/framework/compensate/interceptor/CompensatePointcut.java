@@ -11,6 +11,7 @@ import java.lang.reflect.Method;
  **/
 public class CompensatePointcut extends StaticMethodMatcherPointcut {
 
+
     @Override
     public boolean matches(Method method, Class<?> aClass) {
         return method.getAnnotation(Compensate.class) != null;

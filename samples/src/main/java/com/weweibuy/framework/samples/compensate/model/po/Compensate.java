@@ -9,11 +9,11 @@ public class Compensate {
 
     private String bizId;
 
+    private LocalDateTime nextTriggerTime;
+
     private Integer retryCount;
 
     private Integer alarmCount;
-
-    private Integer compensateStatus;
 
     private Boolean isDelete;
 
@@ -47,6 +47,14 @@ public class Compensate {
         this.bizId = bizId == null ? null : bizId.trim();
     }
 
+    public LocalDateTime getNextTriggerTime() {
+        return nextTriggerTime;
+    }
+
+    public void setNextTriggerTime(LocalDateTime nextTriggerTime) {
+        this.nextTriggerTime = nextTriggerTime;
+    }
+
     public Integer getRetryCount() {
         return retryCount;
     }
@@ -61,14 +69,6 @@ public class Compensate {
 
     public void setAlarmCount(Integer alarmCount) {
         this.alarmCount = alarmCount;
-    }
-
-    public Integer getCompensateStatus() {
-        return compensateStatus;
-    }
-
-    public void setCompensateStatus(Integer compensateStatus) {
-        this.compensateStatus = compensateStatus;
     }
 
     public Boolean getIsDelete() {

@@ -305,6 +305,66 @@ public class CompensateExample {
             return (Criteria) this;
         }
 
+        public Criteria andNextTriggerTimeIsNull() {
+            addCriterion("next_trigger_time is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andNextTriggerTimeIsNotNull() {
+            addCriterion("next_trigger_time is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andNextTriggerTimeEqualTo(LocalDateTime value) {
+            addCriterion("next_trigger_time =", value, "nextTriggerTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andNextTriggerTimeNotEqualTo(LocalDateTime value) {
+            addCriterion("next_trigger_time <>", value, "nextTriggerTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andNextTriggerTimeGreaterThan(LocalDateTime value) {
+            addCriterion("next_trigger_time >", value, "nextTriggerTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andNextTriggerTimeGreaterThanOrEqualTo(LocalDateTime value) {
+            addCriterion("next_trigger_time >=", value, "nextTriggerTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andNextTriggerTimeLessThan(LocalDateTime value) {
+            addCriterion("next_trigger_time <", value, "nextTriggerTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andNextTriggerTimeLessThanOrEqualTo(LocalDateTime value) {
+            addCriterion("next_trigger_time <=", value, "nextTriggerTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andNextTriggerTimeIn(List<LocalDateTime> values) {
+            addCriterion("next_trigger_time in", values, "nextTriggerTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andNextTriggerTimeNotIn(List<LocalDateTime> values) {
+            addCriterion("next_trigger_time not in", values, "nextTriggerTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andNextTriggerTimeBetween(LocalDateTime value1, LocalDateTime value2) {
+            addCriterion("next_trigger_time between", value1, value2, "nextTriggerTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andNextTriggerTimeNotBetween(LocalDateTime value1, LocalDateTime value2) {
+            addCriterion("next_trigger_time not between", value1, value2, "nextTriggerTime");
+            return (Criteria) this;
+        }
+
         public Criteria andRetryCountIsNull() {
             addCriterion("retry_count is null");
             return (Criteria) this;
@@ -422,66 +482,6 @@ public class CompensateExample {
 
         public Criteria andAlarmCountNotBetween(Integer value1, Integer value2) {
             addCriterion("alarm_count not between", value1, value2, "alarmCount");
-            return (Criteria) this;
-        }
-
-        public Criteria andCompensateStatusIsNull() {
-            addCriterion("compensate_status is null");
-            return (Criteria) this;
-        }
-
-        public Criteria andCompensateStatusIsNotNull() {
-            addCriterion("compensate_status is not null");
-            return (Criteria) this;
-        }
-
-        public Criteria andCompensateStatusEqualTo(Integer value) {
-            addCriterion("compensate_status =", value, "compensateStatus");
-            return (Criteria) this;
-        }
-
-        public Criteria andCompensateStatusNotEqualTo(Integer value) {
-            addCriterion("compensate_status <>", value, "compensateStatus");
-            return (Criteria) this;
-        }
-
-        public Criteria andCompensateStatusGreaterThan(Integer value) {
-            addCriterion("compensate_status >", value, "compensateStatus");
-            return (Criteria) this;
-        }
-
-        public Criteria andCompensateStatusGreaterThanOrEqualTo(Integer value) {
-            addCriterion("compensate_status >=", value, "compensateStatus");
-            return (Criteria) this;
-        }
-
-        public Criteria andCompensateStatusLessThan(Integer value) {
-            addCriterion("compensate_status <", value, "compensateStatus");
-            return (Criteria) this;
-        }
-
-        public Criteria andCompensateStatusLessThanOrEqualTo(Integer value) {
-            addCriterion("compensate_status <=", value, "compensateStatus");
-            return (Criteria) this;
-        }
-
-        public Criteria andCompensateStatusIn(List<Integer> values) {
-            addCriterion("compensate_status in", values, "compensateStatus");
-            return (Criteria) this;
-        }
-
-        public Criteria andCompensateStatusNotIn(List<Integer> values) {
-            addCriterion("compensate_status not in", values, "compensateStatus");
-            return (Criteria) this;
-        }
-
-        public Criteria andCompensateStatusBetween(Integer value1, Integer value2) {
-            addCriterion("compensate_status between", value1, value2, "compensateStatus");
-            return (Criteria) this;
-        }
-
-        public Criteria andCompensateStatusNotBetween(Integer value1, Integer value2) {
-            addCriterion("compensate_status not between", value1, value2, "compensateStatus");
             return (Criteria) this;
         }
 

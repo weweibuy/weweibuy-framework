@@ -42,7 +42,7 @@ public class CompensateAnnotationMetaDataParser {
 
         CompensateTypeResolver argumentResolver = resolverComposite.getArgumentResolver(compensateType);
         Assert.notNull(argumentResolver, "补偿类型: " + compensateType + ",没有对应的解析器");
-        CompensateInfo info = argumentResolver.resolver(annotation, target, method, args);
+        CompensateInfo info = argumentResolver.resolver(annotation, target, method, args,configProperties);
         return info;
     }
 
