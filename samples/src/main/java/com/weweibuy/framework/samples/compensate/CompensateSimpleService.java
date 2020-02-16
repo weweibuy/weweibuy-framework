@@ -2,6 +2,8 @@ package com.weweibuy.framework.samples.compensate;
 
 import com.weweibuy.framework.compensate.annotation.Compensate;
 import com.weweibuy.framework.compensate.annotation.Recover;
+import com.weweibuy.framework.samples.model.Dog;
+import com.weweibuy.framework.samples.model.User;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -24,7 +26,16 @@ public class CompensateSimpleService {
         return "success";
     }
 
+    @Compensate(key = "CompensateSimpleService_2", bizId = "#user.name + '_' + #dog.age")
+    public String run3(User user, Dog dog) {
+        if (integer < 1) {
+            integer++;
+            throw new RuntimeException("....");
+        }
+        return "success";
+    }
+
     private void run2(String str) {
-        log.info("run2 .... {} {} {}",str );
+        log.info("run2 .... {} {} {}", str);
     }
 }

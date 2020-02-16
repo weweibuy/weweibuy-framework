@@ -28,7 +28,20 @@ public class CompensateController {
         dog.setName("tom");
         dog.setAge(12);
         user.setDog(dog);
-        simpleService.run( );
+        simpleService.run();
+        return "success";
+    }
+
+    @GetMapping("/compensate2")
+    public String run2(String args) {
+        User user = new User();
+        Dog dog = new Dog();
+        user.setName("Jack");
+        user.setAge(12);
+        dog.setName("tom");
+        dog.setAge(12);
+        user.setDog(dog);
+        simpleService.run3(user, dog);
         return "success";
     }
 

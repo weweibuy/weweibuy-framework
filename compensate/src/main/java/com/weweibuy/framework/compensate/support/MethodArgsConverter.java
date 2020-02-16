@@ -8,7 +8,7 @@ import com.weweibuy.framework.compensate.core.CompensateInfo;
  * @author durenhao
  * @date 2020/2/14 22:29
  **/
-public interface MethodArgsWrapperConverter {
+public interface MethodArgsConverter {
 
     /**
      * 法法参数转 string  便于存储

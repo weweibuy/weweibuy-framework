@@ -10,13 +10,13 @@ import java.util.List;
  * @author durenhao
  * @date 2020/2/14 22:35
  **/
-public class JackJsonMethodArgsWrapperConverter implements MethodArgsWrapperConverter {
+public class JackJsonMethodWrapperConverter implements MethodArgsConverter {
 
     private final ObjectMapper objectMapper;
 
     private MethodArgsTypeHolder methodArgsTypeHolder;
 
-    public JackJsonMethodArgsWrapperConverter(ObjectMapper objectMapper, MethodArgsTypeHolder methodArgsTypeHolder) {
+    public JackJsonMethodWrapperConverter(ObjectMapper objectMapper, MethodArgsTypeHolder methodArgsTypeHolder) {
         this.objectMapper = objectMapper;
         this.methodArgsTypeHolder = methodArgsTypeHolder;
     }

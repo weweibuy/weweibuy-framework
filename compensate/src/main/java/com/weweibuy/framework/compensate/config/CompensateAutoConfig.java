@@ -64,7 +64,7 @@ public class CompensateAutoConfig extends AbstractCompensateConfig {
     }
 
     @Bean
-    public CompensateTypeResolverComposite compensateTypeResolverComposite(MethodArgsWrapperConverter converter) {
+    public CompensateTypeResolverComposite compensateTypeResolverComposite(MethodArgsConverter converter) {
         CompensateTypeResolverComposite composite = new CompensateTypeResolverComposite();
         composite.addResolver(new MethodArgsCompensateTypeResolver(converter));
         if (compensateTypeResolverList != null) {
@@ -74,8 +74,8 @@ public class CompensateAutoConfig extends AbstractCompensateConfig {
     }
 
     @Bean
-    public MethodArgsWrapperConverter jsonMethodArgsWrapperConverter(ObjectMapper objectMapper) {
-        return new JackJsonMethodArgsWrapperConverter(objectMapper, methodArgsTypeHolder);
+    public MethodArgsConverter jsonMethodArgsWrapperConverter(ObjectMapper objectMapper) {
+        return new JackJsonMethodWrapperConverter(objectMapper, methodArgsTypeHolder);
     }
 
     @Bean

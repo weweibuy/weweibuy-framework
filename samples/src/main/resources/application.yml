@@ -21,3 +21,7 @@ compensate:
     compensate-type: 0
     retry-rule: 10s 10s 10s
     alarm-rule: 10s ...
+  CompensateSimpleService_2:
+    compensate-type: 1
+    retry-rule: 10s 10s 10s
+    alarm-rule: 10s ...

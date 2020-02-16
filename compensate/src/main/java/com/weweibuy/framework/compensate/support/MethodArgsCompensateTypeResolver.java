@@ -1,5 +1,6 @@
 package com.weweibuy.framework.compensate.support;
 
+import com.weweibuy.framework.compensate.annotation.Compensate;
 import com.weweibuy.framework.compensate.core.CompensateInfo;
 
 import java.lang.reflect.Method;
@@ -10,9 +11,9 @@ import java.lang.reflect.Method;
  **/
 public class MethodArgsCompensateTypeResolver implements CompensateTypeResolver {
 
-    private final MethodArgsWrapperConverter methodArgsWrapperConverter;
+    private final MethodArgsConverter methodArgsWrapperConverter;
 
-    public MethodArgsCompensateTypeResolver(MethodArgsWrapperConverter methodArgsWrapperConverter) {
+    public MethodArgsCompensateTypeResolver(MethodArgsConverter methodArgsWrapperConverter) {
         this.methodArgsWrapperConverter = methodArgsWrapperConverter;
     }
 
@@ -23,8 +24,9 @@ public class MethodArgsCompensateTypeResolver implements CompensateTypeResolver 
     }
 
     @Override
-    public CompensateInfo resolver(String key, Object target, Method method, Object[] args) {
+    public CompensateInfo resolver(Compensate annotation, Object target, Method method, Object[] args) {
         CompensateInfo compensateInfo = new CompensateInfo();
+        String key = annotation.key();
         compensateInfo.setCompensateKey(key);
         compensateInfo.setArgs(methodArgsWrapperConverter.convert(key, args));
         return compensateInfo;
