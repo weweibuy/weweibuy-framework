@@ -2,6 +2,16 @@
 spring:
   application:
     name: sample-application
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    type: com.zaxxer.hikari.HikariDataSource
+    url: jdbc:mysql://106.12.208.53:3306/webuy_compensate?useUnicode=true&characterEncoding=UTF-8&allowMutiQueries=true
+    username: user01
+    password: ak402507979
+
+mybatis:
+  mapper-locations: classpath:config/mybatis/mapper/**/*.xml                       # mapper映射文件
+
 
 rocket-mq:
   name-server: 122.51.171.126:9876
@@ -22,6 +32,6 @@ compensate:
     retry-rule: 10s 10s 10s
     alarm-rule: 10s ...
   CompensateSimpleService_2:
-    compensate-type: 1
+    compensate-type: 0
     retry-rule: 10s 10s 10s
     alarm-rule: 10s ...

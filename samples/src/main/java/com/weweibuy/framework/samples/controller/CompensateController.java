@@ -1,6 +1,6 @@
 package com.weweibuy.framework.samples.controller;
 
-import com.weweibuy.framework.samples.compensate.CompensateSimpleService;
+import com.weweibuy.framework.samples.compensate.service.CompensateSimpleService;
 import com.weweibuy.framework.samples.model.Dog;
 import com.weweibuy.framework.samples.model.User;
 import org.springframework.web.bind.annotation.GetMapping;
