@@ -1,7 +1,7 @@
 package com.weweibuy.framework.samples.compensate.service;
 
-import com.weweibuy.framework.compensate.annotation.Compensate;
-import com.weweibuy.framework.compensate.annotation.Recover;
+import com.weweibuy.framework.compensate.interfaces.annotation.Compensate;
+import com.weweibuy.framework.compensate.interfaces.annotation.Recover;
 import com.weweibuy.framework.samples.model.Dog;
 import com.weweibuy.framework.samples.model.User;
 import lombok.extern.slf4j.Slf4j;

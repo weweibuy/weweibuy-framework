@@ -1,0 +1,367 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.weweibuy.framework.compensate.mybatis.mapper.CompensateMapper">
+  <resultMap id="BaseResultMap" type="com.weweibuy.framework.compensate.mybatis.po.Compensate">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="compensate_key" jdbcType="VARCHAR" property="compensateKey" />
+    <result column="biz_id" jdbcType="VARCHAR" property="bizId" />
+    <result column="next_trigger_time" jdbcType="TIMESTAMP" property="nextTriggerTime" />
+    <result column="retry_count" jdbcType="TINYINT" property="retryCount" />
+    <result column="alarm_count" jdbcType="TINYINT" property="alarmCount" />
+    <result column="is_delete" jdbcType="BIT" property="isDelete" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.weweibuy.framework.compensate.mybatis.po.Compensate">
+    <result column="method_args" jdbcType="LONGVARCHAR" property="methodArgs" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    id, compensate_key, biz_id, next_trigger_time, retry_count, alarm_count, is_delete, 
+    create_time, update_time
+  </sql>
+  <sql id="Blob_Column_List">
+    method_args
+  </sql>
+  <select id="selectByExampleWithBLOBs" parameterType="com.weweibuy.framework.compensate.mybatis.po.CompensateExample" resultMap="ResultMapWithBLOBs">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from compensate
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByExample" parameterType="com.weweibuy.framework.compensate.mybatis.po.CompensateExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from compensate
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="ResultMapWithBLOBs">
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from compensate
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from compensate
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.weweibuy.framework.compensate.mybatis.po.CompensateExample">
+    delete from compensate
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.weweibuy.framework.compensate.mybatis.po.Compensate">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into compensate (compensate_key, biz_id, next_trigger_time, 
+      retry_count, alarm_count, is_delete, 
+      create_time, update_time, method_args
+      )
+    values (#{compensateKey,jdbcType=VARCHAR}, #{bizId,jdbcType=VARCHAR}, #{nextTriggerTime,jdbcType=TIMESTAMP}, 
+      #{retryCount,jdbcType=TINYINT}, #{alarmCount,jdbcType=TINYINT}, #{isDelete,jdbcType=BIT}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{methodArgs,jdbcType=LONGVARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.weweibuy.framework.compensate.mybatis.po.Compensate">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into compensate
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="compensateKey != null">
+        compensate_key,
+      </if>
+      <if test="bizId != null">
+        biz_id,
+      </if>
+      <if test="nextTriggerTime != null">
+        next_trigger_time,
+      </if>
+      <if test="retryCount != null">
+        retry_count,
+      </if>
+      <if test="alarmCount != null">
+        alarm_count,
+      </if>
+      <if test="isDelete != null">
+        is_delete,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="methodArgs != null">
+        method_args,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="compensateKey != null">
+        #{compensateKey,jdbcType=VARCHAR},
+      </if>
+      <if test="bizId != null">
+        #{bizId,jdbcType=VARCHAR},
+      </if>
+      <if test="nextTriggerTime != null">
+        #{nextTriggerTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="retryCount != null">
+        #{retryCount,jdbcType=TINYINT},
+      </if>
+      <if test="alarmCount != null">
+        #{alarmCount,jdbcType=TINYINT},
+      </if>
+      <if test="isDelete != null">
+        #{isDelete,jdbcType=BIT},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="methodArgs != null">
+        #{methodArgs,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.weweibuy.framework.compensate.mybatis.po.CompensateExample" resultType="java.lang.Long">
+    select count(*) from compensate
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update compensate
+    <set>
+      <if test="record.id != null">
+        id = #{record.id,jdbcType=BIGINT},
+      </if>
+      <if test="record.compensateKey != null">
+        compensate_key = #{record.compensateKey,jdbcType=VARCHAR},
+      </if>
+      <if test="record.bizId != null">
+        biz_id = #{record.bizId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.nextTriggerTime != null">
+        next_trigger_time = #{record.nextTriggerTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.retryCount != null">
+        retry_count = #{record.retryCount,jdbcType=TINYINT},
+      </if>
+      <if test="record.alarmCount != null">
+        alarm_count = #{record.alarmCount,jdbcType=TINYINT},
+      </if>
+      <if test="record.isDelete != null">
+        is_delete = #{record.isDelete,jdbcType=BIT},
+      </if>
+      <if test="record.createTime != null">
+        create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.updateTime != null">
+        update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.methodArgs != null">
+        method_args = #{record.methodArgs,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExampleWithBLOBs" parameterType="map">
+    update compensate
+    set id = #{record.id,jdbcType=BIGINT},
+      compensate_key = #{record.compensateKey,jdbcType=VARCHAR},
+      biz_id = #{record.bizId,jdbcType=VARCHAR},
+      next_trigger_time = #{record.nextTriggerTime,jdbcType=TIMESTAMP},
+      retry_count = #{record.retryCount,jdbcType=TINYINT},
+      alarm_count = #{record.alarmCount,jdbcType=TINYINT},
+      is_delete = #{record.isDelete,jdbcType=BIT},
+      create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+      method_args = #{record.methodArgs,jdbcType=LONGVARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update compensate
+    set id = #{record.id,jdbcType=BIGINT},
+      compensate_key = #{record.compensateKey,jdbcType=VARCHAR},
+      biz_id = #{record.bizId,jdbcType=VARCHAR},
+      next_trigger_time = #{record.nextTriggerTime,jdbcType=TIMESTAMP},
+      retry_count = #{record.retryCount,jdbcType=TINYINT},
+      alarm_count = #{record.alarmCount,jdbcType=TINYINT},
+      is_delete = #{record.isDelete,jdbcType=BIT},
+      create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      update_time = #{record.updateTime,jdbcType=TIMESTAMP}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.weweibuy.framework.compensate.mybatis.po.Compensate">
+    update compensate
+    <set>
+      <if test="compensateKey != null">
+        compensate_key = #{compensateKey,jdbcType=VARCHAR},
+      </if>
+      <if test="bizId != null">
+        biz_id = #{bizId,jdbcType=VARCHAR},
+      </if>
+      <if test="nextTriggerTime != null">
+        next_trigger_time = #{nextTriggerTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="retryCount != null">
+        retry_count = #{retryCount,jdbcType=TINYINT},
+      </if>
+      <if test="alarmCount != null">
+        alarm_count = #{alarmCount,jdbcType=TINYINT},
+      </if>
+      <if test="isDelete != null">
+        is_delete = #{isDelete,jdbcType=BIT},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="methodArgs != null">
+        method_args = #{methodArgs,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.weweibuy.framework.compensate.mybatis.po.Compensate">
+    update compensate
+    set compensate_key = #{compensateKey,jdbcType=VARCHAR},
+      biz_id = #{bizId,jdbcType=VARCHAR},
+      next_trigger_time = #{nextTriggerTime,jdbcType=TIMESTAMP},
+      retry_count = #{retryCount,jdbcType=TINYINT},
+      alarm_count = #{alarmCount,jdbcType=TINYINT},
+      is_delete = #{isDelete,jdbcType=BIT},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      method_args = #{methodArgs,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.weweibuy.framework.compensate.mybatis.po.Compensate">
+    update compensate
+    set compensate_key = #{compensateKey,jdbcType=VARCHAR},
+      biz_id = #{bizId,jdbcType=VARCHAR},
+      next_trigger_time = #{nextTriggerTime,jdbcType=TIMESTAMP},
+      retry_count = #{retryCount,jdbcType=TINYINT},
+      alarm_count = #{alarmCount,jdbcType=TINYINT},
+      is_delete = #{isDelete,jdbcType=BIT},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <select id="selectOneByExample" parameterType="com.weweibuy.framework.compensate.mybatis.po.CompensateExample" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from compensate
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+    limit 1
+  </select>
+  <select id="selectOneByExampleWithBLOBs" parameterType="com.weweibuy.framework.compensate.mybatis.po.CompensateExample" resultMap="ResultMapWithBLOBs">
+    select
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from compensate
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+    limit 1
+  </select>
+</mapper>

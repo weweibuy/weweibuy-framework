@@ -10,7 +10,7 @@ spring:
     password: ak402507979
 
 mybatis:
-  mapper-locations: classpath:config/mybatis/mapper/**/*.xml                       # mapper映射文件
+  mapper-locations: classpath*:config/mybatis/mapper/**/*.xml
 
 
 rocket-mq:

@@ -1,6 +1,6 @@
 package com.weweibuy.framework.samples.compensate.service;
 
-import com.weweibuy.framework.compensate.support.BizIdCompensateAssemble;
+import com.weweibuy.framework.compensate.interfaces.BizIdCompensateAssemble;
 import com.weweibuy.framework.samples.model.Dog;
 import com.weweibuy.framework.samples.model.User;
 import org.springframework.stereotype.Component;
