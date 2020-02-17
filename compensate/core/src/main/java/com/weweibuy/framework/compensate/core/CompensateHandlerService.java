@@ -33,11 +33,12 @@ public class CompensateHandlerService {
 
     public CompensateHandlerService(CompensateMethodRegister compensateMethodRegister,
                                     CompensateStore compensateStore, CompensateTypeResolverComposite composite,
-                                    CompensateAlarmService compensateAlarmService) {
+                                    CompensateAlarmService compensateAlarmService, ExecutorService executorService) {
         this.compensateMethodRegister = compensateMethodRegister;
         this.compensateStore = compensateStore;
         this.composite = composite;
         this.compensateAlarmService = compensateAlarmService;
+        this.executorService = executorService;
     }
 
     public CompensateHandlerService(ExecutorService executorService, CompensateMethodRegister compensateMethodRegister,
