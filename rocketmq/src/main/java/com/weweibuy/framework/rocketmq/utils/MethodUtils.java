@@ -1,4 +1,4 @@
-package com.weweibuy.framework.rocketmq.support;
+package com.weweibuy.framework.rocketmq.utils;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;

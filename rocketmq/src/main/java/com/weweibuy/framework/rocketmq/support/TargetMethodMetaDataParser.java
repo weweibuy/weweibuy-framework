@@ -2,7 +2,10 @@ package com.weweibuy.framework.rocketmq.support;
 
 import com.weweibuy.framework.rocketmq.annotation.RocketProvider;
 import com.weweibuy.framework.rocketmq.annotation.RocketProviderHandler;
-import com.weweibuy.framework.rocketmq.core.RocketMethodMetadata;
+import com.weweibuy.framework.rocketmq.core.provider.AnnotatedParameterProcessor;
+import com.weweibuy.framework.rocketmq.core.provider.RocketMethodMetadata;
+import com.weweibuy.framework.rocketmq.core.provider.RocketMethodMetadataFactory;
+import com.weweibuy.framework.rocketmq.utils.MethodUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.rocketmq.client.producer.SendCallback;
 import org.springframework.context.ConfigurableApplicationContext;

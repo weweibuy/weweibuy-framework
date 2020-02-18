@@ -10,6 +10,8 @@ import org.springframework.core.io.ResourceLoader;
 import java.util.Set;
 
 /**
+ * bean 扫描注册器
+ *
  * @author durenhao
  * @date 2019/12/28 23:06
  **/

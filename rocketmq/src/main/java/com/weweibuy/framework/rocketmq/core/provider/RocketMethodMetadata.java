@@ -1,6 +1,5 @@
-package com.weweibuy.framework.rocketmq.core;
+package com.weweibuy.framework.rocketmq.core.provider;
 
-import com.weweibuy.framework.rocketmq.support.MethodParameterProcessor;
 import lombok.Data;
 
 import java.lang.reflect.Method;
@@ -8,7 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 方法元数据
+ * 生产者方法元数据
  *
  * @author durenhao
  * @date 2019/12/30 20:51

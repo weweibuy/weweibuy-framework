@@ -1,4 +1,4 @@
-package com.weweibuy.framework.rocketmq.support;
+package com.weweibuy.framework.rocketmq.core.provider;
 
 /**
  * @author durenhao

@@ -1,6 +1,4 @@
-package com.weweibuy.framework.rocketmq.support;
-
-import com.weweibuy.framework.rocketmq.core.RocketMethodMetadata;
+package com.weweibuy.framework.rocketmq.core.provider;
 
 import java.lang.reflect.Method;
 

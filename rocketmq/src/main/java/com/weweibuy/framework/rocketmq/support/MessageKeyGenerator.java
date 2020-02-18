@@ -1,6 +1,7 @@
 package com.weweibuy.framework.rocketmq.support;
 
-import com.weweibuy.framework.rocketmq.core.RocketMethodMetadata;
+
+import com.weweibuy.framework.rocketmq.core.provider.RocketMethodMetadata;
 
 /**
  * messageKey 生成器

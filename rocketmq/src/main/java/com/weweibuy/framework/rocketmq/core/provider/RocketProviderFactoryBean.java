@@ -1,6 +1,5 @@
-package com.weweibuy.framework.rocketmq.core;
+package com.weweibuy.framework.rocketmq.core.provider;
 
-import com.weweibuy.framework.rocketmq.support.ProxyRocketProvider;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;
@@ -11,6 +10,8 @@ import org.springframework.context.ApplicationContextAware;
 import java.lang.reflect.Proxy;
 
 /**
+ * 构建 RocketProvider  代理对象
+ *
  * @author durenhao
  * @date 2019/12/29 10:35
  **/

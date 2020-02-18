@@ -1,10 +1,9 @@
-package com.weweibuy.framework.rocketmq.support;
+package com.weweibuy.framework.rocketmq.core.provider;
 
-import com.weweibuy.framework.rocketmq.core.RocketMethodMetadata;
 import org.apache.rocketmq.common.message.Message;
 
 /**
- * 方法参数处理器
+ * 消息生产方法参数处理器
  *
  * @author durenhao
  * @date 2020/1/1 12:03

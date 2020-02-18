@@ -1,7 +1,8 @@
-package com.weweibuy.framework.rocketmq.core;
+package com.weweibuy.framework.rocketmq.core.provider;
 
 import com.weweibuy.framework.rocketmq.annotation.EnableRocketProvider;
 import com.weweibuy.framework.rocketmq.annotation.RocketProvider;
+import com.weweibuy.framework.rocketmq.core.ClassPathRocketScanner;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.AnnotatedBeanDefinition;
 import org.springframework.beans.factory.config.BeanDefinition;

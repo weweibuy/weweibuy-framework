@@ -1,6 +1,7 @@
-package com.weweibuy.framework.rocketmq.core;
+package com.weweibuy.framework.rocketmq.support;
 
 
+import com.weweibuy.framework.rocketmq.core.MessageConverter;
 import org.springframework.core.MethodParameter;
 
 /**

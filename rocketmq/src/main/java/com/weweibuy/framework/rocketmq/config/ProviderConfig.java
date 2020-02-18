@@ -1,7 +1,9 @@
 package com.weweibuy.framework.rocketmq.config;
 
 import com.weweibuy.framework.rocketmq.core.MessageConverter;
-import com.weweibuy.framework.rocketmq.core.StringMessageConverter;
+import com.weweibuy.framework.rocketmq.core.provider.AnnotatedParameterProcessor;
+import com.weweibuy.framework.rocketmq.core.provider.ProxyRocketProvider;
+import com.weweibuy.framework.rocketmq.core.provider.RocketMethodMetadataFactory;
 import com.weweibuy.framework.rocketmq.support.*;
 import org.apache.rocketmq.client.AccessChannel;
 import org.apache.rocketmq.client.producer.DefaultMQProducer;

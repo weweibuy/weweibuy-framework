@@ -1,7 +1,8 @@
 package com.weweibuy.framework.rocketmq.support;
 
 import com.weweibuy.framework.rocketmq.annotation.Header;
-import com.weweibuy.framework.rocketmq.core.RocketMethodMetadata;
+import com.weweibuy.framework.rocketmq.core.provider.AnnotatedParameterProcessor;
+import com.weweibuy.framework.rocketmq.core.provider.RocketMethodMetadata;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.rocketmq.common.message.Message;
 import org.apache.rocketmq.common.message.MessageConst;
