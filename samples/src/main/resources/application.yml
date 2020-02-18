@@ -8,6 +8,8 @@ spring:
     url: jdbc:mysql://106.12.208.53:3306/webuy_compensate?useUnicode=true&characterEncoding=UTF-8&allowMutiQueries=true
     username: user01
     password: ak402507979
+  jackson:
+    property-naming-strategy: SNAKE_CASE
 
 mybatis:
   mapper-locations: classpath*:config/mybatis/mapper/**/*.xml

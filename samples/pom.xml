@@ -49,6 +49,12 @@
 
         <dependency>
             <groupId>com.weweibuy.framework</groupId>
+            <artifactId>spring-mvc-extend</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.weweibuy.framework</groupId>
             <artifactId>compensate-mybatis</artifactId>
             <exclusions>
                 <exclusion>
