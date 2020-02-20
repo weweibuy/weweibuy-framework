@@ -1,7 +1,7 @@
 package com.weweibuy.framework.rocketmq.annotation;
 
 import com.weweibuy.framework.rocketmq.config.ProviderConfig;
-import com.weweibuy.framework.rocketmq.core.RocketProviderRegister;
+import com.weweibuy.framework.rocketmq.core.provider.RocketProviderRegister;
 import org.springframework.context.annotation.Import;
 
 import java.lang.annotation.ElementType;

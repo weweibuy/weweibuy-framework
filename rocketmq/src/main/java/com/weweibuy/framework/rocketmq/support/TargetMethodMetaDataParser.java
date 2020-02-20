@@ -3,6 +3,7 @@ package com.weweibuy.framework.rocketmq.support;
 import com.weweibuy.framework.rocketmq.annotation.RocketProvider;
 import com.weweibuy.framework.rocketmq.annotation.RocketProviderHandler;
 import com.weweibuy.framework.rocketmq.core.provider.AnnotatedParameterProcessor;
+import com.weweibuy.framework.rocketmq.core.provider.AnnotatedParameterProcessorComposite;
 import com.weweibuy.framework.rocketmq.core.provider.RocketMethodMetadata;
 import com.weweibuy.framework.rocketmq.core.provider.RocketMethodMetadataFactory;
 import com.weweibuy.framework.rocketmq.utils.MethodUtils;
@@ -33,7 +34,7 @@ public class TargetMethodMetaDataParser implements ResourceLoaderAware {
 
     private ResourceLoader resourceLoader;
 
-    private final RocketMethodMetadataFactory methodMetadataFactory;
+    private final RocketMethodMetadataFactory methodMetadataFactory = new DefaultRocketMethodMetadataFactory();
 
     private final MessageBodyParameterProcessor methodParameterProcessor;
 
@@ -41,11 +42,10 @@ public class TargetMethodMetaDataParser implements ResourceLoaderAware {
 
     private final List<AnnotatedParameterProcessor> annotatedParameterProcessor;
 
-    public TargetMethodMetaDataParser(RocketMethodMetadataFactory methodMetadataFactory, MessageBodyParameterProcessor methodParameterProcessor,
-                                      List<AnnotatedParameterProcessor> annotatedParameterProcessor) {
-        this.methodMetadataFactory = methodMetadataFactory;
+    public TargetMethodMetaDataParser(MessageBodyParameterProcessor methodParameterProcessor,
+                                      AnnotatedParameterProcessorComposite composite) {
         this.methodParameterProcessor = methodParameterProcessor;
-        this.annotatedParameterProcessor = annotatedParameterProcessor;
+        this.annotatedParameterProcessor = composite.getParameterProcessors();
     }
 
 

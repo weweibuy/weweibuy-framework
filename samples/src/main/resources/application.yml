@@ -21,6 +21,7 @@ rocket-mq:
     group: TEST_SAMPLE_01_P_GROUP
     sample-provider:
       topic: TEST_SAMPLE_01
+      tag: TEST_TAG
   consumer:
     sample-consumer:
       trace: false

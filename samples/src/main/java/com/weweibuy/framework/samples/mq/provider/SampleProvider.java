@@ -17,7 +17,7 @@ import java.util.Collection;
 @RocketProvider(topic = "${rocket-mq.provider.sample-provider.topic}")
 public interface SampleProvider {
 
-    @RocketProviderHandler(tag = "TEST_TAG", oneWay = true, orderly = true)
+    @RocketProviderHandler(tag = "${rocket-mq.provider.sample-provider.tag}")
     SendResult send(SampleUser user, @Tag String s, @Key String key);
 
     @RocketProviderHandler(tag = "TEST_TAG",  orderly = true)

@@ -1,21 +1,21 @@
 package com.weweibuy.framework.rocketmq.config;
 
 import com.weweibuy.framework.rocketmq.core.MessageConverter;
-import com.weweibuy.framework.rocketmq.core.provider.AnnotatedParameterProcessor;
-import com.weweibuy.framework.rocketmq.core.provider.ProxyRocketProvider;
-import com.weweibuy.framework.rocketmq.core.provider.RocketMethodMetadataFactory;
+import com.weweibuy.framework.rocketmq.core.provider.*;
 import com.weweibuy.framework.rocketmq.support.*;
 import org.apache.rocketmq.client.AccessChannel;
 import org.apache.rocketmq.client.producer.DefaultMQProducer;
 import org.apache.rocketmq.client.producer.MQProducer;
 import org.apache.rocketmq.client.producer.MessageQueueSelector;
 import org.apache.rocketmq.client.producer.selector.SelectMessageQueueByHash;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.util.Assert;
+import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 
@@ -30,13 +30,19 @@ public class ProviderConfig {
 
     private final RocketMqProperties rocketMqProperties;
 
+    @Autowired(required = false)
+    private List<MessageSendFilter> sendFilterList;
+
+    @Autowired(required = false)
+    private List<RocketProviderConfigurer> configurer;
+
     public ProviderConfig(RocketMqProperties rocketMqProperties) {
         this.rocketMqProperties = rocketMqProperties;
     }
 
     @Bean
-    public ProxyRocketProvider proxyRocketProvider(List<AnnotatedParameterProcessor> parameterProcessorList, MessageConverter messageConverter) throws Exception {
-        return new ProxyRocketProvider(messageQueueSelector(), targetMethodMetaDataParser(parameterProcessorList, messageConverter), mqProducer());
+    public ProxyRocketProvider proxyRocketProvider(MessageConverter messageConverter) throws Exception {
+        return new ProxyRocketProvider(messageQueueSelector(), targetMethodMetaDataParser(messageConverter), mqProducer(), sendFilterList);
     }
 
     @Bean
@@ -46,29 +52,22 @@ public class ProviderConfig {
     }
 
     @Bean
-    public TargetMethodMetaDataParser targetMethodMetaDataParser(List<AnnotatedParameterProcessor> parameterProcessorList, MessageConverter messageConverter) {
-        return new TargetMethodMetaDataParser(rocketMethodMetadataFactory(), messageBodyParameterProcessor(messageConverter), parameterProcessorList);
+    public TargetMethodMetaDataParser targetMethodMetaDataParser(MessageConverter messageConverter) {
+
+        AnnotatedParameterProcessorComposite composite = new AnnotatedParameterProcessorComposite();
+        composite.addProcessor(new TagParameterProcessor());
+        composite.addProcessor(new PayloadParameterProcessor(messageConverter));
+        composite.addProcessor(new KeyParameterProcessor());
+        composite.addProcessor(new HeaderParameterProcessor());
+
+        if (!CollectionUtils.isEmpty(configurer)) {
+            configurer.forEach(c -> c.addAnnotatedParameterProcessor(composite));
+        }
+
+
+        return new TargetMethodMetaDataParser(messageBodyParameterProcessor(messageConverter), composite);
     }
 
-    @Bean
-    public AnnotatedParameterProcessor tagParameterProcessor() {
-        return new TagParameterProcessor();
-    }
-
-    @Bean
-    public AnnotatedParameterProcessor payloadParameterProcessor(MessageConverter messageConverter) {
-        return new PayloadParameterProcessor(messageConverter);
-    }
-
-    @Bean
-    public AnnotatedParameterProcessor keyParameterProcessor() {
-        return new KeyParameterProcessor();
-    }
-
-    @Bean
-    public AnnotatedParameterProcessor headerParameterProcessor() {
-        return new HeaderParameterProcessor();
-    }
 
     @Bean
     public MessageBodyParameterProcessor messageBodyParameterProcessor(MessageConverter messageConverter) {
@@ -81,12 +80,6 @@ public class ProviderConfig {
         return new StringMessageConverter();
     }
 
-
-    @Bean
-    @ConditionalOnMissingBean(RocketMethodMetadataFactory.class)
-    public RocketMethodMetadataFactory rocketMethodMetadataFactory() {
-        return new DefaultRocketMethodMetadataFactory();
-    }
 
     @Bean
     public MQProducer mqProducer() throws Exception {

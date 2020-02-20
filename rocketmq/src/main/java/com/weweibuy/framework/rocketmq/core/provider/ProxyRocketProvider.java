@@ -7,11 +7,12 @@ import org.apache.rocketmq.client.producer.MQProducer;
 import org.apache.rocketmq.client.producer.MessageQueueSelector;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.util.CollectionUtils;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 代理的rocketMQ 生产者
@@ -27,14 +28,22 @@ public class ProxyRocketProvider implements InitializingBean, DisposableBean {
 
     private final TargetMethodMetaDataParser targetMethodMetaDataParser;
 
+    private final List<MessageSendFilter> messageSendFilterList;
+
     private final MQProducer mqProducer;
 
     public ProxyRocketProvider(MessageQueueSelector messageQueueSelector,
                                TargetMethodMetaDataParser targetMethodMetaDataParser,
-                               MQProducer mqProducer) {
+                               MQProducer mqProducer, List<MessageSendFilter> messageSendFilterList) {
+        this.mqProducer = mqProducer;
         this.messageQueueSelector = messageQueueSelector;
         this.targetMethodMetaDataParser = targetMethodMetaDataParser;
-        this.mqProducer = mqProducer;
+        if (CollectionUtils.isEmpty(messageSendFilterList)) {
+            messageSendFilterList = Collections.emptyList();
+        }
+        this.messageSendFilterList = messageSendFilterList.stream()
+                .sorted(Comparator.comparing(MessageSendFilter::getOrder))
+                .collect(Collectors.toList());
     }
 
     public InvocationHandler newInstance(Class<?> target) {
@@ -43,7 +52,7 @@ public class ProxyRocketProvider implements InitializingBean, DisposableBean {
         Map<Method, MethodHandler> methodMethodHandlerMap = new HashMap<>();
 
         parser.forEach((k, v) -> {
-            DefaultRocketMethodHandler methodHandler = new DefaultRocketMethodHandler(mqProducer, v, messageQueueSelector);
+            DefaultRocketMethodHandler methodHandler = new DefaultRocketMethodHandler(v, messageQueueSelector, messageSendFilterList, mqProducer);
             methodMethodHandlerMap.put(k, methodHandler);
         });
 
