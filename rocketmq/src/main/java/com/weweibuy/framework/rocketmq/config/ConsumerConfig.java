@@ -5,6 +5,9 @@ import com.weweibuy.framework.rocketmq.core.consumer.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.util.CollectionUtils;
+
+import java.util.List;
 
 /**
  * @author durenhao
@@ -17,13 +20,22 @@ public class ConsumerConfig {
     private RocketListenerErrorHandler errorHandler;
 
     @Autowired(required = false)
-    private HandlerMethodArgumentResolverComposite argumentResolverComposite;
+    private List<RocketConfigurer> configurer;
+
 
     @Bean
     public RocketBeanPostProcessor rocketBeanPostProcessor(RocketMqProperties rocketMqProperties, MessageConverter messageConverter) {
 
+        HandlerMethodArgumentResolverComposite composite = new HandlerMethodArgumentResolverComposite();
+        composite.addResolver(new PayloadMethodArgumentResolver(messageConverter));
+        composite.addResolver(new HeaderMethodArgumentResolver());
+
+        if (!CollectionUtils.isEmpty(configurer)) {
+            configurer.forEach(c -> c.addHandlerMethodArgumentResolver(composite));
+        }
+
         return new RocketBeanPostProcessor(new DefaultRocketListenerContainerFactory(), messageHandlerMethodFactory(),
-                rocketMqProperties, messageConverter, errorHandler, argumentResolverComposite);
+                rocketMqProperties, errorHandler, composite);
     }
 
     @Bean

@@ -34,7 +34,7 @@ public class ProviderConfig {
     private List<MessageSendFilter> sendFilterList;
 
     @Autowired(required = false)
-    private List<RocketProviderConfigurer> configurer;
+    private List<RocketConfigurer> configurer;
 
     public ProviderConfig(RocketMqProperties rocketMqProperties) {
         this.rocketMqProperties = rocketMqProperties;

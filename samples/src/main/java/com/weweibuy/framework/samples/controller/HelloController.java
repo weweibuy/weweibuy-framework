@@ -72,7 +72,7 @@ public class HelloController {
         list.add(user1);
         list.add(user1);
         list.add(user1);
-        batchSampleProvider.sendBatch2(list);
+        batchSampleProvider.sendBatch(list);
         return "hello";
     }
 

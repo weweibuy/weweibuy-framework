@@ -53,7 +53,6 @@ public abstract class AbstractRocketListenerContainer<T, R> implements RocketLis
             }
             return listenerMap.get(list.get(0).getTags());
         } else {
-            // TODO 批量消息的形式 无法支持Tag 选择
             return rocketMessageListenerList.get(0);
         }
 

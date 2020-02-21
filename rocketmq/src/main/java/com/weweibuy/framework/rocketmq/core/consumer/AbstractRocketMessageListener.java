@@ -33,9 +33,13 @@ public abstract class AbstractRocketMessageListener<R> implements RocketMessageL
             reValue = rocketHandlerMethod.invoke(messageObject, originContext);
         } catch (Exception e) {
             if (errorHandler != null) {
-                return (R) errorHandler.handlerException(e, messageObject, isOrderly());
+                if (errorHandler.handlerException(e, messageObject, isOrderly())) {
+                    return getSuccessReturnValue();
+                }
+                return getFailReturnValue();
+            } else {
+                return getFailReturnValue();
             }
-            return getFailReturnValue();
         }
         return handleResult(reValue);
     }

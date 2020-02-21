@@ -1,7 +1,6 @@
 package com.weweibuy.framework.rocketmq.core.consumer;
 
 import com.weweibuy.framework.rocketmq.annotation.BatchHandlerModel;
-import com.weweibuy.framework.rocketmq.core.MessageConverter;
 import lombok.Data;
 import org.apache.rocketmq.client.AccessChannel;
 import org.apache.rocketmq.common.protocol.heartbeat.MessageModel;
@@ -54,8 +53,6 @@ public class MethodRocketListenerEndpoint {
     private Object bean;
 
     private Method method;
-
-    private MessageConverter messageConverter;
 
     private RocketListenerErrorHandler errorHandler;
 

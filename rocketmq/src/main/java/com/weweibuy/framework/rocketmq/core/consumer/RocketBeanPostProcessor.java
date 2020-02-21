@@ -4,7 +4,6 @@ import com.weweibuy.framework.rocketmq.annotation.BatchHandlerModel;
 import com.weweibuy.framework.rocketmq.annotation.RocketConsumerHandler;
 import com.weweibuy.framework.rocketmq.annotation.RocketListener;
 import com.weweibuy.framework.rocketmq.config.RocketMqProperties;
-import com.weweibuy.framework.rocketmq.core.MessageConverter;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.apache.commons.lang3.StringUtils;
@@ -13,10 +12,11 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.SmartInitializingSingleton;
 import org.springframework.beans.factory.config.BeanPostProcessor;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 import org.springframework.core.annotation.AnnotationUtils;
-import org.springframework.util.*;
+import org.springframework.util.Assert;
+import org.springframework.util.ClassUtils;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.ReflectionUtils;
 
 import java.lang.reflect.Method;
 import java.util.*;
@@ -26,9 +26,7 @@ import java.util.stream.Collectors;
  * @author durenhao
  * @date 2020/1/4 20:31
  **/
-public class RocketBeanPostProcessor implements BeanPostProcessor, SmartInitializingSingleton, DisposableBean, ApplicationContextAware {
-
-    private ApplicationContext applicationContext;
+public class RocketBeanPostProcessor implements BeanPostProcessor, SmartInitializingSingleton, DisposableBean {
 
     private List<MethodRocketListenerEndpoint> endpointList;
 
@@ -38,20 +36,17 @@ public class RocketBeanPostProcessor implements BeanPostProcessor, SmartInitiali
 
     private RocketMqProperties rocketMqProperties;
 
-    private MessageConverter messageConverter;
-
     private RocketListenerErrorHandler errorHandler;
 
     private HandlerMethodArgumentResolverComposite argumentResolverComposite;
 
     public RocketBeanPostProcessor(RocketListenerContainerFactory containerFactory, MessageHandlerMethodFactory messageHandlerMethodFactory, RocketMqProperties rocketMqProperties,
-                                   MessageConverter messageConverter, RocketListenerErrorHandler errorHandler, HandlerMethodArgumentResolverComposite argumentResolverComposite) {
+                                   RocketListenerErrorHandler errorHandler, HandlerMethodArgumentResolverComposite argumentResolverComposite) {
         this.rocketEndpointRegistrar = new RocketEndpointRegistrar(containerFactory);
         this.rocketMqProperties = rocketMqProperties;
-        this.messageConverter = messageConverter;
         this.errorHandler = errorHandler;
         this.messageHandlerMethodFactory = messageHandlerMethodFactory;
-        this.argumentResolverComposite = addCustomArgumentResolver(argumentResolverComposite);
+        this.argumentResolverComposite = argumentResolverComposite;
     }
 
 
@@ -95,7 +90,6 @@ public class RocketBeanPostProcessor implements BeanPostProcessor, SmartInitiali
         listenerEndpoint.setTags(consumerHandler.tags());
         listenerEndpoint.setOrderly(rocketListener.orderly());
         listenerEndpoint.setConsumeMessageBatchMaxSize(rocketListener.consumeMessageBatchMaxSize());
-        listenerEndpoint.setMessageConverter(messageConverter);
         listenerEndpoint.setErrorHandler(errorHandler);
         listenerEndpoint.setArgumentResolverComposite(argumentResolverComposite);
         listenerEndpoint.setBatchHandlerModel(consumerHandler.batchHandlerModel());
@@ -211,16 +205,26 @@ public class RocketBeanPostProcessor implements BeanPostProcessor, SmartInitiali
                 BatchHandlerModel batchHandlerModel = e.getBatchHandlerModel();
                 Integer consumeMessageBatchMaxSize = e.getConsumeMessageBatchMaxSize();
 
+                Method method = e.getMethod();
+
                 Assert.isTrue(!(consumeMessageBatchMaxSize == 1 && BatchHandlerModel.TOGETHER.equals(batchHandlerModel)),
-                        "consumeMessageBatchMaxSize 为 1 时, batchHandlerModel 不能为: TOGETHER");
+                        method.toString() + " consumeMessageBatchMaxSize 为 1 时, batchHandlerModel 不能为: TOGETHER");
+
+
+                Assert.isTrue(!(consumeMessageBatchMaxSize > 1 && v.size() > 1),
+                        method.toString() + " consumeMessageBatchMaxSize 大于 1 时, 不支持多个 TAG 的形式");
+
 
                 if (BatchHandlerModel.TOGETHER.equals(batchHandlerModel)) {
                     Class<?>[] parameterTypes = e.getMethod().getParameterTypes();
                     Arrays.stream(parameterTypes)
                             .filter(p -> ClassUtils.isAssignable(Collection.class, p))
-                            .findFirst().orElseThrow(() -> new IllegalArgumentException("batchHandlerModel 为 TOGETHER 时, 接受消息体参数必须为 collection类型"));
+                            .findFirst().orElseThrow(() -> new IllegalArgumentException(method.toString() + " batchHandlerModel 为 TOGETHER 时, 接受消息体参数必须为 collection类型"));
 
                 }
+                Class[] parameters = method.getParameterTypes();
+                Assert.isTrue(parameters != null && parameters.length > 0,
+                        method.toString() + " 消费方法必须有形参");
 
             });
 
@@ -246,31 +250,6 @@ public class RocketBeanPostProcessor implements BeanPostProcessor, SmartInitiali
     @Override
     public void destroy() throws Exception {
         rocketEndpointRegistrar.shutdownAllContainer();
-    }
-
-    @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        this.applicationContext = applicationContext;
-    }
-
-
-    private HandlerMethodArgumentResolverComposite addCustomArgumentResolver(HandlerMethodArgumentResolverComposite argumentResolverComposite) {
-        HandlerMethodArgumentResolverComposite resolverComposite = new HandlerMethodArgumentResolverComposite();
-        if (argumentResolverComposite == null) {
-            resolverComposite.addResolvers(getDefaultResolver());
-        } else {
-            resolverComposite.addResolvers(getDefaultResolver());
-            resolverComposite.addResolvers(argumentResolverComposite.getArgumentResolvers());
-        }
-        return resolverComposite;
-
-    }
-
-    private List<HandlerMethodArgumentResolver> getDefaultResolver() {
-        List<HandlerMethodArgumentResolver> linkedList = new LinkedList<>();
-        linkedList.add(new PayloadMethodArgumentResolver(messageConverter));
-        linkedList.add(new HeaderMethodArgumentResolver());
-        return linkedList;
     }
 
 
