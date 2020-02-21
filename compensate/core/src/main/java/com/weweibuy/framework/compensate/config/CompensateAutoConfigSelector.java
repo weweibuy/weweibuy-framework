@@ -10,7 +10,7 @@ import org.springframework.context.annotation.AdviceModeImportSelector;
  **/
 public class CompensateAutoConfigSelector extends AdviceModeImportSelector<EnableCompensate> {
 
-    private static final String CONFIG_CLASS = "com.weweibuy.framework.compensate.config.CompensateAutoConfig";
+    private static final String CONFIG_CLASS = "com.weweibuy.framework.compensate.config.CompensateConfigurationSupport";
 
     @Override
     protected String[] selectImports(AdviceMode adviceMode) {

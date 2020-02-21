@@ -1,7 +1,7 @@
 package com.weweibuy.framework.compensate.annotation;
 
-import com.weweibuy.framework.compensate.config.CompensateAutoConfigSelector;
-import org.springframework.context.annotation.AdviceMode;
+import com.weweibuy.framework.compensate.config.AdvisorConfig;
+import com.weweibuy.framework.compensate.config.CompensateConfigurationSupport;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.Ordered;
 
@@ -16,13 +16,9 @@ import java.lang.annotation.Target;
  **/
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-@Import(CompensateAutoConfigSelector.class)
+@Import({CompensateConfigurationSupport.class, AdvisorConfig.class})
 public @interface EnableCompensate {
 
-    AdviceMode mode() default AdviceMode.PROXY;
-
     int order() default Ordered.LOWEST_PRECEDENCE;
-
-
 
 }

@@ -49,11 +49,6 @@ public class CompensateConfigurerComposite implements CompensateConfigurer {
         delegates.forEach(d -> d.addRecoverMethodArgsResolver(handlers));
     }
 
-    @Override
-    public CompensateAsyncSupportConfigurer getCompensateAsyncSupportConfigurer() {
-        return delegates.stream().map(c ->
-                c.getCompensateAsyncSupportConfigurer()).findFirst().orElse(null);
-    }
 
 
 }

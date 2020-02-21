@@ -22,9 +22,9 @@ import java.util.UUID;
 @RestController
 public class HelloController {
 
-    private final SampleProvider sampleProvider;
+    private SampleProvider sampleProvider;
 
-    private final BatchSampleProvider batchSampleProvider;
+    private BatchSampleProvider batchSampleProvider;
 
     public HelloController(SampleProvider sampleProvider, BatchSampleProvider batchSampleProvider) {
         this.sampleProvider = sampleProvider;

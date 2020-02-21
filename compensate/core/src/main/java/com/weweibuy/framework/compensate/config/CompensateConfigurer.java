@@ -28,8 +28,5 @@ public interface CompensateConfigurer {
     default void addRecoverMethodArgsResolver(RecoverMethodArgsResolverComposite composite) {
     }
 
-    default CompensateAsyncSupportConfigurer getCompensateAsyncSupportConfigurer() {
-        return null;
-    }
 
 }
