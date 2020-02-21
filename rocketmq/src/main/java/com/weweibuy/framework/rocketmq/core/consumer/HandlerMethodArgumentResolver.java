@@ -25,8 +25,7 @@ public interface HandlerMethodArgumentResolver {
      * @param messageObject
      * @return
      */
-    Object resolveArgument(MethodParameter parameter, Object messageObject);
-
+    Object resolveArgument(MethodParameter parameter,  Object messageObject);
 
 
 }

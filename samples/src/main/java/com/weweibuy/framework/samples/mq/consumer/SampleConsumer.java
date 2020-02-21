@@ -1,6 +1,7 @@
 package com.weweibuy.framework.samples.mq.consumer;
 
 import com.weweibuy.framework.rocketmq.annotation.*;
+import com.weweibuy.framework.samples.message.SampleDog;
 import com.weweibuy.framework.samples.message.SampleUser;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyContext;
@@ -27,16 +28,16 @@ public class SampleConsumer {
     }
 
     @RocketConsumerHandler(tags = "AAA")
-    public void onMessage2(@Payload SampleUser user, @Header(MessageConst.PROPERTY_TAGS) String tag, @Header Map<String, String> headerMap) {
+    public void onMessage2(@Payload SampleUser<SampleDog> user, @Header(MessageConst.PROPERTY_TAGS) String tag, @Header Map<String, String> headerMap) {
         log.info("收到消息: {}", user);
     }
 
-    //    @RocketConsumerHandler
+    @RocketConsumerHandler(tags = "BBB")
     public void onMessage3(@Payload Collection<SampleUser> user) {
         log.info("收到消息: {}", user);
     }
 
-    //    @RocketConsumerHandler
+    @RocketConsumerHandler(tags = "CCC")
     public void onMessage4(@Payload List<MessageExt> messageExt) {
         log.info("收到消息: {}", messageExt);
     }

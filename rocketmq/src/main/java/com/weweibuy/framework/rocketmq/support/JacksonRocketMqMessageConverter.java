@@ -1,12 +1,18 @@
 package com.weweibuy.framework.rocketmq.support;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.weweibuy.framework.rocketmq.core.MessageConverter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.GenericTypeResolver;
 import org.springframework.core.MethodParameter;
 
 import java.io.IOException;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author durenhao
@@ -16,6 +22,8 @@ import java.io.IOException;
 public class JacksonRocketMqMessageConverter implements MessageConverter {
 
     private final ObjectMapper objectMapper;
+
+    private final Map<MethodParameter, JavaType> javaTypeMap = new ConcurrentHashMap<>(64);
 
     public JacksonRocketMqMessageConverter(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
@@ -31,24 +39,37 @@ public class JacksonRocketMqMessageConverter implements MessageConverter {
     }
 
     @Override
-    public Object fromMessageBody(byte[] payload, MethodParameter parameter) {
+    public Object fromMessageBody(byte[] payload, MethodParameter parameter, boolean batch) {
         try {
-            return objectMapper.readValue(payload, parameter.getParameterType());
+            return objectMapper.readValue(payload, javaType(parameter, batch));
         } catch (IOException e) {
             log.error("json 解析错误", e);
             throw new IllegalArgumentException(e);
         }
     }
 
-    @Override
-    public Object fromMessageBody(byte[] payload, Class type) {
-        try {
-            return objectMapper.readValue(payload, type);
-        } catch (IOException e) {
-            log.error("json 解析错误", e);
-            throw new IllegalArgumentException(e);
+    private JavaType javaType(MethodParameter parameter, boolean batch) {
+
+        if (!batch) {
+            return javaTypeMap.computeIfAbsent(parameter, p -> {
+                Type nestedGenericParameterType = p.getNestedGenericParameterType();
+                Type type = GenericTypeResolver.resolveType(p.getNestedGenericParameterType(), p.getParameterType());
+
+                return objectMapper.getTypeFactory().constructType(type);
+            });
         }
 
+        return javaTypeMap.computeIfAbsent(parameter, p -> {
+            Type parameterType = p.getNestedGenericParameterType();
+
+            Type arg = null;
+            if (parameterType instanceof ParameterizedType) {
+                Type[] args = ((ParameterizedType) parameterType).getActualTypeArguments();
+                arg = args[0];
+            }
+            return objectMapper.getTypeFactory().constructType(arg);
+        });
     }
+
 
 }

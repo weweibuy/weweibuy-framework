@@ -63,7 +63,7 @@ public class RocketHandlerMethod {
      * @param providedArgs
      * @return
      */
-    private Object[] getMethodArgumentValues(Object message, Object[] providedArgs) {
+    private Object[] getMethodArgumentValues(Object message, Object... providedArgs) {
         Object[] args = new Object[methodParameters.length];
 
         for (int i = 0; i < methodParameters.length; i++) {
@@ -120,13 +120,11 @@ public class RocketHandlerMethod {
      * @param args
      * @return
      */
-    private Object doInvoke(Object[] args) {
+    private Object doInvoke(Object[] args) throws InvocationTargetException {
         ReflectionUtils.makeAccessible(bridgedMethod);
         try {
             return bridgedMethod.invoke(bean, args);
         } catch (IllegalAccessException e) {
-            throw new IllegalStateException(e);
-        } catch (InvocationTargetException e) {
             throw new IllegalStateException(e);
         }
     }

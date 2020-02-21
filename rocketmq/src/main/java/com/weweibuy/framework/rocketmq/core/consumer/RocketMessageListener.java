@@ -7,12 +7,11 @@ package com.weweibuy.framework.rocketmq.core.consumer;
 public interface RocketMessageListener<R> {
 
     /**
-     * 处理消息
-     *
-     * @param messageObject
+     * @param messageObject 消息体
+     * @param originContext 原始消费上下文
      * @return
      */
-    R onMessage(Object messageObject, Object... args);
+    R onMessage(Object messageObject, Object originContext);
 
 
 }

@@ -13,7 +13,7 @@ public interface RocketListenerContainerFactory {
     /**
      * 创建监听容器
      *
-     * @param endpointList
+     * @param endpointList 一个Topic 与 group 的分组
      * @return
      */
     RocketListenerContainer createListenerContainer(List<MethodRocketListenerEndpoint> endpointList);

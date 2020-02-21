@@ -1,5 +1,6 @@
 package com.weweibuy.framework.rocketmq.core.consumer;
 
+import com.weweibuy.framework.rocketmq.annotation.BatchHandlerModel;
 import com.weweibuy.framework.rocketmq.annotation.RocketConsumerHandler;
 import com.weweibuy.framework.rocketmq.annotation.RocketListener;
 import com.weweibuy.framework.rocketmq.config.RocketMqProperties;
@@ -15,9 +16,7 @@ import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.core.annotation.AnnotationUtils;
-import org.springframework.util.Assert;
-import org.springframework.util.CollectionUtils;
-import org.springframework.util.ReflectionUtils;
+import org.springframework.util.*;
 
 import java.lang.reflect.Method;
 import java.util.*;
@@ -207,6 +206,25 @@ public class RocketBeanPostProcessor implements BeanPostProcessor, SmartInitiali
 
                 }
             }
+
+            v.forEach(e -> {
+                BatchHandlerModel batchHandlerModel = e.getBatchHandlerModel();
+                Integer consumeMessageBatchMaxSize = e.getConsumeMessageBatchMaxSize();
+
+                Assert.isTrue(!(consumeMessageBatchMaxSize == 1 && BatchHandlerModel.TOGETHER.equals(batchHandlerModel)),
+                        "consumeMessageBatchMaxSize 为 1 时, batchHandlerModel 不能为: TOGETHER");
+
+                if (BatchHandlerModel.TOGETHER.equals(batchHandlerModel)) {
+                    Class<?>[] parameterTypes = e.getMethod().getParameterTypes();
+                    Arrays.stream(parameterTypes)
+                            .filter(p -> ClassUtils.isAssignable(Collection.class, p))
+                            .findFirst().orElseThrow(() -> new IllegalArgumentException("batchHandlerModel 为 TOGETHER 时, 接受消息体参数必须为 collection类型"));
+
+                }
+
+            });
+
+
         });
     }
 

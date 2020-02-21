@@ -27,10 +27,10 @@ public abstract class AbstractRocketMessageListener<R> implements RocketMessageL
     }
 
     @Override
-    public R onMessage(Object messageObject, Object... args) {
+    public R onMessage(Object messageObject, Object originContext) {
         Object reValue = null;
         try {
-            reValue = rocketHandlerMethod.invoke(messageObject, args);
+            reValue = rocketHandlerMethod.invoke(messageObject, originContext);
         } catch (Exception e) {
             if (errorHandler != null) {
                 return (R) errorHandler.handlerException(e, messageObject, isOrderly());
@@ -39,7 +39,6 @@ public abstract class AbstractRocketMessageListener<R> implements RocketMessageL
         }
         return handleResult(reValue);
     }
-
 
 
     /**

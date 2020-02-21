@@ -1,6 +1,8 @@
 package com.weweibuy.framework.samples.controller;
 
+import com.weweibuy.framework.samples.message.SampleDog;
 import com.weweibuy.framework.samples.message.SampleUser;
+import com.weweibuy.framework.samples.mq.provider.BatchSampleProvider;
 import com.weweibuy.framework.samples.mq.provider.SampleProvider;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.client.producer.SendCallback;
@@ -22,14 +24,17 @@ public class HelloController {
 
     private final SampleProvider sampleProvider;
 
-    public HelloController(SampleProvider sampleProvider) {
+    private final BatchSampleProvider batchSampleProvider;
+
+    public HelloController(SampleProvider sampleProvider, BatchSampleProvider batchSampleProvider) {
         this.sampleProvider = sampleProvider;
+        this.batchSampleProvider = batchSampleProvider;
     }
 
     @GetMapping("/hello")
     public String hello(String msg) {
         SampleUser user = user(msg);
-
+        user.setSampleDog(dog());
         SendResult send = sampleProvider.send(user, "AAA", UUID.randomUUID().toString());
 
         return "hello";
@@ -57,7 +62,9 @@ public class HelloController {
     @GetMapping("/hello-batch")
     public String helloBatch(String msg) {
         SampleUser user = user(msg);
+        user.setSampleDog(dog());
         SampleUser user1 = user(msg + "QQQ");
+        user1.setSampleDog(dog());
         ArrayList<SampleUser> list = new ArrayList<>();
         list.add(user);
         list.add(user1);
@@ -65,7 +72,7 @@ public class HelloController {
         list.add(user1);
         list.add(user1);
         list.add(user1);
-        sampleProvider.sendBatch(list);
+        batchSampleProvider.sendBatch2(list);
         return "hello";
     }
 
@@ -76,6 +83,13 @@ public class HelloController {
         LocalDateTime of = LocalDateTime.of(1990, 12, 12, 21, 22);
         sampleUser.setBirthday(of);
         return sampleUser;
+    }
+
+    private SampleDog dog() {
+        SampleDog sampleDog = new SampleDog();
+        sampleDog.setDogName("dog tom");
+        sampleDog.setDogAge(11);
+        return sampleDog;
     }
 
 }

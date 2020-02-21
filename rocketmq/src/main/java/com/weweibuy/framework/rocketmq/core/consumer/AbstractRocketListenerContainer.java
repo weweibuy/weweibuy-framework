@@ -44,6 +44,7 @@ public abstract class AbstractRocketListenerContainer<T, R> implements RocketLis
     }
 
 
+
     @Override
     public RocketMessageListener<R> selectMessageListener(List<MessageExt> list) {
         if (batchSize == 1) {
@@ -52,6 +53,7 @@ public abstract class AbstractRocketListenerContainer<T, R> implements RocketLis
             }
             return listenerMap.get(list.get(0).getTags());
         } else {
+            // TODO 批量消息的形式 无法支持Tag 选择
             return rocketMessageListenerList.get(0);
         }
 
@@ -73,7 +75,7 @@ public abstract class AbstractRocketListenerContainer<T, R> implements RocketLis
             return rocketMessageListener.onMessage(messageExt, context);
         } else if (batchHandlerModel.equals(BatchHandlerModel.FOREACH)) {
             boolean match = list.stream()
-                    .map(m -> selectMessageListener(m.getTags()).onMessage(m))
+                    .map(m -> selectMessageListener(m.getTags()).onMessage(m, context))
                     .anyMatch(r -> !isSuccess(r));
             if (match) {
                 return fail;

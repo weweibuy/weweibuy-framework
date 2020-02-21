@@ -24,9 +24,8 @@ public interface MessageConverter {
      * @param payload
      * @return
      */
-    Object fromMessageBody(byte[] payload, MethodParameter parameter);
+    Object fromMessageBody(byte[] payload, MethodParameter parameter, boolean batch);
 
-    Object fromMessageBody(byte[] payload, Class type);
 
 
 

@@ -25,8 +25,9 @@ public class DefaultRocketListenerContainerFactory implements RocketListenerCont
         RocketListenerContainer container = null;
         if (orderly) {
             container = createOrderlyContainer(endpointList);
+        }else {
+            container = createConcurrentlyContainer(endpointList);
         }
-        container = createConcurrentlyContainer(endpointList);
         List<RocketMessageListener> listenerList = createListener(endpointList, container);
         container.setListeners(listenerList);
         return container;

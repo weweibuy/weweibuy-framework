@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
  * @date 2020/1/2 17:04
  **/
 @Data
-public class SampleUser {
+public class SampleUser<T> {
 
     private String userName;
 
@@ -17,6 +17,7 @@ public class SampleUser {
 
     private LocalDateTime birthday;
 
+    private T sampleDog;
 
 
 }

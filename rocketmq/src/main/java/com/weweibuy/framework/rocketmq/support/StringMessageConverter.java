@@ -16,13 +16,9 @@ public class StringMessageConverter implements MessageConverter {
     }
 
     @Override
-    public Object fromMessageBody(byte[] payload, MethodParameter parameter) {
+    public Object fromMessageBody(byte[] payload, MethodParameter parameter, boolean batch) {
         return null;
     }
 
-    @Override
-    public Object fromMessageBody(byte[] payload, Class type) {
-        return null;
-    }
 
 }

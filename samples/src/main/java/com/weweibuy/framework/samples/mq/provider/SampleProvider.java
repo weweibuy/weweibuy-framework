@@ -23,7 +23,7 @@ public interface SampleProvider {
     @RocketProviderHandler(tag = "TEST_TAG",  orderly = true)
     SendResult sendAsync(SampleUser user, SendCallback sendCallback, @Key String key);
 
-    @RocketProviderHandler(tag = "AAA", batch = true)
+    @RocketProviderHandler(tag = "BBB", batch = true)
     SendResult sendBatch(Collection<SampleUser> users);
 
 
