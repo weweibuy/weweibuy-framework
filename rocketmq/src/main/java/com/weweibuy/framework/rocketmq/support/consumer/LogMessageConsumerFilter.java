@@ -35,8 +35,8 @@ public class LogMessageConsumerFilter implements ConsumerFilter {
     }
 
     private void doLog(MessageExt messageExt) {
-        log.info("消费MQ消息: Topic:【{}】, Tag:【{}】, Body: {} ",
-                messageExt.getTopic(), messageExt.getTags(), new String(messageExt.getBody()));
+        log.info("消费MQ消息: Topic:【{}】, Tag:【{}】, Key:【{}】 Body: {} ",
+                messageExt.getTopic(), messageExt.getTags(), messageExt.getKeys(), new String(messageExt.getBody()));
     }
 
     private void doLogResult(Object result) {
