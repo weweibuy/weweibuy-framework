@@ -1,6 +1,6 @@
 package com.weweibuy.framework.mvc.extend.resolver;
 
-import com.weweibuy.framework.mvc.extend.annotation.SnakeCaseRequestParamBody;
+import com.weweibuy.framework.mvc.extend.resolver.annotation.SnakeCaseRequestParamBody;
 import org.springframework.beans.BeanUtils;
 import org.springframework.core.DefaultParameterNameDiscoverer;
 import org.springframework.core.MethodParameter;

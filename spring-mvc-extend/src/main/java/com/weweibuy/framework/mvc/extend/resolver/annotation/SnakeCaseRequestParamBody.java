@@ -1,4 +1,4 @@
-package com.weweibuy.framework.mvc.extend.annotation;
+package com.weweibuy.framework.mvc.extend.resolver.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
