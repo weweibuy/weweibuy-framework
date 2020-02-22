@@ -1,6 +1,6 @@
 package com.weweibuy.framework.samples.controller;
 
-import com.weweibuy.framework.mvc.extend.annotation.SnakeCaseRequestParamBody;
+import com.weweibuy.framework.mvc.extend.resolver.annotation.SnakeCaseRequestParamBody;
 import lombok.Data;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
