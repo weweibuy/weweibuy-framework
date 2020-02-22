@@ -15,7 +15,7 @@ import java.util.Collection;
 public interface BatchSampleProvider {
 
 
-    @RocketProviderHandler(tag = "AAA", batch = true)
+    @RocketProviderHandler(tag = "CCC", batch = true)
     SendResult sendBatch(Collection<SampleUser> users);
 
     @RocketProviderHandler(tag = "BBB", batch = true)

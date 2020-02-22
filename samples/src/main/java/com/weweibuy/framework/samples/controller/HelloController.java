@@ -32,10 +32,10 @@ public class HelloController {
     }
 
     @GetMapping("/hello")
-    public String hello(String msg) {
+    public String hello(String msg, String tag) {
         SampleUser user = user(msg);
         user.setSampleDog(dog());
-        SendResult send = sampleProvider.send(user, "AAA", UUID.randomUUID().toString());
+        SendResult send = sampleProvider.send(user, tag, UUID.randomUUID().toString());
 
         return "hello";
     }

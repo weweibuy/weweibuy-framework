@@ -83,11 +83,16 @@ public class DefaultRocketListenerContainerFactory implements RocketListenerCont
 
 
     private String mergeTags(List<MethodRocketListenerEndpoint> endpointList) {
-        return endpointList.stream()
-                .map(MethodRocketListenerEndpoint::getTags)
-                .reduce((a, b) -> a + "||" + b + "||")
-                .map(s -> s.substring(0, s.length() - 2))
-                .orElseThrow(() -> new IllegalArgumentException("Tag 错误"));
+        String tag = "";
+        for (int i = 0; i < endpointList.size(); i++) {
+            MethodRocketListenerEndpoint endpoint = endpointList.get(i);
+            if (i != endpointList.size() - 1) {
+                tag += (endpoint.getTags() + "||");
+            } else {
+                tag += endpoint.getTags();
+            }
+        }
+        return tag;
     }
 
 

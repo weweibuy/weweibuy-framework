@@ -7,6 +7,7 @@ import com.weweibuy.framework.rocketmq.config.RocketMqProperties;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.rocketmq.common.protocol.heartbeat.MessageModel;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.DisposableBean;
@@ -284,6 +285,9 @@ public class RocketBeanPostProcessor implements BeanPostProcessor, SmartInitiali
         private String secretKey;
 
         private String accessChannel;
+
+        private MessageModel messageModel;
+
 
     }
 

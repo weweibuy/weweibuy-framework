@@ -6,12 +6,10 @@ import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
 import org.apache.rocketmq.client.consumer.listener.MessageListener;
 import org.apache.rocketmq.client.exception.MQClientException;
 import org.apache.rocketmq.common.message.MessageExt;
+import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -123,7 +121,21 @@ public abstract class AbstractRocketListenerContainer<T, R> implements RocketLis
     @Override
     public void setListeners(List<RocketMessageListener<R>> listenerList) {
         this.rocketMessageListenerList = listenerList;
-        this.listenerMap = listenerList.stream()
-                .collect(Collectors.toMap(l -> ((AbstractRocketMessageListener) l).getTag(), i -> i));
+
+        Map<String, RocketMessageListener<R>> rocketMessageListenerMap = new HashMap<>();
+
+        for (RocketMessageListener listener : listenerList) {
+            AbstractRocketMessageListener rocketMessageListener = (AbstractRocketMessageListener) listener;
+            String[] split = rocketMessageListener.getTag().split("\\|\\|");
+            Assert.notNull(split, "RocketMessageListener 的 Tag不能为空");
+            if (split.length == 1) {
+                rocketMessageListenerMap.put(split[0], listener);
+            } else {
+                Arrays.stream(split).forEach(t -> rocketMessageListenerMap.put(t, listener));
+            }
+
+        }
+
+        this.listenerMap = rocketMessageListenerMap;
     }
 }

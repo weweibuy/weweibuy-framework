@@ -8,6 +8,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * TODO 支持配置文件信息
+ *
  * @author durenhao
  * @date 2020/1/4 17:13
  **/

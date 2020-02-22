@@ -1,6 +1,9 @@
 package com.weweibuy.framework.samples.mq.consumer;
 
-import com.weweibuy.framework.rocketmq.annotation.*;
+import com.weweibuy.framework.rocketmq.annotation.Header;
+import com.weweibuy.framework.rocketmq.annotation.Payload;
+import com.weweibuy.framework.rocketmq.annotation.RocketConsumerHandler;
+import com.weweibuy.framework.rocketmq.annotation.RocketListener;
 import com.weweibuy.framework.samples.message.SampleDog;
 import com.weweibuy.framework.samples.message.SampleUser;
 import lombok.extern.slf4j.Slf4j;
@@ -9,8 +12,6 @@ import org.apache.rocketmq.common.message.MessageConst;
 import org.apache.rocketmq.common.message.MessageExt;
 import org.springframework.stereotype.Component;
 
-import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -32,13 +33,14 @@ public class SampleConsumer {
         log.info("收到消息: {}", user);
     }
 
-    @RocketConsumerHandler(tags = "BBB")
-    public void onMessage3(@Payload Collection<SampleUser> user) {
+    @RocketConsumerHandler(tags = "BBB||CCC")
+    public void onMessage3(@Payload  SampleUser<SampleDog> user) {
         log.info("收到消息: {}", user);
     }
 
-    @RocketConsumerHandler(tags = "CCC")
-    public void onMessage4(@Payload List<MessageExt> messageExt) {
+
+    @RocketConsumerHandler(tags = "DDD")
+    public void onMessage5(MessageExt messageExt) {
         log.info("收到消息: {}", messageExt);
     }
 

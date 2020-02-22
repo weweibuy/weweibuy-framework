@@ -1,19 +1,15 @@
 package com.weweibuy.framework.rocketmq.core.consumer;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.rocketmq.common.message.MessageExt;
 import org.springframework.core.BridgeMethodResolver;
 import org.springframework.core.MethodParameter;
 import org.springframework.core.annotation.SynthesizingMethodParameter;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.ReflectionUtils;
-import org.springframework.util.TypeUtils;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 
 /**
  * @author durenhao
@@ -71,7 +67,7 @@ public class RocketHandlerMethod {
 
             if (argumentResolver == null) {
                 log.warn("Method: {}, 第: {} 个参数, 无法找到匹配的参数处理器", methodParameter.getMethod(), i);
-                continue;
+                throw new IllegalStateException("Method: " + methodParameter.getMethod() + ", 第: " + i + " 个参数, 无法找到匹配的参数处理器");
             }
             // 解析参数
             args[i] = argumentResolver.resolveArgument(methodParameter, message);
@@ -83,21 +79,17 @@ public class RocketHandlerMethod {
 
 
     protected Object findProvidedArgument(MethodParameter parameter, Object message, Object... providedArgs) {
+
         Class<?> parameterType = parameter.getParameterType();
-        Type genericParameterType = parameter.getGenericParameterType();
 
-        if (parameterType.isInstance(message) && genericParameterType instanceof ParameterizedType) {
-            ParameterizedType parameterGenericParameterType = (ParameterizedType) parameter.getGenericParameterType();
-            Type[] arguments = parameterGenericParameterType.getActualTypeArguments();
-            if (!ObjectUtils.isEmpty(arguments) && TypeUtils.isAssignable(MessageExt.class, arguments[0])) {
-                return message;
-            }
+
+        if (parameterType.isInstance(message)) {
+            return message;
         }
-
 
         if (!ObjectUtils.isEmpty(providedArgs)) {
             for (Object providedArg : providedArgs) {
-                if (parameter.getParameterType().isInstance(providedArg)) {
+                if (parameterType.isInstance(providedArg)) {
                     return providedArg;
                 }
             }

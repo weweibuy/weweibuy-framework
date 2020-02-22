@@ -14,11 +14,11 @@ import java.util.Collection;
  **/
 @Slf4j
 @Component
-@RocketListener(topic = "TEST_BATCH_SAMPLE_01", group = "TEST_BATCH_SAMPLE_01_C_GROUP", consumeMessageBatchMaxSize = 50)
+@RocketListener(topic = "${rocket-mq.consumer.batch-consumer.topic}", group = "TEST_BATCH_SAMPLE_01_C_GROUP", consumeMessageBatchMaxSize = 50)
 public class BatchSampleConsumer {
 
 
-    @RocketConsumerHandler(tags = "AAA", batchHandlerModel = BatchHandlerModel.TOGETHER)
+    @RocketConsumerHandler(tags = "AAA||BBB||CCC", batchHandlerModel = BatchHandlerModel.TOGETHER)
     public void onMessage(@Payload Collection<SampleUser<SampleDog>> user) {
         log.info("收到消息: {}", user);
     }
