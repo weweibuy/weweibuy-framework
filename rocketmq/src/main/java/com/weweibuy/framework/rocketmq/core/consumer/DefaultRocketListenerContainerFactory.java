@@ -61,7 +61,7 @@ public class DefaultRocketListenerContainerFactory implements RocketListenerCont
         return new ConcurrentlyRocketListenerContainer(createMqConsumer(endpointList.get(0), tags), endpointList.get(0).getConsumerFilterFilterList(), endpointList.get(0).getConsumeMessageBatchMaxSize(), endpointList.get(0).getBatchHandlerModel());
     }
 
-    private DefaultMQPushConsumer createMqConsumer(MethodRocketListenerEndpoint endpoint, String tags) {
+    protected DefaultMQPushConsumer createMqConsumer(MethodRocketListenerEndpoint endpoint, String tags) {
         RPCHook rpcHook = null;
         DefaultMQPushConsumer pushConsumer = new DefaultMQPushConsumer(endpoint.getGroup(), rpcHook, new AllocateMessageQueueAveragely(),
                 Optional.ofNullable(endpoint.getMsgTrace()).orElse(false), endpoint.getTraceTopic());

@@ -34,7 +34,7 @@ public class SampleConsumer {
     }
 
     @RocketConsumerHandler(tags = "BBB||CCC")
-    public void onMessage3(@Payload  SampleUser<SampleDog> user) {
+    public void onMessage3(@Payload SampleUser<SampleDog> user) {
         log.info("收到消息: {}", user);
     }
 

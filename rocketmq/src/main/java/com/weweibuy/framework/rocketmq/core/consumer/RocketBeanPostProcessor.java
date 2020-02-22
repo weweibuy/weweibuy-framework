@@ -4,6 +4,7 @@ import com.weweibuy.framework.rocketmq.annotation.BatchHandlerModel;
 import com.weweibuy.framework.rocketmq.annotation.RocketConsumerHandler;
 import com.weweibuy.framework.rocketmq.annotation.RocketListener;
 import com.weweibuy.framework.rocketmq.config.RocketMqProperties;
+import com.weweibuy.framework.rocketmq.utils.ResourcesUtils;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.apache.commons.lang3.StringUtils;
@@ -13,7 +14,9 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.SmartInitializingSingleton;
 import org.springframework.beans.factory.config.BeanPostProcessor;
+import org.springframework.context.ResourceLoaderAware;
 import org.springframework.core.annotation.AnnotationUtils;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.CollectionUtils;
@@ -27,7 +30,9 @@ import java.util.stream.Collectors;
  * @author durenhao
  * @date 2020/1/4 20:31
  **/
-public class RocketBeanPostProcessor implements BeanPostProcessor, SmartInitializingSingleton, DisposableBean {
+public class RocketBeanPostProcessor implements BeanPostProcessor, SmartInitializingSingleton, DisposableBean, ResourceLoaderAware {
+
+    private ResourceLoader resourceLoader;
 
     private List<MethodRocketListenerEndpoint> endpointList;
 
@@ -44,7 +49,7 @@ public class RocketBeanPostProcessor implements BeanPostProcessor, SmartInitiali
     private List<ConsumerFilter> consumerFilterList;
 
     public RocketBeanPostProcessor(RocketListenerContainerFactory containerFactory, MessageHandlerMethodFactory messageHandlerMethodFactory, RocketMqProperties rocketMqProperties,
-                                    HandlerMethodArgumentResolverComposite argumentResolverComposite) {
+                                   HandlerMethodArgumentResolverComposite argumentResolverComposite) {
         this.rocketEndpointRegistrar = new RocketEndpointRegistrar(containerFactory);
         this.rocketMqProperties = rocketMqProperties;
         this.messageHandlerMethodFactory = messageHandlerMethodFactory;
@@ -86,15 +91,20 @@ public class RocketBeanPostProcessor implements BeanPostProcessor, SmartInitiali
 
         listenerEndpoint.setName(name);
         listenerEndpoint.setBean(bean);
-        listenerEndpoint.setNameServer(rocketMqProperties.getNameServer());
         listenerEndpoint.setMethod(method);
+
         listenerEndpoint.setMessageHandlerMethodFactory(messageHandlerMethodFactory);
-        listenerEndpoint.setTags(consumerHandler.tags());
-        listenerEndpoint.setOrderly(rocketListener.orderly());
         listenerEndpoint.setConsumeMessageBatchMaxSize(rocketListener.consumeMessageBatchMaxSize());
         listenerEndpoint.setErrorHandler(errorHandler);
         listenerEndpoint.setArgumentResolverComposite(argumentResolverComposite);
         listenerEndpoint.setBatchHandlerModel(consumerHandler.batchHandlerModel());
+
+        listenerEndpoint.setNameServer(rocketMqProperties.getNameServer());
+        listenerEndpoint.setTags(consumerHandler.tags());
+        listenerEndpoint.setOrderly(rocketListener.orderly());
+        listenerEndpoint.setMessageModel(rocketListener.messageModel());
+
+
         listenerEndpoint.setConsumerFilterFilterList(consumerFilterList);
         if (rocketMqProperties.getConsumer() != null && rocketMqProperties.getConsumer().get(name) != null) {
             RocketMqProperties.Consumer consumer = rocketMqProperties.getConsumer().get(name);
@@ -107,13 +117,13 @@ public class RocketBeanPostProcessor implements BeanPostProcessor, SmartInitiali
             if (StringUtils.isNotBlank(consumer.getTopic())) {
                 listenerEndpoint.setTopic(consumer.getTopic());
             } else {
-                listenerEndpoint.setTopic(rocketListener.topic());
+                listenerEndpoint.setTopic(ResourcesUtils.resolve(rocketListener.topic(), resourceLoader));
             }
 
             if (StringUtils.isNotBlank(consumer.getGroup())) {
                 listenerEndpoint.setGroup(consumer.getGroup());
             } else {
-                listenerEndpoint.setGroup(rocketListener.topic());
+                listenerEndpoint.setGroup(ResourcesUtils.resolve(rocketListener.group(), resourceLoader));
             }
 
             if (consumer.getTimeout() != null) {
@@ -141,14 +151,13 @@ public class RocketBeanPostProcessor implements BeanPostProcessor, SmartInitiali
             }
 
         } else {
-            listenerEndpoint.setTopic(rocketListener.topic());
-            listenerEndpoint.setGroup(rocketListener.topic());
+            listenerEndpoint.setTopic(ResourcesUtils.resolve(rocketListener.topic(), resourceLoader));
+            listenerEndpoint.setGroup(ResourcesUtils.resolve(rocketListener.group(), resourceLoader));
 
             listenerEndpoint.setThreadMin(rocketListener.threadMin());
             listenerEndpoint.setThreadMax(rocketListener.threadMax());
             listenerEndpoint.setMaxRetry(rocketListener.maxRetry());
             listenerEndpoint.setTimeout(rocketListener.timeout());
-            listenerEndpoint.setMessageModel(rocketListener.messageModel());
         }
         return listenerEndpoint;
     }
@@ -261,6 +270,11 @@ public class RocketBeanPostProcessor implements BeanPostProcessor, SmartInitiali
     @Override
     public void destroy() throws Exception {
         rocketEndpointRegistrar.shutdownAllContainer();
+    }
+
+    @Override
+    public void setResourceLoader(ResourceLoader resourceLoader) {
+        this.resourceLoader = resourceLoader;
     }
 
 

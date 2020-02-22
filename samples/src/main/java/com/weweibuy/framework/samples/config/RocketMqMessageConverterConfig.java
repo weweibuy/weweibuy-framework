@@ -36,6 +36,7 @@ public class RocketMqMessageConverterConfig implements RocketConfigurer {
         messageSendFilter.add(logMessageSendFilter());
     }
 
+
     public MessageSendFilter logMessageSendFilter() {
         return new LogMessageSendFilter();
     }

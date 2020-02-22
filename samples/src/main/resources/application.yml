@@ -30,7 +30,7 @@ rocket-mq:
       customized-trace-topic: qaz
       topic: TEST_SAMPLE_01
       group: TEST_SAMPLE_01_C_GROUP
-    batch-consumer:
+    batchSampleConsumer:
       trace: false
       topic: TEST_SAMPLE_BATCH_01
       group: TEST_SAMPLE_BATCH_01_C_GROUP
