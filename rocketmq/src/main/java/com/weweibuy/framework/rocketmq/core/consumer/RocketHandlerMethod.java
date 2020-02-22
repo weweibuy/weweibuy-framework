@@ -48,14 +48,6 @@ public class RocketHandlerMethod {
     }
 
 
-    public Object invoke(Object message, Object... providedArgs) throws Exception {
-
-        Object[] args = getMethodArgumentValues(message, providedArgs);
-        Object returnValue = doInvoke(args);
-        return returnValue;
-    }
-
-
     /**
      * 解析方法参数
      *
@@ -127,6 +119,14 @@ public class RocketHandlerMethod {
         } catch (IllegalAccessException e) {
             throw new IllegalStateException(e);
         }
+    }
+
+
+    public Object invoke(Object message, Object... providedArgs) throws Exception {
+
+        Object[] args = getMethodArgumentValues(message, providedArgs);
+        Object returnValue = doInvoke(args);
+        return returnValue;
     }
 
     private MethodParameter[] initMethodParameters() {

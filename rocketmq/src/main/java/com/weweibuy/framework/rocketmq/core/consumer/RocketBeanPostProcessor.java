@@ -40,11 +40,12 @@ public class RocketBeanPostProcessor implements BeanPostProcessor, SmartInitiali
 
     private HandlerMethodArgumentResolverComposite argumentResolverComposite;
 
+    private List<ConsumerFilter> consumerFilterList;
+
     public RocketBeanPostProcessor(RocketListenerContainerFactory containerFactory, MessageHandlerMethodFactory messageHandlerMethodFactory, RocketMqProperties rocketMqProperties,
-                                   RocketListenerErrorHandler errorHandler, HandlerMethodArgumentResolverComposite argumentResolverComposite) {
+                                    HandlerMethodArgumentResolverComposite argumentResolverComposite) {
         this.rocketEndpointRegistrar = new RocketEndpointRegistrar(containerFactory);
         this.rocketMqProperties = rocketMqProperties;
-        this.errorHandler = errorHandler;
         this.messageHandlerMethodFactory = messageHandlerMethodFactory;
         this.argumentResolverComposite = argumentResolverComposite;
     }
@@ -93,7 +94,7 @@ public class RocketBeanPostProcessor implements BeanPostProcessor, SmartInitiali
         listenerEndpoint.setErrorHandler(errorHandler);
         listenerEndpoint.setArgumentResolverComposite(argumentResolverComposite);
         listenerEndpoint.setBatchHandlerModel(consumerHandler.batchHandlerModel());
-
+        listenerEndpoint.setConsumerFilterFilterList(consumerFilterList);
         if (rocketMqProperties.getConsumer() != null && rocketMqProperties.getConsumer().get(name) != null) {
             RocketMqProperties.Consumer consumer = rocketMqProperties.getConsumer().get(name);
             listenerEndpoint.setAccessChannel(consumer.getAccessChannel());
@@ -245,6 +246,15 @@ public class RocketBeanPostProcessor implements BeanPostProcessor, SmartInitiali
         SameRocketEndpointKey key = new SameRocketEndpointKey();
         BeanUtils.copyProperties(endpoint, key);
         return key;
+    }
+
+
+    public void setErrorHandler(RocketListenerErrorHandler errorHandler) {
+        this.errorHandler = errorHandler;
+    }
+
+    public void setConsumerFilterList(List<ConsumerFilter> consumerFilterList) {
+        this.consumerFilterList = consumerFilterList;
     }
 
     @Override

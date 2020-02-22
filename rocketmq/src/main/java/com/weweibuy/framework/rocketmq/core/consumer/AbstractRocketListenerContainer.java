@@ -6,7 +6,10 @@ import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
 import org.apache.rocketmq.client.consumer.listener.MessageListener;
 import org.apache.rocketmq.client.exception.MQClientException;
 import org.apache.rocketmq.common.message.MessageExt;
+import org.springframework.util.CollectionUtils;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -27,6 +30,8 @@ public abstract class AbstractRocketListenerContainer<T, R> implements RocketLis
 
     private Map<String, RocketMessageListener<R>> listenerMap;
 
+    private List<ConsumerFilter> messageSendFilterList;
+
     private Integer batchSize;
 
     private BatchHandlerModel batchHandlerModel;
@@ -36,13 +41,18 @@ public abstract class AbstractRocketListenerContainer<T, R> implements RocketLis
     private R fail;
 
     public AbstractRocketListenerContainer(DefaultMQPushConsumer mqPushConsumer,
-                                           Integer batchSize, BatchHandlerModel batchHandlerModel, R success, R fail) {
+                                           Integer batchSize, BatchHandlerModel batchHandlerModel,
+                                           List<ConsumerFilter> messageSendFilterList, R success, R fail) {
         this.mqPushConsumer = mqPushConsumer;
         this.mqPushConsumer.setMessageListener(getMessageListener());
         this.batchSize = batchSize;
         this.batchHandlerModel = batchHandlerModel;
+        if (CollectionUtils.isEmpty(messageSendFilterList)) {
+            messageSendFilterList = Collections.emptyList();
+        }
+        this.messageSendFilterList = messageSendFilterList.stream()
+                .sorted(Comparator.comparing(ConsumerFilter::getOrder)).collect(Collectors.toList());
     }
-
 
 
     @Override
@@ -71,10 +81,10 @@ public abstract class AbstractRocketListenerContainer<T, R> implements RocketLis
             MessageExt messageExt = list.get(0);
             String tags = messageExt.getTags();
             RocketMessageListener<R> rocketMessageListener = selectMessageListener(tags);
-            return rocketMessageListener.onMessage(messageExt, context);
+            return filterAndOnMessage(rocketMessageListener, messageExt, context);
         } else if (batchHandlerModel.equals(BatchHandlerModel.FOREACH)) {
             boolean match = list.stream()
-                    .map(m -> selectMessageListener(m.getTags()).onMessage(m, context))
+                    .map(m -> filterAndOnMessage(selectMessageListener(m.getTags()), m, context))
                     .anyMatch(r -> !isSuccess(r));
             if (match) {
                 return fail;
@@ -82,9 +92,12 @@ public abstract class AbstractRocketListenerContainer<T, R> implements RocketLis
             return success;
         } else {
             // 批量一起消费
-            return selectMessageListener(list)
-                    .onMessage(list, context);
+            return filterAndOnMessage(selectMessageListener(list), list, context);
         }
+    }
+
+    private R filterAndOnMessage(RocketMessageListener rocketMessageListener, Object messageObject, Object originContext) {
+        return (R) new MessageConsumerFilterEnter(messageSendFilterList, rocketMessageListener).doFilter(messageObject, originContext);
     }
 
 

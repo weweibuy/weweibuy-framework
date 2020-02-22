@@ -17,6 +17,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -31,9 +32,6 @@ public class ProviderConfig {
     private final RocketMqProperties rocketMqProperties;
 
     @Autowired(required = false)
-    private List<MessageSendFilter> sendFilterList;
-
-    @Autowired(required = false)
     private List<RocketConfigurer> configurer;
 
     public ProviderConfig(RocketMqProperties rocketMqProperties) {
@@ -42,6 +40,13 @@ public class ProviderConfig {
 
     @Bean
     public ProxyRocketProvider proxyRocketProvider(MessageConverter messageConverter) throws Exception {
+
+        List<MessageSendFilter> sendFilterList = new ArrayList<>();
+
+        if (configurer != null) {
+            configurer.forEach(c -> c.addMessageSendFilter(sendFilterList));
+        }
+
         return new ProxyRocketProvider(messageQueueSelector(), targetMethodMetaDataParser(messageConverter), mqProducer(), sendFilterList);
     }
 

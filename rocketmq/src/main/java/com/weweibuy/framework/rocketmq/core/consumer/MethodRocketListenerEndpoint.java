@@ -6,6 +6,7 @@ import org.apache.rocketmq.client.AccessChannel;
 import org.apache.rocketmq.common.protocol.heartbeat.MessageModel;
 
 import java.lang.reflect.Method;
+import java.util.List;
 
 /**
  * @author durenhao
@@ -59,6 +60,8 @@ public class MethodRocketListenerEndpoint {
     private MessageHandlerMethodFactory messageHandlerMethodFactory;
 
     private HandlerMethodArgumentResolverComposite argumentResolverComposite;
+
+    private List<ConsumerFilter> consumerFilterFilterList;
 
     /**
      * 创建每个方法对应的监听

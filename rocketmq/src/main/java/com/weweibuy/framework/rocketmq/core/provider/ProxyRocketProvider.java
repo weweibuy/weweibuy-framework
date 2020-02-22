@@ -32,20 +32,6 @@ public class ProxyRocketProvider implements InitializingBean, DisposableBean {
 
     private final MQProducer mqProducer;
 
-    public ProxyRocketProvider(MessageQueueSelector messageQueueSelector,
-                               TargetMethodMetaDataParser targetMethodMetaDataParser,
-                               MQProducer mqProducer, List<MessageSendFilter> messageSendFilterList) {
-        this.mqProducer = mqProducer;
-        this.messageQueueSelector = messageQueueSelector;
-        this.targetMethodMetaDataParser = targetMethodMetaDataParser;
-        if (CollectionUtils.isEmpty(messageSendFilterList)) {
-            messageSendFilterList = Collections.emptyList();
-        }
-        this.messageSendFilterList = messageSendFilterList.stream()
-                .sorted(Comparator.comparing(MessageSendFilter::getOrder))
-                .collect(Collectors.toList());
-    }
-
     public InvocationHandler newInstance(Class<?> target) {
         Map<Method, RocketMethodMetadata> parser = targetMethodMetaDataParser.parser(target);
 
@@ -59,6 +45,20 @@ public class ProxyRocketProvider implements InitializingBean, DisposableBean {
         InvocationHandler invocationHandler = proxyHandlerFactory.create(methodMethodHandlerMap);
 
         return invocationHandler;
+    }
+
+    public ProxyRocketProvider(MessageQueueSelector messageQueueSelector,
+                               TargetMethodMetaDataParser targetMethodMetaDataParser,
+                               MQProducer mqProducer, List<MessageSendFilter> messageSendFilterList) {
+        this.mqProducer = mqProducer;
+        this.messageQueueSelector = messageQueueSelector;
+        this.targetMethodMetaDataParser = targetMethodMetaDataParser;
+        if (CollectionUtils.isEmpty(messageSendFilterList)) {
+            messageSendFilterList = Collections.emptyList();
+        }
+        this.messageSendFilterList = messageSendFilterList.stream()
+                .sorted(Comparator.comparing(MessageSendFilter::getOrder))
+                .collect(Collectors.toList());
     }
 
 

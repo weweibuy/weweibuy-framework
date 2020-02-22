@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.util.CollectionUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -16,11 +17,12 @@ import java.util.List;
 @Configuration
 public class ConsumerConfig {
 
-    @Autowired(required = false)
-    private RocketListenerErrorHandler errorHandler;
 
     @Autowired(required = false)
-    private List<RocketConfigurer> configurer;
+    private List<RocketConfigurer> configurerList;
+
+    @Autowired(required = false)
+    private RocketListenerErrorHandler errorHandler;
 
 
     @Bean
@@ -30,12 +32,22 @@ public class ConsumerConfig {
         composite.addResolver(new PayloadMethodArgumentResolver(messageConverter));
         composite.addResolver(new HeaderMethodArgumentResolver());
 
-        if (!CollectionUtils.isEmpty(configurer)) {
-            configurer.forEach(c -> c.addHandlerMethodArgumentResolver(composite));
+        List<ConsumerFilter> list = new ArrayList<>();
+        if (!CollectionUtils.isEmpty(configurerList)) {
+            configurerList.forEach(c -> {
+                c.addHandlerMethodArgumentResolver(composite);
+                c.addConsumerFilter(list);
+            });
         }
 
-        return new RocketBeanPostProcessor(new DefaultRocketListenerContainerFactory(), messageHandlerMethodFactory(),
-                rocketMqProperties, errorHandler, composite);
+        RocketBeanPostProcessor postProcessor = new RocketBeanPostProcessor(new DefaultRocketListenerContainerFactory(), messageHandlerMethodFactory(),
+                rocketMqProperties, composite);
+
+
+        postProcessor.setConsumerFilterList(list);
+        postProcessor.setErrorHandler(errorHandler);
+        return postProcessor;
+
     }
 
     @Bean

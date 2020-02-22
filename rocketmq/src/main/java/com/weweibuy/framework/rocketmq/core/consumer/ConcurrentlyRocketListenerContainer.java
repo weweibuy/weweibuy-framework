@@ -22,8 +22,8 @@ public class ConcurrentlyRocketListenerContainer extends AbstractRocketListenerC
 
     private MessageListener messageListener;
 
-    public ConcurrentlyRocketListenerContainer(DefaultMQPushConsumer mqPushConsumer, Integer batchSize, BatchHandlerModel batchHandlerModel) {
-        super(mqPushConsumer, batchSize, batchHandlerModel, ConsumeConcurrentlyStatus.CONSUME_SUCCESS, ConsumeConcurrentlyStatus.RECONSUME_LATER);
+    public ConcurrentlyRocketListenerContainer(DefaultMQPushConsumer mqPushConsumer, List<ConsumerFilter> filterList, Integer batchSize, BatchHandlerModel batchHandlerModel) {
+        super(mqPushConsumer, batchSize, batchHandlerModel, filterList, ConsumeConcurrentlyStatus.CONSUME_SUCCESS, ConsumeConcurrentlyStatus.RECONSUME_LATER);
     }
 
 

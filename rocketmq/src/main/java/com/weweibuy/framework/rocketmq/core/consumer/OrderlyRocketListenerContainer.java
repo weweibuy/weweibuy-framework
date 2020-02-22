@@ -15,8 +15,8 @@ public class OrderlyRocketListenerContainer extends AbstractRocketListenerContai
 
     private MessageListener messageListener;
 
-    public OrderlyRocketListenerContainer(DefaultMQPushConsumer mqPushConsumer, Integer batchSize, BatchHandlerModel batchHandlerModel) {
-        super(mqPushConsumer, batchSize, batchHandlerModel, ConsumeOrderlyStatus.SUCCESS, ConsumeOrderlyStatus.SUSPEND_CURRENT_QUEUE_A_MOMENT);
+    public OrderlyRocketListenerContainer(DefaultMQPushConsumer mqPushConsumer, Integer batchSize, BatchHandlerModel batchHandlerModel, List<ConsumerFilter> filterList) {
+        super(mqPushConsumer, batchSize, batchHandlerModel, filterList, ConsumeOrderlyStatus.SUCCESS, ConsumeOrderlyStatus.SUSPEND_CURRENT_QUEUE_A_MOMENT);
     }
 
     @Override
