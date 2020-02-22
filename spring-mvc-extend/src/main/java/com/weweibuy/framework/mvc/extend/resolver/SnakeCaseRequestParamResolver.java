@@ -2,7 +2,6 @@ package com.weweibuy.framework.mvc.extend.resolver;
 
 import com.weweibuy.framework.mvc.extend.annotation.SnakeCaseRequestParamBody;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.TypeMismatchException;
 import org.springframework.core.DefaultParameterNameDiscoverer;
 import org.springframework.core.MethodParameter;
 import org.springframework.core.ParameterNameDiscoverer;
@@ -30,7 +29,6 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 import org.springframework.web.servlet.HandlerMapping;
 
 import javax.servlet.ServletRequest;
-import java.beans.ConstructorProperties;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -176,67 +174,7 @@ public class SnakeCaseRequestParamResolver implements HandlerMethodArgumentResol
             // A single default constructor -> clearly a standard JavaBeans arrangement.
             return BeanUtils.instantiateClass(ctor);
         }
-
-        // A single data class constructor -> resolve constructor arguments from request parameters.
-        ConstructorProperties cp = ctor.getAnnotation(ConstructorProperties.class);
-        String[] paramNames = (cp != null ? cp.value() : parameterNameDiscoverer.getParameterNames(ctor));
-        Assert.state(paramNames != null, () -> "Cannot resolve parameter names for constructor " + ctor);
-        Class<?>[] paramTypes = ctor.getParameterTypes();
-        Assert.state(paramNames.length == paramTypes.length,
-                () -> "Invalid number of parameter names: " + paramNames.length + " for constructor " + ctor);
-
-        Object[] args = new Object[paramTypes.length];
-        WebDataBinder binder = binderFactory.createBinder(webRequest, null, attributeName);
-        String fieldDefaultPrefix = binder.getFieldDefaultPrefix();
-        String fieldMarkerPrefix = binder.getFieldMarkerPrefix();
-        boolean bindingFailure = false;
-        Set<String> failedParams = new HashSet<>(4);
-
-        for (int i = 0; i < paramNames.length; i++) {
-            String paramName = paramNames[i];
-            Class<?> paramType = paramTypes[i];
-            Object value = webRequest.getParameterValues(paramName);
-            if (value == null) {
-                if (fieldDefaultPrefix != null) {
-                    value = webRequest.getParameter(fieldDefaultPrefix + paramName);
-                }
-                if (value == null && fieldMarkerPrefix != null) {
-                    if (webRequest.getParameter(fieldMarkerPrefix + paramName) != null) {
-                        value = binder.getEmptyValue(paramType);
-                    }
-                }
-            }
-            try {
-                MethodParameter methodParam = new SnakeCaseRequestParamResolver.FieldAwareConstructorParameter(ctor, i, paramName);
-                if (value == null && methodParam.isOptional()) {
-                    args[i] = (methodParam.getParameterType() == Optional.class ? Optional.empty() : null);
-                } else {
-                    args[i] = binder.convertIfNecessary(value, paramType, methodParam);
-                }
-            } catch (TypeMismatchException ex) {
-                ex.initPropertyName(paramName);
-                args[i] = value;
-                failedParams.add(paramName);
-                binder.getBindingResult().recordFieldValue(paramName, paramType, value);
-                binder.getBindingErrorProcessor().processPropertyAccessException(ex, binder.getBindingResult());
-                bindingFailure = true;
-            }
-        }
-
-        if (bindingFailure) {
-            BindingResult result = binder.getBindingResult();
-            for (int i = 0; i < paramNames.length; i++) {
-                String paramName = paramNames[i];
-                if (!failedParams.contains(paramName)) {
-                    Object value = args[i];
-                    result.recordFieldValue(paramName, paramTypes[i], value);
-                    validateValueIfApplicable(binder, parameter, ctor.getDeclaringClass(), paramName, value);
-                }
-            }
-            throw new BindException(result);
-        }
-
-        return BeanUtils.instantiateClass(ctor, args);
+        throw new IllegalArgumentException(ctor.toString() + " 必须有空参构造");
     }
 
 

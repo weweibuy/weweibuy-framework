@@ -56,7 +56,7 @@ public class SnakeCaseMutablePropertyValues extends MutablePropertyValues {
                 } else if (values.length > 1) {
                     params.put(unprefixed, values);
                 } else {
-                    params.put(unprefixed, CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, values[0]));
+                    params.put(unprefixed, values[0]);
                 }
             }
         }
