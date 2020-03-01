@@ -93,6 +93,18 @@
 
             <dependency>
                 <groupId>com.weweibuy.framework</groupId>
+                <artifactId>common-log</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.weweibuy.framework</groupId>
+                <artifactId>common-feign</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.weweibuy.framework</groupId>
                 <artifactId>spring-mvc-extend</artifactId>
                 <version>${project.version}</version>
             </dependency>

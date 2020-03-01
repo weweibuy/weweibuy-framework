@@ -1,6 +1,7 @@
 package com.weweibuy.framework.samples.controller;
 
 import com.weweibuy.framework.mvc.extend.resolver.annotation.SnakeCaseRequestParamBody;
+import com.weweibuy.framework.samples.model.dto.CommonDataJsonResponse;
 import lombok.Data;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,16 +25,18 @@ public class MvcController {
         return user;
     }
 
-    @GetMapping("/test-snake")
+    @RequestMapping("/test-snake")
     public Object request2(@SnakeCaseRequestParamBody @Valid MvcUser user, BindingResult result) {
-        return user;
+//        if (true) {
+//            throw new RuntimeException("xxx");
+//        }
+        return CommonDataJsonResponse.success(user);
     }
 
     @GetMapping("/test-param")
     public Object request3(@RequestParam String userName) {
         return userName;
     }
-
 
 
     @Data
