@@ -1,0 +1,3 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  com.weiweibuy.framework.common.feign.config.CommonFeignConfig,\
+  com.weiweibuy.framework.common.feign.config.HttpClientConfig

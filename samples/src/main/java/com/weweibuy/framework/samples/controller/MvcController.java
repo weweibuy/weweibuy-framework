@@ -1,16 +1,13 @@
 package com.weweibuy.framework.samples.controller;
 
-import com.weweibuy.framework.mvc.extend.resolver.annotation.SnakeCaseRequestParamBody;
+import com.weiweibuy.framework.common.mvc.resolver.annotation.SnakeCaseRequestParamBody;
 import com.weweibuy.framework.samples.model.dto.CommonDataJsonResponse;
 import lombok.Data;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 /**
  * @author durenhao
@@ -26,7 +23,7 @@ public class MvcController {
     }
 
     @RequestMapping("/test-snake")
-    public Object request2(@SnakeCaseRequestParamBody @Valid MvcUser user, BindingResult result) {
+    public Object request2(@SnakeCaseRequestParamBody @Valid MvcUser user) {
 //        if (true) {
 //            throw new RuntimeException("xxx");
 //        }
@@ -38,13 +35,18 @@ public class MvcController {
         return userName;
     }
 
+    @PostMapping("/test-json")
+    public Object request4(@RequestBody @Valid  MvcUser user) {
+        return CommonDataJsonResponse.success(user);
+    }
 
-    @Data
+        @Data
     public static class MvcUser {
 
-        @NotBlank
+        @NotBlank(message = "userName 不能为空")
         private String userName;
 
+        @NotNull
         private Integer userAge;
 
 

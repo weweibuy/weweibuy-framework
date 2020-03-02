@@ -15,7 +15,6 @@
         <module>interface</module>
         <module>samples</module>
         <module>compensate</module>
-        <module>spring-mvc-extend</module>
     </modules>
 
     <properties>
@@ -25,6 +24,7 @@
         <junit.version>4.12</junit.version>
         <lombok.version>1.18.10</lombok.version>
         <spring-boot.version>2.2.2.RELEASE</spring-boot.version>
+        <spring-cloud-version></spring-cloud-version>
         <rocketmq-client-version>4.6.0</rocketmq-client-version>
         <guava.version>28.1-jre</guava.version>
         <apache.common.lang.version>3.9</apache.common.lang.version>
@@ -48,6 +48,16 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>Hoxton.SR2</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+
 
             <dependency>
                 <groupId>org.apache.rocketmq</groupId>
@@ -99,6 +109,12 @@
 
             <dependency>
                 <groupId>com.weweibuy.framework</groupId>
+                <artifactId>common-mvc</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.weweibuy.framework</groupId>
                 <artifactId>common-feign</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -124,6 +140,12 @@
             <dependency>
                 <groupId>com.weweibuy.framework</groupId>
                 <artifactId>compensate-mybatis</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.weweibuy.framework</groupId>
+                <artifactId>common-feign</artifactId>
                 <version>${project.version}</version>
             </dependency>
 

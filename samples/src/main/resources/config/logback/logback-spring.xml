@@ -24,7 +24,7 @@
     </springProfile>
     <springProfile name="test">
         <property name="log.path" value="/logs/${app_name}/pmp" />
-        <logger name="com.weweibuy.webuy.learning.spring.mapper" level="DEBUG"/>
+        <!--<logger name="com.weweibuy.framework.samples.client" level="DEBUG"/>-->
     </springProfile>
 
     <property name="appName" value="${app_name}" />
