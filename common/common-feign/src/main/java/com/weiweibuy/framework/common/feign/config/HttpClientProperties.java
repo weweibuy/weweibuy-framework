@@ -10,6 +10,9 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "http.client")
 @Data
 public class HttpClientProperties {
+
+    private boolean useSSL = false;
+
     /**
      * 最大连接个数
      */
@@ -34,4 +37,9 @@ public class HttpClientProperties {
      * 读取超时
      */
     private Integer socketTimeout = 5000;
+
+    /**
+     * 检查失效连接间隔  毫秒
+     */
+    private Integer checkExpiredConnectionInterval = 60000;
 }

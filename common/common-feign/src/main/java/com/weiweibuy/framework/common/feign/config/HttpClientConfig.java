@@ -8,6 +8,7 @@ import org.apache.http.conn.HttpClientConnectionManager;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.conn.ssl.TrustStrategy;
 import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,8 @@ import org.springframework.web.client.RestTemplate;
 
 import javax.net.ssl.SSLContext;
 import java.security.cert.X509Certificate;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * @author durenhao
@@ -35,6 +38,14 @@ public class HttpClientConfig {
     @Autowired
     private HttpClientProperties httpClientProperties;
 
+    private Timer connectionManagerTimer = null;
+
+    /**
+     * LB 时 {@link 'HttpClientFeignLoadBalancedConfiguration'}
+     *
+     * @param httpClient
+     * @return
+     */
     @Bean
     public Client feignClient(HttpClient httpClient) {
         return new ApacheHttpClient(httpClient);
@@ -43,21 +54,30 @@ public class HttpClientConfig {
 
     @Bean
     public CloseableHttpClient httpClient() throws Exception {
-        TrustStrategy acceptingTrustStrategy = (X509Certificate[] chain, String authType) -> true;
 
-        SSLContext sslContext = org.apache.http.ssl.SSLContexts.custom()
-                .loadTrustMaterial(null, acceptingTrustStrategy)
-                .build();
-
-        SSLConnectionSocketFactory csf = new SSLConnectionSocketFactory(sslContext);
-        return HttpClients.custom()
-                .setSSLSocketFactory(csf)
+        HttpClientBuilder httpClientBuilder = HttpClients.custom()
                 .setConnectionManager(httpClientConnectionManager())
                 .disableAutomaticRetries()
-                .setDefaultRequestConfig(requestConfig())
-                .build();
+                .setDefaultRequestConfig(requestConfig());
+
+        if (httpClientProperties.isUseSSL()) {
+            TrustStrategy acceptingTrustStrategy = (X509Certificate[] chain, String authType) -> true;
+            SSLContext sslContext = org.apache.http.ssl.SSLContexts.custom()
+                    .loadTrustMaterial(null, acceptingTrustStrategy)
+                    .build();
+            SSLConnectionSocketFactory csf = new SSLConnectionSocketFactory(sslContext);
+            httpClientBuilder.setSSLSocketFactory(csf);
+
+        }
+        return httpClientBuilder.build();
     }
 
+    /**
+     * feign 的 超时配置会作为每次请求的 option,
+     * 因为feign有默认的超时配置,所以此处的超时配置 只在单独使用 httpclient 时生效
+     *
+     * @return
+     */
     public RequestConfig requestConfig() {
         return RequestConfig.custom().setConnectTimeout(httpClientProperties.getConnectTimeout())
                 .setConnectionRequestTimeout(httpClientProperties.getConnectionRequestTimeout())
@@ -66,10 +86,22 @@ public class HttpClientConfig {
     }
 
 
-    public HttpClientConnectionManager httpClientConnectionManager() {
+    private HttpClientConnectionManager httpClientConnectionManager() {
         PoolingHttpClientConnectionManager connectionManager = new PoolingHttpClientConnectionManager();
         connectionManager.setMaxTotal(httpClientProperties.getMaxTotal());
         connectionManager.setDefaultMaxPerRoute(httpClientProperties.getDefaultMaxPerRoute());
+
+        if (this.connectionManagerTimer == null) {
+            this.connectionManagerTimer = new Timer(
+                    "HttpClientConfigTimer", true);
+            this.connectionManagerTimer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    connectionManager.closeExpiredConnections();
+                }
+            }, 30000, httpClientProperties.getCheckExpiredConnectionInterval());
+        }
+
         return connectionManager;
     }
 

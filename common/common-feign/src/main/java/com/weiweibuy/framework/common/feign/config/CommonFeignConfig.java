@@ -21,6 +21,15 @@ import org.springframework.context.annotation.Scope;
 @Slf4j
 public class CommonFeignConfig {
 
+    /**
+     * feign 超时覆盖机制,  配置 feign.client.config.xxx.readTimeout 最优先
+     * 其次: feign.client.config.default
+     * 其次:  org.springframework.cloud.openfeign.FeignClient#configuration() 中
+     * 最次是builder 中配置
+     *
+     * @param retryer
+     * @return
+     */
     @Bean
     @Scope("prototype")
     public Feign.Builder feignBuilder(Retryer retryer) {

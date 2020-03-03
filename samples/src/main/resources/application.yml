@@ -50,4 +50,12 @@ compensate:
     retry-rule: 10s 20s 30s
     alarm-rule: 30s ...
 
-
+feign:
+  client:
+    config:
+      default:
+        connect-timeout: 200
+        readTimeout: 3000
+#      myFeignClient2:
+#        connect-timeout: 2000
+#        readTimeout: 5000
