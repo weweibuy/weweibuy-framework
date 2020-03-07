@@ -1,7 +1,7 @@
 package com.weweibuy.framework.rocketmq.annotation;
 
 import com.weweibuy.framework.rocketmq.config.ConsumerConfig;
-import com.weweibuy.framework.rocketmq.config.MessageConverterConfig;
+import com.weweibuy.framework.rocketmq.config.RocketMqConfig;
 import org.springframework.context.annotation.Import;
 
 import java.lang.annotation.ElementType;
@@ -15,7 +15,7 @@ import java.lang.annotation.Target;
  **/
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-@Import({ConsumerConfig.class, MessageConverterConfig.class})
+@Import({ConsumerConfig.class, RocketMqConfig.class})
 public @interface EnableRocketConsumer {
 
 

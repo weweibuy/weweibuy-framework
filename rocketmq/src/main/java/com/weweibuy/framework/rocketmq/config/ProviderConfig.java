@@ -25,7 +25,6 @@ import java.util.List;
  * @date 2020/1/1 23:03
  **/
 @Configuration
-@EnableConfigurationProperties(RocketMqProperties.class)
 @ConditionalOnProperty(prefix = "rocket-mq", name = {"name-server", "provider.group"})
 public class ProviderConfig {
 
