@@ -79,12 +79,6 @@ public class ProviderConfig {
         return new MessageBodyParameterProcessor(messageConverter);
     }
 
-    @Bean
-    @ConditionalOnMissingBean(MessageConverter.class)
-    public MessageConverter stringMessageConverter() {
-        return new StringMessageConverter();
-    }
-
 
     @Bean
     public MQProducer mqProducer() throws Exception {

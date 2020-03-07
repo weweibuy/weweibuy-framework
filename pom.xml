@@ -29,6 +29,7 @@
         <guava.version>28.1-jre</guava.version>
         <apache.common.lang.version>3.9</apache.common.lang.version>
         <mybatis.version>2.1.0</mybatis.version>
+        <webuy-common.version>1.0-SNAPSHOT</webuy-common.version>
     </properties>
 
     <dependencyManagement>
@@ -56,8 +57,6 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-
-
 
             <dependency>
                 <groupId>org.apache.rocketmq</groupId>
@@ -147,6 +146,12 @@
                 <groupId>com.weweibuy.framework</groupId>
                 <artifactId>common-feign</artifactId>
                 <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.weweibuy</groupId>
+                <artifactId>webuy-common</artifactId>
+                <version>${webuy-common.version}</version>
             </dependency>
 
             <dependency>
