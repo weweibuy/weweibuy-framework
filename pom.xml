@@ -24,7 +24,7 @@
         <junit.version>4.12</junit.version>
         <lombok.version>1.18.10</lombok.version>
         <spring-boot.version>2.2.2.RELEASE</spring-boot.version>
-        <spring-cloud-version></spring-cloud-version>
+        <spring-cloud-version>Hoxton.SR2</spring-cloud-version>
         <rocketmq-client-version>4.6.0</rocketmq-client-version>
         <guava.version>28.1-jre</guava.version>
         <apache.common.lang.version>3.9</apache.common.lang.version>
@@ -53,7 +53,7 @@
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-dependencies</artifactId>
-                <version>Hoxton.SR2</version>
+                <version>${spring-cloud-version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
