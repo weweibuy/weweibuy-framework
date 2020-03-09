@@ -38,6 +38,7 @@ public abstract class AbstractRocketMessageListener<R> implements RocketMessageL
                 }
                 return getFailReturnValue();
             } else {
+                log.warn("消费MQ消息: {}, 时异常: {}", messageObject, e);
                 return getFailReturnValue();
             }
         }
