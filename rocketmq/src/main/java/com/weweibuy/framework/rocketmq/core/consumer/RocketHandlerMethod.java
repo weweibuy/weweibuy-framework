@@ -126,7 +126,6 @@ public class RocketHandlerMethod {
         MethodParameter[] result = new MethodParameter[count];
         for (int i = 0; i < count; i++) {
             SynthesizingMethodParameter parameter = new RocketMethodParameter(this.bridgedMethod, i, batchMaxSize);
-            parameter.withContainingClass(this.beanType);
             result[i] = parameter;
         }
         return result;

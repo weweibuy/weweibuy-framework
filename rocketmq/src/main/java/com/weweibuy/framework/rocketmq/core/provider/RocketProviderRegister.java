@@ -29,7 +29,10 @@ import java.util.Set;
  **/
 public class RocketProviderRegister implements ImportBeanDefinitionRegistrar, ResourceLoaderAware, EnvironmentAware {
 
-    private BeanNameGenerator beanNameGenerator = AnnotationBeanNameGenerator.INSTANCE;
+    private BeanNameGenerator beanNameGenerator = new AnnotationBeanNameGenerator();
+
+    // spring 5.2 之后
+    // private BeanNameGenerator beanNameGenerator = AnnotationBeanNameGenerator.INSTANCE;
 
     private ResourceLoader resourceLoader;
 
@@ -69,7 +72,7 @@ public class RocketProviderRegister implements ImportBeanDefinitionRegistrar, Re
                     .addPropertyValue("name", beanName)
                     .addPropertyValue("type", annotatedBeanDefinition.getBeanClassName())
                     .addPropertyValue("topic", attributes.get("topic"))
-                    .setPrimary(true)
+//                    .setPrimary(true)  spring 5.1.1 之后才有
                     .setAutowireMode(AbstractBeanDefinition.AUTOWIRE_BY_TYPE);
             AbstractBeanDefinition definition = definitionBuilder.getBeanDefinition();
 

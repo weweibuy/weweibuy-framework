@@ -2,6 +2,7 @@ package com.weweibuy.framework.rocketmq.core.consumer;
 
 import com.weweibuy.framework.rocketmq.annotation.BatchHandlerModel;
 import com.weweibuy.framework.rocketmq.core.MessageConverter;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
 import org.apache.rocketmq.client.consumer.listener.MessageListener;
 import org.apache.rocketmq.client.exception.MQClientException;
@@ -18,6 +19,7 @@ import java.util.stream.Collectors;
  * @author durenhao
  * @date 2020/1/8 11:54
  **/
+@Slf4j
 public abstract class AbstractRocketListenerContainer<T, R> implements RocketListenerContainer<T, R> {
 
     private MessageConverter messageConverter;
@@ -68,6 +70,10 @@ public abstract class AbstractRocketListenerContainer<T, R> implements RocketLis
 
     @Override
     public RocketMessageListener<R> selectMessageListener(String tag) {
+        if (org.apache.commons.lang3.StringUtils.isBlank(tag)) {
+            // tag 为空 说明监听tag为*, tag为* 监听有且只能有一个
+            return listenerMap.get("*");
+        }
         return listenerMap.get(tag);
     }
 
@@ -79,6 +85,10 @@ public abstract class AbstractRocketListenerContainer<T, R> implements RocketLis
             MessageExt messageExt = list.get(0);
             String tags = messageExt.getTags();
             RocketMessageListener<R> rocketMessageListener = selectMessageListener(tags);
+            if (rocketMessageListener == null) {
+                log.error("MQ消息 tag: [{}], 无法找到对应的监听器", tags);
+                throw new IllegalStateException("MQ消息 tag: [" + tags + "], 无法找到对应的监听器");
+            }
             return filterAndOnMessage(rocketMessageListener, messageExt, context);
         } else if (batchHandlerModel.equals(BatchHandlerModel.FOREACH)) {
             boolean match = list.stream()
