@@ -26,6 +26,7 @@ public class TtlMDCAdapter implements MDCAdapter {
 
     static {
         mtcMDCAdapter = new TtlMDCAdapter();
+        // 替换MDC实现
         MDC.mdcAdapter = mtcMDCAdapter;
     }
 
