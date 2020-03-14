@@ -30,6 +30,7 @@
         <apache.common.lang.version>3.9</apache.common.lang.version>
         <mybatis.version>2.1.0</mybatis.version>
         <webuy-common.version>1.0-SNAPSHOT</webuy-common.version>
+        <ttl.version>2.11.4</ttl.version>
     </properties>
 
     <dependencyManagement>
@@ -170,6 +171,12 @@
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-lang3</artifactId>
                 <version>${apache.common.lang.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>transmittable-thread-local</artifactId>
+                <version>${ttl.version}</version>
             </dependency>
 
         </dependencies>

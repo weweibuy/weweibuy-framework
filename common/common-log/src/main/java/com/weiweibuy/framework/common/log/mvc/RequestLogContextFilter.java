@@ -4,6 +4,7 @@ import com.weiweibuy.framework.common.log.context.RequestLogContext;
 import com.weweibuy.webuy.common.utils.JackJsonUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.MDC;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.MediaType;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -45,6 +46,7 @@ public class RequestLogContextFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
         } finally {
             RequestLogContext.clear();
+            MDC.clear();
         }
     }
 

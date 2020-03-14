@@ -2,6 +2,7 @@ package com.weiweibuy.framework.common.log.config;
 
 import com.weiweibuy.framework.common.log.mvc.RequestLogContextFilter;
 import com.weiweibuy.framework.common.log.mvc.RequestResponseBodyLogAdvice;
+import com.weiweibuy.framework.common.log.mvc.TraceCodeFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
@@ -31,6 +32,12 @@ public class CommonLogConfig {
             mappingConfigList.forEach(c -> c.addSensitizationMapping(setHashMap));
         }
         return new RequestLogContextFilter(setHashMap);
+    }
+
+    @Bean
+    @ConditionalOnProperty(prefix = "common.log.trace", name = "enable", havingValue = "true", matchIfMissing = true)
+    public TraceCodeFilter traceCodeFilter() {
+        return new TraceCodeFilter();
     }
 
     @Bean

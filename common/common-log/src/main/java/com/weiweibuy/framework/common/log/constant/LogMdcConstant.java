@@ -20,5 +20,6 @@ public interface LogMdcConstant {
 
     String SENSITIZATION_FIELD_SET_EMPTY = "[]";
 
+    String TID_FIELD_NAME = "tid";
 
 }
