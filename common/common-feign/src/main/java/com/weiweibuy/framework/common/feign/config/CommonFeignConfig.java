@@ -36,7 +36,7 @@ public class CommonFeignConfig {
         return Feign.builder()
 //                .options(new Request.Options(100, 200))
                 .retryer(retryer)
-                .logLevel(Logger.Level.FULL);
+                .logLevel(Logger.Level.NONE);
     }
 
     @Bean
