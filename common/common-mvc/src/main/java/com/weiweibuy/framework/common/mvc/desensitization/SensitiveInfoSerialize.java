@@ -12,6 +12,7 @@ import org.apache.commons.lang3.StringUtils;
 import java.io.IOException;
 import java.util.Objects;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author durenhao
@@ -20,13 +21,16 @@ import java.util.regex.Matcher;
 @Slf4j
 public class SensitiveInfoSerialize extends JsonSerializer<String> implements ContextualSerializer {
 
-    private SensitiveDataTypeEum sensitiveDataType;
+    private Pattern patten;
+
+    private String replace;
 
     public SensitiveInfoSerialize() {
     }
 
-    public SensitiveInfoSerialize(SensitiveDataTypeEum sensitiveDataType) {
-        this.sensitiveDataType = sensitiveDataType;
+    public SensitiveInfoSerialize(Pattern patten, String replace) {
+        this.patten = patten;
+        this.replace = replace;
     }
 
     @Override
@@ -43,7 +47,7 @@ public class SensitiveInfoSerialize extends JsonSerializer<String> implements Co
                     sensitiveInfo = beanProperty.getContextAnnotation(SensitiveData.class);
                 }
                 if (sensitiveInfo != null) { // 如果能得到注解，就将注解的 value 传入 SensitiveInfoSerialize
-                    return new SensitiveInfoSerialize(sensitiveInfo.type());
+                    return new SensitiveInfoSerialize(Pattern.compile(sensitiveInfo.patten()), sensitiveInfo.replace());
                 }
             }
             return serializerProvider.findValueSerializer(beanProperty.getType(), beanProperty);
@@ -55,9 +59,9 @@ public class SensitiveInfoSerialize extends JsonSerializer<String> implements Co
         if (StringUtils.isBlank(str)) {
             return str;
         }
-        Matcher matcher = sensitiveDataType.getPatten().matcher(str);
+        Matcher matcher = patten.matcher(str);
         if (matcher.find()) {
-            return matcher.replaceAll(sensitiveDataType.getReplace());
+            return matcher.replaceAll(replace);
         }
         return str;
     }

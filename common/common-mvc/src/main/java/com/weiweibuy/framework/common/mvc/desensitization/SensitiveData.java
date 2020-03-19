@@ -20,6 +20,19 @@ import java.lang.annotation.Target;
 @JacksonAnnotationsInside
 public @interface SensitiveData {
 
-    SensitiveDataTypeEum type();
+    /**
+     * 替换字符
+     *
+     * @return
+     */
+    String replace();
+
+    /**
+     * 匹配正则
+     *
+     * @return
+     */
+    String patten();
+
 
 }

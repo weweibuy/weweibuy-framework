@@ -1,7 +1,6 @@
 package com.weweibuy.framework.samples.controller;
 
 import com.weiweibuy.framework.common.mvc.desensitization.SensitiveData;
-import com.weiweibuy.framework.common.mvc.desensitization.SensitiveDataTypeEum;
 import com.weweibuy.framework.samples.model.dto.CommonDataJsonResponse;
 import lombok.Builder;
 import lombok.Data;
@@ -34,19 +33,15 @@ public class SensitiveController {
     @Builder
     public static class SensitiveModel {
 
-        @SensitiveData(type = SensitiveDataTypeEum.FULL_NAME)
+        @SensitiveData(patten = "(?<=[\\u4e00-\\u9fa5]{1})(.*)", replace = "*")
         private String userName;
 
-        @SensitiveData(type = SensitiveDataTypeEum.ID_CARD)
         private String idCard;
 
-        @SensitiveData(type = SensitiveDataTypeEum.ADDRESS)
         private String address;
 
-        @SensitiveData(type = SensitiveDataTypeEum.BANK_CARD)
         private String bankCard;
 
-        @SensitiveData(type = SensitiveDataTypeEum.MOBILE_PHONE)
         private String phone;
 
         private Integer age;
