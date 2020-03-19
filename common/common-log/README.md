@@ -20,7 +20,7 @@
 common.log.enable = false
 ```
 
-### 1.2 日志脱敏
+### 1.3 日志脱敏
 #### 1、实现接口
 ```java
 package com.weiweibuy.framework.common.log.config;
@@ -97,7 +97,7 @@ public interface PatternReplaceConfig {
 </configuration>
 ```
   
-### 1.3 MDC与 Trace
+### 1.4 MDC与 Trace
   配置: 
 `application.properites:`
 ```
@@ -105,7 +105,7 @@ common.log.trace.enable = true
 ```
   自动为Http请求响应绑定MDC 属性 tid  
   日志输出tid: Pattern加入:  [%X{tid}]
-#### 1.3.1 TTL MDC
+#### 1 TTL MDC
   TTL  [transmittable-thread-local](https://github.com/alibaba/transmittable-thread-local)
   加入依赖
 `maven:`
