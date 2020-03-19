@@ -1,18 +1,5 @@
-# weweibuy-framework
-  封装一些基于spring二次开发的组件
 
-# compensate  
-    一个用于异步场景的自动补偿组件
-# rocketmq 
-    将 rocketmq client 集成到springboot 中
-
-# spring-mvc-extend 
-    springMVC 的一些扩展
-    
-# idempotent 
-    幂等
-    
-    
+ 
 weweibuy-framework 
 --------
 
@@ -30,13 +17,12 @@ weweibuy-framework
 
 ### 3. mvc扩展 common-mvc
 
-- [样例(Example)](./common/common-mvc/README.md) ：介绍common-mvc
+- [common-mvc](./common/common-mvc/README.md) ：介绍common-mvc
 
 
 ### 4. 补偿机制 compensate
 
 ### 5. 幂等
-
 
 ### 6. rocketMQ 客户端 
 
