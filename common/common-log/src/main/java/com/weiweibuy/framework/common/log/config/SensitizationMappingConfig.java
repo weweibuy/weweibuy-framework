@@ -17,7 +17,7 @@ public interface SensitizationMappingConfig {
     /**
      * 增加 映射
      *
-     * @param mappingMap key  ->  匹配脱敏路基   v -> 脱敏字段
+     * @param mappingMap key  ->  匹配脱敏路径(生成形式 path + "_" + Method)   v -> 脱敏字段
      *                   {@link  LogMessageConverter}  内置部分字段处理方式
      *                   {@link PatternReplaceConfig  自定义字段处理方式}
      */

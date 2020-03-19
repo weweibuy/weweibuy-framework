@@ -3,7 +3,7 @@
 weweibuy-framework 
 --------
 
-##### weweibuy-framework 提供一些基于spring 封装的组件,简化日常开发
+##### weweibuy-framework 提供一些基于SpringBoot 2X 封装的组件,简化日常开发
 
 ### 1. 日志 common-log
 

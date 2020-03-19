@@ -63,9 +63,8 @@ public class RequestResponseBodyLogAdvice implements RequestBodyAdvice, Response
     @Override
     public Object beforeBodyWrite(Object body, MethodParameter returnType, MediaType selectedContentType, Class selectedConverterType, ServerHttpRequest request, ServerHttpResponse response) {
         RequestLogContext requestContext = RequestLogContext.getRequestContext();
-        Long timestamp = 0L;
         if (requestContext != null) {
-            timestamp = requestContext.getTimestamp();
+            Long timestamp = requestContext.getTimestamp();
             log.info("响应数据: {}, 请求耗时: {}", JackJsonUtils.write(body), System.currentTimeMillis() - timestamp);
         } else {
             log.info("响应数据: {}", JackJsonUtils.write(body));

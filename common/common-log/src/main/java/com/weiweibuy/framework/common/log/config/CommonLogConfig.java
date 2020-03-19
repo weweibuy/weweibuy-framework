@@ -35,7 +35,7 @@ public class CommonLogConfig {
     }
 
     @Bean
-    @ConditionalOnProperty(prefix = "common.log.trace", name = "enable", havingValue = "true", matchIfMissing = true)
+    @ConditionalOnProperty(prefix = "common.log.trace", name = "enable", havingValue = "true")
     public TraceCodeFilter traceCodeFilter() {
         return new TraceCodeFilter();
     }
