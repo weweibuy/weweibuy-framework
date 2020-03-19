@@ -19,6 +19,11 @@ import java.lang.annotation.Target;
 @Import({CompensateConfigurationSupport.class, AdvisorConfig.class})
 public @interface EnableCompensate {
 
+    /**
+     * 切面执行顺序
+     *
+     * @return
+     */
     int order() default Ordered.LOWEST_PRECEDENCE;
 
 }

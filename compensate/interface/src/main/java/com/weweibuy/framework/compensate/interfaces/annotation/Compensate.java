@@ -14,7 +14,7 @@ import java.lang.annotation.Target;
 public @interface Compensate {
 
     /**
-     * 标识哪一种类型的补偿
+     * 标识哪一种类型的补偿,需要唯一
      *
      * @return
      */
