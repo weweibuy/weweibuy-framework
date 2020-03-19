@@ -22,10 +22,13 @@ weweibuy-framework
 
 ### 4. 补偿机制 compensate
 
+- [compensate](./compensate/README.md) ：介绍compensate
+
 ### 5. 幂等
 
 ### 6. rocketMQ 客户端 
 
+- [rocketMQ](./rocketmq/README.md) ：介绍rocketMQ客户端
 
 
 
