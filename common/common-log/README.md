@@ -1,5 +1,6 @@
 # common-log
-  适用于Springboot + SpringMVC5x的与Logback,针对与Http请求/响应的日志输出(脱敏),追踪的组件
+  场景: 对于Http请求我们需要输出请求/响应数据,并对部分字段进行脱敏; 而且有traceId 可以关联整个链路,且traceId在多线程下也能正确输出.
+  适用于Springboot + SpringMVC5x + Logback
   
 ### 1.1 加入依赖：
 
