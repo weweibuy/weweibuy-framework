@@ -62,6 +62,9 @@ compensate.yourCompensateKey.alarm-rule =  # 报警规则 示例: 10s 20s ...  �
 ```      
   使用JDBC + mybatis 存储数据
 
-##### 2.4.2 报警: 
+##### 2.4.3 线程池设置: 
+  示例: [ThreadPoolCompensateConfigurer](../samples/src/main/java/com/weweibuy/framework/samples/compensate/service/ThreadPoolCompensateConfigurer.java)
+
+##### 2.4.4 报警: 
    [CompensateAlarmService](interface/src/main/java/com/weweibuy/framework/compensate/interfaces/CompensateAlarmService.java)
    默认为输出日志,可以自行实现接口替换
