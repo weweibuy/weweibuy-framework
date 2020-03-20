@@ -20,29 +20,48 @@ import java.util.Map;
  **/
 @Slf4j
 @Component
-@RocketListener(topic = "TEST_SAMPLE_01", group = "TEST_SAMPLE_01_C_GROUP")
+@RocketListener(topic = "TEST_SAMPLE_01", group = "TEST_SAMPLE_01_C_GROUP") // 定义一个RocketListener topic  group 支持EL表示式
 public class SampleConsumer {
 
-    //    @RocketConsumerHandler(tags = "QQQ")
+    /**
+     * 接受消息, Tag为 QQQ
+     *
+     * @param user    @Payload 标记消息体
+     * @param context
+     */
+    @RocketConsumerHandler(tags = "QQQ")
     public void onMessage(@Payload SampleUser user, ConsumeConcurrentlyContext context) {
         log.info("收到消息: {}, \r\n {} ", user, context);
     }
 
+    /**
+     * @param user      消息体
+     * @param tag       @Header 获取消息属性
+     * @param headerMap 消息属性
+     */
     @RocketConsumerHandler(tags = "AAA")
     public void onMessage2(@Payload SampleUser<SampleDog> user, @Header(MessageConst.PROPERTY_TAGS) String tag, @Header Map<String, String> headerMap) {
         log.info("收到消息: {}", user);
     }
 
+    /**
+     * 多个TAG
+     *
+     * @param user
+     */
     @RocketConsumerHandler(tags = "BBB||CCC")
     public void onMessage3(@Payload SampleUser<SampleDog> user) {
         log.info("收到消息: {}", user);
     }
 
-
+    /**
+     * 直接获取原始消息
+     *
+     * @param messageExt
+     */
     @RocketConsumerHandler(tags = "DDD")
     public void onMessage5(MessageExt messageExt) {
         log.info("收到消息: {}", messageExt);
     }
-
 
 }
