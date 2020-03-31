@@ -1,7 +1,7 @@
 package com.weiweibuy.framework.common.log.mvc;
 
+import com.weiweibuy.framework.common.core.utils.IdWorker;
 import com.weiweibuy.framework.common.log.constant.LogMdcConstant;
-import com.weweibuy.webuy.common.utils.IdWorker;
 import org.slf4j.MDC;
 import org.springframework.core.annotation.Order;
 import org.springframework.web.filter.OncePerRequestFilter;

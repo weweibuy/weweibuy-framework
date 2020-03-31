@@ -1,8 +1,8 @@
 package com.weiweibuy.framework.common.mvc.advice;
 
-import com.weweibuy.webuy.common.exception.BusinessException;
-import com.weweibuy.webuy.common.exception.SystemException;
-import com.weweibuy.webuy.common.model.dto.CommonCodeJsonResponse;
+import com.weiweibuy.framework.common.core.exception.BusinessException;
+import com.weiweibuy.framework.common.core.exception.SystemException;
+import com.weiweibuy.framework.common.core.model.dto.CommonCodeJsonResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

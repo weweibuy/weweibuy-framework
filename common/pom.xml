@@ -15,6 +15,7 @@
         <module>common-log</module>
         <module>common-feign</module>
         <module>common-mvc</module>
+        <module>common-core</module>
     </modules>
 
 

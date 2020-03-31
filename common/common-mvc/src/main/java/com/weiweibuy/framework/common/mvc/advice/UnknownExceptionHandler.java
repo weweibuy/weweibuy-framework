@@ -1,6 +1,6 @@
 package com.weiweibuy.framework.common.mvc.advice;
 
-import com.weweibuy.webuy.common.model.dto.CommonCodeJsonResponse;
+import com.weiweibuy.framework.common.core.model.dto.CommonCodeJsonResponse;
 import org.springframework.http.ResponseEntity;
 
 /**

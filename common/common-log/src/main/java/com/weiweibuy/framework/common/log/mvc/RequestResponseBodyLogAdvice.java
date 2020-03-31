@@ -1,7 +1,7 @@
 package com.weiweibuy.framework.common.log.mvc;
 
+import com.weiweibuy.framework.common.core.utils.JackJsonUtils;
 import com.weiweibuy.framework.common.log.context.RequestLogContext;
-import com.weweibuy.webuy.common.utils.JackJsonUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpInputMessage;

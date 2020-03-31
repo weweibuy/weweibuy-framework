@@ -2,8 +2,8 @@ package com.weweibuy.framework.rocketmq.support;
 
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.weiweibuy.framework.common.core.utils.JackJsonUtils;
 import com.weweibuy.framework.rocketmq.core.MessageConverter;
-import com.weweibuy.webuy.common.utils.JackJsonUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.GenericTypeResolver;
 import org.springframework.core.MethodParameter;

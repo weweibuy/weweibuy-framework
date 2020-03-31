@@ -1,7 +1,7 @@
 package com.weiweibuy.framework.common.feign.support;
 
+import com.weiweibuy.framework.common.core.utils.JackJsonUtils;
 import com.weiweibuy.framework.common.feign.log.LogEncoderAndDecoder;
-import com.weweibuy.webuy.common.utils.JackJsonUtils;
 import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.boot.autoconfigure.http.HttpMessageConverters;
 import org.springframework.context.annotation.DependsOn;

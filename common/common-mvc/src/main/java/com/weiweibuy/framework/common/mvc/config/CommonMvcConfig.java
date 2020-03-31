@@ -2,9 +2,9 @@ package com.weiweibuy.framework.common.mvc.config;
 
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
-import com.weiweibuy.framework.common.mvc.advice.CommonExceptionAdvice;
+import com.weiweibuy.framework.common.core.model.constant.CommonConstant;
 import com.weiweibuy.framework.common.mvc.advice.CommonErrorAttributes;
-import com.weweibuy.webuy.common.model.constant.CommonConstant;
+import com.weiweibuy.framework.common.mvc.advice.CommonExceptionAdvice;
 import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
