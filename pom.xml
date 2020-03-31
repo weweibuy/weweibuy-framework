@@ -146,6 +146,24 @@
 
             <dependency>
                 <groupId>com.weweibuy.framework</groupId>
+                <artifactId>idempotent-db</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.weweibuy.framework</groupId>
+                <artifactId>idempotent-core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.weweibuy.framework</groupId>
+                <artifactId>idempotent-redis</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.weweibuy.framework</groupId>
                 <artifactId>compensate-mybatis</artifactId>
                 <version>${project.version}</version>
             </dependency>
