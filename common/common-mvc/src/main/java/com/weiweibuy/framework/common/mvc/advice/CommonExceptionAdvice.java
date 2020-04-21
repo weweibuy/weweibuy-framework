@@ -27,7 +27,7 @@ public class CommonExceptionAdvice {
 
     @ExceptionHandler(BusinessException.class)
     public ResponseEntity<CommonCodeJsonResponse> handler(BusinessException e) {
-        log.warn("业务异常: {}", e);
+        log.warn("业务异常: ", e);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(CommonCodeJsonResponse.response(e.getCodeAndMsg()));
     }
 
@@ -40,27 +40,27 @@ public class CommonExceptionAdvice {
 
     @ExceptionHandler(BindException.class)
     public ResponseEntity<CommonCodeJsonResponse> handler(BindException e) {
-        log.warn("输入参数错误: {}", e);
+        log.warn("输入参数错误: ", e);
         String defaultMessage = e.getFieldError().getDefaultMessage();
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(CommonCodeJsonResponse.badRequestParam(defaultMessage));
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<CommonCodeJsonResponse> handler(HttpMessageNotReadableException e) {
-        log.warn("输入参数格式错误: {}", e);
+        log.warn("输入参数格式错误:", e);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(CommonCodeJsonResponse.badRequestParam("输入参数格式错误"));
     }
 
 
     @ExceptionHandler(SystemException.class)
     public ResponseEntity<CommonCodeJsonResponse> handler(SystemException e) {
-        log.error("系统异常: {}", e);
+        log.error("系统异常: ", e);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(CommonCodeJsonResponse.response(e.getCodeAndMsg()));
     }
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public ResponseEntity<CommonCodeJsonResponse> handler(HttpRequestMethodNotSupportedException e) {
-        log.error("请求 HttpMethod 错误: {}", e);
+        log.error("请求 HttpMethod 错误: ", e);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(CommonCodeJsonResponse.badRequestParam("请求HttpMethod错误"));
     }
 
@@ -70,7 +70,7 @@ public class CommonExceptionAdvice {
         if (unknownExceptionHandler != null) {
             return unknownExceptionHandler.handlerException(e);
         }
-        log.error("未知异常: {}", e);
+        log.error("未知异常: ", e);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(CommonCodeJsonResponse.unknownException());
     }
 
