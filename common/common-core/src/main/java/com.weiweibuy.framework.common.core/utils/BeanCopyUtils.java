@@ -24,7 +24,7 @@ public class BeanCopyUtils {
         }
         Class<?> srcClazz = src.getClass();
         Key key = new Key(srcClazz, destClazz);
-        BeanCopier beanCopier = BEAN_COPIER_MAP.computeIfAbsent(key, k -> BEAN_COPIER_MAP.put(k, BeanCopier.create(srcClazz, destClazz, false)));
+        BeanCopier beanCopier = BEAN_COPIER_MAP.computeIfAbsent(key, k ->BeanCopier.create(srcClazz, destClazz, false));
         T newInstance = null;
         try {
             newInstance = destClazz.newInstance();
