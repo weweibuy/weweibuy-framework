@@ -7,6 +7,8 @@ import com.weweibuy.framework.samples.model.User;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
+
 /**
  * @author durenhao
  * @date 2020/2/14 14:27
@@ -23,6 +25,18 @@ public class CompensateSimpleService {
             integer++;
             throw new RuntimeException("....");
         }
+        integer = 0;
+        return "success";
+    }
+
+
+    @Compensate(key = "CompensateSimpleService_3")
+    public String run3(Collection<User> users) {
+        if (integer < 1) {
+            integer++;
+            throw new RuntimeException("....");
+        }
+        integer = 0;
         return "success";
     }
 
@@ -32,8 +46,30 @@ public class CompensateSimpleService {
             integer++;
             throw new RuntimeException("....");
         }
+        integer = 0;
         return "success";
     }
+
+    @Compensate(key = "CompensateSimpleService_4")
+    public String run4(String name, String age) {
+        if (integer < 1) {
+            integer++;
+            throw new RuntimeException("....");
+        }
+        integer = 0;
+        return "success";
+    }
+
+    @Compensate(key = "CompensateSimpleService_5")
+    public String run5(User user, Dog dog) {
+        if (integer < 1) {
+            integer++;
+            throw new RuntimeException("....");
+        }
+        integer = 0;
+        return "success";
+    }
+
 
     private void run2(String str) {
         log.info("run2 .... {} {} {}", str);

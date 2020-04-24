@@ -49,6 +49,18 @@ compensate:
     compensate-type: 1
     retry-rule: 10s 20s 30s
     alarm-rule: 30s ...
+  CompensateSimpleService_3:
+    compensate-type: 0
+    retry-rule: 10s 20s 30s
+    alarm-rule: 30s ...
+  CompensateSimpleService_4:
+    compensate-type: 0
+    retry-rule: 10s 20s 30s
+    alarm-rule: 30s ...
+  CompensateSimpleService_5:
+    compensate-type: 0
+    retry-rule: 10s 20s 30s
+    alarm-rule: 30s ...
 
 feign:
   client:
