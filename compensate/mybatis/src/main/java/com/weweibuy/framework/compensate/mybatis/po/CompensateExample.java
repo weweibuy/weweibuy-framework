@@ -305,6 +305,146 @@ public class CompensateExample {
             return (Criteria) this;
         }
 
+        public Criteria andCompensateTypeIsNull() {
+            addCriterion("compensate_type is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andCompensateTypeIsNotNull() {
+            addCriterion("compensate_type is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andCompensateTypeEqualTo(String value) {
+            addCriterion("compensate_type =", value, "compensateType");
+            return (Criteria) this;
+        }
+
+        public Criteria andCompensateTypeNotEqualTo(String value) {
+            addCriterion("compensate_type <>", value, "compensateType");
+            return (Criteria) this;
+        }
+
+        public Criteria andCompensateTypeGreaterThan(String value) {
+            addCriterion("compensate_type >", value, "compensateType");
+            return (Criteria) this;
+        }
+
+        public Criteria andCompensateTypeGreaterThanOrEqualTo(String value) {
+            addCriterion("compensate_type >=", value, "compensateType");
+            return (Criteria) this;
+        }
+
+        public Criteria andCompensateTypeLessThan(String value) {
+            addCriterion("compensate_type <", value, "compensateType");
+            return (Criteria) this;
+        }
+
+        public Criteria andCompensateTypeLessThanOrEqualTo(String value) {
+            addCriterion("compensate_type <=", value, "compensateType");
+            return (Criteria) this;
+        }
+
+        public Criteria andCompensateTypeLike(String value) {
+            addCriterion("compensate_type like", value, "compensateType");
+            return (Criteria) this;
+        }
+
+        public Criteria andCompensateTypeNotLike(String value) {
+            addCriterion("compensate_type not like", value, "compensateType");
+            return (Criteria) this;
+        }
+
+        public Criteria andCompensateTypeIn(List<String> values) {
+            addCriterion("compensate_type in", values, "compensateType");
+            return (Criteria) this;
+        }
+
+        public Criteria andCompensateTypeNotIn(List<String> values) {
+            addCriterion("compensate_type not in", values, "compensateType");
+            return (Criteria) this;
+        }
+
+        public Criteria andCompensateTypeBetween(String value1, String value2) {
+            addCriterion("compensate_type between", value1, value2, "compensateType");
+            return (Criteria) this;
+        }
+
+        public Criteria andCompensateTypeNotBetween(String value1, String value2) {
+            addCriterion("compensate_type not between", value1, value2, "compensateType");
+            return (Criteria) this;
+        }
+
+        public Criteria andMethodArgsIsNull() {
+            addCriterion("method_args is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andMethodArgsIsNotNull() {
+            addCriterion("method_args is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andMethodArgsEqualTo(String value) {
+            addCriterion("method_args =", value, "methodArgs");
+            return (Criteria) this;
+        }
+
+        public Criteria andMethodArgsNotEqualTo(String value) {
+            addCriterion("method_args <>", value, "methodArgs");
+            return (Criteria) this;
+        }
+
+        public Criteria andMethodArgsGreaterThan(String value) {
+            addCriterion("method_args >", value, "methodArgs");
+            return (Criteria) this;
+        }
+
+        public Criteria andMethodArgsGreaterThanOrEqualTo(String value) {
+            addCriterion("method_args >=", value, "methodArgs");
+            return (Criteria) this;
+        }
+
+        public Criteria andMethodArgsLessThan(String value) {
+            addCriterion("method_args <", value, "methodArgs");
+            return (Criteria) this;
+        }
+
+        public Criteria andMethodArgsLessThanOrEqualTo(String value) {
+            addCriterion("method_args <=", value, "methodArgs");
+            return (Criteria) this;
+        }
+
+        public Criteria andMethodArgsLike(String value) {
+            addCriterion("method_args like", value, "methodArgs");
+            return (Criteria) this;
+        }
+
+        public Criteria andMethodArgsNotLike(String value) {
+            addCriterion("method_args not like", value, "methodArgs");
+            return (Criteria) this;
+        }
+
+        public Criteria andMethodArgsIn(List<String> values) {
+            addCriterion("method_args in", values, "methodArgs");
+            return (Criteria) this;
+        }
+
+        public Criteria andMethodArgsNotIn(List<String> values) {
+            addCriterion("method_args not in", values, "methodArgs");
+            return (Criteria) this;
+        }
+
+        public Criteria andMethodArgsBetween(String value1, String value2) {
+            addCriterion("method_args between", value1, value2, "methodArgs");
+            return (Criteria) this;
+        }
+
+        public Criteria andMethodArgsNotBetween(String value1, String value2) {
+            addCriterion("method_args not between", value1, value2, "methodArgs");
+            return (Criteria) this;
+        }
+
         public Criteria andNextTriggerTimeIsNull() {
             addCriterion("next_trigger_time is null");
             return (Criteria) this;
@@ -482,6 +622,66 @@ public class CompensateExample {
 
         public Criteria andAlarmCountNotBetween(Integer value1, Integer value2) {
             addCriterion("alarm_count not between", value1, value2, "alarmCount");
+            return (Criteria) this;
+        }
+
+        public Criteria andHasArgsExtIsNull() {
+            addCriterion("has_args_ext is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andHasArgsExtIsNotNull() {
+            addCriterion("has_args_ext is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andHasArgsExtEqualTo(Boolean value) {
+            addCriterion("has_args_ext =", value, "hasArgsExt");
+            return (Criteria) this;
+        }
+
+        public Criteria andHasArgsExtNotEqualTo(Boolean value) {
+            addCriterion("has_args_ext <>", value, "hasArgsExt");
+            return (Criteria) this;
+        }
+
+        public Criteria andHasArgsExtGreaterThan(Boolean value) {
+            addCriterion("has_args_ext >", value, "hasArgsExt");
+            return (Criteria) this;
+        }
+
+        public Criteria andHasArgsExtGreaterThanOrEqualTo(Boolean value) {
+            addCriterion("has_args_ext >=", value, "hasArgsExt");
+            return (Criteria) this;
+        }
+
+        public Criteria andHasArgsExtLessThan(Boolean value) {
+            addCriterion("has_args_ext <", value, "hasArgsExt");
+            return (Criteria) this;
+        }
+
+        public Criteria andHasArgsExtLessThanOrEqualTo(Boolean value) {
+            addCriterion("has_args_ext <=", value, "hasArgsExt");
+            return (Criteria) this;
+        }
+
+        public Criteria andHasArgsExtIn(List<Boolean> values) {
+            addCriterion("has_args_ext in", values, "hasArgsExt");
+            return (Criteria) this;
+        }
+
+        public Criteria andHasArgsExtNotIn(List<Boolean> values) {
+            addCriterion("has_args_ext not in", values, "hasArgsExt");
+            return (Criteria) this;
+        }
+
+        public Criteria andHasArgsExtBetween(Boolean value1, Boolean value2) {
+            addCriterion("has_args_ext between", value1, value2, "hasArgsExt");
+            return (Criteria) this;
+        }
+
+        public Criteria andHasArgsExtNotBetween(Boolean value1, Boolean value2) {
+            addCriterion("has_args_ext not between", value1, value2, "hasArgsExt");
             return (Criteria) this;
         }
 

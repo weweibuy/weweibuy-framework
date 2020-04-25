@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Collections;
+import java.util.HashMap;
 
 /**
  * @author durenhao
@@ -78,5 +79,50 @@ public class CompensateController {
         simpleService.run5(user, dog);
         return "success";
     }
+
+    @GetMapping("/compensate6")
+    public String run6(String args) {
+        simpleService.run3(Collections.emptyList());
+        return "success";
+    }
+
+    @GetMapping("/compensate7")
+    public String run7(String args) {
+        User user = new User();
+        Dog dog = new Dog();
+        user.setName("Jack");
+        user.setAge(12);
+        dog.setName("tom");
+        dog.setAge(12);
+        user.setDog(dog);
+        simpleService.run6(user, dog, dog, dog);
+        return "success";
+    }
+
+    @GetMapping("/compensate8")
+    public String run8(String args) {
+        User user = new User();
+        Dog dog = new Dog();
+        user.setName("Jack");
+        user.setAge(12);
+        user.setDog(dog);
+        simpleService.run7(user, user, user, user, user, user, user, user);
+        return "success";
+    }
+
+    @GetMapping("/compensate9")
+    public String run9(String args) {
+        User user = new User();
+        Dog dog = new Dog();
+        user.setName("Jack");
+        user.setAge(12);
+        user.setDog(dog);
+        HashMap<String, User> hashMap = new HashMap<>();
+        hashMap.put("121", user);
+        hashMap.put("121", user);
+        simpleService.run8(hashMap);
+        return "success";
+    }
+
 
 }

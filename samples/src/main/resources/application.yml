@@ -42,23 +42,19 @@ rocket-mq:
 
 compensate:
   CompensateSimpleService:
-    compensate-type: 0
+    compensate-type: METHOD_ARGS
     retry-rule: 1m 3m 1h
     alarm-rule: 10s ...
   CompensateSimpleService_2:
-    compensate-type: 1
+    compensate-type: BIZ_ID
     retry-rule: 10s 20s 30s
     alarm-rule: 30s ...
   CompensateSimpleService_3:
-    compensate-type: 0
+    compensate-type: METHOD_ARGS
     retry-rule: 10s 20s 30s
     alarm-rule: 30s ...
   CompensateSimpleService_4:
-    compensate-type: 0
-    retry-rule: 10s 20s 30s
-    alarm-rule: 30s ...
-  CompensateSimpleService_5:
-    compensate-type: 0
+    compensate-type: METHOD_ARGS
     retry-rule: 10s 20s 30s
     alarm-rule: 30s ...
 

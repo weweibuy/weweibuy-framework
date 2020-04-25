@@ -21,8 +21,8 @@ public class MethodArgsCompensateTypeResolver extends AbstractCompensateTypeReso
 
 
     @Override
-    public boolean match(Integer compensateType) {
-        return compensateType == 0;
+    public boolean match(String compensateType) {
+        return BuiltInCompensateType.METHOD_ARGS.toString().equals(compensateType);
     }
 
     @Override

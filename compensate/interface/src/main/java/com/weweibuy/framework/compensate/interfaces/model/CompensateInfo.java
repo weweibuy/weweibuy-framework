@@ -23,6 +23,8 @@ public class CompensateInfo {
 
     private String methodArgs;
 
+    private String compensateType;
+
     /**
      * 下一次触发时间
      */
@@ -36,6 +38,8 @@ public class CompensateInfo {
         private String bizId;
 
         private String methodArgs;
+
+        private String compensateType;
 
         private LocalDateTime nextTriggerTime;
 
@@ -59,8 +63,13 @@ public class CompensateInfo {
             return this;
         }
 
+        public CompensateInfoBuilder compensateType(String compensateType) {
+            this.compensateType = compensateType;
+            return this;
+        }
+
         public CompensateInfo build() {
-            return new CompensateInfo(compensateKey, bizId, methodArgs, nextTriggerTime);
+            return new CompensateInfo(compensateKey, bizId, methodArgs, compensateType, nextTriggerTime);
         }
 
     }

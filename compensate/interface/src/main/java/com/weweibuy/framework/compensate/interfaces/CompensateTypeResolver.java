@@ -21,7 +21,7 @@ public interface CompensateTypeResolver {
      * @param compensateType
      * @return
      */
-    boolean match(Integer compensateType);
+    boolean match(String compensateType);
 
     /**
      * 解析补偿信息

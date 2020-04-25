@@ -17,7 +17,7 @@ public class CompensateTypeResolverComposite {
 
     private final List<CompensateTypeResolver> resolvers = new LinkedList<>();
 
-    private final Map<Integer, CompensateTypeResolver> resolverCache =
+    private final Map<String, CompensateTypeResolver> resolverCache =
             new ConcurrentHashMap<>(32);
 
     public void addResolvers(List<CompensateTypeResolver> compensateTypeResolver) {
@@ -34,7 +34,7 @@ public class CompensateTypeResolverComposite {
      * @param compositeType
      * @return
      */
-    public CompensateTypeResolver getArgumentResolver(Integer compositeType) {
+    public CompensateTypeResolver getArgumentResolver(String compositeType) {
         CompensateTypeResolver result = this.resolverCache.get(compositeType);
         if (result == null) {
             for (CompensateTypeResolver resolver : this.resolvers) {

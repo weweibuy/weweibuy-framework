@@ -24,8 +24,8 @@ public class BizIdCompensateTypeResolver extends AbstractCompensateTypeResolver 
     }
 
     @Override
-    public boolean match(Integer compensateType) {
-        return compensateType == 1;
+    public boolean match(String compensateType) {
+        return BuiltInCompensateType.BIZ_ID.toString().equals(compensateType);
     }
 
 

@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.Map;
 
 /**
  * @author durenhao
@@ -69,6 +70,37 @@ public class CompensateSimpleService {
         integer = 0;
         return "success";
     }
+
+    @Compensate(key = "CompensateSimpleService_6")
+    public String run6(User user, Dog... dog) {
+        if (integer < 1) {
+            integer++;
+            throw new RuntimeException("....");
+        }
+        integer = 0;
+        return "success";
+    }
+
+    @Compensate(key = "CompensateSimpleService_7")
+    public String run7(User... user) {
+        if (integer < 1) {
+            integer++;
+            throw new RuntimeException("....");
+        }
+        integer = 0;
+        return "success";
+    }
+
+    @Compensate(key = "CompensateSimpleService_8")
+    public String run8(Map<String, User> userMap) {
+        if (integer < 1) {
+            integer++;
+            throw new RuntimeException("....");
+        }
+        integer = 0;
+        return "success";
+    }
+
 
 
     private void run2(String str) {

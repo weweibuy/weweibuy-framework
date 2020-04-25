@@ -11,9 +11,10 @@ import lombok.Data;
 @Data
 public class CompensateConfigProperties {
 
-    private Integer compensateType;
+    private String compensateType;
 
     private String retryRule;
 
     private String alarmRule;
+
 }

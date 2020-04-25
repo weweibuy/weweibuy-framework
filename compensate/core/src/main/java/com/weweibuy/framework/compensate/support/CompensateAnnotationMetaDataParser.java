@@ -35,15 +35,17 @@ public class CompensateAnnotationMetaDataParser {
 
     public CompensateInfo toCompensateInfo(Compensate annotation, Object target, Method method, Object[] args) {
         String key = annotation.key();
+
         CompensateConfigProperties configProperties = compensateConfigStore.compensateConfig(key);
         if (configProperties == null) {
             throw new IllegalStateException("补偿Key: " + key + ",必须有对应的配置");
         }
-        Integer compensateType = configProperties.getCompensateType();
+        String compensateType = configProperties.getCompensateType();
 
         CompensateTypeResolver argumentResolver = resolverComposite.getArgumentResolver(compensateType);
         Assert.notNull(argumentResolver, "补偿类型: " + compensateType + ",没有对应的解析器");
-        CompensateInfo info = argumentResolver.resolver(annotation, target, method, args,configProperties);
+        CompensateInfo info = argumentResolver.resolver(annotation, target, method, args, configProperties);
+        info.setCompensateType(compensateType);
         return info;
     }
 
@@ -55,7 +57,7 @@ public class CompensateAnnotationMetaDataParser {
      */
     public Object[] parserCompensateInfo(CompensateInfo compensateInfo) {
         CompensateConfigProperties configProperties = compensateConfigStore.compensateConfig(compensateInfo.getCompensateKey());
-        Integer compensateType = configProperties.getCompensateType();
+        String compensateType = configProperties.getCompensateType();
         CompensateTypeResolver argumentResolver = resolverComposite.getArgumentResolver(compensateType);
         return argumentResolver.deResolver(compensateInfo);
     }

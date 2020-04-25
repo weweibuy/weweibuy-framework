@@ -16,7 +16,7 @@ public class CompensateInfoExt extends CompensateInfo {
 
     private String id;
 
-    private Integer type;
+    private String type;
 
     private Integer retryCount;
 
