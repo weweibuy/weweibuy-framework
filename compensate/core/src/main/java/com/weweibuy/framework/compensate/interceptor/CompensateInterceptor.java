@@ -1,6 +1,7 @@
 package com.weweibuy.framework.compensate.interceptor;
 
 
+import com.weweibuy.framework.compensate.interfaces.CompensateAlarmService;
 import com.weweibuy.framework.compensate.interfaces.CompensateStore;
 import com.weweibuy.framework.compensate.interfaces.annotation.Compensate;
 import com.weweibuy.framework.compensate.interfaces.model.CompensateInfo;
@@ -24,17 +25,21 @@ public class CompensateInterceptor implements MethodInterceptor {
 
     private ExecutorService executorService;
 
+    private CompensateAlarmService compensateAlarmService;
+
     public CompensateInterceptor(CompensateStore compensateStore,
-                                 CompensateAnnotationMetaDataParser metaDataParser) {
+                                 CompensateAnnotationMetaDataParser metaDataParser, CompensateAlarmService compensateAlarmService) {
         this.compensateStore = compensateStore;
         this.metaDataParser = metaDataParser;
+        this.compensateAlarmService = compensateAlarmService;
     }
 
     public CompensateInterceptor(CompensateStore compensateStore, CompensateAnnotationMetaDataParser metaDataParser,
-                                 ExecutorService executorService) {
+                                 ExecutorService executorService, CompensateAlarmService compensateAlarmService) {
         this.compensateStore = compensateStore;
         this.metaDataParser = metaDataParser;
         this.executorService = executorService;
+        this.compensateAlarmService = compensateAlarmService;
     }
 
 
@@ -57,7 +62,11 @@ public class CompensateInterceptor implements MethodInterceptor {
         if (metaDataParser.shouldCompensate(annotation, e)) {
             CompensateInfo compensateInfo = metaDataParser.toCompensateInfo(annotation, methodInvocation.getThis(),
                     methodInvocation.getMethod(), methodInvocation.getArguments());
-            compensateStore.saveCompensateInfo(compensateInfo);
+            try {
+                compensateStore.saveCompensateInfo(compensateInfo);
+            } catch (Exception e1) {
+                compensateAlarmService.sendSaveCompensateAlarm(compensateInfo, e1);
+            }
         }
     }
 }

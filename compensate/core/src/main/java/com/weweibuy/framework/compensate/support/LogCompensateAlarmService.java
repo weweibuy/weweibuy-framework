@@ -1,6 +1,7 @@
 package com.weweibuy.framework.compensate.support;
 
 import com.weweibuy.framework.compensate.interfaces.CompensateAlarmService;
+import com.weweibuy.framework.compensate.interfaces.model.CompensateInfo;
 import com.weweibuy.framework.compensate.interfaces.model.CompensateInfoExt;
 import lombok.extern.slf4j.Slf4j;
 
@@ -15,4 +16,11 @@ public class LogCompensateAlarmService implements CompensateAlarmService {
     public void sendAlarm(CompensateInfoExt compensateInfoExt) {
         log.warn("补偿信息: {}, 重试超出上限", compensateInfoExt);
     }
+
+    @Override
+    public void sendSaveCompensateAlarm(CompensateInfo compensateInfo, Exception e) {
+        log.warn("保存补偿信息: {} 时出现异常: {}", compensateInfo, e);
+    }
+
+
 }

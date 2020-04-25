@@ -4,6 +4,7 @@ import com.weweibuy.framework.compensate.annotation.EnableCompensate;
 import com.weweibuy.framework.compensate.interceptor.CompensateBeanFactoryPointcutAdvisor;
 import com.weweibuy.framework.compensate.interceptor.CompensateInterceptor;
 import com.weweibuy.framework.compensate.interceptor.CompensatePointcut;
+import com.weweibuy.framework.compensate.interfaces.CompensateAlarmService;
 import com.weweibuy.framework.compensate.interfaces.CompensateStore;
 import com.weweibuy.framework.compensate.support.CompensateAnnotationMetaDataParser;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +35,9 @@ public class AdvisorConfig implements ImportAware {
     @Autowired(required = false)
     private List<CompensateConfigurer> configurerList;
 
+    @Autowired
+    private CompensateAlarmService compensateAlarmService;
+
     @Override
     public void setImportMetadata(AnnotationMetadata importMetadata) {
         this.enableCompensate = AnnotationAttributes.fromMap(
@@ -60,7 +64,7 @@ public class AdvisorConfig implements ImportAware {
         CompensateBeanFactoryPointcutAdvisor advisor = new CompensateBeanFactoryPointcutAdvisor();
         advisor.setPc(new CompensatePointcut());
         advisor.setOrder(enableCompensate.<Integer>getNumber("order"));
-        advisor.setAdvice(new CompensateInterceptor(store, parser, executorService));
+        advisor.setAdvice(new CompensateInterceptor(store, parser, executorService, compensateAlarmService));
         return advisor;
     }
 

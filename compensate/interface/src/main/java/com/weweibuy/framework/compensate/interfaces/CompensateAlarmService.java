@@ -1,6 +1,7 @@
 package com.weweibuy.framework.compensate.interfaces;
 
 
+import com.weweibuy.framework.compensate.interfaces.model.CompensateInfo;
 import com.weweibuy.framework.compensate.interfaces.model.CompensateInfoExt;
 
 /**
@@ -17,5 +18,14 @@ public interface CompensateAlarmService {
      * @param compensateInfoExt
      */
     void sendAlarm(CompensateInfoExt compensateInfoExt);
+
+    /**
+     * 保存补偿信息是异常处理
+     *
+     * @param compensateInfo
+     * @param e
+     */
+    void sendSaveCompensateAlarm(CompensateInfo compensateInfo, Exception e);
+
 
 }
