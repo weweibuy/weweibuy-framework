@@ -31,7 +31,7 @@ public class BizIdCompensateTypeResolver extends AbstractCompensateTypeResolver 
 
     @Override
     public CompensateInfo.CompensateInfoBuilder resolverCustom(Compensate annotation, Object target, Method method, Object[] args, CompensateConfigProperties configProperties) {
-        return CompensateInfo.builder().bizId(expressionEvaluator.evaluatorBizId(annotation, target, method, args));
+        return CompensateInfo.builder();
     }
 
     @Override

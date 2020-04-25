@@ -16,11 +16,13 @@ import java.time.temporal.ChronoUnit;
  **/
 public abstract class AbstractCompensateTypeResolver implements CompensateTypeResolver {
 
+    private CompensateCachedExpressionEvaluator expressionEvaluator = new CompensateCachedExpressionEvaluator();
 
     @Override
     public CompensateInfo resolver(Compensate annotation, Object target, Method method, Object[] args, CompensateConfigProperties configProperties) {
         CompensateInfo.CompensateInfoBuilder builder = resolverCustom(annotation, target, method, args, configProperties);
         return builder.compensateKey(annotation.key())
+                .bizId(resolverBizId(annotation, target, method, args))
                 .nextTriggerTime(
                         LocalDateTime.now().plus(
                                 RuleParser.parser(0, configProperties.getRetryRule()), ChronoUnit.MILLIS))
@@ -29,4 +31,9 @@ public abstract class AbstractCompensateTypeResolver implements CompensateTypeRe
 
 
     public abstract CompensateInfo.CompensateInfoBuilder resolverCustom(Compensate annotation, Object target, Method method, Object[] args, CompensateConfigProperties configProperties);
+
+
+    private String resolverBizId(Compensate annotation, Object target, Method method, Object[] args){
+        return expressionEvaluator.evaluatorBizId(annotation, target, method, args);
+    }
 }

@@ -10,6 +10,7 @@ import com.weweibuy.framework.compensate.mybatis.po.Compensate;
 import com.weweibuy.framework.compensate.mybatis.po.CompensateExample;
 import com.weweibuy.framework.compensate.mybatis.po.CompensateMethodArgsExt;
 import com.weweibuy.framework.compensate.mybatis.repository.CompensateRepository;
+import com.weweibuy.framework.compensate.support.BuiltInCompensateType;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -47,6 +48,11 @@ public class JdbcCompensateStore implements CompensateStore, InitializingBean {
 
     @Override
     public int saveCompensateInfo(CompensateInfo compensateInfo) {
+        if (BuiltInCompensateType.BIZ_ID.toString().equals(compensateInfo.getCompensateType()) ||
+                compensateInfo.getMethodArgs() == null) {
+            return compensateMapper.insertSelective(toCompensate(compensateInfo));
+        }
+
         String methodArgs = compensateInfo.getMethodArgs();
         if (methodArgs.length() > compensateFieldLength) {
             String substring = methodArgs.substring(0, compensateFieldLength);
@@ -79,7 +85,7 @@ public class JdbcCompensateStore implements CompensateStore, InitializingBean {
         List<Compensate> compensates = compensateMapper.selectByExample(compensateExample);
 
         Map<Boolean, List<Compensate>> listMap = compensates.stream()
-                .collect(Collectors.groupingBy(c -> c.getHasArgsExt()));
+                .collect(Collectors.groupingBy(Compensate::getHasArgsExt));
 
         List<Compensate> hasExtCompensateList = listMap.get(true);
         if (CollectionUtils.isEmpty(hasExtCompensateList)) {
@@ -215,12 +221,5 @@ public class JdbcCompensateStore implements CompensateStore, InitializingBean {
         return subs;
     }
 
-
-    public static void main(String[] args) {
-        String[] arr = {" hello ", " world "};
-        String collect = Arrays.stream(arr).collect(Collectors.joining());
-        System.err.println(collect);
-
-    }
 
 }

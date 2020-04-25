@@ -1,7 +1,7 @@
 package com.weweibuy.framework.compensate.core;
 
+import com.weiweibuy.framework.common.core.utils.DateTimeUtils;
 import com.weweibuy.framework.compensate.interfaces.model.CompensateInfoExt;
-import com.weweibuy.framework.compensate.utils.DateUtils;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -53,17 +53,17 @@ public class RuleParser {
         }
         switch (unit) {
             case "s":
-                return DateUtils.toMils(Long.valueOf(num), TimeUnit.SECONDS);
+                return DateTimeUtils.toMils(Long.valueOf(num), TimeUnit.SECONDS);
             case "H":
-                return DateUtils.toMils(Long.valueOf(num), TimeUnit.HOURS);
+                return DateTimeUtils.toMils(Long.valueOf(num), TimeUnit.HOURS);
             case "m":
-                return DateUtils.toMils(Long.valueOf(num), TimeUnit.MINUTES);
+                return DateTimeUtils.toMils(Long.valueOf(num), TimeUnit.MINUTES);
             case "d":
-                return DateUtils.toMils(Long.valueOf(num), TimeUnit.DAYS);
+                return DateTimeUtils.toMils(Long.valueOf(num), TimeUnit.DAYS);
             case "M":
-                return DateUtils.toMils(Long.valueOf(num), TimeUnit.DAYS) * 30;
+                return DateTimeUtils.toMils(Long.valueOf(num), TimeUnit.DAYS) * 30;
             case "y":
-                return DateUtils.toMils(Long.valueOf(num), TimeUnit.DAYS) * 365;
+                return DateTimeUtils.toMils(Long.valueOf(num), TimeUnit.DAYS) * 365;
             default:
                 return 0;
         }

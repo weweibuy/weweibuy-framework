@@ -38,6 +38,11 @@
             <artifactId>slf4j-api</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>com.weweibuy.framework</groupId>
+            <artifactId>common-core</artifactId>
+        </dependency>
+
     </dependencies>
 
 </project>
