@@ -1,4 +1,4 @@
-package com.weweibuy.framework.samples.compensate.service;
+package com.weweibuy.framework.samples.compensate.config;
 
 import com.weweibuy.framework.compensate.config.CompensateConfigurer;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +24,6 @@ public class ThreadPoolCompensateConfigurer implements CompensateConfigurer {
 
     @Override
     public ExecutorService getCompensateExecutorService() {
-        return null;
+        return taskExecutor.getThreadPoolExecutor();
     }
 }

@@ -1,5 +1,6 @@
 package com.weweibuy.framework.samples.controller;
 
+import com.weweibuy.framework.compensate.interfaces.CompensateTrigger;
 import com.weweibuy.framework.samples.compensate.service.CompensateSimpleService;
 import com.weweibuy.framework.samples.model.Dog;
 import com.weweibuy.framework.samples.model.User;
@@ -8,6 +9,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @author durenhao
@@ -18,8 +21,11 @@ public class CompensateController {
 
     private final CompensateSimpleService simpleService;
 
-    public CompensateController(CompensateSimpleService simpleService) {
+    private final CompensateTrigger compensateTrigger;
+
+    public CompensateController(CompensateSimpleService simpleService, CompensateTrigger compensateTrigger) {
         this.simpleService = simpleService;
+        this.compensateTrigger = compensateTrigger;
     }
 
     @GetMapping("/compensate")
@@ -125,4 +131,10 @@ public class CompensateController {
     }
 
 
+    @GetMapping("/forceTrigger")
+    public Object forceTrigger(String id) {
+        Set<String> hashSet = new HashSet<>();
+        hashSet.add(id);
+        return compensateTrigger.forceTrigger(hashSet);
+    }
 }

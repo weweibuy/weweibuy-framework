@@ -11,10 +11,19 @@ import lombok.Data;
 @Data
 public class CompensateConfigProperties {
 
+    /**
+     * 补偿类型  {@link BuiltInCompensateType}
+     */
     private String compensateType;
 
+    /**
+     * 重试规则
+     */
     private String retryRule;
 
+    /**
+     * 报警规则
+     */
     private String alarmRule;
 
 }

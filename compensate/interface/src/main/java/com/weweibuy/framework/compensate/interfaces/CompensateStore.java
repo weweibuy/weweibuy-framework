@@ -4,6 +4,7 @@ import com.weweibuy.framework.compensate.interfaces.model.CompensateInfo;
 import com.weweibuy.framework.compensate.interfaces.model.CompensateInfoExt;
 
 import java.util.Collection;
+import java.util.Set;
 
 /**
  * 补偿存储器
@@ -23,9 +24,19 @@ public interface CompensateStore {
     /**
      * 查询补偿信息
      *
+     * @param limit 限制数量
      * @return
      */
-    Collection<CompensateInfoExt> queryCompensateInfo();
+    Collection<CompensateInfoExt> queryCompensateInfo(Integer limit);
+
+    /**
+     * 根据id 强制查询
+     *
+     * @param idSet
+     * @return
+     */
+    Collection<CompensateInfoExt> queryCompensateInfoByIdForce(Set<String> idSet);
+
 
     /**
      * 更新
@@ -40,8 +51,9 @@ public interface CompensateStore {
      * 删除
      *
      * @param id
+     * @param compensateSuccess 是否补偿成功
      * @return
      */
-    int deleteCompensateInfo(String id);
+    int deleteCompensateInfo(String id, Boolean compensateSuccess);
 
 }

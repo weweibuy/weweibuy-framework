@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 /**
+ * 补偿信息
+ *
  * @author durenhao
  * @date 2020/2/13 20:09
  **/
@@ -17,12 +19,24 @@ import java.time.LocalDateTime;
 @Builder
 public class CompensateInfo {
 
+    /**
+     * 补偿key
+     */
     private String compensateKey;
 
+    /**
+     * 业务id
+     */
     private String bizId;
 
+    /**
+     * 方法参数
+     */
     private String methodArgs;
 
+    /**
+     * 补偿类型  {@link BuiltInCompensateType}
+     */
     private String compensateType;
 
     /**

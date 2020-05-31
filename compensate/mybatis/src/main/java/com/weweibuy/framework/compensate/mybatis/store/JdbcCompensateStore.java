@@ -1,16 +1,18 @@
 package com.weweibuy.framework.compensate.mybatis.store;
 
+import com.github.pagehelper.PageHelper;
 import com.weweibuy.framework.compensate.interfaces.CompensateConfigStore;
 import com.weweibuy.framework.compensate.interfaces.CompensateStore;
+import com.weweibuy.framework.compensate.interfaces.model.BuiltInCompensateType;
 import com.weweibuy.framework.compensate.interfaces.model.CompensateConfigProperties;
 import com.weweibuy.framework.compensate.interfaces.model.CompensateInfo;
 import com.weweibuy.framework.compensate.interfaces.model.CompensateInfoExt;
+import com.weweibuy.framework.compensate.mybatis.constant.CompensateStatusConstant;
 import com.weweibuy.framework.compensate.mybatis.mapper.CompensateMapper;
 import com.weweibuy.framework.compensate.mybatis.po.Compensate;
 import com.weweibuy.framework.compensate.mybatis.po.CompensateExample;
 import com.weweibuy.framework.compensate.mybatis.po.CompensateMethodArgsExt;
 import com.weweibuy.framework.compensate.mybatis.repository.CompensateRepository;
-import com.weweibuy.framework.compensate.support.BuiltInCompensateType;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -41,9 +43,9 @@ public class JdbcCompensateStore implements CompensateStore, InitializingBean {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    private Integer compensateFieldLength = 8000;
+    private Integer compensateFieldLength = 5000;
 
-    private Integer compensateExtFieldLength = 8000;
+    private Integer compensateExtFieldLength = 5000;
 
 
     @Override
@@ -78,10 +80,13 @@ public class JdbcCompensateStore implements CompensateStore, InitializingBean {
     }
 
     @Override
-    public Collection<CompensateInfoExt> queryCompensateInfo() {
-        CompensateExample compensateExample = new CompensateExample();
-        compensateExample.createCriteria().andIsDeleteEqualTo(false)
-                .andNextTriggerTimeLessThan(LocalDateTime.now());
+    public Collection<CompensateInfoExt> queryCompensateInfo(Integer limit) {
+        CompensateExample compensateExample = CompensateExample.newAndCreateCriteria()
+                .andIsDeleteEqualTo(false)
+                .andNextTriggerTimeLessThan(LocalDateTime.now())
+                .andCompensateStatusEqualTo(CompensateStatusConstant.COMPENSATING)
+                .example();
+        PageHelper.startPage(0, limit);
         List<Compensate> compensates = compensateMapper.selectByExample(compensateExample);
 
         Map<Boolean, List<Compensate>> listMap = compensates.stream()
@@ -123,6 +128,16 @@ public class JdbcCompensateStore implements CompensateStore, InitializingBean {
     }
 
     @Override
+    public Collection<CompensateInfoExt> queryCompensateInfoByIdForce(Set<String> idSet) {
+        return compensateMapper.selectByExample(
+                CompensateExample.newAndCreateCriteria()
+                        .andIdIn(idSet.stream().map(Long::valueOf).collect(Collectors.toList()))
+                        .andCompensateStatusNotEqualTo(CompensateStatusConstant.COMPENSATE_SUCCESS)
+                        .example())
+                .stream().map(this::toCompensateInfoExt).collect(Collectors.toList());
+    }
+
+    @Override
     public int updateCompensateInfo(String id, CompensateInfoExt compensateInfo) {
         Compensate compensate = toCompensate2(compensateInfo);
         compensate.setId(Long.valueOf(id));
@@ -130,45 +145,15 @@ public class JdbcCompensateStore implements CompensateStore, InitializingBean {
     }
 
     @Override
-    public int deleteCompensateInfo(String id) {
+    public int deleteCompensateInfo(String id, Boolean success) {
         Compensate compensate = new Compensate();
-        compensate.setIsDelete(true);
+        if (success) {
+            compensate.setCompensateStatus(CompensateStatusConstant.COMPENSATE_SUCCESS);
+        } else {
+            compensate.setCompensateStatus(CompensateStatusConstant.COMPENSATE_FAIL);
+        }
         compensate.setId(Long.valueOf(id));
         return compensateMapper.updateByPrimaryKeySelective(compensate);
-    }
-
-    private CompensateInfoExt toCompensateInfoExt(Compensate compensate) {
-        CompensateInfoExt infoExt = new CompensateInfoExt();
-        infoExt.setId(compensate.getId() + "");
-        infoExt.setAlarmCount(compensate.getAlarmCount());
-        infoExt.setRetryCount(compensate.getRetryCount());
-        infoExt.setBizId(compensate.getBizId());
-        infoExt.setCompensateKey(compensate.getCompensateKey());
-        infoExt.setUpdateTime(compensate.getUpdateTime());
-        infoExt.setMethodArgs(compensate.getMethodArgs());
-        CompensateConfigProperties properties = compensateConfigStore.compensateConfig(compensate.getCompensateKey());
-        infoExt.setType(properties.getCompensateType());
-        infoExt.setAlarmRule(properties.getAlarmRule());
-        infoExt.setRetryRule(properties.getRetryRule());
-        infoExt.setNextTriggerTime(compensate.getNextTriggerTime());
-        return infoExt;
-    }
-
-    private Compensate toCompensate(CompensateInfo compensateInfo) {
-        Compensate compensate = new Compensate();
-        compensate.setCompensateKey(compensateInfo.getCompensateKey());
-        compensate.setCompensateType(compensateInfo.getCompensateType());
-        compensate.setBizId(compensateInfo.getBizId());
-        compensate.setMethodArgs(compensateInfo.getMethodArgs());
-        compensate.setNextTriggerTime(compensateInfo.getNextTriggerTime());
-        return compensate;
-    }
-
-    private Compensate toCompensate2(CompensateInfoExt compensateInfo) {
-        Compensate compensate = new Compensate();
-        compensate.setRetryCount(compensateInfo.getRetryCount());
-        compensate.setAlarmCount(compensateInfo.getAlarmCount());
-        return compensate;
     }
 
 
@@ -193,12 +178,46 @@ public class JdbcCompensateStore implements CompensateStore, InitializingBean {
                     if (matcher.find()) {
                         return Integer.valueOf(matcher.group());
                     }
-                    return 8000;
+                    return 5000;
                 })
                 .findFirst()
-                .orElse(8000);
+                .orElse(5000);
     }
 
+    private CompensateInfoExt toCompensateInfoExt(Compensate compensate) {
+        CompensateInfoExt infoExt = new CompensateInfoExt();
+        infoExt.setId(compensate.getId() + "");
+        infoExt.setAlarmCount(compensate.getAlarmCount());
+        infoExt.setRetryCount(compensate.getRetryCount());
+        infoExt.setBizId(compensate.getBizId());
+        infoExt.setCompensateKey(compensate.getCompensateKey());
+        infoExt.setUpdateTime(compensate.getUpdateTime());
+        infoExt.setMethodArgs(compensate.getMethodArgs());
+        infoExt.setCompensateType(compensate.getCompensateType());
+        CompensateConfigProperties properties = compensateConfigStore.compensateConfig(compensate.getCompensateKey());
+        infoExt.setAlarmRule(properties.getAlarmRule());
+        infoExt.setRetryRule(properties.getRetryRule());
+        infoExt.setNextTriggerTime(compensate.getNextTriggerTime());
+        return infoExt;
+    }
+
+    private Compensate toCompensate(CompensateInfo compensateInfo) {
+        Compensate compensate = new Compensate();
+        compensate.setCompensateKey(compensateInfo.getCompensateKey());
+        compensate.setCompensateType(compensateInfo.getCompensateType());
+        compensate.setBizId(compensateInfo.getBizId());
+        compensate.setMethodArgs(compensateInfo.getMethodArgs());
+        compensate.setNextTriggerTime(compensateInfo.getNextTriggerTime());
+        return compensate;
+    }
+
+    private Compensate toCompensate2(CompensateInfoExt compensateInfo) {
+        Compensate compensate = new Compensate();
+        compensate.setRetryCount(compensateInfo.getRetryCount());
+        compensate.setAlarmCount(compensateInfo.getAlarmCount());
+        compensate.setNextTriggerTime(compensateInfo.getNextTriggerTime());
+        return compensate;
+    }
 
     private static List<String> stringSpilt(String s, int spiltNum) {
         if (spiltNum <= 0 || s.length() <= spiltNum) {

@@ -26,13 +26,13 @@ public class CompensateRepository {
     private CompensateMethodArgsExtMapper compensateMethodArgsExtMapper;
 
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public int batchInsert(List<Compensate> compensates) {
         compensates.forEach(compensateMapper::insertSelective);
         return compensates.size();
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public int insertCompensate(Compensate compensate, List<CompensateMethodArgsExt> collect) {
         int i1 = compensateMapper.insertSelective(compensate);
         for (int i = 0; i < collect.size(); i++) {
@@ -44,7 +44,7 @@ public class CompensateRepository {
         return i1;
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void batchUpdate(Collection<Long> id, Compensate compensate) {
         id.stream()
                 .peek(i -> compensate.setId(i))

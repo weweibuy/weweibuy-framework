@@ -63,7 +63,7 @@ public class CompensateSimpleService {
 
     @Compensate(key = "CompensateSimpleService_5", bizId = "#user.name + '_' + #user.age")
     public String run5(User user, Dog dog) {
-        if (integer < 1) {
+        if (integer < 10) {
             integer++;
             throw new RuntimeException("....");
         }
@@ -91,7 +91,7 @@ public class CompensateSimpleService {
         return "success";
     }
 
-    @Compensate(key = "CompensateSimpleService_8" )
+    @Compensate(key = "CompensateSimpleService_8", bizId = "#userMap")
     public String run8(Map<String, User> userMap) {
         if (integer < 1) {
             integer++;
@@ -100,7 +100,6 @@ public class CompensateSimpleService {
         integer = 0;
         return "success";
     }
-
 
 
     private void run2(String str) {
