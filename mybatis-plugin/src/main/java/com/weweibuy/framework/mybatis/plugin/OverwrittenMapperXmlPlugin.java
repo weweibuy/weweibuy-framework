@@ -14,7 +14,7 @@ import java.io.File;
  * @date 2020/5/30 22:03
  **/
 @Slf4j
-public class OverMapperXmlPlugin extends BasePlugin {
+public class OverwrittenMapperXmlPlugin extends BasePlugin {
 
 
     @Override
