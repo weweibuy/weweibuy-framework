@@ -9,6 +9,7 @@
     <result column="method_args" jdbcType="VARCHAR" property="methodArgs" />
     <result column="next_trigger_time" jdbcType="TIMESTAMP" property="nextTriggerTime" />
     <result column="retry_count" jdbcType="TINYINT" property="retryCount" />
+    <result column="compensate_status" jdbcType="TINYINT" property="compensateStatus" />
     <result column="alarm_count" jdbcType="TINYINT" property="alarmCount" />
     <result column="has_args_ext" jdbcType="BIT" property="hasArgsExt" />
     <result column="is_delete" jdbcType="BIT" property="isDelete" />
@@ -75,7 +76,7 @@
   </sql>
   <sql id="Base_Column_List">
     id, compensate_key, biz_id, compensate_type, method_args, next_trigger_time, retry_count, 
-    alarm_count, has_args_ext, is_delete, create_time, update_time
+    compensate_status, alarm_count, has_args_ext, is_delete, create_time, update_time
   </sql>
   <select id="selectByExample" parameterType="com.weweibuy.framework.compensate.mybatis.po.CompensateExample" resultMap="BaseResultMap">
     select
@@ -113,12 +114,14 @@
     </selectKey>
     insert into compensate (compensate_key, biz_id, compensate_type, 
       method_args, next_trigger_time, retry_count, 
-      alarm_count, has_args_ext, is_delete, 
-      create_time, update_time)
+      compensate_status, alarm_count, has_args_ext, 
+      is_delete, create_time, update_time
+      )
     values (#{compensateKey,jdbcType=VARCHAR}, #{bizId,jdbcType=VARCHAR}, #{compensateType,jdbcType=VARCHAR}, 
       #{methodArgs,jdbcType=VARCHAR}, #{nextTriggerTime,jdbcType=TIMESTAMP}, #{retryCount,jdbcType=TINYINT}, 
-      #{alarmCount,jdbcType=TINYINT}, #{hasArgsExt,jdbcType=BIT}, #{isDelete,jdbcType=BIT}, 
-      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
+      #{compensateStatus,jdbcType=TINYINT}, #{alarmCount,jdbcType=TINYINT}, #{hasArgsExt,jdbcType=BIT}, 
+      #{isDelete,jdbcType=BIT}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}
+      )
   </insert>
   <insert id="insertSelective" parameterType="com.weweibuy.framework.compensate.mybatis.po.Compensate">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
@@ -143,6 +146,9 @@
       </if>
       <if test="retryCount != null">
         retry_count,
+      </if>
+      <if test="compensateStatus != null">
+        compensate_status,
       </if>
       <if test="alarmCount != null">
         alarm_count,
@@ -178,6 +184,9 @@
       </if>
       <if test="retryCount != null">
         #{retryCount,jdbcType=TINYINT},
+      </if>
+      <if test="compensateStatus != null">
+        #{compensateStatus,jdbcType=TINYINT},
       </if>
       <if test="alarmCount != null">
         #{alarmCount,jdbcType=TINYINT},
@@ -226,6 +235,9 @@
       <if test="record.retryCount != null">
         retry_count = #{record.retryCount,jdbcType=TINYINT},
       </if>
+      <if test="record.compensateStatus != null">
+        compensate_status = #{record.compensateStatus,jdbcType=TINYINT},
+      </if>
       <if test="record.alarmCount != null">
         alarm_count = #{record.alarmCount,jdbcType=TINYINT},
       </if>
@@ -255,6 +267,7 @@
       method_args = #{record.methodArgs,jdbcType=VARCHAR},
       next_trigger_time = #{record.nextTriggerTime,jdbcType=TIMESTAMP},
       retry_count = #{record.retryCount,jdbcType=TINYINT},
+      compensate_status = #{record.compensateStatus,jdbcType=TINYINT},
       alarm_count = #{record.alarmCount,jdbcType=TINYINT},
       has_args_ext = #{record.hasArgsExt,jdbcType=BIT},
       is_delete = #{record.isDelete,jdbcType=BIT},
@@ -285,6 +298,9 @@
       <if test="retryCount != null">
         retry_count = #{retryCount,jdbcType=TINYINT},
       </if>
+      <if test="compensateStatus != null">
+        compensate_status = #{compensateStatus,jdbcType=TINYINT},
+      </if>
       <if test="alarmCount != null">
         alarm_count = #{alarmCount,jdbcType=TINYINT},
       </if>
@@ -311,6 +327,7 @@
       method_args = #{methodArgs,jdbcType=VARCHAR},
       next_trigger_time = #{nextTriggerTime,jdbcType=TIMESTAMP},
       retry_count = #{retryCount,jdbcType=TINYINT},
+      compensate_status = #{compensateStatus,jdbcType=TINYINT},
       alarm_count = #{alarmCount,jdbcType=TINYINT},
       has_args_ext = #{hasArgsExt,jdbcType=BIT},
       is_delete = #{isDelete,jdbcType=BIT},

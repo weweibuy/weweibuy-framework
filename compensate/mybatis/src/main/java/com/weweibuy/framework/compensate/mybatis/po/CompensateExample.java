@@ -45,6 +45,23 @@ public class CompensateExample {
         return criteria;
     }
 
+    public CompensateExample orderBy(String orderByClause) {
+        this.setOrderByClause(orderByClause);
+        return this;
+    }
+
+    public CompensateExample orderBy(String ... orderByClauses) {
+        StringBuffer sb = new StringBuffer();
+        for (int i = 0; i < orderByClauses.length; i++) {
+            sb.append(orderByClauses[i]);
+            if (i < orderByClauses.length - 1) {
+                sb.append(" , ");
+            }
+        }
+        this.setOrderByClause(sb.toString());
+        return this;
+    }
+
     public Criteria createCriteria() {
         Criteria criteria = createCriteriaInternal();
         if (oredCriteria.size() == 0) {
@@ -54,7 +71,7 @@ public class CompensateExample {
     }
 
     protected Criteria createCriteriaInternal() {
-        Criteria criteria = new Criteria();
+        Criteria criteria = new Criteria(this);
         return criteria;
     }
 
@@ -62,6 +79,27 @@ public class CompensateExample {
         oredCriteria.clear();
         orderByClause = null;
         distinct = false;
+    }
+
+    public static Criteria newAndCreateCriteria() {
+        CompensateExample example = new CompensateExample();
+        return example.createCriteria();
+    }
+
+    public CompensateExample when(boolean condition, IExampleWhen then) {
+        if (condition) {
+            then.example(this);
+        }
+        return this;
+    }
+
+    public CompensateExample when(boolean condition, IExampleWhen then, IExampleWhen otherwise) {
+        if (condition) {
+            then.example(this);
+        } else {
+            otherwise.example(this);
+        }
+        return this;
     }
 
     protected abstract static class GeneratedCriteria {
@@ -565,6 +603,66 @@ public class CompensateExample {
             return (Criteria) this;
         }
 
+        public Criteria andCompensateStatusIsNull() {
+            addCriterion("compensate_status is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andCompensateStatusIsNotNull() {
+            addCriterion("compensate_status is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andCompensateStatusEqualTo(Byte value) {
+            addCriterion("compensate_status =", value, "compensateStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andCompensateStatusNotEqualTo(Byte value) {
+            addCriterion("compensate_status <>", value, "compensateStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andCompensateStatusGreaterThan(Byte value) {
+            addCriterion("compensate_status >", value, "compensateStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andCompensateStatusGreaterThanOrEqualTo(Byte value) {
+            addCriterion("compensate_status >=", value, "compensateStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andCompensateStatusLessThan(Byte value) {
+            addCriterion("compensate_status <", value, "compensateStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andCompensateStatusLessThanOrEqualTo(Byte value) {
+            addCriterion("compensate_status <=", value, "compensateStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andCompensateStatusIn(List<Byte> values) {
+            addCriterion("compensate_status in", values, "compensateStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andCompensateStatusNotIn(List<Byte> values) {
+            addCriterion("compensate_status not in", values, "compensateStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andCompensateStatusBetween(Byte value1, Byte value2) {
+            addCriterion("compensate_status between", value1, value2, "compensateStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andCompensateStatusNotBetween(Byte value1, Byte value2) {
+            addCriterion("compensate_status not between", value1, value2, "compensateStatus");
+            return (Criteria) this;
+        }
+
         public Criteria andAlarmCountIsNull() {
             addCriterion("alarm_count is null");
             return (Criteria) this;
@@ -867,9 +965,44 @@ public class CompensateExample {
     }
 
     public static class Criteria extends GeneratedCriteria {
+        private CompensateExample example;
 
-        protected Criteria() {
+        protected Criteria(CompensateExample example) {
             super();
+            this.example = example;
+        }
+
+        public CompensateExample example() {
+            return this.example;
+        }
+
+        @Deprecated
+        public Criteria andIf(boolean ifAdd, ICriteriaAdd add) {
+            if (ifAdd) {
+                add.add(this);
+            }
+            return this;
+        }
+
+        public Criteria when(boolean condition, ICriteriaWhen then) {
+            if (condition) {
+                then.criteria(this);
+            }
+            return this;
+        }
+
+        public Criteria when(boolean condition, ICriteriaWhen then, ICriteriaWhen otherwise) {
+            if (condition) {
+                then.criteria(this);
+            } else {
+                otherwise.criteria(this);
+            }
+            return this;
+        }
+
+        @Deprecated
+        public interface ICriteriaAdd {
+            Criteria add(Criteria add);
         }
     }
 
@@ -957,5 +1090,13 @@ public class CompensateExample {
         protected Criterion(String condition, Object value, Object secondValue) {
             this(condition, value, secondValue, null);
         }
+    }
+
+    public interface ICriteriaWhen {
+        void criteria(Criteria criteria);
+    }
+
+    public interface IExampleWhen {
+        void example(com.weweibuy.framework.compensate.mybatis.po.CompensateExample example);
     }
 }

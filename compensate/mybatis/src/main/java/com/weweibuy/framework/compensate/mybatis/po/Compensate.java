@@ -1,125 +1,73 @@
 package com.weweibuy.framework.compensate.mybatis.po;
 
+import lombok.Data;
+
 import java.time.LocalDateTime;
 
+@Data
 public class Compensate {
+    /**
+     * id
+     */
     private Long id;
 
+    /**
+     * 补偿key
+     */
     private String compensateKey;
 
+    /**
+     * 业务id
+     */
     private String bizId;
 
+    /**
+     * 补偿类型
+     */
     private String compensateType;
 
+    /**
+     * 方法参数
+     */
     private String methodArgs;
 
+    /**
+     * 下次触发时间
+     */
     private LocalDateTime nextTriggerTime;
 
+    /**
+     * 重试次数
+     */
     private Integer retryCount;
 
+    /**
+     * 补偿状态: 0:补偿中, 1:失败; 2: 成功
+     */
+    private Byte compensateStatus;
+
+    /**
+     * 告警次数
+     */
     private Integer alarmCount;
 
+    /**
+     * 是否有扩展参数(当method_args存储长度不足时,将吧多余的数据用compensate_method_args_ext表存储)
+     */
     private Boolean hasArgsExt;
 
+    /**
+     * 是否删除
+     */
     private Boolean isDelete;
 
+    /**
+     * 创建时间
+     */
     private LocalDateTime createTime;
 
+    /**
+     * 更新时间
+     */
     private LocalDateTime updateTime;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getCompensateKey() {
-        return compensateKey;
-    }
-
-    public void setCompensateKey(String compensateKey) {
-        this.compensateKey = compensateKey == null ? null : compensateKey.trim();
-    }
-
-    public String getBizId() {
-        return bizId;
-    }
-
-    public void setBizId(String bizId) {
-        this.bizId = bizId == null ? null : bizId.trim();
-    }
-
-    public String getCompensateType() {
-        return compensateType;
-    }
-
-    public void setCompensateType(String compensateType) {
-        this.compensateType = compensateType == null ? null : compensateType.trim();
-    }
-
-    public String getMethodArgs() {
-        return methodArgs;
-    }
-
-    public void setMethodArgs(String methodArgs) {
-        this.methodArgs = methodArgs == null ? null : methodArgs.trim();
-    }
-
-    public LocalDateTime getNextTriggerTime() {
-        return nextTriggerTime;
-    }
-
-    public void setNextTriggerTime(LocalDateTime nextTriggerTime) {
-        this.nextTriggerTime = nextTriggerTime;
-    }
-
-    public Integer getRetryCount() {
-        return retryCount;
-    }
-
-    public void setRetryCount(Integer retryCount) {
-        this.retryCount = retryCount;
-    }
-
-    public Integer getAlarmCount() {
-        return alarmCount;
-    }
-
-    public void setAlarmCount(Integer alarmCount) {
-        this.alarmCount = alarmCount;
-    }
-
-    public Boolean getHasArgsExt() {
-        return hasArgsExt;
-    }
-
-    public void setHasArgsExt(Boolean hasArgsExt) {
-        this.hasArgsExt = hasArgsExt;
-    }
-
-    public Boolean getIsDelete() {
-        return isDelete;
-    }
-
-    public void setIsDelete(Boolean isDelete) {
-        this.isDelete = isDelete;
-    }
-
-    public LocalDateTime getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(LocalDateTime createTime) {
-        this.createTime = createTime;
-    }
-
-    public LocalDateTime getUpdateTime() {
-        return updateTime;
-    }
-
-    public void setUpdateTime(LocalDateTime updateTime) {
-        this.updateTime = updateTime;
-    }
 }

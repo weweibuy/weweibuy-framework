@@ -13,8 +13,18 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Recover {
 
+    /**
+     * spring beanName
+     *
+     * @return
+     */
     String beanName() default "";
 
+    /**
+     * 方法名
+     *
+     * @return
+     */
     String method() default "";
 
 }

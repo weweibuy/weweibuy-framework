@@ -2,6 +2,7 @@ package com.weweibuy.framework.compensate.support;
 
 
 import com.weweibuy.framework.compensate.interfaces.annotation.Compensate;
+import com.weweibuy.framework.compensate.interfaces.model.BuiltInCompensateType;
 import com.weweibuy.framework.compensate.interfaces.model.CompensateConfigProperties;
 import com.weweibuy.framework.compensate.interfaces.model.CompensateInfo;
 

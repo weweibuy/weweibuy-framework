@@ -84,8 +84,8 @@ public class CompensateConfigurationSupport {
 
     @Bean
     @ConditionalOnMissingBean(CompensateTrigger.class)
-    public CompensateTrigger simpleCompensateTrigger(CompensateStore compensateStore, CompensateHandlerService service) {
-        return new SimpleCompensateTrigger(compensateStore, service);
+    public CompensateTrigger simpleCompensateTrigger() {
+        return new SimpleTimerCompensateTrigger();
     }
 
     @Bean

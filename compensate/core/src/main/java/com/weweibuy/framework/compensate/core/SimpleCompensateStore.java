@@ -8,6 +8,7 @@ import com.weweibuy.framework.compensate.interfaces.model.CompensateInfoExt;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -36,9 +37,17 @@ public class SimpleCompensateStore implements CompensateStore {
     }
 
     @Override
-    public Collection<CompensateInfoExt> queryCompensateInfo() {
+    public Collection<CompensateInfoExt> queryCompensateInfo(Integer limit) {
         return compensateInfoMap.values().stream()
                 .filter(c -> c.getNextTriggerTime().isBefore(LocalDateTime.now()))
+                .limit(limit)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public Collection<CompensateInfoExt> queryCompensateInfoByIdForce(Set<String> idSet) {
+        return compensateInfoMap.values().stream()
+                .filter(c -> idSet.contains(c.getId()))
                 .collect(Collectors.toList());
     }
 
@@ -50,7 +59,7 @@ public class SimpleCompensateStore implements CompensateStore {
     }
 
     @Override
-    public int deleteCompensateInfo(String id) {
+    public int deleteCompensateInfo(String id, Boolean success) {
         compensateInfoMap.remove(id);
         return 1;
     }

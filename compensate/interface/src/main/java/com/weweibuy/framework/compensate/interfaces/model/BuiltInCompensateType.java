@@ -1,4 +1,4 @@
-package com.weweibuy.framework.compensate.support;
+package com.weweibuy.framework.compensate.interfaces.model;
 
 /**
  * 内置 补偿类型

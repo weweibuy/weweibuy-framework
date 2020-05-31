@@ -1,6 +1,7 @@
 package com.weweibuy.framework.compensate.support;
 
 import com.weweibuy.framework.compensate.interfaces.annotation.Compensate;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.expression.AnnotatedElementKey;
 import org.springframework.context.expression.CachedExpressionEvaluator;
 import org.springframework.context.expression.MethodBasedEvaluationContext;
@@ -21,6 +22,9 @@ public class CompensateCachedExpressionEvaluator extends CachedExpressionEvaluat
 
 
     public String evaluatorBizId(Compensate annotation, Object target, Method method, Object[] args) {
+        if (StringUtils.isBlank(annotation.bizId())) {
+            return StringUtils.EMPTY;
+        }
         Expression expression = getExpression(bizIdExpressionCache, new AnnotatedElementKey(method, target.getClass()), annotation.bizId());
         Object value = expression.getValue(createEvaluationContext(target, method, args));
         return value.toString();

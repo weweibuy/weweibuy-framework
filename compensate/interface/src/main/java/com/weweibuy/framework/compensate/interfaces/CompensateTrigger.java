@@ -1,5 +1,10 @@
 package com.weweibuy.framework.compensate.interfaces;
 
+import com.weweibuy.framework.compensate.interfaces.model.CompensateResult;
+
+import java.util.List;
+import java.util.Set;
+
 /**
  * 补偿触发器
  *
@@ -13,6 +18,14 @@ public interface CompensateTrigger {
      *
      * @param args
      */
-    void trigger(Object... args);
+    List<CompensateResult> trigger(Object... args);
+
+    /**
+     * 强制触发
+     *
+     * @param idSet
+     */
+    List<CompensateResult> forceTrigger(Set<String> idSet);
+
 
 }

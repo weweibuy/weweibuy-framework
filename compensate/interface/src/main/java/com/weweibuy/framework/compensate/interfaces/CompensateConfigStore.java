@@ -18,4 +18,11 @@ public interface CompensateConfigStore {
      */
     CompensateConfigProperties compensateConfig(String compensateKey);
 
+    /**
+     * 获取单次触发数量限制
+     *
+     * @return
+     */
+    Integer getTriggerLimit();
+
 }

@@ -6,6 +6,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * 被 @Compensate 标记的方法将被 切面 com.weweibuy.framework.compensate.interceptor.CompensateInterceptor 切入
+ *
  * @author durenhao
  * @date 2020/2/13 20:22
  **/
