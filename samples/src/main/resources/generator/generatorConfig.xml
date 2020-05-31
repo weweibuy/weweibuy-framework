@@ -16,7 +16,7 @@
             <property name="targetPackage" value="com.weweibuy.framework.samples.mybatis.plugin.model.example"/>
         </plugin>
         <plugin type="com.weweibuy.framework.mybatis.plugin.SelectOneByExampleForUpdatePlugin"/>
-        <plugin type="com.weweibuy.framework.mybatis.plugin.OverMapperXmlPlugin"/>
+        <plugin type="com.weweibuy.framework.mybatis.plugin.OverwrittenMapperXmlPlugin"/>
         <plugin type="com.weweibuy.framework.mybatis.plugin.SelectByExampleForUpdatePlugin"/>
         <plugin type="com.itfsw.mybatis.generator.plugins.CommentPlugin">
             <!-- 自定义模板路径 -->
