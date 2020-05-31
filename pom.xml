@@ -15,6 +15,7 @@
         <module>interface</module>
         <module>samples</module>
         <module>compensate</module>
+        <module>mybatis-plugin</module>
     </modules>
 
     <properties>
@@ -32,6 +33,7 @@
         <webuy-common.version>1.0-SNAPSHOT</webuy-common.version>
         <ttl.version>2.11.4</ttl.version>
         <commons-collections4.version>4.1</commons-collections4.version>
+        <mybatis.generator.version>1.3.7</mybatis.generator.version>
     </properties>
 
     <dependencyManagement>
@@ -111,12 +113,6 @@
             <dependency>
                 <groupId>com.weweibuy.framework</groupId>
                 <artifactId>common-mvc</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.weweibuy.framework</groupId>
-                <artifactId>common-feign</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
@@ -208,6 +204,12 @@
                 <groupId>com.alibaba</groupId>
                 <artifactId>transmittable-thread-local</artifactId>
                 <version>${ttl.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.mybatis.generator</groupId>
+                <artifactId>mybatis-generator-core</artifactId>
+                <version>${mybatis.generator.version}</version>
             </dependency>
 
         </dependencies>
