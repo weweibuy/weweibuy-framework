@@ -1,6 +1,8 @@
 package com.weiweibuy.framework.common.mvc.config;
 
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.weiweibuy.framework.common.core.model.constant.CommonConstant;
 import com.weiweibuy.framework.common.mvc.advice.CommonErrorAttributes;
@@ -10,6 +12,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 /**
@@ -32,11 +35,18 @@ public class CommonMvcConfig   {
     }
 
     @Bean
-    public Jackson2ObjectMapperBuilderCustomizer jackson2ObjectMapperBuilderCustomizer() {
+    public Jackson2ObjectMapperBuilderCustomizer localDateTimeJackson2ObjectMapperBuilderCustomizer() {
         return builder ->
                 builder.serializerByType(LocalDateTime.class, localDateTimeSerializer())
                         .deserializerByType(LocalDateTime.class, localDateTimeDeserializer());
 
+    }
+
+    @Bean
+    public Jackson2ObjectMapperBuilderCustomizer localDateJackson2ObjectMapperBuilderCustomizer() {
+        return builder ->
+                builder.serializerByType(LocalDate.class, localDateSerializer())
+                        .deserializerByType(LocalDate.class, localDateDeserializer());
     }
 
 
@@ -46,5 +56,13 @@ public class CommonMvcConfig   {
 
     public LocalDateTimeDeserializer localDateTimeDeserializer() {
         return new LocalDateTimeDeserializer(CommonConstant.DateConstant.STANDARD_DATE_TIME_FORMATTER);
+    }
+
+    public LocalDateSerializer localDateSerializer() {
+        return new LocalDateSerializer(CommonConstant.DateConstant.STANDARD_DATE_FORMATTER);
+    }
+
+    public LocalDateDeserializer localDateDeserializer() {
+        return new LocalDateDeserializer(CommonConstant.DateConstant.STANDARD_DATE_FORMATTER);
     }
 }

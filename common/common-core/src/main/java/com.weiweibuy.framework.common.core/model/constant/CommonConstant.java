@@ -16,7 +16,12 @@ public interface CommonConstant {
 
         String STANDARD_DATE_TIME_FORMAT_STR = "yyyy-MM-dd HH:mm:ss";
 
+        String STANDARD_DATE_FORMAT_STR = "yyyy-MM-dd";
+
         DateTimeFormatter STANDARD_DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern(STANDARD_DATE_TIME_FORMAT_STR);
+
+        DateTimeFormatter STANDARD_DATE_FORMATTER = DateTimeFormatter.ofPattern(STANDARD_DATE_FORMAT_STR);
+
 
     }
 
