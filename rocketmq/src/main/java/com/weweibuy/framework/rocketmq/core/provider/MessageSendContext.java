@@ -31,7 +31,6 @@ public class MessageSendContext {
         this.messageQueueSelector = messageQueueSelector;
         this.sendCallback = sendCallback;
 
-        SendModel sendModel = null;
 
         if (metadata.getBatch()) {
             sendModel = SendModel.BATCH;
@@ -50,7 +49,6 @@ public class MessageSendContext {
         } else {
             sendModel = SendModel.NORMAL;
         }
-        this.sendModel = sendModel;
 
     }
 
