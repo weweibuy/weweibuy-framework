@@ -1,7 +1,9 @@
 package com.weweibuy.framework.rocketmq.config;
 
 import com.weweibuy.framework.rocketmq.core.MessageConverter;
-import com.weweibuy.framework.rocketmq.core.provider.*;
+import com.weweibuy.framework.rocketmq.core.provider.AnnotatedParameterProcessorComposite;
+import com.weweibuy.framework.rocketmq.core.provider.MessageSendFilter;
+import com.weweibuy.framework.rocketmq.core.provider.ProxyRocketProvider;
 import com.weweibuy.framework.rocketmq.support.*;
 import org.apache.rocketmq.client.AccessChannel;
 import org.apache.rocketmq.client.producer.DefaultMQProducer;
@@ -11,7 +13,6 @@ import org.apache.rocketmq.client.producer.selector.SelectMessageQueueByHash;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.util.Assert;
@@ -80,7 +81,7 @@ public class ProviderConfig {
 
 
     @Bean
-    public MQProducer mqProducer() throws Exception {
+    public MQProducer mqProducer() {
         RocketMqProperties.Provider producerConfig = rocketMqProperties.getProvider();
         String nameServer = rocketMqProperties.getNameServer();
         String groupName = producerConfig.getGroup();

@@ -22,6 +22,10 @@ public class SimpleCompensateConfigStore implements CompensateConfigStore, Initi
 
     private static final String DEFAULT_KEY = "default";
 
+    private static final String DEFAULT_RETRY_RULE = "10s 30s 1m";
+
+    private static final String DEFAULT_ALARM_RULE = "30s 1m 2m";
+
     private Map<String, CompensateConfigProperties> config = new HashMap<>();
 
     private Integer triggerLimit = 200;
@@ -52,11 +56,12 @@ public class SimpleCompensateConfigStore implements CompensateConfigStore, Initi
 
     @Override
     public void afterPropertiesSet() throws Exception {
+
         if (config.get(DEFAULT_KEY) == null) {
             CompensateConfigProperties properties = new CompensateConfigProperties();
             properties.setCompensateType(BuiltInCompensateType.METHOD_ARGS.toString());
-            properties.setRetryRule("10s 30s 1m");
-            properties.setAlarmRule("30s 1m 2m");
+            properties.setRetryRule(DEFAULT_RETRY_RULE);
+            properties.setAlarmRule(DEFAULT_ALARM_RULE);
             config.put(DEFAULT_KEY, properties);
             defaultProperties = properties;
         }

@@ -1,6 +1,6 @@
 package com.weweibuy.framework.samples.controller;
 
-import com.weiweibuy.framework.common.mvc.resolver.annotation.SnakeCaseRequestParamBody;
+import com.weweibuy.framework.common.mvc.resolver.annotation.SnakeCaseRequestParamBody;
 import com.weweibuy.framework.samples.model.dto.CommonDataJsonResponse;
 import lombok.Data;
 import org.springframework.web.bind.annotation.*;

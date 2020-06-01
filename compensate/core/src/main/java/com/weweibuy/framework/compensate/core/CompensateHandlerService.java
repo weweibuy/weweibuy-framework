@@ -1,5 +1,6 @@
 package com.weweibuy.framework.compensate.core;
 
+import com.weweibuy.framework.compensate.exception.CompensateException;
 import com.weweibuy.framework.compensate.interfaces.CompensateAlarmService;
 import com.weweibuy.framework.compensate.interfaces.CompensateStore;
 import com.weweibuy.framework.compensate.interfaces.RecoverMethodArgsResolver;
@@ -81,7 +82,7 @@ public class CompensateHandlerService {
             try {
                 return f.get(30, TimeUnit.SECONDS);
             } catch (Exception e) {
-                throw new RuntimeException(e);
+                throw new CompensateException(e);
             }
         }).collect(Collectors.toList());
     }
@@ -110,7 +111,7 @@ public class CompensateHandlerService {
             try {
                 return f.get(30, TimeUnit.SECONDS);
             } catch (Exception e) {
-                throw new RuntimeException(e);
+                throw new CompensateException(e);
             }
         }).collect(Collectors.toList());
     }
@@ -124,7 +125,7 @@ public class CompensateHandlerService {
             CompensateInfoExt.CompensateStatus compensateStatus = RuleParser.parserToStatus(compensateInfo);
             switch (compensateStatus) {
                 case RETRY_ABLE:
-                    result = execCompensate(compensateInfo);
+                    result = execCompensate(compensateInfo, force);
                     break;
                 case ALARM_ABLE:
                     result = execAlarm(compensateInfo);
@@ -136,7 +137,7 @@ public class CompensateHandlerService {
                     return null;
             }
         }
-        result = execCompensate(compensateInfo);
+        result = execCompensate(compensateInfo, force);
         log.info("补偿id: {}, 结果: {}", compensateInfo.getId(), result.getResult());
         return result;
     }
@@ -166,11 +167,15 @@ public class CompensateHandlerService {
      * @param compensateInfo
      * @return
      */
-    private CompensateResult execCompensate(CompensateInfoExt compensateInfo) {
+    private CompensateResult execCompensate(CompensateInfoExt compensateInfo, Boolean force) {
         try {
             doCompensate(compensateInfo);
         } catch (Exception e) {
             log.warn("补偿: {} 时发生异常: ", compensateInfo, e);
+            if (force) {
+                compensateStore.updateCompensateInfo(compensateInfo.getId(), compensateInfo.addRetryToCompensateInfo(null));
+                return CompensateResult.fromCompensateInfoExt(compensateInfo, CompensateResultEum.RETRY_FAIL);
+            }
             compensateStore.updateCompensateInfo(compensateInfo.getId(),
                     compensateInfo.addRetryToCompensateInfo(RuleParser.nextTriggerTime(compensateInfo)));
             return CompensateResult.fromCompensateInfoExt(compensateInfo, CompensateResultEum.RETRY_FAIL);

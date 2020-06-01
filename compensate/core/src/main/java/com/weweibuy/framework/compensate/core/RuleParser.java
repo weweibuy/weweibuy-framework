@@ -1,7 +1,9 @@
 package com.weweibuy.framework.compensate.core;
 
-import com.weiweibuy.framework.common.core.utils.DateTimeUtils;
+import com.weweibuy.framework.common.core.utils.DateTimeUtils;
 import com.weweibuy.framework.compensate.interfaces.model.CompensateInfoExt;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -13,6 +15,7 @@ import java.util.concurrent.TimeUnit;
  * @author durenhao
  * @date 2020/2/15 18:49
  **/
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class RuleParser {
 
     private static final String UN_LIMIT = "...";

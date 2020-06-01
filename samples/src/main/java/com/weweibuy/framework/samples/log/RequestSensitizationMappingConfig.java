@@ -1,6 +1,6 @@
 package com.weweibuy.framework.samples.log;
 
-import com.weiweibuy.framework.common.log.config.SensitizationMappingConfig;
+import com.weweibuy.framework.common.log.config.SensitizationMappingConfig;
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;

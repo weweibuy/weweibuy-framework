@@ -28,15 +28,15 @@ public class DefaultRocketListenerContainerFactory implements RocketListenerCont
         } else {
             container = createConcurrentlyContainer(endpointList);
         }
-        List<RocketMessageListener> listenerList = createListener(endpointList, container);
+        List<RocketMessageListener> listenerList = createListener(endpointList);
         container.setListeners(listenerList);
         return container;
     }
 
 
-    private List<RocketMessageListener> createListener(List<MethodRocketListenerEndpoint> endpointList, RocketListenerContainer container) {
+    private List<RocketMessageListener> createListener(List<MethodRocketListenerEndpoint> endpointList) {
         return endpointList.stream()
-                .map(endpoint -> endpoint.createRocketMessageListener(container))
+                .map(endpoint -> endpoint.createRocketMessageListener())
                 .collect(Collectors.toList());
 
     }

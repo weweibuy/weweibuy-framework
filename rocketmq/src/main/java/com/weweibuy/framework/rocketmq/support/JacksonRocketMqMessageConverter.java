@@ -2,7 +2,7 @@ package com.weweibuy.framework.rocketmq.support;
 
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.weiweibuy.framework.common.core.utils.JackJsonUtils;
+import com.weweibuy.framework.common.core.utils.JackJsonUtils;
 import com.weweibuy.framework.rocketmq.core.MessageConverter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.GenericTypeResolver;
@@ -41,7 +41,6 @@ public class JacksonRocketMqMessageConverter implements MessageConverter {
     private JavaType javaType(MethodParameter parameter, boolean batch) {
         if (!batch) {
             return javaTypeMap.computeIfAbsent(parameter, p -> {
-                Type nestedGenericParameterType = p.getNestedGenericParameterType();
                 Type type = GenericTypeResolver.resolveType(p.getNestedGenericParameterType(), p.getParameterType());
 
                 return objectMapper.getTypeFactory().constructType(type);

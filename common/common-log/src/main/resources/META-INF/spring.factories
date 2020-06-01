@@ -1,2 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-  com.weiweibuy.framework.common.log.config.CommonLogConfig
+  com.weweibuy.framework.common.log.config.CommonLogConfig

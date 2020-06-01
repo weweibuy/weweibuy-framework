@@ -93,7 +93,7 @@ public class CompensateConfigurationSupport {
                                                              CompensateTypeResolverComposite composite, CompensateAlarmService alarmService) {
         ExecutorService executorService = null;
         if (!CollectionUtils.isEmpty(configurerList)) {
-            executorService = configurerList.stream().map(c -> c.getCompensateExecutorService())
+            executorService = configurerList.stream().map(CompensateConfigurer::getCompensateExecutorService)
                     .filter(Objects::nonNull)
                     .findFirst().orElse(null);
         }

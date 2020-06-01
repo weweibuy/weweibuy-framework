@@ -42,9 +42,7 @@ public class ProxyRocketProvider implements InitializingBean, DisposableBean {
             methodMethodHandlerMap.put(k, methodHandler);
         });
 
-        InvocationHandler invocationHandler = proxyHandlerFactory.create(methodMethodHandlerMap);
-
-        return invocationHandler;
+        return proxyHandlerFactory.create(methodMethodHandlerMap);
     }
 
     public ProxyRocketProvider(MessageQueueSelector messageQueueSelector,

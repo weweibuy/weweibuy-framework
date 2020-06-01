@@ -1,7 +1,6 @@
 package com.weweibuy.framework.rocketmq.core.consumer;
 
 import com.weweibuy.framework.rocketmq.annotation.BatchHandlerModel;
-import com.weweibuy.framework.rocketmq.core.MessageConverter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
 import org.apache.rocketmq.client.consumer.listener.MessageListener;
@@ -22,8 +21,6 @@ import java.util.stream.Collectors;
 @Slf4j
 public abstract class AbstractRocketListenerContainer<T, R> implements RocketListenerContainer<T, R> {
 
-    private MessageConverter messageConverter;
-
     private DefaultMQPushConsumer mqPushConsumer;
 
     private List<RocketMessageListener<R>> rocketMessageListenerList;
@@ -42,7 +39,7 @@ public abstract class AbstractRocketListenerContainer<T, R> implements RocketLis
 
     public AbstractRocketListenerContainer(DefaultMQPushConsumer mqPushConsumer,
                                            Integer batchSize, BatchHandlerModel batchHandlerModel,
-                                           List<ConsumerFilter> messageSendFilterList, R success, R fail) {
+                                           List<ConsumerFilter> messageSendFilterList) {
         this.mqPushConsumer = mqPushConsumer;
         this.mqPushConsumer.setMessageListener(getMessageListener());
         this.batchSize = batchSize;

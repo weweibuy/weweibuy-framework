@@ -45,7 +45,7 @@ public class DefaultRocketMethodHandler implements MethodHandler {
         if (context.isBatch()) {
             Integer bodyIndex = metadata.getBodyIndex();
             Collection collection = (Collection) args[metadata.getBodyIndex()];
-            message = (Collection<Message>) collection.stream()
+            message = collection.stream()
                     .peek(a -> args[bodyIndex] = a)
                     .map(a -> buildMsgFromMetadata(args))
                     .collect(Collectors.toList());

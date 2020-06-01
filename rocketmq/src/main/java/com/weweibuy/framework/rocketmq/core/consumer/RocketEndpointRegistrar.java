@@ -56,7 +56,7 @@ public class RocketEndpointRegistrar {
      */
     public synchronized void shutdownAllContainer() {
         if (CollectionUtils.isNotEmpty(listenerContainerList)) {
-            listenerContainerList.forEach(c -> c.shutdown());
+            listenerContainerList.forEach(RocketListenerContainer::shutdown);
         }
     }
 

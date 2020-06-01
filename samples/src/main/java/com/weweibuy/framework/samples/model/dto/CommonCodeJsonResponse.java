@@ -40,7 +40,7 @@ public class CommonCodeJsonResponse {
         return new CommonCodeJsonResponse(CommonResponseEum.BAD_REQUEST_PARAM);
     }
 
-    public static CommonCodeJsonResponse UnSupportedMediaType() {
+    public static CommonCodeJsonResponse unSupportedMediaType() {
         return new CommonCodeJsonResponse(CommonResponseEum.UNSUPPORTED_MEDIA_TYPE);
     }
 
