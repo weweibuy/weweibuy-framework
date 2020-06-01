@@ -34,9 +34,8 @@ public class CompensateCachedExpressionEvaluator extends CachedExpressionEvaluat
     private EvaluationContext createEvaluationContext(Object target, Method method, Object[] args) {
 
         CompensateExpressionRootObject root = new CompensateExpressionRootObject(args, method, target);
-        MethodBasedEvaluationContext evaluationContext = new MethodBasedEvaluationContext(
+        return new MethodBasedEvaluationContext(
                 root, method, args, getParameterNameDiscoverer());
-        return evaluationContext;
     }
 
 }

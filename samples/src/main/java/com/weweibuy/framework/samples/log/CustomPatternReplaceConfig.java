@@ -1,7 +1,8 @@
 package com.weweibuy.framework.samples.log;
 
-import com.weiweibuy.framework.common.log.desensitization.LogMessageConverter;
-import com.weiweibuy.framework.common.log.desensitization.PatternReplaceConfig;
+
+import com.weweibuy.framework.common.log.desensitization.LogMessageConverter;
+import com.weweibuy.framework.common.log.desensitization.PatternReplaceConfig;
 
 import java.util.Map;
 

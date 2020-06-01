@@ -10,7 +10,6 @@ import lombok.EqualsAndHashCode;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.rocketmq.common.protocol.heartbeat.MessageModel;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.SmartInitializingSingleton;
 import org.springframework.beans.factory.config.BeanPostProcessor;
@@ -58,7 +57,7 @@ public class RocketBeanPostProcessor implements BeanPostProcessor, SmartInitiali
 
 
     @Override
-    public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
+    public Object postProcessAfterInitialization(Object bean, String beanName) {
         RocketListener listenerAnnotation = findListenerAnnotation(bean.getClass());
         if (listenerAnnotation != null) {
             processRocketHandler(bean, beanName, listenerAnnotation);

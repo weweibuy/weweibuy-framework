@@ -56,7 +56,7 @@ public class AdvisorConfig implements ImportAware {
 
         ExecutorService executorService = null;
         if (!CollectionUtils.isEmpty(configurerList)) {
-            executorService = configurerList.stream().map(c -> c.getAdviceExecutorService())
+            executorService = configurerList.stream().map(CompensateConfigurer::getAdviceExecutorService)
                     .filter(Objects::nonNull)
                     .findFirst().orElse(null);
         }

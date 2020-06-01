@@ -21,7 +21,7 @@ public class ClassPathRocketScanner extends ClassPathBeanDefinitionScanner {
         super(registry, false, environment, resourceLoader);
     }
 
-
+    @Override
     public Set<BeanDefinitionHolder> doScan(String... basePackages) {
         return super.doScan(basePackages);
     }

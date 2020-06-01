@@ -29,8 +29,7 @@ public class OverwrittenMapperXmlPlugin extends BasePlugin {
 
         if (file.exists()) {
             log.warn("Existing file {}  was overwritten ", file);
-            boolean delete = file.delete();
-            if (!delete) {
+            if (!file.delete()) {
                 log.warn("覆盖原有xml文件: {} 失败!", fileName);
             }
         }

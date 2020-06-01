@@ -4,7 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.BridgeMethodResolver;
 import org.springframework.core.MethodParameter;
 import org.springframework.core.annotation.SynthesizingMethodParameter;
-import org.springframework.util.ClassUtils;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.ReflectionUtils;
 
@@ -22,10 +21,6 @@ public class RocketHandlerMethod {
 
     private Object bean;
 
-    private Class<?> beanType;
-
-    private Method method;
-
     private Method bridgedMethod;
 
     private MethodParameter[] methodParameters;
@@ -35,8 +30,6 @@ public class RocketHandlerMethod {
 
     public RocketHandlerMethod(MethodRocketListenerEndpoint endpoint) {
         this.bean = endpoint.getBean();
-        this.beanType = ClassUtils.getUserClass(bean);
-        this.method = endpoint.getMethod();
         this.bridgedMethod = BridgeMethodResolver.findBridgedMethod(endpoint.getMethod());
         this.argumentResolverComposite = endpoint.getArgumentResolverComposite();
         this.batchMaxSize = endpoint.getConsumeMessageBatchMaxSize();
@@ -114,11 +107,10 @@ public class RocketHandlerMethod {
     }
 
 
-    public Object invoke(Object message, Object... providedArgs) throws Exception {
+    public Object invoke(Object message, Object... providedArgs) throws InvocationTargetException {
 
         Object[] args = getMethodArgumentValues(message, providedArgs);
-        Object returnValue = doInvoke(args);
-        return returnValue;
+        return doInvoke(args);
     }
 
     private MethodParameter[] initMethodParameters() {

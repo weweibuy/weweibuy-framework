@@ -42,7 +42,6 @@ public class RocketProviderRegister implements ImportBeanDefinitionRegistrar, Re
     @Override
     public void registerBeanDefinitions(AnnotationMetadata metadata,
                                         BeanDefinitionRegistry registry) {
-        Map<String, Object> annotationAttributeMap = metadata.getAnnotationAttributes(EnableRocketProvider.class.getName(), true);
         AnnotationTypeFilter annotationTypeFilter = new AnnotationTypeFilter(
                 RocketProvider.class);
         ClassPathRocketScanner classPathRocketScanner = new ClassPathRocketScanner(registry, environment, resourceLoader);
@@ -52,7 +51,7 @@ public class RocketProviderRegister implements ImportBeanDefinitionRegistrar, Re
 
         basePackages.stream()
                 .map(classPathRocketScanner::findCandidateComponents)
-                .flatMap(ds -> ds.stream())
+                .flatMap(Set::stream)
                 .forEach(d -> registryRocket(registry, d));
 
     }

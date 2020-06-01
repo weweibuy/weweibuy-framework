@@ -61,7 +61,7 @@ public class TargetMethodMetaDataParser implements ResourceLoaderAware {
                     parseAnnotationOnParameter(rocketMethodMetadata, m);
                     return rocketMethodMetadata;
                 })
-                .peek(m -> validateMeta(m))
+                .peek(this::validateMeta)
                 .collect(Collectors.toMap(RocketMethodMetadata::getMethod, i -> i));
 
     }
@@ -84,7 +84,6 @@ public class TargetMethodMetaDataParser implements ResourceLoaderAware {
     }
 
     protected RocketMethodMetadata parseAnnotationOnClass(RocketMethodMetadata methodMetadata, Class<?> target) {
-        Class<?>[] interfaces = target.getInterfaces();
         RocketProvider annotation = target.getAnnotation(RocketProvider.class);
         String topic = annotation.topic();
         methodMetadata.setTopic(resolve(topic));

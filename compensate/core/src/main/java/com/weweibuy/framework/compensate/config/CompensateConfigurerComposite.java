@@ -26,14 +26,14 @@ public class CompensateConfigurerComposite implements CompensateConfigurer {
 
     @Override
     public ExecutorService getAdviceExecutorService() {
-        return delegates.stream().map(d -> d.getAdviceExecutorService())
+        return delegates.stream().map(CompensateConfigurer::getAdviceExecutorService)
                 .filter(Objects::nonNull)
                 .findFirst().orElse(null);
     }
 
     @Override
     public ExecutorService getCompensateExecutorService() {
-        return delegates.stream().map(d -> d.getCompensateExecutorService())
+        return delegates.stream().map(CompensateConfigurer::getCompensateExecutorService)
                 .filter(Objects::nonNull)
                 .findFirst().orElse(null);
 

@@ -66,15 +66,13 @@ public class MethodRocketListenerEndpoint {
     /**
      * 创建每个方法对应的监听
      *
-     * @param listenerContainer
      * @return
      */
-    public RocketMessageListener createRocketMessageListener(RocketListenerContainer listenerContainer) {
+    public RocketMessageListener createRocketMessageListener() {
         RocketHandlerMethod handlerMethod = messageHandlerMethodFactory.createHandlerMethod(this);
 
-        RocketMessageListener listener = createListener(handlerMethod);
+        return createListener(handlerMethod);
 
-        return listener;
     }
 
 

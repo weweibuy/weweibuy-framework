@@ -1,6 +1,6 @@
 package com.weweibuy.framework.samples.controller;
 
-import com.weiweibuy.framework.common.mvc.desensitization.SensitiveData;
+import com.weweibuy.framework.common.mvc.desensitization.SensitiveData;
 import com.weweibuy.framework.samples.model.dto.CommonDataJsonResponse;
 import lombok.Builder;
 import lombok.Data;

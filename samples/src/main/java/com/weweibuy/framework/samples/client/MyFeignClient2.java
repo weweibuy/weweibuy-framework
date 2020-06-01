@@ -1,6 +1,6 @@
 package com.weweibuy.framework.samples.client;
 
-import com.weiweibuy.framework.common.feign.support.SnakeCaseEncoderAndDecoder;
+import com.weweibuy.framework.common.feign.support.SnakeCaseEncoderAndDecoder;
 import com.weweibuy.framework.samples.model.dto.CommonDataJsonResponse;
 import feign.Request;
 import org.springframework.cloud.openfeign.FeignClient;
