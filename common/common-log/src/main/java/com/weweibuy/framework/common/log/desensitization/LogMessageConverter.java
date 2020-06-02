@@ -1,6 +1,6 @@
 package com.weweibuy.framework.common.log.desensitization;
 
-import ch.qos.logback.classic.pattern.MessageConverter;
+import ch.qos.logback.classic.pattern.ClassicConverter;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import com.weweibuy.framework.common.log.context.RequestLogContext;
 import lombok.AllArgsConstructor;
@@ -20,7 +20,7 @@ import java.util.regex.Pattern;
  * @author durenhao
  * @date 2019/9/13 16:42
  **/
-public class LogMessageConverter extends MessageConverter {
+public class LogMessageConverter extends ClassicConverter {
 
     private static final ServiceLoader<PatternReplaceConfig> LOADER = ServiceLoader.load(PatternReplaceConfig.class);
 

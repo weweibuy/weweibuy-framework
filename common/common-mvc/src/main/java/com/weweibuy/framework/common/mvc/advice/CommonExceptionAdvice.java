@@ -3,6 +3,7 @@ package com.weweibuy.framework.common.mvc.advice;
 import com.weweibuy.framework.common.core.exception.BusinessException;
 import com.weweibuy.framework.common.core.exception.SystemException;
 import com.weweibuy.framework.common.core.model.dto.CommonCodeJsonResponse;
+import com.weweibuy.framework.common.mvc.utils.HttpRequestUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,6 +14,9 @@ import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 
 /**
  * @author durenhao
@@ -46,8 +50,13 @@ public class CommonExceptionAdvice {
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<CommonCodeJsonResponse> handler(HttpMessageNotReadableException e) {
-        log.warn("输入参数格式错误:", e);
+    public ResponseEntity<CommonCodeJsonResponse> handler(HttpServletRequest request, HttpMessageNotReadableException e) throws IOException {
+        if (HttpRequestUtils.isJsonRequest(request.getContentType())) {
+            log.warn("请求路径: {}, Method: {}, 数据: {}, HttpMethod 错误: {}", request.getRequestURI(),
+                    request.getMethod(), HttpRequestUtils.readRequestBodyForJson(request), e.getMessage());
+        } else {
+            log.warn("输入参数格式错误: {}", e.getMessage());
+        }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(CommonCodeJsonResponse.badRequestParam("输入参数格式错误"));
     }
 
@@ -59,8 +68,13 @@ public class CommonExceptionAdvice {
     }
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
-    public ResponseEntity<CommonCodeJsonResponse> handler(HttpRequestMethodNotSupportedException e) {
-        log.error("请求 HttpMethod 错误: ", e);
+    public ResponseEntity<CommonCodeJsonResponse> handler(HttpServletRequest request, HttpRequestMethodNotSupportedException e) {
+        if (HttpRequestUtils.isJsonRequest(request.getContentType())) {
+            log.warn("请求路径: {}, Method: {}, 数据: {}, HttpMethod 错误: {}", request.getRequestURI(),
+                    request.getMethod(), e.getMessage());
+        } else {
+            log.warn("请求 HttpMethod 错误: {}", e.getMessage());
+        }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(CommonCodeJsonResponse.badRequestParam("请求HttpMethod错误"));
     }
 
