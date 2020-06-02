@@ -37,6 +37,34 @@ public interface CommonConstant {
 
         public static final String HMAC_SHA256 = "HmacSHA256";
 
+    }
+
+    /**
+     * Http常量
+     */
+    public interface HttpServletConstant {
+
+        /**
+         * 请求方法
+         */
+        String REQUEST_METHOD = "http_request_method";
+
+        /**
+         * Content-Type
+         */
+        String REQUEST_CONTENT_TYPE = "http_request_content_type";
+
+
+        /**
+         * query string
+         */
+        String REQUEST_QUERY_STRING = "http_request_query_string";
+
+        /**
+         * 请求时间戳
+         */
+        String REQUEST_TIMESTAMP = "http_request_timestamp";
+
 
     }
 
