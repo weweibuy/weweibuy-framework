@@ -1,8 +1,8 @@
 package com.weweibuy.framework.common.log.mvc;
 
 import com.weweibuy.framework.common.core.model.constant.CommonConstant;
-import com.weweibuy.framework.common.core.utils.JackJsonUtils;
 import com.weweibuy.framework.common.log.context.RequestLogContext;
+import com.weweibuy.framework.common.log.logger.HttpLogger;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.annotation.Order;
@@ -51,8 +51,7 @@ public class RequestLogContextFilter extends OncePerRequestFilter {
             setRequestAttributes(request);
             // 非json请求
             if (StringUtils.isBlank(contentType) || !MediaType.valueOf(contentType).isCompatibleWith(MediaType.APPLICATION_JSON)) {
-                log.info("请求路径: {}, Method: {},  数据: {}", request.getRequestURI(), request.getMethod(),
-                        JackJsonUtils.write(parameterMapToString(request.getParameterMap())));
+                HttpLogger.logForNotJsonRequest(request);
             }
             filterChain.doFilter(request, response);
         } finally {
@@ -72,7 +71,7 @@ public class RequestLogContextFilter extends OncePerRequestFilter {
     private void setRequestAttributes(HttpServletRequest request) {
         RequestContextHolder.getRequestAttributes().setAttribute(CommonConstant.HttpServletConstant.REQUEST_METHOD, request.getMethod(), RequestAttributes.SCOPE_REQUEST);
         RequestContextHolder.getRequestAttributes().setAttribute(CommonConstant.HttpServletConstant.REQUEST_CONTENT_TYPE, request.getContentType(), RequestAttributes.SCOPE_REQUEST);
-        RequestContextHolder.getRequestAttributes().setAttribute(CommonConstant.HttpServletConstant.REQUEST_QUERY_STRING, request.getQueryString(), RequestAttributes.SCOPE_REQUEST);
+        RequestContextHolder.getRequestAttributes().setAttribute(CommonConstant.HttpServletConstant.REQUEST_PARAMETER_MAP, request.getParameterMap(), RequestAttributes.SCOPE_REQUEST);
         RequestContextHolder.getRequestAttributes().setAttribute(CommonConstant.HttpServletConstant.REQUEST_TIMESTAMP, System.currentTimeMillis(), RequestAttributes.SCOPE_REQUEST);
     }
 

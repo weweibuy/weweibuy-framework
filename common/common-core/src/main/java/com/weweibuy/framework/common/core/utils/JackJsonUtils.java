@@ -4,6 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.weweibuy.framework.common.core.exception.Exceptions;
+import com.weweibuy.framework.common.core.model.eum.CommonErrorCodeEum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.stereotype.Component;
@@ -56,7 +58,7 @@ public class JackJsonUtils {
         try {
             return SNAKE_CASE_MAPPER.readValue(json, clazz);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw Exceptions.system(CommonErrorCodeEum.JSON_PARSE_EXCEPTION, e);
         }
     }
 
@@ -64,7 +66,7 @@ public class JackJsonUtils {
         try {
             return SNAKE_CASE_MAPPER.readValue(json, javaType);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw Exceptions.system(CommonErrorCodeEum.JSON_PARSE_EXCEPTION, e);
         }
     }
 
@@ -72,7 +74,7 @@ public class JackJsonUtils {
         try {
             return SNAKE_CASE_MAPPER.readValue(json, clazz);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw Exceptions.system(CommonErrorCodeEum.JSON_PARSE_EXCEPTION, e);
         }
     }
 
@@ -80,7 +82,7 @@ public class JackJsonUtils {
         try {
             return SNAKE_CASE_MAPPER.readValue(json, javaType);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw Exceptions.system(CommonErrorCodeEum.JSON_PARSE_EXCEPTION, e);
         }
     }
 
@@ -89,7 +91,7 @@ public class JackJsonUtils {
         try {
             return SNAKE_CASE_MAPPER.writeValueAsString(object);
         } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+            throw Exceptions.system(CommonErrorCodeEum.JSON_PARSE_EXCEPTION, e);
         }
     }
 
@@ -97,7 +99,7 @@ public class JackJsonUtils {
         try {
             return SNAKE_CASE_MAPPER.writeValueAsBytes(object);
         } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+            throw Exceptions.system(CommonErrorCodeEum.JSON_PARSE_EXCEPTION, e);
         }
     }
 
@@ -105,7 +107,7 @@ public class JackJsonUtils {
         try {
             return MVC_OBJECT_MAPPER.readValue(json, clazz);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw Exceptions.system(CommonErrorCodeEum.JSON_PARSE_EXCEPTION, e);
         }
     }
 
@@ -113,7 +115,7 @@ public class JackJsonUtils {
         try {
             return MVC_OBJECT_MAPPER.readValue(json, javaType);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw Exceptions.system(CommonErrorCodeEum.JSON_PARSE_EXCEPTION, e);
         }
     }
 
@@ -121,7 +123,7 @@ public class JackJsonUtils {
         try {
             return MVC_OBJECT_MAPPER.readValue(json, clazz);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw Exceptions.system(CommonErrorCodeEum.JSON_PARSE_EXCEPTION, e);
         }
     }
 
@@ -129,7 +131,7 @@ public class JackJsonUtils {
         try {
             return MVC_OBJECT_MAPPER.readValue(json, javaType);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw Exceptions.system(CommonErrorCodeEum.JSON_PARSE_EXCEPTION, e);
         }
     }
 
@@ -138,7 +140,7 @@ public class JackJsonUtils {
         try {
             return MVC_OBJECT_MAPPER.writeValueAsString(object);
         } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+            throw Exceptions.system(CommonErrorCodeEum.JSON_WRITE_EXCEPTION, e);
         }
     }
 
@@ -146,7 +148,7 @@ public class JackJsonUtils {
         try {
             return MVC_OBJECT_MAPPER.writeValueAsBytes(object);
         } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+            throw Exceptions.system(CommonErrorCodeEum.JSON_WRITE_EXCEPTION, e);
         }
     }
 
@@ -155,7 +157,7 @@ public class JackJsonUtils {
         try {
             return CAMEL_CASE_MAPPER.readValue(json, clazz);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw Exceptions.system(CommonErrorCodeEum.JSON_WRITE_EXCEPTION, e);
         }
     }
 
@@ -163,7 +165,7 @@ public class JackJsonUtils {
         try {
             return CAMEL_CASE_MAPPER.readValue(json, javaType);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw Exceptions.system(CommonErrorCodeEum.JSON_WRITE_EXCEPTION, e);
         }
     }
 
@@ -171,7 +173,7 @@ public class JackJsonUtils {
         try {
             return CAMEL_CASE_MAPPER.readValue(json, clazz);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw Exceptions.system(CommonErrorCodeEum.JSON_WRITE_EXCEPTION, e);
         }
     }
 
@@ -179,7 +181,7 @@ public class JackJsonUtils {
         try {
             return CAMEL_CASE_MAPPER.readValue(json, javaType);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw Exceptions.system(CommonErrorCodeEum.JSON_WRITE_EXCEPTION, e);
         }
     }
 
@@ -188,7 +190,7 @@ public class JackJsonUtils {
         try {
             return CAMEL_CASE_MAPPER.writeValueAsString(object);
         } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+            throw Exceptions.system(CommonErrorCodeEum.JSON_WRITE_EXCEPTION, e);
         }
     }
 
@@ -196,9 +198,10 @@ public class JackJsonUtils {
         try {
             return CAMEL_CASE_MAPPER.writeValueAsBytes(object);
         } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+            throw Exceptions.system(CommonErrorCodeEum.JSON_WRITE_EXCEPTION, e);
         }
     }
+
 
 
     public static ObjectMapper getCamelCaseMapper() {
