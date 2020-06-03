@@ -1,7 +1,7 @@
 package com.weweibuy.framework.common.core.exception;
 
 import com.weweibuy.framework.common.core.model.ResponseCodeAndMsg;
-import com.weweibuy.framework.common.core.model.eum.CommonResponseEum;
+import com.weweibuy.framework.common.core.model.eum.CommonHttpResponseEum;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -17,29 +17,31 @@ public class Exceptions {
     }
 
     public static BusinessException badRequestParam() {
-        return new BusinessException(CommonResponseEum.BAD_REQUEST_PARAM);
+        return new BusinessException(CommonHttpResponseEum.BAD_REQUEST_PARAM);
     }
 
     public static BusinessException business(String code, String msg) {
-        return new BusinessException(new ResponseCodeAndMsg() {
-            @Override
-            public String getCode() {
-                return code;
-            }
-
-            @Override
-            public String getMsg() {
-                return msg;
-            }
-        });
+        return new BusinessException(newResponseCodeAndMsg(code, msg));
     }
 
     public static SystemException system(ResponseCodeAndMsg responseCodeAndMsg) {
         return new SystemException(responseCodeAndMsg);
     }
 
+    public static SystemException system(ResponseCodeAndMsg responseCodeAndMsg, Throwable cause) {
+        return new SystemException(responseCodeAndMsg, cause);
+    }
+
     public static SystemException system(String code, String msg) {
-        return new SystemException(new ResponseCodeAndMsg() {
+        return new SystemException(newResponseCodeAndMsg(code, msg));
+    }
+
+    public static SystemException unknown() {
+        return new SystemException(CommonHttpResponseEum.UNKNOWN_EXCEPTION);
+    }
+
+    static ResponseCodeAndMsg newResponseCodeAndMsg(String code, String msg) {
+        return new ResponseCodeAndMsg() {
             @Override
             public String getCode() {
                 return code;
@@ -49,11 +51,7 @@ public class Exceptions {
             public String getMsg() {
                 return msg;
             }
-        });
-    }
-
-    public static SystemException unknown() {
-        return new SystemException(CommonResponseEum.UNKNOWN_EXCEPTION);
+        };
     }
 
 

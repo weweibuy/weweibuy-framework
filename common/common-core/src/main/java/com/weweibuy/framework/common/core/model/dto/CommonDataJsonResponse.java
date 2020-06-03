@@ -1,7 +1,7 @@
 package com.weweibuy.framework.common.core.model.dto;
 
 import com.weweibuy.framework.common.core.model.ResponseCodeAndMsg;
-import com.weweibuy.framework.common.core.model.eum.CommonResponseEum;
+import com.weweibuy.framework.common.core.model.eum.CommonHttpResponseEum;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -24,7 +24,7 @@ public class CommonDataJsonResponse<T> extends CommonCodeJsonResponse {
 
 
     public static <T> CommonDataJsonResponse<T> success(T data) {
-        return new CommonDataJsonResponse(CommonResponseEum.SUCCESS, data);
+        return new CommonDataJsonResponse(CommonHttpResponseEum.SUCCESS, data);
     }
 
 

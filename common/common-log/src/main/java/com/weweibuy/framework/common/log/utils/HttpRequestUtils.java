@@ -1,6 +1,7 @@
-package com.weweibuy.framework.common.mvc.utils;
+package com.weweibuy.framework.common.log.utils;
 
 import com.weweibuy.framework.common.core.model.constant.CommonConstant;
+import com.weweibuy.framework.common.core.utils.JackJsonUtils;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
@@ -10,6 +11,10 @@ import org.springframework.web.util.ContentCachingRequestWrapper;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Http请求工具
@@ -59,5 +64,19 @@ public class HttpRequestUtils {
         }
         return "";
     }
+
+
+    public static String parameterMapToString(Map<String, String[]> parameterMap) {
+        Map<String, String> stringStringHashMap = new HashMap<>(parameterMap.size());
+        parameterMap.forEach((k, v) ->
+                stringStringHashMap.put(k, Arrays.stream(v)
+                        .filter(StringUtils::isNotBlank)
+                        .collect(Collectors.joining(",", "", ""))));
+        if (stringStringHashMap.isEmpty()) {
+            return "";
+        }
+        return JackJsonUtils.write(stringStringHashMap);
+    }
+
 
 }

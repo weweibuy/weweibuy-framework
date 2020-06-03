@@ -24,6 +24,11 @@
 
         <dependency>
             <groupId>com.weweibuy.framework</groupId>
+            <artifactId>common-log</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.weweibuy.framework</groupId>
             <artifactId>common-core</artifactId>
             <exclusions>
                 <exclusion>

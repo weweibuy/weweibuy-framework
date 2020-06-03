@@ -58,7 +58,7 @@ public interface CommonConstant {
         /**
          * query string
          */
-        String REQUEST_QUERY_STRING = "http_request_query_string";
+        String REQUEST_PARAMETER_MAP = "http_request_parameter_map";
 
         /**
          * 请求时间戳
