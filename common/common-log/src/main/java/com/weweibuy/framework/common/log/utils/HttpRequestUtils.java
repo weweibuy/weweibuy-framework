@@ -1,7 +1,7 @@
 package com.weweibuy.framework.common.log.utils;
 
+import com.weweibuy.framework.common.core.exception.SystemException;
 import com.weweibuy.framework.common.core.model.constant.CommonConstant;
-import com.weweibuy.framework.common.core.utils.JackJsonUtils;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
@@ -11,8 +11,8 @@ import org.springframework.web.util.ContentCachingRequestWrapper;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -56,26 +56,29 @@ public class HttpRequestUtils {
      * @return
      * @throws IOException
      */
-    public static String readRequestBodyForJson(HttpServletRequest request) throws IOException {
+    public static String readRequestBodyForJson(HttpServletRequest request) {
         if (request instanceof ContentCachingRequestWrapper) {
-            ContentCachingRequestWrapper requestWrapper = (ContentCachingRequestWrapper) request;
-            String charEncoding = requestWrapper.getCharacterEncoding() != null ? requestWrapper.getCharacterEncoding() : CommonConstant.CharsetConstant.UTF8_STR;
-            return new String(requestWrapper.getContentAsByteArray(), charEncoding);
+            return readFromRequestWrapper((ContentCachingRequestWrapper) request);
         }
-        return "";
+        return StringUtils.EMPTY;
     }
 
+    public static String readFromRequestWrapper(ContentCachingRequestWrapper requestWrapper) {
+        String charEncoding = requestWrapper.getCharacterEncoding() != null ? requestWrapper.getCharacterEncoding() : CommonConstant.CharsetConstant.UTF8_STR;
+        try {
+            return new String(requestWrapper.getContentAsByteArray(), charEncoding);
+        } catch (UnsupportedEncodingException e) {
+            throw new SystemException(e);
+        }
+    }
 
     public static String parameterMapToString(Map<String, String[]> parameterMap) {
-        Map<String, String> stringStringHashMap = new HashMap<>(parameterMap.size());
-        parameterMap.forEach((k, v) ->
-                stringStringHashMap.put(k, Arrays.stream(v)
-                        .filter(StringUtils::isNotBlank)
-                        .collect(Collectors.joining(",", "", ""))));
-        if (stringStringHashMap.isEmpty()) {
-            return "";
-        }
-        return JackJsonUtils.write(stringStringHashMap);
+        return parameterMap.entrySet().stream()
+                .map(e ->
+                        e.getKey() + CommonConstant.ASSIGNOR_STR +
+                                Arrays.stream(e.getValue())
+                                        .collect(Collectors.joining(CommonConstant.COMMA_STR, StringUtils.EMPTY, StringUtils.EMPTY)))
+                .collect(Collectors.joining(CommonConstant.CONNECTOR_STR, StringUtils.EMPTY, StringUtils.EMPTY));
     }
 
 

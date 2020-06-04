@@ -8,7 +8,30 @@ import java.time.format.DateTimeFormatter;
  **/
 public interface CommonConstant {
 
+    /**
+     * 控制符
+     */
     String NONE_VIEW_STR = "N/A";
+
+    /**
+     * 赋值符
+     */
+    String ASSIGNOR_STR = "=";
+
+    /**
+     * 连接符
+     */
+    String CONNECTOR_STR = "&";
+
+    /**
+     * 逗号
+     */
+    String COMMA_STR = ",";
+
+    /**
+     * 下划线
+     */
+    String UNDERLINE_STR = "_";
 
     public interface DateConstant {
 
