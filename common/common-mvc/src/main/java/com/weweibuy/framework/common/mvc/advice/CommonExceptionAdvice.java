@@ -34,18 +34,15 @@ public class CommonExceptionAdvice {
 
     @ExceptionHandler(BusinessException.class)
     public ResponseEntity<CommonCodeJsonResponse> handler(HttpServletRequest request, BusinessException e) throws IOException {
-        if (HttpRequestUtils.isJsonRequest(request.getContentType())) {
-            HttpLogger.logForJsonRequest(request);
-        }
+        logForJsonRequest(request);
+
         log.warn("业务异常: ", e);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(CommonCodeJsonResponse.response(e.getCodeAndMsg()));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<CommonCodeJsonResponse> handler(HttpServletRequest request, MethodArgumentNotValidException e) throws IOException {
-        if (HttpRequestUtils.isJsonRequest(request.getContentType())) {
-            HttpLogger.logForJsonRequest(request);
-        }
+        logForJsonRequest(request);
 
         log.warn("输入参数错误: {}", e.getMessage());
         String defaultMessage = e.getBindingResult().getFieldError().getDefaultMessage();
@@ -54,9 +51,8 @@ public class CommonExceptionAdvice {
 
     @ExceptionHandler(BindException.class)
     public ResponseEntity<CommonCodeJsonResponse> handler(HttpServletRequest request, BindException e) throws IOException {
-        if (HttpRequestUtils.isJsonRequest(request.getContentType())) {
-            HttpLogger.logForJsonRequest(request);
-        }
+        logForJsonRequest(request);
+
         log.warn("输入参数错误: {}", e.getMessage());
         String defaultMessage = e.getFieldError().getDefaultMessage();
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(CommonCodeJsonResponse.badRequestParam(defaultMessage));
@@ -64,9 +60,8 @@ public class CommonExceptionAdvice {
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<CommonCodeJsonResponse> handler(HttpServletRequest request, HttpMessageNotReadableException e) throws IOException {
-        if (HttpRequestUtils.isJsonRequest(request.getContentType())) {
-            HttpLogger.logForJsonRequest(request);
-        }
+        logForJsonRequest(request);
+
         log.warn("输入参数格式错误: {}", e.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(CommonCodeJsonResponse.badRequestParam("输入参数格式错误"));
     }
@@ -74,18 +69,16 @@ public class CommonExceptionAdvice {
 
     @ExceptionHandler(SystemException.class)
     public ResponseEntity<CommonCodeJsonResponse> handler(HttpServletRequest request, SystemException e) throws IOException {
-        if (HttpRequestUtils.isJsonRequest(request.getContentType())) {
-            HttpLogger.logForJsonRequest(request);
-        }
+        logForJsonRequest(request);
+
         log.error("系统异常: ", e);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(CommonCodeJsonResponse.response(e.getCodeAndMsg()));
     }
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public ResponseEntity<CommonCodeJsonResponse> handler(HttpServletRequest request, HttpRequestMethodNotSupportedException e) throws IOException {
-        if (HttpRequestUtils.isJsonRequest(request.getContentType())) {
-            HttpLogger.logForJsonRequest(request);
-        }
+        logForJsonRequest(request);
+
         log.warn("请求 HttpMethod 错误: {}", e.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(CommonCodeJsonResponse.badRequestParam("请求HttpMethod错误"));
     }
@@ -93,9 +86,8 @@ public class CommonExceptionAdvice {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<CommonCodeJsonResponse> handler(HttpServletRequest request, Exception e) throws IOException {
-        if (HttpRequestUtils.isJsonRequest(request.getContentType())) {
-            HttpLogger.logForJsonRequest(request);
-        }
+        logForJsonRequest(request);
+
         if (unknownExceptionHandler != null) {
             return unknownExceptionHandler.handlerException(request, e);
         }
@@ -103,5 +95,10 @@ public class CommonExceptionAdvice {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(CommonCodeJsonResponse.unknownException());
     }
 
+    private void logForJsonRequest(HttpServletRequest request) {
+        if (HttpRequestUtils.isJsonRequest(request.getContentType())) {
+            HttpLogger.logForJsonRequest(request);
+        }
+    }
 
 }

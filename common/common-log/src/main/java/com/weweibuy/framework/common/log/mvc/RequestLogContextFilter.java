@@ -44,13 +44,14 @@ public class RequestLogContextFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String contentType = request.getContentType();
         try {
-            if (isIncludePayload(request)) {
+            boolean includePayload = isIncludePayload(request);
+            if (includePayload) {
                 request = new ContentCachingRequestWrapper(request);
             }
             RequestLogContext.put(request, stringSetMap);
             setRequestAttributes(request);
             // 非json请求
-            if (StringUtils.isBlank(contentType) || !MediaType.valueOf(contentType).isCompatibleWith(MediaType.APPLICATION_JSON)) {
+            if (StringUtils.isBlank(contentType) || !MediaType.valueOf(contentType).isCompatibleWith(MediaType.APPLICATION_JSON) || !includePayload) {
                 HttpLogger.logForNotJsonRequest(request);
             }
             filterChain.doFilter(request, response);
