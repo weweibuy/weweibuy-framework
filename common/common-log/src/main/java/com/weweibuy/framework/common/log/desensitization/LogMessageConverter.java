@@ -62,30 +62,34 @@ public class LogMessageConverter extends ClassicConverter {
 
 
     private static void init() {
-        Pattern phonePattern = Pattern.compile("(mobile|phone|phoneNo)(\":\")(\\d{3})\\d{4}(\\d{4})(\")");
-        PatternReplace phonePatternReplace = new PatternReplace(phonePattern, "$1$2$3****$4$5");
+        /*
+         * 正则中 () 中匹配为一组
+         * $1 代表从前到后中第一个匹配的组 , $2 为第二个; 不在()内的不计入组
+         */
+        Pattern phonePattern = Pattern.compile("(mobile|phone|phoneNo)(\"\\s*:\\s*\"|=)(\\d{3})\\d{4}(\\d{4})");
+        PatternReplace phonePatternReplace = new PatternReplace(phonePattern, "$1$2$3****$4");
         FILED_PATTERN_MAP.put("mobile", phonePatternReplace);
         FILED_PATTERN_MAP.put("phone", phonePatternReplace);
         FILED_PATTERN_MAP.put("phoneNo", phonePatternReplace);
 
-        Pattern certIdPattern = Pattern.compile("(certId|idCard)(\":\")(\\d{6})\\d{8,11}(\\w{1})(\")");
-        PatternReplace certIdPatternReplace = new PatternReplace(certIdPattern, "$1$2$3**************$4$5");
+        Pattern certIdPattern = Pattern.compile("(certId|idCard)(\"\\s*:\\s*\"|=)(\\d{6})\\d{8,11}(\\w{1})");
+        PatternReplace certIdPatternReplace = new PatternReplace(certIdPattern, "$1$2$3**************$4");
         FILED_PATTERN_MAP.put("certId", certIdPatternReplace);
         FILED_PATTERN_MAP.put("idCard", certIdPatternReplace);
 
-        Pattern pwd = Pattern.compile("(password|pwd|appSecret)(\":\").*?(?=(\"))");
-        PatternReplace pwdPatternReplace = new PatternReplace(pwd, "$1$2$3******");
+        Pattern pwd = Pattern.compile("(password|pwd|appSecret)(\"\\s*:\\s*\"|=).*?(?=(\"|,|&))");
+        PatternReplace pwdPatternReplace = new PatternReplace(pwd, "$1$2******");
 
         FILED_PATTERN_MAP.put("pwd", pwdPatternReplace);
         FILED_PATTERN_MAP.put("password", pwdPatternReplace);
         FILED_PATTERN_MAP.put("appSecret", pwdPatternReplace);
 
-        Pattern namePattern = Pattern.compile("(fullName)(\":\")([\\u4e00-\\u9fa5]{1})([\\u4e00-\\u9fa5]*)(\")");
-        PatternReplace namePatternReplace = new PatternReplace(namePattern, "$1$2$3**$5");
+        Pattern namePattern = Pattern.compile("(fullName)(\"\\s*:\\s*\"|=)([\\u4e00-\\u9fa5]{1})([\\u4e00-\\u9fa5]*)");
+        PatternReplace namePatternReplace = new PatternReplace(namePattern, "$1$2$3**");
         FILED_PATTERN_MAP.put("fullName", namePatternReplace);
 
-        Pattern addressPattern = Pattern.compile("(address)(\":\")([\\u4e00-\\u9fa5]{4})([\\u4e00-\\u9fa5]*)(\")");
-        PatternReplace addressPatternReplace = new PatternReplace(addressPattern, "$1$2$3**$5");
+        Pattern addressPattern = Pattern.compile("(address)(\"\\s*:\\s*\"|=)([\\u4e00-\\u9fa5]{4}).*?(?=(\"|,|&))");
+        PatternReplace addressPatternReplace = new PatternReplace(addressPattern, "$1$2$3***");
         FILED_PATTERN_MAP.put("address", addressPatternReplace);
     }
 
@@ -106,10 +110,7 @@ public class LogMessageConverter extends ClassicConverter {
 
         private String replace(String msg) {
             Matcher matcher = pattern.matcher(msg);
-            if (matcher.find()) {
-                return matcher.replaceAll(replace);
-            }
-            return msg;
+            return matcher.replaceAll(replace);
         }
 
     }
