@@ -33,7 +33,6 @@ public class RequestResponseBodyLogAdvice implements RequestBodyAdvice, Response
         return inputMessage;
     }
 
-    // FIXME JSON 请求 但是没有用 @requestBOYD
     @Override
     public Object afterBodyRead(Object body, HttpInputMessage inputMessage, MethodParameter parameter, Type targetType, Class<? extends HttpMessageConverter<?>> converterType) {
         HttpLogger.logForJsonBodyRequest(body);
