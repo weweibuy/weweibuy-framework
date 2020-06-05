@@ -31,9 +31,9 @@ public class HttpLogger {
         logForJsonRequest(requestAttributes, body);
     }
 
-    public static void logForJsonRequest(HttpServletRequest request) {
+    public static void logForJsonRequest(HttpServletRequest request, boolean useWrapper) {
         logForJsonRequest(request.getRequestURI(), request.getMethod(), request.getParameterMap(),
-                HttpRequestUtils.readRequestBodyForJson(request));
+                HttpRequestUtils.readRequestBodyForJson(request, useWrapper));
     }
 
     public static void logForJsonRequest(RequestAttributes requestAttributes, Object body) {

@@ -10,6 +10,7 @@ import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.util.ContentCachingRequestWrapper;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
@@ -24,6 +25,8 @@ import java.util.stream.Collectors;
  **/
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class HttpRequestUtils {
+
+    public static String LINE_SEPARATOR = System.getProperty("line.separator");
 
     /**
      * 是否为json 请求
@@ -56,9 +59,11 @@ public class HttpRequestUtils {
      * @return
      * @throws IOException
      */
-    public static String readRequestBodyForJson(HttpServletRequest request) {
-        if (request instanceof ContentCachingRequestWrapper) {
+    public static String readRequestBodyForJson(HttpServletRequest request, boolean useWrapper) {
+        if (request instanceof ContentCachingRequestWrapper && useWrapper) {
             return readFromRequestWrapper((ContentCachingRequestWrapper) request);
+        } else if (!useWrapper) {
+            return readFromRequest(request);
         }
         return StringUtils.EMPTY;
     }
@@ -79,6 +84,25 @@ public class HttpRequestUtils {
                                 Arrays.stream(e.getValue())
                                         .collect(Collectors.joining(CommonConstant.COMMA_STR, StringUtils.EMPTY, StringUtils.EMPTY)))
                 .collect(Collectors.joining(CommonConstant.CONNECTOR_STR, StringUtils.EMPTY, StringUtils.EMPTY));
+    }
+
+
+    public static String readFromRequest(HttpServletRequest request) {
+        String str = null;
+        StringBuilder stringBuilder = new StringBuilder();
+        BufferedReader reader = null;
+        try {
+            reader = request.getReader();
+            while ((str = reader.readLine()) != null) {
+                stringBuilder.append(str).append(LINE_SEPARATOR);
+            }
+        } catch (IOException e) {
+            throw new SystemException(e);
+        }
+        if (stringBuilder.length() > 0) {
+            return stringBuilder.substring(0, stringBuilder.length() - LINE_SEPARATOR.length());
+        }
+        return StringUtils.EMPTY;
     }
 
 

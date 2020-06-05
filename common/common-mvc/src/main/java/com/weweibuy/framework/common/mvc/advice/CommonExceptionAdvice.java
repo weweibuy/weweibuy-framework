@@ -97,7 +97,7 @@ public class CommonExceptionAdvice {
 
     private void logForJsonRequest(HttpServletRequest request) {
         if (HttpRequestUtils.isJsonRequest(request.getContentType())) {
-            HttpLogger.logForJsonRequest(request);
+            HttpLogger.logForJsonRequest(request, true);
         }
     }
 
