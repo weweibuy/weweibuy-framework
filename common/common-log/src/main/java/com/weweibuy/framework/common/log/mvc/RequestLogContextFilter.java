@@ -3,6 +3,7 @@ package com.weweibuy.framework.common.log.mvc;
 import com.weweibuy.framework.common.core.model.constant.CommonConstant;
 import com.weweibuy.framework.common.log.context.RequestLogContext;
 import com.weweibuy.framework.common.log.logger.HttpLogger;
+import com.weweibuy.framework.common.log.utils.HttpRequestUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.annotation.Order;
@@ -17,11 +18,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * @author durenhao
@@ -44,10 +42,11 @@ public class RequestLogContextFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String contentType = request.getContentType();
         try {
-            boolean includePayload = isIncludePayload(request);
+            boolean includePayload = HttpRequestUtils.isIncludePayload(request);
             if (includePayload) {
                 request = new ContentCachingRequestWrapper(request);
             }
+            // TODO 对需要脱敏的进行绑定
             RequestLogContext.put(request, stringSetMap);
             setRequestAttributes(request);
             // 非json请求
@@ -60,24 +59,12 @@ public class RequestLogContextFilter extends OncePerRequestFilter {
         }
     }
 
-    private Map<String, String> parameterMapToString(Map<String, String[]> parameterMap) {
-        Map<String, String> stringStringHashMap = new HashMap<>(parameterMap.size());
-        parameterMap.forEach((k, v) ->
-                stringStringHashMap.put(k, Arrays.stream(v)
-                        .filter(StringUtils::isNotBlank)
-                        .collect(Collectors.joining(",", "", ""))));
-        return stringStringHashMap;
-    }
-
     private void setRequestAttributes(HttpServletRequest request) {
-        RequestContextHolder.getRequestAttributes().setAttribute(CommonConstant.HttpServletConstant.REQUEST_METHOD, request.getMethod(), RequestAttributes.SCOPE_REQUEST);
-        RequestContextHolder.getRequestAttributes().setAttribute(CommonConstant.HttpServletConstant.REQUEST_CONTENT_TYPE, request.getContentType(), RequestAttributes.SCOPE_REQUEST);
-        RequestContextHolder.getRequestAttributes().setAttribute(CommonConstant.HttpServletConstant.REQUEST_PARAMETER_MAP, request.getParameterMap(), RequestAttributes.SCOPE_REQUEST);
-        RequestContextHolder.getRequestAttributes().setAttribute(CommonConstant.HttpServletConstant.REQUEST_TIMESTAMP, System.currentTimeMillis(), RequestAttributes.SCOPE_REQUEST);
-    }
-
-    private boolean isIncludePayload(HttpServletRequest request) {
-        return request.getContentLength() > 0;
+        RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
+        requestAttributes.setAttribute(CommonConstant.HttpServletConstant.REQUEST_METHOD, request.getMethod(), RequestAttributes.SCOPE_REQUEST);
+        requestAttributes.setAttribute(CommonConstant.HttpServletConstant.REQUEST_CONTENT_TYPE, request.getContentType(), RequestAttributes.SCOPE_REQUEST);
+        requestAttributes.setAttribute(CommonConstant.HttpServletConstant.REQUEST_PARAMETER_MAP, request.getParameterMap(), RequestAttributes.SCOPE_REQUEST);
+        requestAttributes.setAttribute(CommonConstant.HttpServletConstant.REQUEST_TIMESTAMP, System.currentTimeMillis(), RequestAttributes.SCOPE_REQUEST);
     }
 
 

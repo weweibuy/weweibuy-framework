@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class HttpRequestUtils {
 
-    public static String LINE_SEPARATOR = System.getProperty("line.separator");
+    private static final String LINE_SEPARATOR = System.getProperty("line.separator");
 
     /**
      * 是否为json 请求
@@ -105,5 +105,8 @@ public class HttpRequestUtils {
         return StringUtils.EMPTY;
     }
 
+    public static boolean isIncludePayload(HttpServletRequest request) {
+        return request.getContentLength() > 0;
+    }
 
 }
