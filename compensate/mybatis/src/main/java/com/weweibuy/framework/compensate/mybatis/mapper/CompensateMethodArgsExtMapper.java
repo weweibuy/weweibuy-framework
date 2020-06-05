@@ -18,6 +18,8 @@ public interface CompensateMethodArgsExtMapper {
 
     CompensateMethodArgsExt selectOneByExample(CompensateMethodArgsExtExample example);
 
+    List<CompensateMethodArgsExt> selectByExampleWithLimit(@Param("example") CompensateMethodArgsExtExample example, @Param("limit") Integer limit);
+
     List<CompensateMethodArgsExt> selectByExample(CompensateMethodArgsExtExample example);
 
     CompensateMethodArgsExt selectByPrimaryKey(Long id);

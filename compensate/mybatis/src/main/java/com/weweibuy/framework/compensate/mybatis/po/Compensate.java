@@ -1,8 +1,7 @@
 package com.weweibuy.framework.compensate.mybatis.po;
 
-import lombok.Data;
-
 import java.time.LocalDateTime;
+import lombok.Data;
 
 @Data
 public class Compensate {

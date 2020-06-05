@@ -2,8 +2,9 @@ package com.weweibuy.framework.compensate.mybatis.mapper;
 
 import com.weweibuy.framework.compensate.mybatis.po.Compensate;
 import com.weweibuy.framework.compensate.mybatis.po.CompensateExample;
-import java.util.List;
 import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 public interface CompensateMapper {
     long countByExample(CompensateExample example);
@@ -17,6 +18,8 @@ public interface CompensateMapper {
     int insertSelective(Compensate record);
 
     Compensate selectOneByExample(CompensateExample example);
+
+    List<Compensate> selectByExampleWithLimit(@Param("example") CompensateExample example, @Param("limit") Integer limit);
 
     List<Compensate> selectByExample(CompensateExample example);
 
