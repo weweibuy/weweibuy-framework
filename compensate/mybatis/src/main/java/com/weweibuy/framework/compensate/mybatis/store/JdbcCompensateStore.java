@@ -1,6 +1,5 @@
 package com.weweibuy.framework.compensate.mybatis.store;
 
-import com.github.pagehelper.PageHelper;
 import com.weweibuy.framework.compensate.interfaces.CompensateConfigStore;
 import com.weweibuy.framework.compensate.interfaces.CompensateStore;
 import com.weweibuy.framework.compensate.interfaces.model.BuiltInCompensateType;
@@ -86,8 +85,7 @@ public class JdbcCompensateStore implements CompensateStore, InitializingBean {
                 .andNextTriggerTimeLessThan(LocalDateTime.now())
                 .andCompensateStatusEqualTo(CompensateStatusConstant.COMPENSATING)
                 .example();
-        PageHelper.startPage(0, limit);
-        List<Compensate> compensates = compensateMapper.selectByExample(compensateExample);
+        List<Compensate> compensates = compensateMapper.selectByExampleWithLimit(compensateExample, limit);
 
         Map<Boolean, List<Compensate>> listMap = compensates.stream()
                 .collect(Collectors.groupingBy(Compensate::getHasArgsExt));

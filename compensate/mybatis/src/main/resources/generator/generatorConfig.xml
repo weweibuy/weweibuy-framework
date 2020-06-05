@@ -14,7 +14,7 @@
             <property name="template" value="src/main/resources/generator/mybatis-generator-comment.ftl" />
         </plugin>
 
-
+        <plugin type="com.weweibuy.framework.mybatis.plugin.SelectByExampleWithLimitPlugin"/>
 
         <commentGenerator>
             <!-- 是否去除自动生成的注释 true：是 ： false:否 -->
@@ -60,7 +60,7 @@
 
 
         <table tableName="compensate" domainObjectName="Compensate">
-            <generatedKey identity="true" column="id" sqlStatement="SELECT LAST_INSERT_ID()"/>
+            <generatedKey identity="true" column="id" sqlStatement="JDBC"/>
             <columnOverride column="retry_count" javaType="Integer"/>
             <columnOverride column="alarm_count" javaType="Integer"/>
             <columnOverride column="is_delete" javaType="Boolean"/>
