@@ -6,6 +6,7 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.MediaType;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.util.ContentCachingRequestWrapper;
 
@@ -27,6 +28,8 @@ import java.util.stream.Collectors;
 public class HttpRequestUtils {
 
     private static final String LINE_SEPARATOR = System.getProperty("line.separator");
+
+    private static final AntPathMatcher ANT_PATH_MATCHER = new AntPathMatcher();
 
     /**
      * 是否为json 请求
@@ -107,6 +110,17 @@ public class HttpRequestUtils {
 
     public static boolean isIncludePayload(HttpServletRequest request) {
         return request.getContentLength() > 0;
+    }
+
+    /**
+     * 路径是否匹配
+     *
+     * @param pattern
+     * @param path
+     * @return
+     */
+    public static boolean isMatchPath(String pattern, String path) {
+        return ANT_PATH_MATCHER.match(pattern, path);
     }
 
 }
