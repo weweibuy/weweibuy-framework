@@ -24,40 +24,7 @@ common.log.enable = false
 ### 1.3 日志脱敏
 #### 1、实现接口
 ```java
-package com.weiweibuy.framework.common.log.config;
-
-import com.weiweibuy.framework.common.log.desensitization.LogMessageConverter;
-import com.weiweibuy.framework.common.log.desensitization.PatternReplaceConfig;
-
-import java.util.Map;
-import java.util.Set;
-
-/**
- * 脱敏 映射配置
- *
- * @author durenhao
- * @date 2020/3/1 21:14
- **/
-public interface SensitizationMappingConfig {
-
-    /**
-     * 增加 映射
-     *
-     * @param mappingMap key  ->  匹配脱敏路径(生成形式 path + "_" + Method)   v -> 脱敏字段
-     *                   {@link  LogMessageConverter}  内置部分字段处理方式
-     *                   {@link PatternReplaceConfig  自定义字段处理方式}
-     */
-    void addSensitizationMapping(Map<String, Set<String>> mappingMap);
-
-}
-```
- 重写 addSensitizationMapping(Map<String, Set<String>> mappingMap); 方法配置脱敏的请求路径与字段,
- 如: [RequestSensitizationMappingConfig](../../samples/src/main/java/com/weweibuy/framework/samples/log/RequestSensitizationMappingConfig.java)
-
-#### 2、配置字段与替换规则
-##### 2.1、实现接口定义替换规则
-```java
-package com.weiweibuy.framework.common.log.desensitization;
+package com.weweibuy.framework.common.log.desensitization;
 
 import java.util.Map;
 
@@ -71,30 +38,44 @@ import java.util.Map;
 public interface PatternReplaceConfig {
 
     /**
-     * 增加 字段处方式  {@link LogMessageConverter}
+     * 增加 字段处方式  {@link DesensitizationLogMessageConverter}
      *
      * @param patternReplaceMap
      */
-    void addPatternReplace(Map<String, LogMessageConverter.PatternReplace> patternReplaceMap);
+    default void addPatternReplace(Map<String, DesensitizationLogMessageConverter.PatternReplace> patternReplaceMap) {
+        // do nothing
+    }
+
+    /**
+     * 增加脱敏规则配置
+     *
+     * @param configurer {@link  DesensitizationLogMessageConverter}  内置部分字段处理方式
+     */
+    void addDesensitizationRule(SensitizationMappingConfigurer configurer);
 }
 ```
-##### 2.2、加载自定义替换规则
+ 通过 addDesensitizationRule 配置脱敏信息
+ 如: [CustomPatternReplaceConfig](../../samples/src/main/java/com/weweibuy/framework/samples/log/CustomPatternReplaceConfig.java)
+
+#### 2、配置字段与替换规则
+
+##### 2.1、加载自定义替换规则
   
   使用 JDK java.util.ServiceLoader 加载 自定配置, 需要 classPath/META-INF/services/  目录下自定义实现
-  如: [PatternReplaceConfig](../../samples/src/main/resources/META-INF/services/com.weiweibuy.framework.common.log.desensitization.PatternReplaceConfig)
+  如: [CustomPatternReplaceConfig](../../samples/src/main/resources/META-INF/services/com.weweibuy.framework.common.log.desensitization.PatternReplaceConfig)
 
-##### 2.3、内置的替换规则(可覆盖)
-  内置了部分脱敏替换规则 [LogMessageConverter#init](src/main/java/com/weiweibuy/framework/common/log/desensitization/LogMessageConverter.java)
+##### 2.2、内置的替换规则(可覆盖)
+  内置了部分脱敏替换规则 [DesensitizationLogMessageConverter#init](src/main/java/com/weweibuy/framework/common/log/desensitization/DesensitizationLogMessageConverter.java)
   可以使用: 2.2 的方式进行覆盖
   
-##### 2.4、logback配置自定义的日志msg转化器
+##### 2.3、logback配置自定义的日志msg转化器
 
 `logback-spring.xml`
 ```
 <configuration>
-    <conversionRule conversionWord="msg" converterClass="com.weiweibuy.framework.common.log.desensitization.LogMessageConverter"/>
-    <conversionRule conversionWord="m" converterClass="com.weiweibuy.framework.common.log.desensitization.LogMessageConverter"/>
-    <conversionRule conversionWord="message" converterClass="com.weiweibuy.framework.common.log.desensitization.LogMessageConverter"/>
+    <conversionRule conversionWord="msg" converterClass="com.weweibuy.framework.common.log.desensitization.DesensitizationLogMessageConverter"/>
+    <conversionRule conversionWord="m" converterClass="com.weweibuy.framework.common.log.desensitization.DesensitizationLogMessageConverter"/>
+    <conversionRule conversionWord="message" converterClass="com.weweibuy.framework.common.log.desensitization.DesensitizationLogMessageConverter"/>
 </configuration>
 ```
   
