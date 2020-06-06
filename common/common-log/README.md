@@ -66,7 +66,7 @@ public interface PatternReplaceConfig {
 
 ##### 2.2、内置的替换规则(可覆盖)
   内置了部分脱敏替换规则 [DesensitizationLogMessageConverter#init](src/main/java/com/weweibuy/framework/common/log/desensitization/DesensitizationLogMessageConverter.java)
-  可以使用: 2.2 的方式进行覆盖
+  可以使用: 2.1 的方式进行覆盖
   
 ##### 2.3、logback配置自定义的日志msg转化器
 
@@ -102,7 +102,7 @@ common.log.trace.enable = true
 `logback-spring.xml`
 ```
 <configuration>
-    <contextListener class="com.weiweibuy.framework.common.log.ttl.TtlMdcListener"></contextListener>
+    <contextListener class="com.weweibuy.framework.common.log.ttl.TtlMdcListener"></contextListener>
 </configuration>
 ```
  修饰线程池
