@@ -26,6 +26,35 @@ import java.util.Optional;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class HttpLogger {
 
+    public static void logForJsonRequest(String path, String method, Map<String, String[]> parameterMap, String body) {
+        if (parameterMap != null && !parameterMap.isEmpty()) {
+            log.info("请求路径: {}, Method: {}, 参数: {} , Body:{}",
+                    path,
+                    method,
+                    HttpRequestUtils.parameterMapToString(parameterMap),
+                    body);
+        } else {
+            log.info("请求路径: {}, Method: {}, Body:  {}",
+                    path,
+                    method,
+                    body);
+        }
+    }
+
+    public static void logForNotJsonRequest(HttpServletRequest request) {
+        log.info("请求路径: {}, Method: {}, 参数: {}",
+                request.getRequestURI(),
+                request.getMethod(),
+                HttpRequestUtils.parameterMapToString(request.getParameterMap()));
+    }
+
+    public static void logResponse(Object body) {
+        Long timestamp = HttpRequestUtils.getRequestAttribute(RequestContextHolder.getRequestAttributes(), CommonConstant.HttpServletConstant.REQUEST_TIMESTAMP);
+        log.info("响应数据: {}, 请求耗时: {}",
+                JackJsonUtils.write(body),
+                System.currentTimeMillis() - timestamp);
+    }
+
     public static void logForJsonBodyRequest(Object body) {
         RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
         logForJsonRequest(requestAttributes, body);
@@ -44,38 +73,12 @@ public class HttpLogger {
         logForJsonRequest(path, httpMethod, parameterMap, bodyStr);
     }
 
-    public static void logForJsonRequest(String path, String method, Map<String, String[]> parameterMap, String body) {
-        if (parameterMap != null && !parameterMap.isEmpty()) {
-            log.info("请求路径: {}, Method: {}, 参数: {} , Body:{}",
-                    path,
-                    method,
-                    HttpRequestUtils.parameterMapToString(parameterMap),
-                    body);
-        } else {
-            log.info("请求路径: {}, Method: {}, Body:  {}", path, method, HttpRequestUtils.parameterMapToString(parameterMap), body);
-        }
-    }
-
-    public static void logForNotJsonRequest(HttpServletRequest request) {
-        log.info("请求路径: {}, Method: {}, 参数: {}",
-                request.getRequestURI(),
-                request.getMethod(),
-                HttpRequestUtils.parameterMapToString(request.getParameterMap()));
-    }
-
-    public static void logResponse(Object body) {
-        Long timestamp = HttpRequestUtils.getRequestAttribute(RequestContextHolder.getRequestAttributes(), CommonConstant.HttpServletConstant.REQUEST_TIMESTAMP);
-        log.info("响应数据: {}, 请求耗时: {}",
-                JackJsonUtils.write(body),
-                System.currentTimeMillis() - timestamp);
-    }
-
     static String readRequestBody(RequestAttributes requestAttributes, Object body) {
         if (requestAttributes instanceof ServletRequestAttributes) {
             ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) requestAttributes;
             HttpServletRequest request = servletRequestAttributes.getRequest();
             if (request instanceof ContentCachingRequestWrapper) {
-               return HttpRequestUtils.readFromRequestWrapper((ContentCachingRequestWrapper) request);
+                return HttpRequestUtils.readFromRequestWrapper((ContentCachingRequestWrapper) request);
             }
         }
         return Optional.ofNullable(body)

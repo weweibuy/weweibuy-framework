@@ -16,9 +16,9 @@ public interface LogMdcConstant {
 
     String LOG_SENSITIZATION = "logSensitization";
 
-    String SENSITIZATION_FIELD_SET = "sensitizationFieldSet";
+    String SENSITIZATION_FIELDS = "sensitization_fields";
 
-    String SENSITIZATION_FIELD_SET_EMPTY = "[]";
+    String SENSITIZATION_LOGGER = "sensitization_logger";
 
     String TID_FIELD_NAME = "tid";
 

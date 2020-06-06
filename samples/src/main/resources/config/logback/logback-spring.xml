@@ -35,9 +35,9 @@
     <conversionRule conversionWord="wex" converterClass="org.springframework.boot.logging.logback.WhitespaceThrowableProxyConverter" />
     <conversionRule conversionWord="wEx" converterClass="org.springframework.boot.logging.logback.ExtendedWhitespaceThrowableProxyConverter" />
 
-    <conversionRule conversionWord="msg" converterClass="com.weweibuy.framework.common.log.desensitization.LogMessageConverter"/>
-    <conversionRule conversionWord="m" converterClass="com.weweibuy.framework.common.log.desensitization.LogMessageConverter"/>
-    <conversionRule conversionWord="message" converterClass="com.weweibuy.framework.common.log.desensitization.LogMessageConverter"/>
+    <conversionRule conversionWord="msg" converterClass="com.weweibuy.framework.common.log.desensitization.DesensitizationLogMessageConverter"/>
+    <conversionRule conversionWord="m" converterClass="com.weweibuy.framework.common.log.desensitization.DesensitizationLogMessageConverter"/>
+    <conversionRule conversionWord="message" converterClass="com.weweibuy.framework.common.log.desensitization.DesensitizationLogMessageConverter"/>
 
 
 

@@ -2,25 +2,22 @@ package com.weweibuy.framework.common.log.desensitization;
 
 import ch.qos.logback.classic.pattern.ClassicConverter;
 import ch.qos.logback.classic.spi.ILoggingEvent;
-import com.weweibuy.framework.common.log.context.RequestLogContext;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.springframework.util.CollectionUtils;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.ServiceLoader;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
+ * 脱敏日志转化器
+ *
  * @author durenhao
  * @date 2019/9/13 16:42
  **/
-public class LogMessageConverter extends ClassicConverter {
+public class DesensitizationLogMessageConverter extends ClassicConverter {
 
     private static final ServiceLoader<PatternReplaceConfig> LOADER = ServiceLoader.load(PatternReplaceConfig.class);
 
@@ -28,26 +25,29 @@ public class LogMessageConverter extends ClassicConverter {
 
     private static final Map<String, PatternReplace> NO_MATCH_FILED_PATTERN_MAP = new ConcurrentHashMap<>();
 
-    private static final String NO_MATCH_PATTERN_TEMPLATE = "(%s)(\":\").*?(?=(\"))";
+    private static final String NO_MATCH_PATTERN_TEMPLATE = "(\"\\s*:\\s*\"|=).*?(?=(\"|,|&))";
 
-    private static final String NO_MATCH_REPLACE = "$1$2$3******";
+    private static final String NO_MATCH_REPLACE = "$1$2******";
 
     static {
-        init();
-        initCustom();
+        initDefaultPattern();
+        initCustomConfig();
     }
 
 
     @Override
     public String convert(ILoggingEvent event) {
-        RequestLogContext requestContext = RequestLogContext.getRequestContext();
-        if (requestContext == null || !Level.INFO.getName().equals(event.getLevel().levelStr) ||
-                !requestContext.getLogSensitization() || CollectionUtils.isEmpty(requestContext.getSensitizationFieldSet())) {
-            return event.getFormattedMessage();
-        }
-        String message = event.getFormattedMessage();
-        Set<String> sensitizationFieldSet = requestContext.getSensitizationFieldSet();
+        return SensitizationMappingOperator.getSensitizationField()
+                .filter(s -> Level.INFO.getName().equals(event.getLevel().levelStr))
+                .filter(s -> SensitizationMappingOperator.getSensitizationLogger()
+                        .map(l -> event.getLoggerName().equals(l))
+                        .orElse(true))
+                .map(s -> doDesensitization(event.getFormattedMessage(), s))
+                .orElse(event.getFormattedMessage());
+    }
 
+
+    private String doDesensitization(String message, Set<String> sensitizationFieldSet) {
         for (String filed : sensitizationFieldSet) {
             PatternReplace patternReplace = FILED_PATTERN_MAP.get(filed);
             if (patternReplace == null) {
@@ -56,12 +56,10 @@ public class LogMessageConverter extends ClassicConverter {
             }
             message = patternReplace.replace(message);
         }
-
         return message;
     }
 
-
-    private static void init() {
+    private static void initDefaultPattern() {
         /*
          * 正则中 () 中匹配为一组
          * $1 代表从前到后中第一个匹配的组 , $2 为第二个; 不在()内的不计入组
@@ -94,11 +92,14 @@ public class LogMessageConverter extends ClassicConverter {
     }
 
 
-    public static void initCustom() {
+    private static void initCustomConfig() {
         for (PatternReplaceConfig config : LOADER) {
             config.addPatternReplace(FILED_PATTERN_MAP);
+            config.addDesensitizationRule(SensitizationMappingOperator.getConfigurerInstance());
         }
+        SensitizationMappingOperator.initConfigurer();
     }
+
 
     @Data
     @AllArgsConstructor

@@ -4,18 +4,11 @@ import com.weweibuy.framework.common.log.mvc.RequestLogContextFilter;
 import com.weweibuy.framework.common.log.mvc.RequestResponseBodyLogAdvice;
 import com.weweibuy.framework.common.log.mvc.TraceCodeFilter;
 import com.weweibuy.framework.common.log.mvc.UnRequestBodyJsonLogInterceptor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.util.CollectionUtils;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * @author durenhao
@@ -25,16 +18,10 @@ import java.util.Set;
 @ConditionalOnProperty(prefix = "common.log", name = "enable", havingValue = "true", matchIfMissing = true)
 public class CommonLogConfig implements WebMvcConfigurer{
 
-    @Autowired(required = false)
-    private List<SensitizationMappingConfig> mappingConfigList;
 
     @Bean
     public RequestLogContextFilter requestLogContextFilter() {
-        Map<String, Set<String>> setHashMap = new HashMap<>();
-        if (!CollectionUtils.isEmpty(mappingConfigList)) {
-            mappingConfigList.forEach(c -> c.addSensitizationMapping(setHashMap));
-        }
-        return new RequestLogContextFilter(setHashMap);
+        return new RequestLogContextFilter();
     }
 
     @Bean

@@ -13,6 +13,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
+ * 设置MDC的 traceCode过滤器
+ *
  * @author durenhao
  * @date 2020/3/14 15:46
  **/
