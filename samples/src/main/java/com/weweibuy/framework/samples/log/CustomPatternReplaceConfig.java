@@ -4,6 +4,7 @@ package com.weweibuy.framework.samples.log;
 import com.weweibuy.framework.common.log.desensitization.DesensitizationLogMessageConverter;
 import com.weweibuy.framework.common.log.desensitization.PatternReplaceConfig;
 import com.weweibuy.framework.common.log.desensitization.SensitizationMappingConfigurer;
+import org.springframework.http.HttpMethod;
 
 import java.util.Map;
 
@@ -19,11 +20,11 @@ public class CustomPatternReplaceConfig implements PatternReplaceConfig {
 
     @Override
     public void addDesensitizationRule(SensitizationMappingConfigurer configurer) {
-//        configurer.http()
-//                .path("/hello")
-//                .method(HttpMethod.GET)
-//                .logger(CustomPatternReplaceConfig.class)
-//                .sensitizationField("certId", "phone", "password", "fullName", "address");
+        configurer.http()
+                .path("/hello")
+                .method(HttpMethod.GET)
+                .logger(CustomPatternReplaceConfig.class)
+                .sensitizationField("certId", "phone", "password", "fullName", "address");
 
     }
 }
