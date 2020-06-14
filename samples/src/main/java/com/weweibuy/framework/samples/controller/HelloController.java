@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.weweibuy.framework.samples.message.SampleDog;
 import com.weweibuy.framework.samples.message.SampleUser;
+import com.weweibuy.framework.samples.model.dto.CommonDataJsonResponse;
 import com.weweibuy.framework.samples.mq.provider.BatchSampleProvider;
 import com.weweibuy.framework.samples.mq.provider.SampleProvider;
 import lombok.extern.slf4j.Slf4j;
@@ -36,12 +37,12 @@ public class HelloController {
     }
 
     @GetMapping("/hello")
-    public String hello(String msg, String tag) {
+    public Object hello(String msg, String tag) {
         SampleUser user = user(msg);
         user.setSampleDog(dog());
         SendResult send = sampleProvider.send(user, tag, UUID.randomUUID().toString());
 
-        return "hello";
+        return CommonDataJsonResponse.success();
     }
 
     @GetMapping("/hello-async")

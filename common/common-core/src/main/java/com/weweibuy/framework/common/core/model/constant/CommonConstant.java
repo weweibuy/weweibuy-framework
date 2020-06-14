@@ -67,6 +67,8 @@ public interface CommonConstant {
      */
     public interface HttpServletConstant {
 
+        String REQUEST_PATH = "http_request_path";
+
         /**
          * 请求方法
          */

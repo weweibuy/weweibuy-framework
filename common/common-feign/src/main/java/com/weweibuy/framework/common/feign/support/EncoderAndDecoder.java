@@ -1,4 +1,4 @@
-package com.weweibuy.framework.common.feign.log;
+package com.weweibuy.framework.common.feign.support;
 
 import feign.Response;
 import feign.Util;
@@ -20,11 +20,11 @@ import java.util.Optional;
  * @date 2020/3/2 21:46
  **/
 @Slf4j
-public class LogEncoderAndDecoder extends SpringEncoder implements Decoder {
+public class EncoderAndDecoder extends SpringEncoder implements Decoder {
 
     private Decoder delegate;
 
-    public LogEncoderAndDecoder(ObjectFactory<HttpMessageConverters> messageConverters) {
+    public EncoderAndDecoder(ObjectFactory<HttpMessageConverters> messageConverters) {
         super(messageConverters);
         this.delegate = new ResponseEntityDecoder(new SpringDecoder(messageConverters));
     }
@@ -32,7 +32,6 @@ public class LogEncoderAndDecoder extends SpringEncoder implements Decoder {
 
     @Override
     public Object decode(Response response, Type type) throws IOException {
-        response = logAndRebufferResponse(response);
         if (!isOptional(type)) {
             return delegate.decode(response, type);
         }
@@ -50,18 +49,6 @@ public class LogEncoderAndDecoder extends SpringEncoder implements Decoder {
         }
         ParameterizedType parameterizedType = (ParameterizedType) type;
         return parameterizedType.getRawType().equals(Optional.class);
-    }
-
-    static Response logAndRebufferResponse(Response response) throws IOException {
-        int status = response.status();
-        String bodyStr = "";
-        if (response.body() != null && !(status == 204 || status == 205)) {
-            byte[] bodyData = Util.toByteArray(response.body().asInputStream());
-            bodyStr = new String(bodyData);
-            response = response.toBuilder().body(bodyData).build();
-        }
-        log.info("Feign 响应头: {}, 响应数据: {}", response.headers(), bodyStr);
-        return response;
     }
 
 

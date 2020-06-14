@@ -42,4 +42,14 @@ public class HttpClientProperties {
      * 检查失效连接间隔  毫秒
      */
     private Integer checkExpiredConnectionInterval = 60000;
+
+    /**
+     * 超时是是否切换节点
+     */
+    private Boolean switchNodeWhenConnectionTimeout = false;
+
+    /**
+     * 连接的最大生命时间毫秒
+     */
+    private Long maxLifeTime = -1L;
 }

@@ -67,7 +67,7 @@ public class HttpLogger {
 
     public static void logForJsonRequest(RequestAttributes requestAttributes, Object body) {
         String bodyStr = readRequestBody(requestAttributes, body);
-        String path = HttpRequestUtils.getRequestAttribute(requestAttributes, "org.springframework.web.servlet.HandlerMapping.lookupPath");
+        String path = HttpRequestUtils.getRequestAttribute(requestAttributes, CommonConstant.HttpServletConstant.REQUEST_PATH);
         String httpMethod = HttpRequestUtils.getRequestAttribute(requestAttributes, CommonConstant.HttpServletConstant.REQUEST_METHOD);
         Map<String, String[]> parameterMap = HttpRequestUtils.getRequestAttribute(requestAttributes, CommonConstant.HttpServletConstant.REQUEST_PARAMETER_MAP);
         logForJsonRequest(path, httpMethod, parameterMap, bodyStr);
