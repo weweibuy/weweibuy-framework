@@ -30,7 +30,6 @@ public class CommonFeignConfig {
     @Scope("prototype")
     public Feign.Builder feignBuilder(Retryer retryer) {
        return Feign.builder()
-//                .options(new Request.Options(100, 200))
                 .retryer(retryer)
                 .logLevel(Logger.Level.BASIC);
     }
