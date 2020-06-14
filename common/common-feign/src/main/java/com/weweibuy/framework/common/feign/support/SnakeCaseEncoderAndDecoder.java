@@ -1,7 +1,6 @@
 package com.weweibuy.framework.common.feign.support;
 
 import com.weweibuy.framework.common.core.utils.JackJsonUtils;
-import com.weweibuy.framework.common.feign.log.LogEncoderAndDecoder;
 import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.boot.autoconfigure.http.HttpMessageConverters;
 import org.springframework.context.annotation.DependsOn;
@@ -12,7 +11,7 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
  * @date 2020/3/2 23:23
  **/
 @DependsOn("jackJsonUtils")
-public class SnakeCaseEncoderAndDecoder extends LogEncoderAndDecoder {
+public class SnakeCaseEncoderAndDecoder extends EncoderAndDecoder {
 
     private static ObjectFactory<HttpMessageConverters> httpMessageConvertersObjectFactory;
 

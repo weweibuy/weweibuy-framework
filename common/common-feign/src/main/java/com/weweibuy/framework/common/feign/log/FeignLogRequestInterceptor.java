@@ -13,8 +13,7 @@ public class FeignLogRequestInterceptor implements RequestInterceptor {
 
     @Override
     public void apply(RequestTemplate template) {
-        log.info("Feign 请求地址: {}, 请求头: {}, 请求数据: {}", template.url(),
-                template.headers(), template.requestBody().asString());
+        FeignLogger.logForRequest(template.url(), template.headers(), template.requestBody().asString());
     }
 
 

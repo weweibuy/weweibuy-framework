@@ -1,15 +1,21 @@
 package com.weweibuy.framework.common.feign.config;
 
+import com.weweibuy.framework.common.feign.support.NoSwitchHttpClientConnectionOperator;
 import feign.Client;
 import feign.httpclient.ApacheHttpClient;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.RequestConfig;
+import org.apache.http.config.Registry;
+import org.apache.http.config.RegistryBuilder;
 import org.apache.http.conn.HttpClientConnectionManager;
+import org.apache.http.conn.socket.ConnectionSocketFactory;
+import org.apache.http.conn.socket.PlainConnectionSocketFactory;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.conn.ssl.TrustStrategy;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.conn.DefaultHttpClientConnectionOperator;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -22,9 +28,13 @@ import org.springframework.web.client.ExtractingResponseErrorHandler;
 import org.springframework.web.client.RestTemplate;
 
 import javax.net.ssl.SSLContext;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author durenhao
@@ -53,7 +63,7 @@ public class HttpClientConfig {
 
 
     @Bean
-    public CloseableHttpClient httpClient() throws Exception {
+    public CloseableHttpClient httpClient() throws KeyStoreException, NoSuchAlgorithmException, KeyManagementException {
 
         HttpClientBuilder httpClientBuilder = HttpClients.custom()
                 .setConnectionManager(httpClientConnectionManager())
@@ -87,10 +97,9 @@ public class HttpClientConfig {
 
 
     private HttpClientConnectionManager httpClientConnectionManager() {
-        PoolingHttpClientConnectionManager connectionManager = new PoolingHttpClientConnectionManager();
+        PoolingHttpClientConnectionManager connectionManager = poolingHttpClientConnectionManager();
         connectionManager.setMaxTotal(httpClientProperties.getMaxTotal());
         connectionManager.setDefaultMaxPerRoute(httpClientProperties.getDefaultMaxPerRoute());
-
         if (this.connectionManagerTimer == null) {
             this.connectionManagerTimer = new Timer(
                     "HttpClientConfigTimer", true);
@@ -105,19 +114,35 @@ public class HttpClientConfig {
         return connectionManager;
     }
 
+    private PoolingHttpClientConnectionManager poolingHttpClientConnectionManager() {
+        if (!httpClientProperties.getSwitchNodeWhenConnectionTimeout()) {
+            return new PoolingHttpClientConnectionManager(
+                    new NoSwitchHttpClientConnectionOperator(getDefaultRegistry(), null, null),
+                    null,
+                    httpClientProperties.getMaxLifeTime(),
+                    TimeUnit.MICROSECONDS);
+        }
+        return new PoolingHttpClientConnectionManager(
+                new DefaultHttpClientConnectionOperator(getDefaultRegistry(), null, null),
+                null,
+                httpClientProperties.getMaxLifeTime(),
+                TimeUnit.MICROSECONDS);
+    }
+
+    private static Registry<ConnectionSocketFactory> getDefaultRegistry() {
+        return RegistryBuilder.<ConnectionSocketFactory>create()
+                .register("http", PlainConnectionSocketFactory.getSocketFactory())
+                .register("https", SSLConnectionSocketFactory.getSocketFactory())
+                .build();
+    }
+
+
     @Bean
-    public RestTemplate restTemplate(RestTemplateBuilder restTemplateBuilder) throws Exception {
+    public RestTemplate restTemplate(RestTemplateBuilder restTemplateBuilder) throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
         ExtractingResponseErrorHandler errorHandler = new ExtractingResponseErrorHandler();
-//        Map<HttpStatus, Class<? extends RestClientException>> mappingMap = new HashMap<>();
-//        // 不处理的http 异常code码
-//        mappingMap.put(HttpStatus.UNAUTHORIZED, null);
-//        mappingMap.put(HttpStatus.FORBIDDEN, null);
-//
-//        errorHandler.setStatusMapping(mappingMap);
 
         HttpComponentsClientHttpRequestFactory requestFactory =
                 new HttpComponentsClientHttpRequestFactory(httpClient());
-
 
         return restTemplateBuilder.errorHandler(errorHandler)
                 .requestFactory(() -> requestFactory)
