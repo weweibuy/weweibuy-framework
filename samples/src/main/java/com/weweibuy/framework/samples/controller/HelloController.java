@@ -1,21 +1,18 @@
 package com.weweibuy.framework.samples.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JavaType;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.weweibuy.framework.samples.message.SampleDog;
 import com.weweibuy.framework.samples.message.SampleUser;
 import com.weweibuy.framework.samples.model.dto.CommonDataJsonResponse;
 import com.weweibuy.framework.samples.mq.provider.BatchSampleProvider;
 import com.weweibuy.framework.samples.mq.provider.SampleProvider;
+import com.weweibuy.framework.samples.mq.provider.ServerChangeMessage;
+import com.weweibuy.framework.samples.mq.provider.lbServiceChangeProvider;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.client.producer.SendCallback;
 import org.apache.rocketmq.client.producer.SendResult;
-import org.springframework.core.ResolvableType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.UUID;
 
@@ -31,9 +28,12 @@ public class HelloController {
 
     private BatchSampleProvider batchSampleProvider;
 
-    public HelloController(SampleProvider sampleProvider, BatchSampleProvider batchSampleProvider) {
+    private lbServiceChangeProvider lbServiceChangeProvider;
+
+    public HelloController(SampleProvider sampleProvider, BatchSampleProvider batchSampleProvider, com.weweibuy.framework.samples.mq.provider.lbServiceChangeProvider lbServiceChangeProvider) {
         this.sampleProvider = sampleProvider;
         this.batchSampleProvider = batchSampleProvider;
+        this.lbServiceChangeProvider = lbServiceChangeProvider;
     }
 
     @GetMapping("/hello")
@@ -97,22 +97,14 @@ public class HelloController {
         return sampleDog;
     }
 
-    public static void main(String[] args) throws JsonProcessingException {
-        ResolvableType resolvableType = ResolvableType.forClassWithGenerics(SampleUser.class, SampleDog.class);
 
-        Type type = resolvableType.getType();
-        ObjectMapper objectMapper = new ObjectMapper();
-        SampleUser tom = user("tom");
-        tom.setSampleDog(dog());
-        String asString = objectMapper.writeValueAsString(tom);
-        System.err.println(asString);
-
-        JavaType javaType = objectMapper.getTypeFactory().constructParametricType(SampleUser.class, SampleDog.class);
-
-        Object o = objectMapper.readValue(asString, javaType);
-        System.err.println(o);
-
-
+    @GetMapping("/change")
+    public String send(String name, String id){
+        ServerChangeMessage message = new ServerChangeMessage();
+        message.setName(name);
+        message.setInstanceId(id);
+        lbServiceChangeProvider.sendServiceChangeMsg(message);
+        return "success";
     }
 
 }
