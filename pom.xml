@@ -76,31 +76,7 @@
 
             <dependency>
                 <groupId>com.weweibuy.framework</groupId>
-                <artifactId>common</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.weweibuy.framework</groupId>
                 <artifactId>rocketmq</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.weweibuy.framework</groupId>
-                <artifactId>idempotent</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.weweibuy.framework</groupId>
-                <artifactId>interface</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.weweibuy.framework</groupId>
-                <artifactId>compensate</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
@@ -113,12 +89,6 @@
             <dependency>
                 <groupId>com.weweibuy.framework</groupId>
                 <artifactId>common-mvc</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.weweibuy.framework</groupId>
-                <artifactId>spring-mvc-extend</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
@@ -168,12 +138,6 @@
                 <groupId>com.weweibuy.framework</groupId>
                 <artifactId>common-feign</artifactId>
                 <version>${project.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.weweibuy</groupId>
-                <artifactId>webuy-common</artifactId>
-                <version>${webuy-common.version}</version>
             </dependency>
 
             <dependency>
