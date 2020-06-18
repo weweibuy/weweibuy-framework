@@ -11,5 +11,11 @@
 
     <artifactId>idempotent-redis</artifactId>
 
+    <dependencies>
+        <dependency>
+            <groupId>com.weweibuy.framework</groupId>
+            <artifactId>idempotent-core</artifactId>
+        </dependency>
+    </dependencies>
 
 </project>
