@@ -1,6 +1,11 @@
 package com.weweibuy.framework.rocketmq.core.consumer;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.rocketmq.common.message.MessageExt;
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * @author durenhao
@@ -36,15 +41,36 @@ public abstract class AbstractRocketMessageListener<R> implements RocketMessageL
                 if (errorHandler.handlerException(e, messageObject, isOrderly())) {
                     return getSuccessReturnValue();
                 }
-                return getFailReturnValue();
             } else {
-                log.warn("消费MQ消息: {}, 时异常: {}", messageObject, e);
-                return getFailReturnValue();
+                if (messageObject instanceof Collection) {
+                    logException((List) messageObject, e);
+                } else if (messageObject instanceof MessageExt) {
+                    logException(Collections.singletonList((MessageExt) messageObject), e);
+                } else {
+                    log.warn("消费MQ消息: {}, 时异常: {}", messageObject, e);
+                }
             }
+            return getFailReturnValue();
         }
         return handleResult(reValue);
     }
 
+
+    private void logException(List<MessageExt> messageExtList, Exception e) {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("消费MQ消息: ");
+        for (int i = 0; i < messageExtList.size(); i++) {
+            stringBuilder.append(" Topic:【").append(messageExtList.get(i).getTags()).append("】")
+                    .append(" Tag:【").append(messageExtList.get(i).getTags()).append("】")
+                    .append(" Key:【").append(messageExtList.get(i).getKeys()).append("】")
+                    .append(" Body:【").append(new String(messageExtList.get(i).getBody())).append("】");
+            if (i != messageExtList.size()) {
+                stringBuilder.append("\r\n");
+            }
+        }
+        stringBuilder.append("出现异常: ");
+        log.warn(stringBuilder.toString(), e);
+    }
 
     /**
      * 处理结果
