@@ -13,8 +13,16 @@ import java.lang.reflect.Method;
  **/
 public class IdempotentPointcut extends StaticMethodMatcherPointcut {
 
+    private AnnotationMetaDataHolder annotationMetaDataHolder;
+
     @Override
     public boolean matches(Method method, Class<?> aClass) {
-        return method.getAnnotation(Idempotent.class) != null;
+        Idempotent annotation = method.getAnnotation(Idempotent.class);
+        boolean match = annotation != null;
+        if (match) {
+            // TODO 获取真实方法 而非代理方法?
+            annotationMetaDataHolder.putMetaData(method, annotation);
+        }
+        return match;
     }
 }
