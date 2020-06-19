@@ -23,14 +23,21 @@ public @interface Idempotent {
     String key();
 
     /**
-     * 幂等数据分片, 可使用 SPEL 表达式
+     * 幂等数据分片,适用于JDBC情况下, 可使用 SPEL 表达式
      *
      * @return
      */
     String sharding() default "";
 
     /**
-     * key 生成器
+     * 加锁最长时间, 适用于Redis 锁定时间
+     *
+     * @return
+     */
+    long maxLockMilli() default 1000L;
+
+    /**
+     * key 生成器, 指定springBeanName
      *
      * @return
      */
