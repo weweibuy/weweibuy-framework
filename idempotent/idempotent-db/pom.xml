@@ -16,6 +16,12 @@
             <groupId>com.weweibuy.framework</groupId>
             <artifactId>idempotent-core</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-jdbc</artifactId>
+        </dependency>
+
     </dependencies>
 
 </project>

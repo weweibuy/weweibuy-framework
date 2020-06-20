@@ -5,6 +5,7 @@ import com.weweibuy.framework.idempotent.core.support.IdempotentInfoParser;
 import com.weweibuy.framework.idempotent.core.support.IdempotentManager;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
+import org.springframework.util.Assert;
 
 import java.lang.reflect.Method;
 
@@ -16,9 +17,12 @@ import java.lang.reflect.Method;
  **/
 public class IdempotentAspect implements MethodInterceptor {
 
-    private IdempotentManager idempotentManager;
-
     private IdempotentInfoParser idempotentKeyParser;
+
+    public IdempotentAspect(IdempotentInfoParser idempotentKeyParser) {
+        Assert.notNull(idempotentKeyParser, "idempotentKeyParser 不能为空");
+        this.idempotentKeyParser = idempotentKeyParser;
+    }
 
     /**
      * 通知
@@ -32,7 +36,8 @@ public class IdempotentAspect implements MethodInterceptor {
 
         Object[] arguments = methodInvocation.getArguments();
         Method method = methodInvocation.getMethod();
-        IdempotentInfo idempotentInfo = idempotentKeyParser.parseKey(methodInvocation);
+        IdempotentInfo idempotentInfo = idempotentKeyParser.parseIdempotentInfo(methodInvocation);
+        IdempotentManager idempotentManager = idempotentInfo.getIdempotentManager();
         boolean lock = idempotentManager.tryLock(idempotentInfo);
         if (!lock) {
             return idempotentManager.handlerNoLock(idempotentInfo);

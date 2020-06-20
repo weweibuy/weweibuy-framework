@@ -4,6 +4,11 @@ import com.weweibuy.framework.idempotent.core.annotation.EnableIdempotent;
 import com.weweibuy.framework.idempotent.core.aspect.IdempotentAspect;
 import com.weweibuy.framework.idempotent.core.aspect.IdempotentBeanFactoryPointcutAdvisor;
 import com.weweibuy.framework.idempotent.core.aspect.IdempotentPointcut;
+import com.weweibuy.framework.idempotent.core.support.AnnotationMetaDataHolder;
+import com.weweibuy.framework.idempotent.core.support.IdempotentInfoParser;
+import com.weweibuy.framework.idempotent.core.support.IdempotentManager;
+import com.weweibuy.framework.idempotent.core.support.KeyGenerator;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,6 +16,8 @@ import org.springframework.context.annotation.ImportAware;
 import org.springframework.context.annotation.Role;
 import org.springframework.core.annotation.AnnotationAttributes;
 import org.springframework.core.type.AnnotationMetadata;
+
+import java.util.Map;
 
 /**
  * @author durenhao
@@ -20,6 +27,15 @@ import org.springframework.core.type.AnnotationMetadata;
 public class IdempotentConfig implements ImportAware {
 
     protected AnnotationAttributes enableCompensate;
+
+    @Autowired
+    private Map<String, IdempotentManager> idempotentManagerMap;
+
+    @Autowired(required = false)
+    private Map<String, KeyGenerator> keyGeneratorMap;
+
+    @Autowired
+    private IdempotentManager idempotentManager;
 
     @Override
     public void setImportMetadata(AnnotationMetadata importMetadata) {
@@ -33,13 +49,22 @@ public class IdempotentConfig implements ImportAware {
 
     @Bean
     @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
-    public IdempotentBeanFactoryPointcutAdvisor compensateBeanFactoryPointcutAdvisor() {
+    public IdempotentBeanFactoryPointcutAdvisor idempotentBeanFactoryPointcutAdvisor() {
         IdempotentBeanFactoryPointcutAdvisor advisor = new IdempotentBeanFactoryPointcutAdvisor();
-        advisor.setPc(new IdempotentPointcut());
+        advisor.setPc(new IdempotentPointcut(idempotentAnnotationMetaDataHolder()));
         advisor.setOrder(enableCompensate.<Integer>getNumber("order"));
-        advisor.setAdvice(new IdempotentAspect());
+        advisor.setAdvice(new IdempotentAspect(idempotentInfoParser()));
         return advisor;
     }
 
+    @Bean
+    public AnnotationMetaDataHolder idempotentAnnotationMetaDataHolder() {
+        return new AnnotationMetaDataHolder();
+    }
+
+    @Bean
+    public IdempotentInfoParser idempotentInfoParser() {
+        return new IdempotentInfoParser(idempotentAnnotationMetaDataHolder(), idempotentManagerMap, keyGeneratorMap, idempotentManager);
+    }
 
 }

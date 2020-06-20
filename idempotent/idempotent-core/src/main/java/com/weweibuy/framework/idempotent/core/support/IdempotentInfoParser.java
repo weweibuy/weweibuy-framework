@@ -1,13 +1,14 @@
 package com.weweibuy.framework.idempotent.core.support;
 
 import com.weweibuy.framework.common.core.expression.CommonCachedExpressionEvaluator;
-import com.weweibuy.framework.idempotent.core.aspect.AnnotationMetaDataHolder;
-import com.weweibuy.framework.idempotent.core.aspect.IdempotentAnnotationMeta;
+import com.weweibuy.framework.idempotent.core.exception.IdempotentException;
 import org.aopalliance.intercept.MethodInvocation;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.context.ApplicationContext;
+import org.springframework.util.Assert;
 
 import java.lang.reflect.Method;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * 幂等key 解析器
@@ -19,7 +20,25 @@ public class IdempotentInfoParser extends CommonCachedExpressionEvaluator {
 
     private AnnotationMetaDataHolder annotationMetaDataHolder;
 
-    private ApplicationContext applicationContext;
+    private Map<String, IdempotentManager> idempotentManagerMap;
+
+    private Map<String, KeyGenerator> keyGeneratorMap;
+
+    private IdempotentManager idempotentManager;
+
+
+    public IdempotentInfoParser(AnnotationMetaDataHolder annotationMetaDataHolder,
+                                Map<String, IdempotentManager> idempotentManagerMap,
+                                Map<String, KeyGenerator> keyGeneratorMap,
+                                IdempotentManager idempotentManager) {
+        Assert.notNull(annotationMetaDataHolder, "annotationMetaDataHolder 不能为空");
+        Assert.notNull(idempotentManagerMap, "idempotentManagerMap 不能为空");
+        Assert.notNull(idempotentManager, "idempotentManager 不能为空");
+        this.annotationMetaDataHolder = annotationMetaDataHolder;
+        this.idempotentManagerMap = idempotentManagerMap;
+        this.keyGeneratorMap = keyGeneratorMap;
+        this.idempotentManager = idempotentManager;
+    }
 
     /**
      * 解析幂等key
@@ -27,7 +46,7 @@ public class IdempotentInfoParser extends CommonCachedExpressionEvaluator {
      * @param methodInvocation
      * @return
      */
-    public IdempotentInfo parseKey(MethodInvocation methodInvocation) {
+    public IdempotentInfo parseIdempotentInfo(MethodInvocation methodInvocation) {
         Method method = methodInvocation.getMethod();
         Object target = methodInvocation.getThis();
         Object[] arguments = methodInvocation.getArguments();
@@ -40,7 +59,12 @@ public class IdempotentInfoParser extends CommonCachedExpressionEvaluator {
             key = keyGenerator.generatorKey(key);
         }
         String sharding = evaluatorKey(metaData.getSharding(), target, method, arguments);
-        return new IdempotentInfo(key, sharding, metaData.getMaxLockMilli());
+
+        IdempotentManager manager = idempotentManager;
+        if (StringUtils.isNotBlank(metaData.getIdempotentManager())) {
+            manager = getIdempotentManager(metaData.getIdempotentManager());
+        }
+        return new IdempotentInfo(key, sharding, metaData.getMaxLockMilli(), metaData.getReturnType(), manager);
     }
 
     private String evaluatorKey(String keyInAnnotation, Object target, Method method, Object[] args) {
@@ -59,7 +83,15 @@ public class IdempotentInfoParser extends CommonCachedExpressionEvaluator {
 
 
     private KeyGenerator getKeyGenerator(String name) {
-        return applicationContext.getBean(name, KeyGenerator.class);
+        return Optional.ofNullable(keyGeneratorMap)
+                .map(m -> m.get(name))
+                .orElseThrow(() -> new IdempotentException("BeanName: " + name + " 对应的幂等Key生成器不存在"));
+    }
+
+    private IdempotentManager getIdempotentManager(String name) {
+        return Optional.ofNullable(idempotentManagerMap.get(name))
+                .orElseThrow(() -> new IdempotentException("BeanName: " + name + " 对应的幂等管理器不存在"));
+
     }
 
 }

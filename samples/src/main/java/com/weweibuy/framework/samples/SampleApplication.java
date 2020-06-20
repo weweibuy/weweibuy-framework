@@ -1,6 +1,7 @@
 package com.weweibuy.framework.samples;
 
 import com.weweibuy.framework.compensate.annotation.EnableCompensate;
+import com.weweibuy.framework.idempotent.core.annotation.EnableIdempotent;
 import com.weweibuy.framework.rocketmq.annotation.EnableRocket;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -16,6 +17,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 @EnableCompensate
 @EnableRocket
 @EnableFeignClients
+@EnableIdempotent
 public class SampleApplication {
 
     public static void main(String[] args) {
