@@ -10,10 +10,7 @@ import com.weweibuy.framework.idempotent.core.support.IdempotentManager;
 import com.weweibuy.framework.idempotent.core.support.KeyGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.ImportAware;
-import org.springframework.context.annotation.Role;
+import org.springframework.context.annotation.*;
 import org.springframework.core.annotation.AnnotationAttributes;
 import org.springframework.core.type.AnnotationMetadata;
 
@@ -58,6 +55,7 @@ public class IdempotentConfig implements ImportAware {
     }
 
     @Bean
+    @DependsOn("jackJsonUtils")
     public AnnotationMetaDataHolder idempotentAnnotationMetaDataHolder() {
         return new AnnotationMetaDataHolder();
     }

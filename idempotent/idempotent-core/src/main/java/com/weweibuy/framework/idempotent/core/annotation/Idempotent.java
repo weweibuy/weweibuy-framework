@@ -1,5 +1,6 @@
 package com.weweibuy.framework.idempotent.core.annotation;
 
+import com.weweibuy.framework.idempotent.core.support.IdempotentExpressionRootObject;
 import com.weweibuy.framework.idempotent.core.support.IdempotentManager;
 
 import java.lang.annotation.ElementType;
@@ -19,6 +20,7 @@ public @interface Idempotent {
 
     /**
      * 幂等 key, 可以使用  SPEL 表达式
+     * {@link IdempotentExpressionRootObject}
      *
      * @return
      */
@@ -26,6 +28,7 @@ public @interface Idempotent {
 
     /**
      * 幂等数据分片,适用于JDBC情况下, 可使用 SPEL 表达式
+     * {@link IdempotentExpressionRootObject}
      *
      * @return
      */
@@ -36,7 +39,7 @@ public @interface Idempotent {
      *
      * @return
      */
-    long maxLockMilli() default 1000L;
+    long maxLockMilli() default 10000L;
 
     /**
      * key 生成器, 指定springBeanName
