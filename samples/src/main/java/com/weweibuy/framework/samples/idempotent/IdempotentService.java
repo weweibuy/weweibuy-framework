@@ -38,7 +38,6 @@ public class IdempotentService {
     @Idempotent(key = "", sharding = "#user.name", idempotentManager = "redisIdempotentManager")
     public CommonCodeJsonResponse doBiz4(User user) throws InterruptedException {
         log.info("Idempotent biz ......");
-        Thread.sleep(9000);
         return CommonCodeJsonResponse.success();
     }
 

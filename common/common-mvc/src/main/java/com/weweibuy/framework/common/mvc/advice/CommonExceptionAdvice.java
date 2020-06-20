@@ -5,6 +5,7 @@ import com.weweibuy.framework.common.core.exception.SystemException;
 import com.weweibuy.framework.common.core.model.dto.CommonCodeJsonResponse;
 import com.weweibuy.framework.common.log.logger.HttpLogger;
 import com.weweibuy.framework.common.log.utils.HttpRequestUtils;
+import com.weweibuy.framework.idempotent.core.exception.IdempotentNoLockException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -81,6 +82,13 @@ public class CommonExceptionAdvice {
 
         log.warn("请求 HttpMethod 错误: {}", e.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(CommonCodeJsonResponse.badRequestParam("请求HttpMethod错误"));
+    }
+
+    @ExceptionHandler(IdempotentNoLockException.class)
+    public ResponseEntity<CommonCodeJsonResponse> handler(HttpServletRequest request, IdempotentNoLockException e) throws IOException {
+        logForJsonRequest(request);
+        log.warn("幂等异常: ", e.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(CommonCodeJsonResponse.requestLimit());
     }
 
 
