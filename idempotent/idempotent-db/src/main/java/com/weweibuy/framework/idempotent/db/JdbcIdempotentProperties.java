@@ -17,5 +17,5 @@ public class JdbcIdempotentProperties {
 
     private String selectSql;
 
-    private Boolean useSharding;
+    private Boolean useSharding = false;
 }

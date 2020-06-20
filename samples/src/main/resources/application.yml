@@ -5,17 +5,29 @@ spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     type: com.zaxxer.hikari.HikariDataSource
-    url: jdbc:mysql://106.12.208.53:3306/webuy_compensate?useUnicode=true&characterEncoding=UTF-8&allowMutiQueries=true
+    url: jdbc:mysql://106.12.208.53:3306/webuy_learning?useUnicode=true&characterEncoding=UTF-8&allowMutiQueries=true
     username: user01
     password: ak402507979
   jackson:
     property-naming-strategy: SNAKE_CASE
+  redis:
+    host: 122.51.171.126
+    password: ak402507979
+
+
 
 mybatis:
   mapper-locations: classpath*:config/mybatis/mapper/**/*.xml
 
 logging:
   config: classpath:config/logback/logback-spring.xml
+
+idempotent:
+  jdbc:
+    insert-sql: "INSERT INTO idempotent SET idem_key =  ? "
+    update-sql: "UPDATE idempotent SET exec_result = ? WHERE idem_key = ? "
+    select-sql: "SELECT exec_result FROM idempotent WHERE idem_key = ? "
+
 
 
 rocket-mq:

@@ -30,6 +30,7 @@ public class JdbcIdempotentManager implements IdempotentManager {
                                  JdbcIdempotentProperties jdbcIdempotentProperties) {
         Assert.notNull(jdbcTemplate, "jdbcTemplate 不能为空");
         Assert.notNull(jdbcIdempotentProperties, "jdbcIdempotentProperties 不能为空");
+        checkProperties(jdbcIdempotentProperties);
         this.jdbcTemplate = jdbcTemplate;
         this.jdbcIdempotentProperties = jdbcIdempotentProperties;
     }
@@ -56,6 +57,9 @@ public class JdbcIdempotentManager implements IdempotentManager {
             throw new IdempotentException("无法根据幂等Key: " + idempotentInfo.getKey() + "查询到幂等数据");
         }
         String resultStr = result.get(0);
+        if ("null".equals(resultStr)) {
+            return null;
+        }
         return JackJsonUtils.readCamelCaseValue(resultStr, idempotentInfo.getJavaType());
     }
 
@@ -70,10 +74,10 @@ public class JdbcIdempotentManager implements IdempotentManager {
     private Object[] prepareArgs(IdempotentInfo idempotentInfo, Object result) {
         Object[] objects = prepareArgs(idempotentInfo);
         Object[] prepareArgs = new Object[objects.length + 1];
-        System.arraycopy(objects, 0, prepareArgs, 0, objects.length);
+        System.arraycopy(objects, 0, prepareArgs, 1, objects.length);
         String updateSql = jdbcIdempotentProperties.getUpdateSql();
         String resultJson = JackJsonUtils.writeCamelCase(result);
-        prepareArgs[objects.length + 1] = resultJson;
+        prepareArgs[0] = resultJson;
         return prepareArgs;
     }
 
@@ -92,5 +96,12 @@ public class JdbcIdempotentManager implements IdempotentManager {
         if (StringUtils.isBlank(idempotentInfo.getSharding())) {
             throw new IdempotentException("shardingKey不能为空");
         }
+    }
+
+    private void checkProperties(JdbcIdempotentProperties jdbcIdempotentProperties) {
+        Assert.notNull(jdbcIdempotentProperties.getUpdateSql(), "idempotent.jdbc.updateSql  配置不能为空");
+        Assert.notNull(jdbcIdempotentProperties.getSelectSql(), "idempotent.jdbc.selectSql 配置不能为空");
+        Assert.notNull(jdbcIdempotentProperties.getInsertSql(), "idempotent.jdbc.insertSql 配置不能为空");
+        Assert.notNull(jdbcIdempotentProperties.getUseSharding(), "idempotent.jdbc.useSharding 不能为空");
     }
 }

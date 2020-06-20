@@ -9,6 +9,7 @@ import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.util.Assert;
 
 import java.lang.management.ManagementFactory;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author durenhao
@@ -36,7 +37,8 @@ public class RedisIdempotentManager implements IdempotentManager {
     @Override
     public boolean tryLock(IdempotentInfo idempotentInfo) {
         return valueOperations
-                .setIfAbsent(generatorKey(idempotentInfo.getKey()), pid + "_" + Thread.currentThread().getName());
+                .setIfAbsent(generatorKey(idempotentInfo.getKey()), pid + "_" + Thread.currentThread().getName(),
+                        idempotentInfo.getMaxLockMilli(), TimeUnit.MILLISECONDS);
     }
 
     @Override
