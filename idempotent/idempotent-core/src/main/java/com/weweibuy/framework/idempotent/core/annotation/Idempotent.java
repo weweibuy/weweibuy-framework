@@ -1,5 +1,7 @@
 package com.weweibuy.framework.idempotent.core.annotation;
 
+import com.weweibuy.framework.idempotent.core.support.IdempotentManager;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -43,5 +45,12 @@ public @interface Idempotent {
      */
     String generator() default "";
 
+    /**
+     * 指定幂等管理器BeanName, 多个管理器情况下使用 @Primary 的管理器
+     * {@link IdempotentManager}
+     *
+     * @return
+     */
+    String idempotentManager() default "";
 
 }

@@ -1,5 +1,6 @@
 package com.weweibuy.framework.idempotent.core.support;
 
+import com.fasterxml.jackson.databind.JavaType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -16,5 +17,9 @@ public class IdempotentInfo {
     private final String sharding;
 
     private final Long maxLockMilli;
+
+    private final JavaType javaType;
+
+    private final IdempotentManager idempotentManager;
 
 }

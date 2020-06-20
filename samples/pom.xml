@@ -75,6 +75,16 @@
         </dependency>
 
         <dependency>
+            <groupId>com.weweibuy.framework</groupId>
+            <artifactId>idempotent-db</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.weweibuy.framework</groupId>
+            <artifactId>idempotent-redis</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
         </dependency>

@@ -1,5 +1,6 @@
-package com.weweibuy.framework.idempotent.core.aspect;
+package com.weweibuy.framework.idempotent.core.support;
 
+import com.fasterxml.jackson.databind.JavaType;
 import com.weweibuy.framework.idempotent.core.annotation.Idempotent;
 import lombok.Getter;
 
@@ -18,11 +19,17 @@ public class IdempotentAnnotationMeta {
 
     private final String generator;
 
-    public IdempotentAnnotationMeta(Idempotent idempotent){
+    private final JavaType returnType;
+
+    private final String idempotentManager;
+
+    public IdempotentAnnotationMeta(Idempotent idempotent, JavaType javaType) {
         key = idempotent.key();
         sharding = idempotent.sharding();
         maxLockMilli = idempotent.maxLockMilli();
         generator = idempotent.generator();
+        idempotentManager = idempotent.idempotentManager();
+        returnType = javaType;
     }
 
 

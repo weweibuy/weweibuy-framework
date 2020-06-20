@@ -1,6 +1,7 @@
 package com.weweibuy.framework.idempotent.core.aspect;
 
 import com.weweibuy.framework.idempotent.core.annotation.Idempotent;
+import com.weweibuy.framework.idempotent.core.support.AnnotationMetaDataHolder;
 import org.springframework.aop.support.StaticMethodMatcherPointcut;
 
 import java.lang.reflect.Method;
@@ -14,6 +15,10 @@ import java.lang.reflect.Method;
 public class IdempotentPointcut extends StaticMethodMatcherPointcut {
 
     private AnnotationMetaDataHolder annotationMetaDataHolder;
+
+    public IdempotentPointcut(AnnotationMetaDataHolder annotationMetaDataHolder) {
+        this.annotationMetaDataHolder = annotationMetaDataHolder;
+    }
 
     @Override
     public boolean matches(Method method, Class<?> aClass) {
