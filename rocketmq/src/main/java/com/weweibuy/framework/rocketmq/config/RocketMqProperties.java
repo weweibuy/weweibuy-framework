@@ -75,12 +75,12 @@ public class RocketMqProperties {
         private Integer maxMessageSize = 1024 * 1024 * 4;
 
         /**
-         * ACL 访问控制  accessKey TODO 完成该功能
+         * ACL 访问控制  accessKey
          */
         private String accessKey;
 
         /**
-         * ACL 访问控制  secretKey TODO 完成该功能
+         * ACL 访问控制  secretKey
          */
         private String secretKey;
 
@@ -144,12 +144,12 @@ public class RocketMqProperties {
         private Integer threadMax;
 
         /**
-         * ACL 访问控制  accessKey  TODO 完成该功能
+         * ACL 访问控制  accessKey
          */
         private String accessKey;
 
         /**
-         * ACL 访问控制  secretKey  TODO 完成该功能
+         * ACL 访问控制  secretKey
          */
         private String secretKey;
 

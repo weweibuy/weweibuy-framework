@@ -9,6 +9,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * 标记类为rocketMQ的消费类, 配合 {@link RocketConsumerHandler} 一起使用消费MQ消息
+ *
  * @author durenhao
  * @date 2020/1/4 17:13
  **/

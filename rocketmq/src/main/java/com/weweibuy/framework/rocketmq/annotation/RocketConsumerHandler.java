@@ -6,6 +6,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * 标记处理 方法为 Rocket 消费方法,  配合 {@link RocketListener} 一起使用
+ *
  * @author durenhao
  * @date 2020/1/4 18:18
  **/

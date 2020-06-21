@@ -3,7 +3,8 @@ package com.weweibuy.framework.rocketmq.core.consumer;
 import org.springframework.core.MethodParameter;
 
 /**
- * 参数解析器
+ * 参数解析器, 用于在消费消息时,解析被 {@link com.weweibuy.framework.rocketmq.annotation.RocketConsumerHandler}
+ * 标记方法上的参数
  *
  * @author durenhao
  * @date 2020/1/6 23:19
@@ -25,7 +26,7 @@ public interface HandlerMethodArgumentResolver {
      * @param messageObject
      * @return
      */
-    Object resolveArgument(MethodParameter parameter,  Object messageObject);
+    Object resolveArgument(MethodParameter parameter, Object messageObject);
 
 
 }

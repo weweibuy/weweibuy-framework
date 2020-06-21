@@ -8,7 +8,6 @@ import com.weweibuy.framework.rocketmq.core.provider.MessageSendFilter;
 import java.util.List;
 
 /**
- *
  * rocket 生产者配置
  *
  * @author durenhao
@@ -23,12 +22,21 @@ public interface RocketConfigurer {
     default void addHandlerMethodArgumentResolver(HandlerMethodArgumentResolverComposite composite) {
     }
 
+    /**
+     * 增加 消费过滤器
+     *
+     * @param consumerFilter
+     */
     default void addConsumerFilter(List<ConsumerFilter> consumerFilter) {
     }
 
+    /**
+     * 增加发送消息时过滤器
+     *
+     * @param messageSendFilter
+     */
     default void addMessageSendFilter(List<MessageSendFilter> messageSendFilter) {
     }
-
 
 
 }

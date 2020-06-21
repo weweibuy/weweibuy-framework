@@ -1,9 +1,6 @@
 package com.weweibuy.framework.samples.mq.provider;
 
-import com.weweibuy.framework.rocketmq.annotation.Key;
-import com.weweibuy.framework.rocketmq.annotation.RocketProvider;
-import com.weweibuy.framework.rocketmq.annotation.RocketProviderHandler;
-import com.weweibuy.framework.rocketmq.annotation.Tag;
+import com.weweibuy.framework.rocketmq.annotation.*;
 import com.weweibuy.framework.rocketmq.support.JacksonRocketMqMessageConverter;
 import com.weweibuy.framework.samples.message.SampleUser;
 import org.apache.rocketmq.client.producer.SendCallback;
@@ -29,6 +26,17 @@ public interface SampleProvider {
      */
     @RocketProviderHandler(tag = "${rocket-mq.provider.sample-provider.tag}")
     SendResult send(SampleUser user, @Tag String s, @Key String key);
+
+    /**
+     * 发送自定义的 header(消息属性)
+     *
+     * @param user
+     * @param header
+     * @return
+     */
+    @RocketProviderHandler(tag = "QQQ")
+    SendResult sendHeader(SampleUser user, @Header("MessageConst.PROPERTY_TAGS") String header);
+
 
     /**
      * 顺序发送 使用 {@link SelectMessageQueueByHash}

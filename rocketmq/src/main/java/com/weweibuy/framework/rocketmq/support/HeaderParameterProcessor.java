@@ -27,7 +27,7 @@ public class HeaderParameterProcessor implements AnnotatedParameterProcessor {
 
     @Override
     public boolean match(Annotation annotation) {
-        return ANNOTATION.isInstance(annotation);
+         return ANNOTATION.isInstance(annotation);
     }
 
     @Override
@@ -50,6 +50,7 @@ public class HeaderParameterProcessor implements AnnotatedParameterProcessor {
         Map<Integer, String> headerIndexName = methodMetadata.getHeaderIndexName();
         if (headerIndexName == null) {
             headerIndexName = new HashMap<>();
+            methodMetadata.setHeaderIndexName(headerIndexName);
         }
 
         if (StringUtils.isNotBlank(value)) {
