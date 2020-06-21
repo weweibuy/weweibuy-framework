@@ -31,9 +31,9 @@ public class IdempotentController {
     }
 
     @RequestMapping("/jdbc2")
-    public Object jdbc2() {
+    public Object jdbc2(String name) {
         User user = new User();
-        user.setName("tom");
+        user.setName(name);
         user.setAge(12);
         return idempotentService.doBiz2(user);
     }

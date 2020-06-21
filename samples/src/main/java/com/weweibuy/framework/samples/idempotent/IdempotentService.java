@@ -25,7 +25,7 @@ public class IdempotentService {
     @Idempotent(key = "#user.name + '_' + #user.age")
     public String doBiz2(User user){
         log.info("Idempotent biz ......");
-        return user.getName();
+        return "null";
     }
 
     @Transactional(rollbackFor = Exception.class)
