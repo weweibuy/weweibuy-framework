@@ -25,6 +25,7 @@ weweibuy-framework
 - [compensate](./compensate/README.md) ：介绍compensate
 
 ### 5. 幂等
+- [idempotent](./idempotent/README.md) ：介绍idempotent
 
 ### 6. rocketMQ 客户端 
 
