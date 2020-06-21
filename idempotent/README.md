@@ -34,7 +34,7 @@
    基于Redis的分布式锁实现.  
    执行过程: 
 <img src="./idempotent-redis/src/doc/redis幂等.jpg" alt="redis幂等流程" width="50%">
-![add image](https://github.com/weweibuy/weweibuy-framework/blob/master/idempotent/idempotent-redis/src/doc/redis%E5%B9%82%E7%AD%89.jpg)
+
 ### 2.2 适用场景
   1.业务逻辑与外部交互复杂(比如即有远程调用,也有数据据操作等),且调用链较长
   2.不希望调用方阻塞
