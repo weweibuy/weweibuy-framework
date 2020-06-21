@@ -1,5 +1,8 @@
 package com.weweibuy.framework.rocketmq.core.consumer;
 
+import com.weweibuy.framework.rocketmq.utils.RocketMqUtils;
+import org.apache.rocketmq.acl.common.AclClientRPCHook;
+import org.apache.rocketmq.acl.common.SessionCredentials;
 import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
 import org.apache.rocketmq.client.consumer.rebalance.AllocateMessageQueueAveragely;
 import org.apache.rocketmq.client.exception.MQClientException;
@@ -63,13 +66,20 @@ public class DefaultRocketListenerContainerFactory implements RocketListenerCont
 
     protected DefaultMQPushConsumer createMqConsumer(MethodRocketListenerEndpoint endpoint, String tags) {
         RPCHook rpcHook = null;
+        String accessKey = endpoint.getAccessKey();
+        String secretKey = endpoint.getSecretKey();
+
+        if (RocketMqUtils.canUseAcl(accessKey, secretKey)) {
+            rpcHook = new AclClientRPCHook(new SessionCredentials(accessKey, secretKey));
+        }
+
         DefaultMQPushConsumer pushConsumer = new DefaultMQPushConsumer(endpoint.getGroup(), rpcHook, new AllocateMessageQueueAveragely(),
                 Optional.ofNullable(endpoint.getMsgTrace()).orElse(false), endpoint.getTraceTopic());
         pushConsumer.setNamesrvAddr(endpoint.getNameServer());
         pushConsumer.setAccessChannel(endpoint.getAccessChannel());
         pushConsumer.setConsumeThreadMin(endpoint.getThreadMin());
         pushConsumer.setConsumeThreadMin(endpoint.getThreadMax());
-        pushConsumer.setConsumeTimeout(endpoint.getTimeout());
+        pushConsumer.setConsumeTimeout(endpoint.getConsumeTimeout());
         pushConsumer.setMessageModel(endpoint.getMessageModel());
         pushConsumer.setConsumeMessageBatchMaxSize(endpoint.getConsumeMessageBatchMaxSize());
 

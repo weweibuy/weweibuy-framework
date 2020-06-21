@@ -5,6 +5,10 @@ import com.weweibuy.framework.rocketmq.core.provider.AnnotatedParameterProcessor
 import com.weweibuy.framework.rocketmq.core.provider.MessageSendFilter;
 import com.weweibuy.framework.rocketmq.core.provider.ProxyRocketProvider;
 import com.weweibuy.framework.rocketmq.support.*;
+import com.weweibuy.framework.rocketmq.utils.RocketMqUtils;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.rocketmq.acl.common.AclClientRPCHook;
+import org.apache.rocketmq.acl.common.SessionCredentials;
 import org.apache.rocketmq.client.AccessChannel;
 import org.apache.rocketmq.client.producer.DefaultMQProducer;
 import org.apache.rocketmq.client.producer.MQProducer;
@@ -25,6 +29,7 @@ import java.util.List;
  * @author durenhao
  * @date 2020/1/1 23:03
  **/
+@Slf4j
 @Configuration
 @ConditionalOnProperty(prefix = "rocket-mq", name = {"name-server", "provider.group"})
 public class ProviderConfig {
@@ -91,8 +96,17 @@ public class ProviderConfig {
         AccessChannel accessChannel = producerConfig.getAccessChannel();
 
         DefaultMQProducer producer;
-        producer = new DefaultMQProducer(groupName, rocketMqProperties.getProvider().getEnableMsgTrace(),
-                rocketMqProperties.getProvider().getCustomizedTraceTopic());
+
+        String accessKey = rocketMqProperties.getProvider().getAccessKey();
+        String secretKey = rocketMqProperties.getProvider().getSecretKey();
+        if (RocketMqUtils.canUseAcl(accessKey, secretKey)) {
+            AclClientRPCHook rpcHook = new AclClientRPCHook(new SessionCredentials(accessKey, secretKey));
+            producer = new DefaultMQProducer(groupName, rpcHook, rocketMqProperties.getProvider().getEnableMsgTrace(),
+                    rocketMqProperties.getProvider().getCustomizedTraceTopic());
+        } else {
+            producer = new DefaultMQProducer(groupName, rocketMqProperties.getProvider().getEnableMsgTrace(),
+                    rocketMqProperties.getProvider().getCustomizedTraceTopic());
+        }
 
         producer.setNamesrvAddr(nameServer);
         producer.setAccessChannel(accessChannel);

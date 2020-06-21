@@ -31,7 +31,7 @@ public class MethodRocketListenerEndpoint {
 
     private String traceTopic;
 
-    private Long timeout;
+    private Long consumeTimeout;
 
     private Integer maxRetry;
 
