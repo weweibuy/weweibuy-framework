@@ -8,6 +8,11 @@ package com.weweibuy.framework.common.core.model.eum;
  **/
 public interface ValueEum {
 
+    /**
+     * 获取值
+     *
+     * @return
+     */
     String getValue();
 
 }
