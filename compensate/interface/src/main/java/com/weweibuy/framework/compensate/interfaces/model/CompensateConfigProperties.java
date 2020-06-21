@@ -2,6 +2,7 @@ package com.weweibuy.framework.compensate.interfaces.model;
 
 import lombok.Data;
 
+
 /**
  * 补偿配置
  *

@@ -1,0 +1,18 @@
+{
+  "groups": [
+    {
+      "name": "compensate",
+      "type": "com.weweibuy.framework.compensate.core.SimpleCompensateConfigStore",
+      "sourceType": "com.weweibuy.framework.compensate.core.SimpleCompensateConfigStore"
+    }
+  ],
+  "properties": [
+    {
+      "name": "compensate",
+      "type": "java.util.Map<java.lang.String,com.weweibuy.framework.compensate.interfaces.model.CompensateConfigProperties>",
+      "sourceType": "com.weweibuy.framework.compensate.interfaces.model.CompensateConfigProperties"
+    }
+
+  ],
+  "hints": []
+}

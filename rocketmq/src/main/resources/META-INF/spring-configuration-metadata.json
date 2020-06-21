@@ -1,0 +1,96 @@
+{
+  "groups": [
+    {
+      "name": "rocket-mq",
+      "type": "com.weweibuy.framework.rocketmq.config.RocketMqProperties",
+      "sourceType": "com.weweibuy.framework.rocketmq.config.RocketMqProperties"
+    }
+  ],
+  "properties": [
+    {
+      "name": "rocket-mq.nameServer",
+      "type": "java.lang.String",
+      "sourceType": "com.weweibuy.framework.rocketmq.config.RocketMqProperties"
+    },
+    {
+      "name": "rocket-mq.provider",
+      "type": "com.weweibuy.framework.rocketmq.config.RocketMqProperties$Provider",
+      "sourceType": "com.weweibuy.framework.rocketmq.config.RocketMqProperties$Provider"
+    },
+    {
+      "name": "rocket-mq.provider.group",
+      "type": "java.lang.String",
+      "sourceType": "com.weweibuy.framework.rocketmq.config.RocketMqProperties$Provider"
+    },
+    {
+      "name": "rocket-mq.provider.accessChannel",
+      "type": "org.apache.rocketmq.client.AccessChannel",
+      "sourceType": "com.weweibuy.framework.rocketmq.config.RocketMqProperties$Provider",
+      "defaultValue": "LOCAL"
+    },
+    {
+      "name": "rocket-mq.provider.sendMessageTimeout",
+      "type": "java.lang.Integer",
+      "sourceType": "com.weweibuy.framework.rocketmq.config.RocketMqProperties$Provider",
+      "defaultValue": 3000
+    },
+    {
+      "name": "rocket-mq.provider.compressMessageBodyThreshold",
+      "type": "java.lang.Integer",
+      "sourceType": "com.weweibuy.framework.rocketmq.config.RocketMqProperties$Provider",
+      "defaultValue": 4096
+    },
+    {
+      "name": "rocket-mq.provider.retryTimesWhenSendFailed",
+      "type": "java.lang.Integer",
+      "sourceType": "com.weweibuy.framework.rocketmq.config.RocketMqProperties$Provider",
+      "defaultValue": 2
+    },
+    {
+      "name": "rocket-mq.provider.retryTimesWhenSendAsyncFailed",
+      "type": "java.lang.Integer",
+      "sourceType": "com.weweibuy.framework.rocketmq.config.RocketMqProperties$Provider",
+      "defaultValue": 2
+    },
+    {
+      "name": "rocket-mq.provider.retryNextServer",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.weweibuy.framework.rocketmq.config.RocketMqProperties$Provider",
+      "defaultValue": false
+    },
+    {
+      "name": "rocket-mq.provider.maxMessageSize",
+      "type": "java.lang.Integer",
+      "sourceType": "com.weweibuy.framework.rocketmq.config.RocketMqProperties$Provider",
+      "defaultValue": 4194304
+    },
+    {
+      "name": "rocket-mq.provider.accessKey",
+      "type": "java.lang.String",
+      "sourceType": "com.weweibuy.framework.rocketmq.config.RocketMqProperties$Provider"
+    },
+    {
+      "name": "rocket-mq.provider.secretKey",
+      "type": "java.lang.String",
+      "sourceType": "com.weweibuy.framework.rocketmq.config.RocketMqProperties$Provider"
+    },
+    {
+      "name": "rocket-mq.provider.customizedTraceTopic",
+      "type": "java.lang.String",
+      "sourceType": "com.weweibuy.framework.rocketmq.config.RocketMqProperties$Provider",
+      "defaultValue": "RMQ_SYS_TRACE_TOPIC"
+    },
+    {
+      "name": "rocket-mq.provider.enableMsgTrace",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.weweibuy.framework.rocketmq.config.RocketMqProperties$Provider",
+      "defaultValue": false
+    },
+    {
+      "name": "rocket-mq.consumer",
+      "type": "java.util.Map<java.lang.String,com.weweibuy.framework.rocketmq.config.RocketMqProperties.Consumer>",
+      "sourceType": "com.weweibuy.framework.rocketmq.config.RocketMqProperties$Consumer"
+    }
+  ],
+  "hints": []
+}

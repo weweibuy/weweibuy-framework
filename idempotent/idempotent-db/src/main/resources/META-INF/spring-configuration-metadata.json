@@ -1,0 +1,33 @@
+{
+  "groups": [
+    {
+      "name": "idempotent.jdbc",
+      "type": "com.weweibuy.framework.idempotent.db.JdbcIdempotentProperties",
+      "sourceType": "com.weweibuy.framework.idempotent.db.JdbcIdempotentProperties"
+    }
+  ],
+  "properties": [
+    {
+      "name": "idempotent.jdbc.insertSql",
+      "type": "java.lang.String",
+      "sourceType": "com.weweibuy.framework.idempotent.db.JdbcIdempotentProperties"
+    },
+    {
+      "name": "idempotent.jdbc.updateSql",
+      "type": "java.lang.String",
+      "sourceType": "com.weweibuy.framework.idempotent.db.JdbcIdempotentProperties"
+    },
+    {
+      "name": "idempotent.jdbc.selectSql",
+      "type": "java.lang.String",
+      "sourceType": "com.weweibuy.framework.idempotent.db.JdbcIdempotentProperties"
+    },
+    {
+      "name": "idempotent.jdbc.useSharding",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.weweibuy.framework.idempotent.db.JdbcIdempotentProperties",
+      "defaultValue": true
+    }
+  ],
+  "hints": []
+}
