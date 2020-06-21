@@ -1,4 +1,4 @@
-package com.weweibuy.framework.rocketmq.utils;
+package com.weweibuy.framework.common.core.utils;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -7,11 +7,13 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.io.ResourceLoader;
 
 /**
+ * spring 资源文件及配置工具
+ *
  * @author durenhao
  * @date 2020/2/22 18:31
  **/
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class ResourcesUtils {
+public class SpringResourcesUtils {
 
     /**
      * 解析  ${}  配置为实际配置

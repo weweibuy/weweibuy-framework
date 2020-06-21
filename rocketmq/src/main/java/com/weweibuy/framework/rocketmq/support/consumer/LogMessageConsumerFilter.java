@@ -17,27 +17,40 @@ public class LogMessageConsumerFilter implements ConsumerFilter {
 
     @Override
     public Object filter(Object messageObject, Object originContext, MessageConsumerFilterChain chain) {
-        if (messageObject instanceof MessageExt) {
-            doLog((MessageExt) messageObject);
-        } else if (messageObject instanceof List) {
-            List messageObjectList = (List) messageObject;
-            messageObjectList.stream()
-                    .filter(m -> m instanceof MessageExt)
-                    .forEach(m -> doLog((MessageExt) m));
-        } else {
-            log.info("收到MQ 消息: {}", messageObject);
+        Object result = null;
+        try {
+            result = chain.doFilter(messageObject, originContext);
+        } finally {
+            log(messageObject, result);
         }
-
-        Object result = chain.doFilter(messageObject, originContext);
-        doLogResult(result);
         return result;
 
     }
 
-    private void doLog(MessageExt messageExt) {
-        log.info("消费MQ消息: Topic:【{}】, Tag:【{}】, Key:【{}】 Body: {} ",
-                messageExt.getTopic(), messageExt.getTags(), messageExt.getKeys(), new String(messageExt.getBody()));
+    private void log(Object messageObject, Object result) {
+
+        if (messageObject instanceof MessageExt) {
+            doLog((MessageExt) messageObject, result);
+        } else if (messageObject instanceof List) {
+            List messageObjectList = (List) messageObject;
+            messageObjectList.stream()
+                    .filter(m -> m instanceof MessageExt)
+                    .forEach(m -> doLog((MessageExt) m, result));
+        } else {
+            log.info("收到MQ 消息: {}, 消费结果: {}", messageObject, result);
+        }
+
     }
+
+    private void doLog(MessageExt messageExt, Object result) {
+        log.info("消费MQ消息: Topic:【{}】, Tag:【{}】, Key:【{}】, Body: {}, 消费结果: {}",
+                messageExt.getTopic(),
+                messageExt.getTags(),
+                messageExt.getKeys(),
+                new String(messageExt.getBody()),
+                result);
+    }
+
 
     private void doLogResult(Object result) {
         log.info("消费MQ消息: 结果: {}", result);

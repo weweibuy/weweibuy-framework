@@ -1,10 +1,10 @@
 package com.weweibuy.framework.rocketmq.core.consumer;
 
+import com.weweibuy.framework.common.core.utils.SpringResourcesUtils;
 import com.weweibuy.framework.rocketmq.annotation.BatchHandlerModel;
 import com.weweibuy.framework.rocketmq.annotation.RocketConsumerHandler;
 import com.weweibuy.framework.rocketmq.annotation.RocketListener;
 import com.weweibuy.framework.rocketmq.config.RocketMqProperties;
-import com.weweibuy.framework.rocketmq.utils.ResourcesUtils;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.apache.commons.lang3.StringUtils;
@@ -116,13 +116,13 @@ public class RocketBeanPostProcessor implements BeanPostProcessor, SmartInitiali
             if (StringUtils.isNotBlank(consumer.getTopic())) {
                 listenerEndpoint.setTopic(consumer.getTopic());
             } else {
-                listenerEndpoint.setTopic(ResourcesUtils.resolve(rocketListener.topic(), resourceLoader));
+                listenerEndpoint.setTopic(SpringResourcesUtils.resolve(rocketListener.topic(), resourceLoader));
             }
 
             if (StringUtils.isNotBlank(consumer.getGroup())) {
                 listenerEndpoint.setGroup(consumer.getGroup());
             } else {
-                listenerEndpoint.setGroup(ResourcesUtils.resolve(rocketListener.group(), resourceLoader));
+                listenerEndpoint.setGroup(SpringResourcesUtils.resolve(rocketListener.group(), resourceLoader));
             }
 
             if (consumer.getConsumeTimeout() != null) {
@@ -150,8 +150,8 @@ public class RocketBeanPostProcessor implements BeanPostProcessor, SmartInitiali
             }
 
         } else {
-            listenerEndpoint.setTopic(ResourcesUtils.resolve(rocketListener.topic(), resourceLoader));
-            listenerEndpoint.setGroup(ResourcesUtils.resolve(rocketListener.group(), resourceLoader));
+            listenerEndpoint.setTopic(SpringResourcesUtils.resolve(rocketListener.topic(), resourceLoader));
+            listenerEndpoint.setGroup(SpringResourcesUtils.resolve(rocketListener.group(), resourceLoader));
 
             listenerEndpoint.setThreadMin(rocketListener.threadMin());
             listenerEndpoint.setThreadMax(rocketListener.threadMax());

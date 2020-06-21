@@ -4,6 +4,7 @@ import com.weweibuy.framework.rocketmq.config.RocketConfigurer;
 import com.weweibuy.framework.rocketmq.core.consumer.ConsumerFilter;
 import com.weweibuy.framework.rocketmq.core.provider.MessageSendFilter;
 import com.weweibuy.framework.rocketmq.support.consumer.LogMessageConsumerFilter;
+import com.weweibuy.framework.rocketmq.support.provider.AddMessageKeyFilter;
 import com.weweibuy.framework.rocketmq.support.provider.LogMessageSendFilter;
 import org.springframework.context.annotation.Configuration;
 
@@ -25,11 +26,16 @@ public class RocketMqMessageConverterConfig implements RocketConfigurer {
     @Override
     public void addMessageSendFilter(List<MessageSendFilter> messageSendFilter) {
         messageSendFilter.add(logMessageSendFilter());
+        messageSendFilter.add(addMessageKeyFilter());
     }
 
 
     public MessageSendFilter logMessageSendFilter() {
         return new LogMessageSendFilter();
+    }
+
+    public AddMessageKeyFilter addMessageKeyFilter() {
+        return new AddMessageKeyFilter();
     }
 
 }
