@@ -17,6 +17,9 @@ public class RocketMqUtils {
 
     public static boolean canUseAcl(String accessKey, String secretKey) {
         boolean userAcl = !StringUtils.isAnyBlank(accessKey, secretKey);
+        if (!userAcl) {
+            return false;
+        }
         boolean hasSdk = true;
         try {
             Class<?> clazz = Class.forName("org.apache.rocketmq.acl.common.AclClientRPCHook");

@@ -24,6 +24,8 @@ import java.util.Map;
 import java.util.Set;
 
 /**
+ * 注册rocketMQ Provider
+ *
  * @author durenhao
  * @date 2019/12/28 22:01
  **/

@@ -10,6 +10,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * 开启rocketMQ 消费者
+ *
  * @author durenhao
  * @date 2019/12/28 21:58
  **/

@@ -45,6 +45,14 @@ public class HelloController {
         return CommonDataJsonResponse.success();
     }
 
+    @GetMapping("/hello-header")
+    public Object helloHeader(String msg, String tag) {
+        SampleUser user = user(msg);
+        user.setSampleDog(dog());
+        SendResult send = sampleProvider.sendHeader(user, tag);
+        return CommonDataJsonResponse.success();
+    }
+
     @GetMapping("/hello-async")
     public String helloAsync(String msg) {
         SampleUser user = user(msg);

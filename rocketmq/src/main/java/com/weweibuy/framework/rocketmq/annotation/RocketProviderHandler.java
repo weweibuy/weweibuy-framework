@@ -6,6 +6,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * 标记方法为rocketMq的生产消息方法 配合 {@link RocketProvider}一起使用
+ *
  * @author durenhao
  * @date 2019/12/29 17:20
  **/
@@ -22,7 +24,7 @@ public @interface RocketProviderHandler {
 
 
     /**
-     * 发送超时
+     * 发送超时 毫秒
      *
      * @return
      */
