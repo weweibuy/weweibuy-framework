@@ -1,7 +1,5 @@
 package com.weweibuy.framework.rocketmq.core.provider;
 
-import org.apache.rocketmq.client.producer.MQProducer;
-
 /**
  * 发送过滤器链
  *
@@ -18,6 +16,6 @@ public interface MessageSendFilterChain {
      * @return
      * @throws Throwable
      */
-    Object doFilter(MessageSendContext context, Object message, MQProducer mqProducer) throws Throwable;
+    Object doFilter(MessageSendContext context, Object message) throws Throwable;
 
 }
