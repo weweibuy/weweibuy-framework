@@ -11,7 +11,6 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
 import java.util.Objects;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -59,11 +58,8 @@ public class SensitiveInfoSerialize extends JsonSerializer<String> implements Co
         if (StringUtils.isBlank(str)) {
             return str;
         }
-        Matcher matcher = patten.matcher(str);
-        if (matcher.find()) {
-            return matcher.replaceAll(replace);
-        }
-        return str;
+        return patten.matcher(str)
+                .replaceAll(replace);
     }
 
 }

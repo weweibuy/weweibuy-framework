@@ -18,6 +18,14 @@ public class BeanCopyUtils {
 
     private static final Map<Key, BeanCopier> BEAN_COPIER_MAP = new ConcurrentHashMap<>(64);
 
+    /**
+     * 拷贝bean 对象
+     *
+     * @param src       源对象
+     * @param destClazz 必须有默认空参构造
+     * @param <T>
+     * @return
+     */
     public static <T> T copy(Object src, Class<T> destClazz) {
         if (src == null || destClazz == null) {
             return null;

@@ -18,5 +18,9 @@ public class CommonPageResult<T> {
 
     private Collection<T> list;
 
+    @SuppressWarnings("unchecked")
+    public static final <T> CommonPageResult<T> empty() {
+        return (CommonPageResult<T>) EMPTY;
+    }
 
 }

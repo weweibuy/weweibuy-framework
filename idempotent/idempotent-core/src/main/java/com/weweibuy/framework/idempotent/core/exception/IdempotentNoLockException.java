@@ -1,7 +1,7 @@
 package com.weweibuy.framework.idempotent.core.exception;
 
 /**
- * 幂等异常
+ * 幂等无法获取锁异常
  *
  * @author durenhao
  * @date 2020/6/19 20:28
