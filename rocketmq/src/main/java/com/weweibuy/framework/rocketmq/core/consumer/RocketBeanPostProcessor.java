@@ -125,10 +125,10 @@ public class RocketBeanPostProcessor implements BeanPostProcessor, SmartInitiali
                 listenerEndpoint.setGroup(ResourcesUtils.resolve(rocketListener.group(), resourceLoader));
             }
 
-            if (consumer.getTimeout() != null) {
-                listenerEndpoint.setTimeout(consumer.getTimeout());
+            if (consumer.getConsumeTimeout() != null) {
+                listenerEndpoint.setConsumeTimeout(consumer.getConsumeTimeout());
             } else {
-                listenerEndpoint.setTimeout(rocketListener.timeout());
+                listenerEndpoint.setConsumeTimeout(rocketListener.timeout());
             }
 
             if (consumer.getThreadMax() != null) {
@@ -156,7 +156,7 @@ public class RocketBeanPostProcessor implements BeanPostProcessor, SmartInitiali
             listenerEndpoint.setThreadMin(rocketListener.threadMin());
             listenerEndpoint.setThreadMax(rocketListener.threadMax());
             listenerEndpoint.setMaxRetry(rocketListener.maxRetry());
-            listenerEndpoint.setTimeout(rocketListener.timeout());
+            listenerEndpoint.setConsumeTimeout(rocketListener.timeout());
         }
         return listenerEndpoint;
     }

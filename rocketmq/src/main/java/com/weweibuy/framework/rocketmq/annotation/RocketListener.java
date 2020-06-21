@@ -38,16 +38,47 @@ public @interface RocketListener {
      */
     String group();
 
+    /**
+     * 是否顺序消费
+     *
+     * @return
+     */
     boolean orderly() default false;
 
-    long timeout() default 30000L;
+    /**
+     * 最大的消费超时时间 单位分钟, 如果消费超时，RocketMQ会等同于消费失败来处理
+     * https://zhuanlan.zhihu.com/p/25265380
+     *
+     * @return
+     */
+    long timeout() default 15L;
 
+    /**
+     * 最大重试消费次数
+     *
+     * @return
+     */
     int maxRetry() default 16;
 
+    /**
+     * 最小消费线程数
+     *
+     * @return
+     */
     int threadMin() default 10;
 
+    /**
+     * 最大消费线程数
+     *
+     * @return
+     */
     int threadMax() default 10;
 
+    /**
+     * 每次消费消息个数
+     *
+     * @return
+     */
     int consumeMessageBatchMaxSize() default 1;
 
     /**
