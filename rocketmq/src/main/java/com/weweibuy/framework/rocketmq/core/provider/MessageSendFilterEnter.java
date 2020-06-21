@@ -20,15 +20,18 @@ public class MessageSendFilterEnter implements MessageSendFilterChain {
 
     private List<MessageSendFilter> messageSendFilterList;
 
-    public MessageSendFilterEnter(List<MessageSendFilter> messageSendFilterList) {
+    private final MQProducer mqProducer;
+
+    public MessageSendFilterEnter(List<MessageSendFilter> messageSendFilterList, MQProducer mqProducer) {
         this.messageSendFilterList = messageSendFilterList;
         this.size = messageSendFilterList.size();
+        this.mqProducer = mqProducer;
     }
 
     @Override
-    public Object doFilter(MessageSendContext context, Object message, MQProducer mqProducer) throws Throwable {
+    public Object doFilter(MessageSendContext context, Object message) throws Throwable {
         if (pos < size) {
-           return messageSendFilterList.get(pos++).filter(context, message, mqProducer, this);
+           return messageSendFilterList.get(pos++).filter(context, message,this);
         }
         return send(context, message, mqProducer);
 

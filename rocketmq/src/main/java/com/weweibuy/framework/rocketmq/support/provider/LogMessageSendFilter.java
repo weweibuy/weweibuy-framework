@@ -4,7 +4,6 @@ import com.weweibuy.framework.rocketmq.core.provider.MessageSendContext;
 import com.weweibuy.framework.rocketmq.core.provider.MessageSendFilter;
 import com.weweibuy.framework.rocketmq.core.provider.MessageSendFilterChain;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.rocketmq.client.producer.MQProducer;
 import org.apache.rocketmq.client.producer.SendResult;
 import org.apache.rocketmq.common.message.Message;
 
@@ -21,17 +20,17 @@ public class LogMessageSendFilter implements MessageSendFilter {
 
 
     @Override
-    public Object filter(MessageSendContext context, Object message, MQProducer mqProducer, MessageSendFilterChain chain) throws Throwable {
+    public Object filter(MessageSendContext context, Object message, MessageSendFilterChain chain) throws Throwable {
         Object result;
         if (context.isBatch()) {
             Collection<Message> messageCollection = (Collection<Message>) message;
             messageCollection.forEach(this::doLog);
-            result = chain.doFilter(context, message, mqProducer);
+            result = chain.doFilter(context, message);
             messageCollection.forEach(m -> doLog(context, m, result));
         } else {
             Message mg = (Message) message;
             doLog(mg);
-            result = chain.doFilter(context, message, mqProducer);
+            result = chain.doFilter(context, message);
             doLog(context, mg, result);
         }
         return result;

@@ -38,7 +38,7 @@ public class DefaultRocketMethodHandler implements MethodHandler {
     @Override
     public Object invoke(Object[] args) throws Throwable {
 
-        MessageSendFilterEnter chain = new MessageSendFilterEnter(messageSendFilterList);
+        MessageSendFilterEnter chain = new MessageSendFilterEnter(messageSendFilterList, mqProducer);
 
         MessageSendContext context = new MessageSendContext(metadata, messageQueueSelector, args);
         Object message = null;
@@ -53,7 +53,7 @@ public class DefaultRocketMethodHandler implements MethodHandler {
             message = buildMsgFromMetadata(args);
         }
 
-        return chain.doFilter(new MessageSendContext(metadata, messageQueueSelector, args), message, mqProducer);
+        return chain.doFilter(new MessageSendContext(metadata, messageQueueSelector, args), message);
 
     }
 

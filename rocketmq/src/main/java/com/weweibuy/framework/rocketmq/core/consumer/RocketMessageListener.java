@@ -1,6 +1,8 @@
 package com.weweibuy.framework.rocketmq.core.consumer;
 
 /**
+ * Mq消息监听
+ *
  * @author durenhao
  * @date 2020/1/8 11:14
  **/
