@@ -12,7 +12,6 @@
         <module>common</module>
         <module>idempotent</module>
         <module>rocketmq</module>
-        <module>interface</module>
         <module>samples</module>
         <module>compensate</module>
         <module>mybatis-plugin</module>
