@@ -10,6 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.SingleColumnRowMapper;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.util.Assert;
 
 import java.util.ArrayList;
@@ -37,6 +38,11 @@ public class JdbcIdempotentManager implements IdempotentManager {
 
     @Override
     public boolean tryLock(IdempotentInfo idempotentInfo) {
+
+        if (!TransactionSynchronizationManager.isActualTransactionActive()) {
+            throw new IdempotentException("基于JDBC的幂等必须在整个过程中有事务的保护");
+        }
+
         String insertSql = jdbcIdempotentProperties.getInsertSql();
         Object[] prepareArgs = prepareArgs(idempotentInfo);
         try {

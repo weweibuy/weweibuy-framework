@@ -21,7 +21,7 @@ public class AnnotationMetaDataHolder {
 
     private Map<Method, IdempotentAnnotationMeta> hashMap = new HashMap();
 
-    public void putMetaData(Method method, Idempotent idempotent) {
+    public synchronized void putMetaData(Method method, Idempotent idempotent) {
         MethodParameter methodParameter = new MethodParameter(method, -1);
         Type parameterType = methodParameter.getNestedGenericParameterType();
         JavaType javaType = JackJsonUtils.getCamelCaseMapper().getTypeFactory().constructType(GenericTypeResolver.resolveType(parameterType, method.getReturnType()));

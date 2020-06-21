@@ -10,6 +10,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * 开启幂等
+ *
  * @author durenhao
  * @date 2020/3/31 14:59
  **/

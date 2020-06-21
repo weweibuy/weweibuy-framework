@@ -58,12 +58,17 @@ public class IdempotentInfoParser extends CommonCachedExpressionEvaluator {
         if (StringUtils.isNotBlank(metaData.getGenerator()) && (keyGenerator = getKeyGenerator(metaData.getGenerator())) != null) {
             key = keyGenerator.generatorKey(key);
         }
-        String sharding = evaluatorKey(metaData.getSharding(), target, method, arguments);
+
+        String sharding = metaData.getSharding();
+        if (StringUtils.isNotBlank(sharding)) {
+            sharding = evaluatorExpressionStr(metaData.getSharding(), target, target.getClass(), method, arguments);
+        }
 
         IdempotentManager manager = idempotentManager;
         if (StringUtils.isNotBlank(metaData.getIdempotentManager())) {
             manager = getIdempotentManager(metaData.getIdempotentManager());
         }
+
         return new IdempotentInfo(key, sharding, metaData.getMaxLockMilli(), metaData.getReturnType(), manager);
     }
 
