@@ -1,6 +1,7 @@
 package com.weweibuy.framework.rocketmq.core.provider;
 
-import com.weweibuy.framework.rocketmq.utils.MethodUtils;
+
+import com.weweibuy.framework.common.core.utils.MethodUtils;
 
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Constructor;

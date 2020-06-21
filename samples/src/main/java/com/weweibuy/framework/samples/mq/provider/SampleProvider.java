@@ -63,8 +63,15 @@ public interface SampleProvider {
      *
      * @param user
      */
-    @RocketProviderHandler(tag = "CCC", oneWay = true)
+    @RocketProviderHandler(tag = "QQQ", oneWay = true)
     void sendOneWay(SampleUser user);
 
+    /**
+     * 顺序发送
+     *
+     * @param user
+     */
+    @RocketProviderHandler(tag = "QQQ", orderly = true)
+    void sendOrder(SampleUser user, @Key String key);
 
 }

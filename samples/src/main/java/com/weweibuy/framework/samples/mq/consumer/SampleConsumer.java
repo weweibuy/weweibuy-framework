@@ -31,7 +31,7 @@ public class SampleConsumer {
      */
     @RocketConsumerHandler(tags = "QQQ")
     public void onMessage(@Payload SampleUser user, ConsumeConcurrentlyContext context) {
-        log.info("收到消息: {}, \r\n {} ", user, context);
+        log.info("收到消息: {} ", user);
     }
 
     /**

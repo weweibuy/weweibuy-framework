@@ -1,5 +1,6 @@
 package com.weweibuy.framework.samples.controller;
 
+import com.weweibuy.framework.common.core.utils.IdWorker;
 import com.weweibuy.framework.samples.message.SampleDog;
 import com.weweibuy.framework.samples.message.SampleUser;
 import com.weweibuy.framework.samples.model.dto.CommonDataJsonResponse;
@@ -37,11 +38,26 @@ public class HelloController {
     }
 
     @GetMapping("/hello")
-    public Object hello(String msg, String tag) {
+    public Object hello(String msg, String tag, String key) {
         SampleUser user = user(msg);
         user.setSampleDog(dog());
-        SendResult send = sampleProvider.send(user, tag, UUID.randomUUID().toString());
+        SendResult send = sampleProvider.send(user, tag, key);
+        return CommonDataJsonResponse.success();
+    }
 
+    @GetMapping("/hello-oneway")
+    public Object helloOneWay(String msg, String tag, String key) {
+        SampleUser user = user(msg);
+        user.setSampleDog(dog());
+        sampleProvider.sendOneWay(user);
+        return CommonDataJsonResponse.success();
+    }
+
+    @GetMapping("/hello-orderly")
+    public Object helloOrderly(String msg, String tag, String key) {
+        SampleUser user = user(msg);
+        user.setSampleDog(dog());
+        sampleProvider.sendOrder(user, IdWorker.nextStringId());
         return CommonDataJsonResponse.success();
     }
 

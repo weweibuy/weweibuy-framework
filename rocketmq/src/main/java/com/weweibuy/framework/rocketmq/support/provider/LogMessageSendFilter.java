@@ -1,9 +1,11 @@
 package com.weweibuy.framework.rocketmq.support.provider;
 
+import com.weweibuy.framework.common.core.support.ObjectWrapper;
 import com.weweibuy.framework.rocketmq.core.provider.MessageSendContext;
 import com.weweibuy.framework.rocketmq.core.provider.MessageSendFilter;
 import com.weweibuy.framework.rocketmq.core.provider.MessageSendFilterChain;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.rocketmq.client.producer.SendResult;
 import org.apache.rocketmq.common.message.Message;
 
@@ -21,35 +23,52 @@ public class LogMessageSendFilter implements MessageSendFilter {
 
     @Override
     public Object filter(MessageSendContext context, Object message, MessageSendFilterChain chain) throws Throwable {
-        Object result;
+        Object result = null;
         if (context.isBatch()) {
             Collection<Message> messageCollection = (Collection<Message>) message;
-            messageCollection.forEach(this::doLog);
-            result = chain.doFilter(context, message);
-            messageCollection.forEach(m -> doLog(context, m, result));
+            try {
+                result = chain.doFilter(context, message);
+            } finally {
+                ObjectWrapper<Object> objectWrapper = new ObjectWrapper<>(result);
+                messageCollection.forEach(m -> doLog(context, m, objectWrapper.getObject()));
+            }
         } else {
             Message mg = (Message) message;
-            doLog(mg);
-            result = chain.doFilter(context, message);
-            doLog(context, mg, result);
+            try {
+                result = chain.doFilter(context, message);
+            } finally {
+                doLog(context, mg, result);
+            }
         }
         return result;
     }
 
 
-    private void doLog(Message message) {
-        log.info("发送MQ消息 Topic:【{}】, Tag:【{}】, Key:【{}】, 消息体: {}", message.getTopic(), message.getTags(), message.getKeys(), new String(message.getBody()));
+    private void doLog(MessageSendContext context, Message message, Object sendResult) {
+        log.info("MQ消息 Topic:【{}】, Tag:【{}】, Key:【{}】, Body: {}, 发送结果: {}",
+                message.getTopic(),
+                message.getTags(),
+                message.getKeys(),
+                new String(message.getBody()),
+                sendResult(context, sendResult));
     }
 
-    private void doLog(MessageSendContext context, Message message, Object sendResult) {
+    private String sendResult(MessageSendContext context, Object sendResult) {
+
         if (sendResult == null) {
-            log.info("MQ消息 Topic:【{}】, Tag:【{}】, Key:【{}】, 发送模式: 【{}】, 已经发送",
-                    message.getTopic(), message.getTags(), message.getKeys(), context.getSendModel());
-        } else if (sendResult instanceof SendResult) {
-            log.info("MQ消息 Topic:【{}】, Tag:【{}】, Key:【{}】, 发送结果: {}",
-                    message.getTopic(), message.getTags(), message.getKeys(), ((SendResult) sendResult).getSendStatus());
+            if (MessageSendContext.SendModel.shouldHasResult(context.getSendModel())) {
+                return "已发送";
+            } else {
+                return "null";
+            }
         }
+        if (sendResult instanceof SendResult) {
+            return ((SendResult) sendResult).getSendStatus().toString();
+        }
+        return StringUtils.EMPTY;
+
     }
+
 
     @Override
     public Integer getOrder() {

@@ -4,6 +4,9 @@ import lombok.Data;
 import org.apache.rocketmq.client.producer.MessageQueueSelector;
 import org.apache.rocketmq.client.producer.SendCallback;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * @author durenhao
  * @date 2020/2/20 20:24
@@ -39,12 +42,12 @@ public class MessageSendContext {
         } else if (metadata.getOneWay() && !metadata.getOrderly()) {
             sendModel = SendModel.ONE_WAY_NOT_ORDERLY;
         } else if (metadata.getOrderly() && metadata.getAsyncIndex() != null) {
-            this.sendCallback = (SendCallback)args[metadata.getAsyncIndex()];
+            this.sendCallback = (SendCallback) args[metadata.getAsyncIndex()];
             sendModel = SendModel.ORDERLY_ASYNC;
         } else if (metadata.getOrderly() && metadata.getAsyncIndex() == null) {
             sendModel = SendModel.ORDERLY_NOT_ASYNC;
         } else if (metadata.getAsyncIndex() != null) {
-            this.sendCallback = (SendCallback)args[metadata.getAsyncIndex()];
+            this.sendCallback = (SendCallback) args[metadata.getAsyncIndex()];
             sendModel = SendModel.NORMAL_ASYNC;
         } else {
             sendModel = SendModel.NORMAL;
@@ -73,6 +76,20 @@ public class MessageSendContext {
         NORMAL_ASYNC,
 
         NORMAL,
+        ;
+
+        private static Set<SendModel> noResultSet = new HashSet<>(4);
+
+        static {
+            noResultSet.add(ONE_WAY_ORDERLY);
+            noResultSet.add(ONE_WAY_NOT_ORDERLY);
+            noResultSet.add(ORDERLY_ASYNC);
+            noResultSet.add(NORMAL_ASYNC);
+        }
+
+        public static boolean shouldHasResult(SendModel sendModel) {
+            return noResultSet.contains(sendModel);
+        }
 
     }
 
