@@ -15,6 +15,7 @@
         <module>samples</module>
         <module>compensate</module>
         <module>mybatis-plugin</module>
+        <module>http-client</module>
     </modules>
 
     <properties>
@@ -142,6 +143,12 @@
             <dependency>
                 <groupId>com.weweibuy.framework</groupId>
                 <artifactId>common-feign</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.weweibuy.framework</groupId>
+                <artifactId>http-client</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
