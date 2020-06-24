@@ -13,6 +13,13 @@
  TAG过滤  
  批量消费  
  
+## 优势
+  1.完全基于注解,代码侵入低  
+  2.可配置的生产者,消费者Topic,Group,多人开发调试跟方便  
+  3.支持自定义生产,消费过滤器,可以十分方便扩展
+  4.框架使用Java代码对原始Message的Tag进行匹配分发, 避免自己在业务代码中操作,避免在一个项目中重复创建消息者  
+  5.支持自定义生产,消费方法的参数处理器,可自行扩展参数解析处理器  
+ 
 ## 使用方法
   添加maven依赖：`maven:`
 ```
@@ -103,7 +110,17 @@ public interface SampleProvider {
   [RocketConfigurer](src/main/java/com/weweibuy/framework/rocketmq/config/RocketConfigurer.java)配置自定义过滤器.
   示例: [RocketMqMessageConverterConfig#addMessageSendFilter](../samples/src/main/java/com/weweibuy/framework/samples/config/RocketMqMessageConverterConfig.java)
 
-
+#### 1.2 自定义参数处理
+  实现接口: 
+```
+com.weweibuy.framework.rocketmq.core.provider.MethodParameterProcessor
+```
+  写具体逻辑  
+  通过  
+```
+com.weweibuy.framework.rocketmq.config.RocketConfigurer
+```
+  配置进入组件
 ### 2.接收消息
   Concurrently消费示例:
 ```java
@@ -245,3 +262,15 @@ public class BatchSampleConsumer {
 
 #### 2.2 消费过滤器:
   示例: [RocketMqMessageConverterConfig#addConsumerFilter](../samples/src/main/java/com/weweibuy/framework/samples/config/RocketMqMessageConverterConfig.java)
+
+#### 2.3 自定义参数解析器
+  实现接口: 
+```
+com.weweibuy.framework.rocketmq.core.consumer.HandlerMethodArgumentResolver
+```
+  写具体逻辑  
+  通过   
+```
+com.weweibuy.framework.rocketmq.config.RocketConfigurer
+```
+  配置进入组件 
