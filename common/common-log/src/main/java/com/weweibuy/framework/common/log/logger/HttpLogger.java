@@ -6,6 +6,7 @@ import com.weweibuy.framework.common.log.utils.HttpRequestUtils;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -15,6 +16,7 @@ import org.springframework.web.util.ContentCachingRequestWrapper;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * http 请求响应日志输出
@@ -26,7 +28,12 @@ import java.util.Optional;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class HttpLogger {
 
+    private static Set<String> disabledPath;
+
     public static void logForJsonRequest(String path, String method, Map<String, String[]> parameterMap, String body) {
+        if (!shouldLog(path)) {
+            return;
+        }
         if (parameterMap != null && !parameterMap.isEmpty()) {
             log.info("请求路径: {}, Method: {}, 参数: {} , Body:{}",
                     path,
@@ -42,6 +49,10 @@ public class HttpLogger {
     }
 
     public static void logForNotJsonRequest(HttpServletRequest request) {
+        String path = request.getRequestURI();
+        if (!shouldLog(path)) {
+            return;
+        }
         log.info("请求路径: {}, Method: {}, 参数: {}",
                 request.getRequestURI(),
                 request.getMethod(),
@@ -49,6 +60,10 @@ public class HttpLogger {
     }
 
     public static void logResponse(Object body) {
+        String path = HttpRequestUtils.getRequestAttribute(RequestContextHolder.getRequestAttributes(), CommonConstant.HttpServletConstant.REQUEST_PATH);
+        if (!shouldLog(path)) {
+            return;
+        }
         Long timestamp = HttpRequestUtils.getRequestAttribute(RequestContextHolder.getRequestAttributes(), CommonConstant.HttpServletConstant.REQUEST_TIMESTAMP);
         log.info("响应数据: {}, 请求耗时: {}",
                 JackJsonUtils.write(body),
@@ -84,6 +99,17 @@ public class HttpLogger {
         return Optional.ofNullable(body)
                 .map(JackJsonUtils::write)
                 .orElse(StringUtils.EMPTY);
+    }
+
+    private static boolean shouldLog(String path) {
+        if (CollectionUtils.isEmpty(disabledPath)) {
+            return true;
+        }
+        return !disabledPath.stream().anyMatch(p -> HttpRequestUtils.isMatchPath(p, path));
+    }
+
+    public static void setDisabledPath(Set<String> disabledPath) {
+        HttpLogger.disabledPath = disabledPath;
     }
 
 }

@@ -1,6 +1,7 @@
 package com.weweibuy.framework.rocketmq.support;
 
 import com.weweibuy.framework.rocketmq.annotation.Property;
+import com.weweibuy.framework.rocketmq.constant.MessageExtPropertyConstant;
 import com.weweibuy.framework.rocketmq.core.producer.AnnotatedParameterProcessor;
 import com.weweibuy.framework.rocketmq.core.producer.RocketMethodMetadata;
 import org.apache.commons.lang3.StringUtils;
@@ -18,16 +19,18 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * 增加消息 Property
+ *
  * @author durenhao
  * @date 2020/1/1 17:33
  **/
-public class HeaderParameterProcessor implements AnnotatedParameterProcessor {
+public class PropertyParameterProcessor implements AnnotatedParameterProcessor {
 
     private static final Class<Property> ANNOTATION = Property.class;
 
     @Override
     public boolean match(Annotation annotation) {
-         return ANNOTATION.isInstance(annotation);
+        return ANNOTATION.isInstance(annotation);
     }
 
     @Override
@@ -44,7 +47,7 @@ public class HeaderParameterProcessor implements AnnotatedParameterProcessor {
                 .map(a -> (Property) a)
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("方法: " + methodMetadata.getMethod().getDeclaringClass().getSimpleName() + "."
-                        + methodMetadata.getMethod().getName() + " @Header 参数错误"));
+                        + methodMetadata.getMethod().getName() + " @Property 参数错误"));
 
         String value = header.value();
         Map<Integer, String> headerIndexName = methodMetadata.getHeaderIndexName();
@@ -55,14 +58,14 @@ public class HeaderParameterProcessor implements AnnotatedParameterProcessor {
 
         if (StringUtils.isNotBlank(value)) {
 
-            Assert.isTrue(!MessageConst.STRING_HASH_SET.contains(value), String.format(
-                    "The Property<%s> is used by system, input another please", value));
-
+            Assert.isTrue(!MessageConst.STRING_HASH_SET.contains(value) ||
+                            !MessageExtPropertyConstant.MESSAGE_EXT_PROPERTIES_SET.contains(value),
+                    String.format("The Property<%s> is used by system, input another please", value));
             headerIndexName.put(argIndex, value);
         } else {
             if (!ClassUtils.isAssignable(Map.class, parameterTypes) || isStringMap(methodMetadata, argIndex)) {
                 throw new IllegalArgumentException("方法: " + methodMetadata.getMethod().getDeclaringClass().getSimpleName() + "."
-                        + methodMetadata.getMethod().getName() + " @Header 不指定value时参数必须是 Map<String, String> 类型");
+                        + methodMetadata.getMethod().getName() + " @Property 不指定value时参数必须是 Map<String, String> 类型");
             }
 
         }
@@ -89,7 +92,7 @@ public class HeaderParameterProcessor implements AnnotatedParameterProcessor {
 
         if (!(type instanceof ParameterizedType)) {
             throw new IllegalArgumentException("方法: " + methodMetadata.getMethod().getDeclaringClass().getSimpleName() + "."
-                    + methodMetadata.getMethod().getName() + " @Header 不指定value时参数必须是 Map<String, String> 类型");
+                    + methodMetadata.getMethod().getName() + " @Property 不指定value时参数必须是 Map<String, String> 类型");
         }
         Type[] actualTypeArguments = ((ParameterizedType) type).getActualTypeArguments();
 

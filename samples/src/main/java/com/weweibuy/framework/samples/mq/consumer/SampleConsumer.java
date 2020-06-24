@@ -1,9 +1,10 @@
 package com.weweibuy.framework.samples.mq.consumer;
 
-import com.weweibuy.framework.rocketmq.annotation.Header;
+import com.weweibuy.framework.rocketmq.annotation.Property;
 import com.weweibuy.framework.rocketmq.annotation.Payload;
 import com.weweibuy.framework.rocketmq.annotation.RocketConsumerHandler;
 import com.weweibuy.framework.rocketmq.annotation.RocketListener;
+import com.weweibuy.framework.rocketmq.constant.MessageExtPropertyConstant;
 import com.weweibuy.framework.samples.message.SampleDog;
 import com.weweibuy.framework.samples.message.SampleUser;
 import lombok.extern.slf4j.Slf4j;
@@ -30,18 +31,18 @@ public class SampleConsumer {
      * @param context
      */
     @RocketConsumerHandler(tags = "QQQ")
-    public void onMessage(@Payload SampleUser user, ConsumeConcurrentlyContext context) {
-        log.info("收到消息: {} ", user);
+    public void onMessage(@Payload SampleUser user, @Property(MessageExtPropertyConstant.RECONSUME_TIMES) String reconsumeTimes, ConsumeConcurrentlyContext context) {
+        log.info("收到消息: {}, 重复消费次数: {} , Queue ID: {}", user, reconsumeTimes, context.getMessageQueue().getQueueId());
     }
 
     /**
      * @param user      消息体
-     * @param tag       @Header 获取消息属性
+     * @param tag       @Property 获取消息属性
      * @param headerMap 消息属性
      */
     @RocketConsumerHandler(tags = "AAA")
-    public void onMessage2(@Payload SampleUser<SampleDog> user, @Header(MessageConst.PROPERTY_TAGS) String tag, @Header Map<String, String> headerMap) {
-        log.info("收到消息: {}", user);
+    public void onMessage2(@Payload SampleUser<SampleDog> user, MessageExt messageExt, @Property(MessageConst.PROPERTY_TAGS) String tag, @Property Map<String, String> headerMap) {
+        log.info("收到消息: {}, Tag: {}", user, tag);
     }
 
     /**
