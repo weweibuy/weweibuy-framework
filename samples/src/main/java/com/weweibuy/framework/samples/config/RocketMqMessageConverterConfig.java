@@ -2,10 +2,10 @@ package com.weweibuy.framework.samples.config;
 
 import com.weweibuy.framework.rocketmq.config.RocketConfigurer;
 import com.weweibuy.framework.rocketmq.core.consumer.ConsumerFilter;
-import com.weweibuy.framework.rocketmq.core.provider.MessageSendFilter;
+import com.weweibuy.framework.rocketmq.core.producer.MessageSendFilter;
 import com.weweibuy.framework.rocketmq.support.consumer.LogMessageConsumerFilter;
-import com.weweibuy.framework.rocketmq.support.provider.AddMessageKeyFilter;
-import com.weweibuy.framework.rocketmq.support.provider.LogMessageSendFilter;
+import com.weweibuy.framework.rocketmq.support.producer.AddMessageKeyFilter;
+import com.weweibuy.framework.rocketmq.support.producer.LogMessageSendFilter;
 import org.springframework.context.annotation.Configuration;
 
 import java.util.List;

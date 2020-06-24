@@ -1,9 +1,9 @@
 package com.weweibuy.framework.rocketmq.config;
 
 import com.weweibuy.framework.rocketmq.core.MessageConverter;
-import com.weweibuy.framework.rocketmq.core.provider.AnnotatedParameterProcessorComposite;
-import com.weweibuy.framework.rocketmq.core.provider.MessageSendFilter;
-import com.weweibuy.framework.rocketmq.core.provider.ProxyRocketProvider;
+import com.weweibuy.framework.rocketmq.core.producer.AnnotatedParameterProcessorComposite;
+import com.weweibuy.framework.rocketmq.core.producer.MessageSendFilter;
+import com.weweibuy.framework.rocketmq.core.producer.ProxyRocketProvider;
 import com.weweibuy.framework.rocketmq.support.*;
 import com.weweibuy.framework.rocketmq.utils.RocketMqUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -31,15 +31,15 @@ import java.util.List;
  **/
 @Slf4j
 @Configuration
-@ConditionalOnProperty(prefix = "rocket-mq", name = {"name-server", "provider.group"})
-public class ProviderConfig {
+@ConditionalOnProperty(prefix = "rocket-mq", name = {"name-server", "producer.group"})
+public class ProducerConfig {
 
     private final RocketMqProperties rocketMqProperties;
 
     @Autowired(required = false)
     private List<RocketConfigurer> configurer;
 
-    public ProviderConfig(RocketMqProperties rocketMqProperties) {
+    public ProducerConfig(RocketMqProperties rocketMqProperties) {
         this.rocketMqProperties = rocketMqProperties;
     }
 
@@ -52,17 +52,17 @@ public class ProviderConfig {
             configurer.forEach(c -> c.addMessageSendFilter(sendFilterList));
         }
 
-        return new ProxyRocketProvider(messageQueueSelector(), targetMethodMetaDataParser(messageConverter), mqProducer(), sendFilterList);
+        return new ProxyRocketProvider(rocketMessageQueueSelector(), rocketTargetMethodMetaDataParser(messageConverter), rocketMqProducer(), sendFilterList);
     }
 
     @Bean
     @ConditionalOnMissingBean(MessageQueueSelector.class)
-    public MessageQueueSelector messageQueueSelector() {
+    public MessageQueueSelector rocketMessageQueueSelector() {
         return new SelectMessageQueueByHash();
     }
 
     @Bean
-    public TargetMethodMetaDataParser targetMethodMetaDataParser(MessageConverter messageConverter) {
+    public TargetMethodMetaDataParser rocketTargetMethodMetaDataParser(MessageConverter messageConverter) {
 
         AnnotatedParameterProcessorComposite composite = new AnnotatedParameterProcessorComposite();
         composite.addProcessor(new TagParameterProcessor());
@@ -75,19 +75,19 @@ public class ProviderConfig {
         }
 
 
-        return new TargetMethodMetaDataParser(messageBodyParameterProcessor(messageConverter), composite);
+        return new TargetMethodMetaDataParser(rocketMessageBodyParameterProcessor(messageConverter), composite);
     }
 
 
     @Bean
-    public MessageBodyParameterProcessor messageBodyParameterProcessor(MessageConverter messageConverter) {
+    public MessageBodyParameterProcessor rocketMessageBodyParameterProcessor(MessageConverter messageConverter) {
         return new MessageBodyParameterProcessor(messageConverter);
     }
 
 
     @Bean
-    public MQProducer mqProducer() {
-        RocketMqProperties.Provider producerConfig = rocketMqProperties.getProvider();
+    public MQProducer rocketMqProducer() {
+        RocketMqProperties.Producer producerConfig = rocketMqProperties.getProducer();
         String nameServer = rocketMqProperties.getNameServer();
         String groupName = producerConfig.getGroup();
         Assert.hasText(nameServer, "[rocketmq.name-server] must not be null");
@@ -97,15 +97,15 @@ public class ProviderConfig {
 
         DefaultMQProducer producer;
 
-        String accessKey = rocketMqProperties.getProvider().getAccessKey();
-        String secretKey = rocketMqProperties.getProvider().getSecretKey();
+        String accessKey = rocketMqProperties.getProducer().getAccessKey();
+        String secretKey = rocketMqProperties.getProducer().getSecretKey();
         if (RocketMqUtils.canUseAcl(accessKey, secretKey)) {
             AclClientRPCHook rpcHook = new AclClientRPCHook(new SessionCredentials(accessKey, secretKey));
-            producer = new DefaultMQProducer(groupName, rpcHook, rocketMqProperties.getProvider().getEnableMsgTrace(),
-                    rocketMqProperties.getProvider().getCustomizedTraceTopic());
+            producer = new DefaultMQProducer(groupName, rpcHook, rocketMqProperties.getProducer().getEnableMsgTrace(),
+                    rocketMqProperties.getProducer().getCustomizedTraceTopic());
         } else {
-            producer = new DefaultMQProducer(groupName, rocketMqProperties.getProvider().getEnableMsgTrace(),
-                    rocketMqProperties.getProvider().getCustomizedTraceTopic());
+            producer = new DefaultMQProducer(groupName, rocketMqProperties.getProducer().getEnableMsgTrace(),
+                    rocketMqProperties.getProducer().getCustomizedTraceTopic());
         }
 
         producer.setNamesrvAddr(nameServer);

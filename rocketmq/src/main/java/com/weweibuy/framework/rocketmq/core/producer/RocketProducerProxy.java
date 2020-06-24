@@ -1,4 +1,4 @@
-package com.weweibuy.framework.rocketmq.core.provider;
+package com.weweibuy.framework.rocketmq.core.producer;
 
 
 import com.weweibuy.framework.common.core.utils.MethodUtils;
@@ -13,11 +13,11 @@ import java.util.Map;
  * @author durenhao
  * @date 2019/12/29 21:04
  **/
-public class RocketProviderProxy implements InvocationHandler {
+public class RocketProducerProxy implements InvocationHandler {
 
     private final Map<Method, MethodHandler> methodMethodHandlerMap;
 
-    public RocketProviderProxy(Map<Method, MethodHandler> methodMethodHandlerMap) {
+    public RocketProducerProxy(Map<Method, MethodHandler> methodMethodHandlerMap) {
         this.methodMethodHandlerMap = methodMethodHandlerMap;
     }
 

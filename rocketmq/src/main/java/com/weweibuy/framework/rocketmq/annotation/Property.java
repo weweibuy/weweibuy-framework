@@ -20,7 +20,7 @@ import java.lang.annotation.Target;
  **/
 @Target({ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Header {
+public @interface Property {
 
     /**
      * Header 属性名

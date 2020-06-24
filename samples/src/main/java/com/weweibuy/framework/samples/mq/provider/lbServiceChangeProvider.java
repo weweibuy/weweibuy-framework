@@ -1,16 +1,16 @@
 package com.weweibuy.framework.samples.mq.provider;
 
-import com.weweibuy.framework.rocketmq.annotation.RocketProvider;
-import com.weweibuy.framework.rocketmq.annotation.RocketProviderHandler;
+import com.weweibuy.framework.rocketmq.annotation.RocketProducer;
+import com.weweibuy.framework.rocketmq.annotation.RocketProducerHandler;
 
 /**
  * @author durenhao
  * @date 2020/6/17 22:33
  **/
-@RocketProvider(topic = "SERVER_CHANGE_TOPIC")
+@RocketProducer(topic = "SERVER_CHANGE_TOPIC")
 public interface lbServiceChangeProvider {
 
-    @RocketProviderHandler
+    @RocketProducerHandler
     public void sendServiceChangeMsg(ServerChangeMessage message);
 
 }

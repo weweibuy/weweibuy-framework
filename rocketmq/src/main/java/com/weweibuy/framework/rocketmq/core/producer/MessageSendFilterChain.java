@@ -1,4 +1,4 @@
-package com.weweibuy.framework.rocketmq.core.provider;
+package com.weweibuy.framework.rocketmq.core.producer;
 
 /**
  * 发送过滤器链

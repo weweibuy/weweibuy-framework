@@ -1,4 +1,4 @@
-package com.weweibuy.framework.rocketmq.core.provider;
+package com.weweibuy.framework.rocketmq.core.producer;
 
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +16,7 @@ import java.lang.reflect.Proxy;
  **/
 @Slf4j
 @Setter
-public class RocketProviderFactoryBean implements FactoryBean<Object>, ApplicationContextAware {
+public class RocketProducerFactoryBean implements FactoryBean<Object>, ApplicationContextAware {
 
     private Class<?> type;
 

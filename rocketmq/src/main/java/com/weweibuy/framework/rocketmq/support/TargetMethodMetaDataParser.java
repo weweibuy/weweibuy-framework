@@ -1,12 +1,12 @@
 package com.weweibuy.framework.rocketmq.support;
 
 import com.weweibuy.framework.common.core.utils.MethodUtils;
-import com.weweibuy.framework.rocketmq.annotation.RocketProvider;
-import com.weweibuy.framework.rocketmq.annotation.RocketProviderHandler;
-import com.weweibuy.framework.rocketmq.core.provider.AnnotatedParameterProcessor;
-import com.weweibuy.framework.rocketmq.core.provider.AnnotatedParameterProcessorComposite;
-import com.weweibuy.framework.rocketmq.core.provider.RocketMethodMetadata;
-import com.weweibuy.framework.rocketmq.core.provider.RocketMethodMetadataFactory;
+import com.weweibuy.framework.rocketmq.annotation.RocketProducer;
+import com.weweibuy.framework.rocketmq.annotation.RocketProducerHandler;
+import com.weweibuy.framework.rocketmq.core.producer.AnnotatedParameterProcessor;
+import com.weweibuy.framework.rocketmq.core.producer.AnnotatedParameterProcessorComposite;
+import com.weweibuy.framework.rocketmq.core.producer.RocketMethodMetadata;
+import com.weweibuy.framework.rocketmq.core.producer.RocketMethodMetadataFactory;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.rocketmq.client.producer.SendCallback;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -53,7 +53,7 @@ public class TargetMethodMetaDataParser implements ResourceLoaderAware {
 
         return Arrays.stream(target.getMethods())
                 .filter(m -> !shouldFilterMethod(m))
-                .filter(m -> Objects.nonNull(m.getAnnotation(RocketProviderHandler.class)))
+                .filter(m -> Objects.nonNull(m.getAnnotation(RocketProducerHandler.class)))
                 .map(m -> {
                     RocketMethodMetadata rocketMethodMetadata = methodMetadataFactory.newInstance(target, m);
                     parseAnnotationOnClass(rocketMethodMetadata, target);
@@ -84,14 +84,14 @@ public class TargetMethodMetaDataParser implements ResourceLoaderAware {
     }
 
     protected RocketMethodMetadata parseAnnotationOnClass(RocketMethodMetadata methodMetadata, Class<?> target) {
-        RocketProvider annotation = target.getAnnotation(RocketProvider.class);
+        RocketProducer annotation = target.getAnnotation(RocketProducer.class);
         String topic = annotation.topic();
         methodMetadata.setTopic(resolve(topic));
         return methodMetadata;
     }
 
     protected RocketMethodMetadata parseAnnotationOnMethod(RocketMethodMetadata metadata, Method method) {
-        RocketProviderHandler providerHandler = method.getAnnotation(RocketProviderHandler.class);
+        RocketProducerHandler providerHandler = method.getAnnotation(RocketProducerHandler.class);
         metadata.setMethod(method);
         metadata.setTag(resolve(providerHandler.tag()));
         metadata.setOneWay(providerHandler.oneWay());

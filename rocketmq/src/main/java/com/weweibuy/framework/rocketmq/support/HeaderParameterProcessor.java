@@ -1,8 +1,8 @@
 package com.weweibuy.framework.rocketmq.support;
 
-import com.weweibuy.framework.rocketmq.annotation.Header;
-import com.weweibuy.framework.rocketmq.core.provider.AnnotatedParameterProcessor;
-import com.weweibuy.framework.rocketmq.core.provider.RocketMethodMetadata;
+import com.weweibuy.framework.rocketmq.annotation.Property;
+import com.weweibuy.framework.rocketmq.core.producer.AnnotatedParameterProcessor;
+import com.weweibuy.framework.rocketmq.core.producer.RocketMethodMetadata;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.rocketmq.common.message.Message;
 import org.apache.rocketmq.common.message.MessageConst;
@@ -23,7 +23,7 @@ import java.util.Map;
  **/
 public class HeaderParameterProcessor implements AnnotatedParameterProcessor {
 
-    private static final Class<Header> ANNOTATION = Header.class;
+    private static final Class<Property> ANNOTATION = Property.class;
 
     @Override
     public boolean match(Annotation annotation) {
@@ -39,9 +39,9 @@ public class HeaderParameterProcessor implements AnnotatedParameterProcessor {
     public RocketMethodMetadata buildMetadata(RocketMethodMetadata methodMetadata, Class<?> parameterTypes, int argIndex) {
         Annotation[][] parameterAnnotations = methodMetadata.getMethod().getParameterAnnotations();
         Annotation[] parameterAnnotation = parameterAnnotations[argIndex];
-        Header header = Arrays.stream(parameterAnnotation)
+        Property header = Arrays.stream(parameterAnnotation)
                 .filter(ANNOTATION::isInstance)
-                .map(a -> (Header) a)
+                .map(a -> (Property) a)
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("方法: " + methodMetadata.getMethod().getDeclaringClass().getSimpleName() + "."
                         + methodMetadata.getMethod().getName() + " @Header 参数错误"));

@@ -1,4 +1,4 @@
-package com.weweibuy.framework.rocketmq.core.provider;
+package com.weweibuy.framework.rocketmq.core.producer;
 
 import com.weweibuy.framework.rocketmq.support.DefaultProxyHandlerFactory;
 import com.weweibuy.framework.rocketmq.support.DefaultRocketMethodHandler;
