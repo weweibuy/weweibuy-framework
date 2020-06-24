@@ -1,11 +1,11 @@
 package com.weweibuy.framework.compensate.config;
 
 import com.weweibuy.framework.compensate.annotation.EnableCompensate;
+import com.weweibuy.framework.compensate.core.CompensateAlarmService;
+import com.weweibuy.framework.compensate.core.CompensateStore;
 import com.weweibuy.framework.compensate.interceptor.CompensateBeanFactoryPointcutAdvisor;
 import com.weweibuy.framework.compensate.interceptor.CompensateInterceptor;
 import com.weweibuy.framework.compensate.interceptor.CompensatePointcut;
-import com.weweibuy.framework.compensate.interfaces.CompensateAlarmService;
-import com.weweibuy.framework.compensate.interfaces.CompensateStore;
 import com.weweibuy.framework.compensate.support.CompensateAnnotationMetaDataParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -23,11 +23,14 @@ import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 
 /**
+ *
+ * 补偿切面配置
+ *
  * @author durenhao
  * @date 2020/2/21 23:14
  **/
 @Configuration
-public class AdvisorConfig implements ImportAware {
+public class CompensateAdvisorConfig implements ImportAware {
 
     @Nullable
     protected AnnotationAttributes enableCompensate;
@@ -53,7 +56,6 @@ public class AdvisorConfig implements ImportAware {
     @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
     public CompensateBeanFactoryPointcutAdvisor compensateBeanFactoryPointcutAdvisor(CompensateAnnotationMetaDataParser parser,
                                                                                      CompensateStore store) {
-
         ExecutorService executorService = null;
         if (!CollectionUtils.isEmpty(configurerList)) {
             executorService = configurerList.stream().map(CompensateConfigurer::getAdviceExecutorService)

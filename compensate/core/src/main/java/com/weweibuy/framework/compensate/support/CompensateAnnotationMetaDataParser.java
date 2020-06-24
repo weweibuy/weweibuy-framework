@@ -1,10 +1,10 @@
 package com.weweibuy.framework.compensate.support;
 
-import com.weweibuy.framework.compensate.interfaces.CompensateConfigStore;
-import com.weweibuy.framework.compensate.interfaces.CompensateTypeResolver;
-import com.weweibuy.framework.compensate.interfaces.annotation.Compensate;
-import com.weweibuy.framework.compensate.interfaces.model.CompensateConfigProperties;
-import com.weweibuy.framework.compensate.interfaces.model.CompensateInfo;
+import com.weweibuy.framework.compensate.annotation.Compensate;
+import com.weweibuy.framework.compensate.core.CompensateConfigStore;
+import com.weweibuy.framework.compensate.core.CompensateTypeResolver;
+import com.weweibuy.framework.compensate.model.CompensateConfigProperties;
+import com.weweibuy.framework.compensate.model.CompensateInfo;
 import org.springframework.util.Assert;
 
 import java.lang.reflect.Method;

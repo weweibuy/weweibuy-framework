@@ -1,7 +1,7 @@
 package com.weweibuy.framework.compensate.support;
 
 
-import com.weweibuy.framework.compensate.interfaces.model.CompensateInfo;
+import com.weweibuy.framework.compensate.model.CompensateInfo;
 
 /**
  * 方法参数转化

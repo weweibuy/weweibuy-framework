@@ -1,4 +1,4 @@
-package com.weweibuy.framework.compensate.interfaces.model;
+package com.weweibuy.framework.compensate.model;
 
 import lombok.Getter;
 

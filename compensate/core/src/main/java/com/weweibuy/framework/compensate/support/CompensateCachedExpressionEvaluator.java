@@ -1,7 +1,7 @@
 package com.weweibuy.framework.compensate.support;
 
 import com.weweibuy.framework.common.core.expression.CommonCachedExpressionEvaluator;
-import com.weweibuy.framework.compensate.interfaces.annotation.Compensate;
+import com.weweibuy.framework.compensate.annotation.Compensate;
 import org.apache.commons.lang3.StringUtils;
 
 import java.lang.reflect.Method;

@@ -1,8 +1,7 @@
 package com.weweibuy.framework.compensate.core;
 
-import com.weweibuy.framework.compensate.interfaces.CompensateConfigStore;
-import com.weweibuy.framework.compensate.interfaces.model.BuiltInCompensateType;
-import com.weweibuy.framework.compensate.interfaces.model.CompensateConfigProperties;
+import com.weweibuy.framework.compensate.model.BuiltInCompensateType;
+import com.weweibuy.framework.compensate.model.CompensateConfigProperties;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;

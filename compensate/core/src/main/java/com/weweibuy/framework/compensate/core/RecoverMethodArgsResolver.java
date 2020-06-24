@@ -1,4 +1,4 @@
-package com.weweibuy.framework.compensate.interfaces;
+package com.weweibuy.framework.compensate.core;
 
 /**
  * 恢复方法参数解析器

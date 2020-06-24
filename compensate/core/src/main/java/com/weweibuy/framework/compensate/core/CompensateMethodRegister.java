@@ -1,6 +1,6 @@
 package com.weweibuy.framework.compensate.core;
 
-import com.weweibuy.framework.compensate.interfaces.annotation.Compensate;
+import com.weweibuy.framework.compensate.annotation.Compensate;
 import com.weweibuy.framework.compensate.support.RecoverMethodArgsResolverComposite;
 import org.springframework.context.ApplicationContext;
 import org.springframework.util.Assert;

@@ -1,4 +1,4 @@
-package com.weweibuy.framework.compensate.interfaces.annotation;
+package com.weweibuy.framework.compensate.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -44,7 +44,8 @@ public @interface Compensate {
     Class<? extends Throwable>[] exclude() default {};
 
     /**
-     * 标记恢复方法
+     * TODO 是否需要
+     * 标记恢复方法  恢复方法在补偿成功后调用
      *
      * @return
      */

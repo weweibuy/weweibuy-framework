@@ -1,6 +1,6 @@
 package com.weweibuy.framework.samples.controller;
 
-import com.weweibuy.framework.compensate.interfaces.CompensateTrigger;
+import com.weweibuy.framework.compensate.core.CompensateTrigger;
 import com.weweibuy.framework.samples.compensate.service.CompensateSimpleService;
 import com.weweibuy.framework.samples.model.Dog;
 import com.weweibuy.framework.samples.model.User;

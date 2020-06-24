@@ -1,9 +1,9 @@
-package com.weweibuy.framework.compensate.interfaces;
+package com.weweibuy.framework.compensate.core;
 
 
-import com.weweibuy.framework.compensate.interfaces.annotation.Compensate;
-import com.weweibuy.framework.compensate.interfaces.model.CompensateConfigProperties;
-import com.weweibuy.framework.compensate.interfaces.model.CompensateInfo;
+import com.weweibuy.framework.compensate.annotation.Compensate;
+import com.weweibuy.framework.compensate.model.CompensateConfigProperties;
+import com.weweibuy.framework.compensate.model.CompensateInfo;
 
 import java.lang.reflect.Method;
 

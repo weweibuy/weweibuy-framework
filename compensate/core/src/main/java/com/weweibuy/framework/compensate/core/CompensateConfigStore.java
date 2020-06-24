@@ -1,6 +1,7 @@
-package com.weweibuy.framework.compensate.interfaces;
+package com.weweibuy.framework.compensate.core;
 
-import com.weweibuy.framework.compensate.interfaces.model.CompensateConfigProperties;
+
+import com.weweibuy.framework.compensate.model.CompensateConfigProperties;
 
 /**
  * 补偿配置存储

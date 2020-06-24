@@ -1,7 +1,7 @@
 package com.weweibuy.framework.compensate.core;
 
 import com.weweibuy.framework.common.core.utils.DateTimeUtils;
-import com.weweibuy.framework.compensate.interfaces.model.CompensateInfoExt;
+import com.weweibuy.framework.compensate.model.CompensateInfoExt;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 

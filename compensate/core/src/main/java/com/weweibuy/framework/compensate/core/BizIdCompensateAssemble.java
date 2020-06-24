@@ -1,4 +1,4 @@
-package com.weweibuy.framework.compensate.interfaces;
+package com.weweibuy.framework.compensate.core;
 
 /**
  * 业务id 组装补偿参数

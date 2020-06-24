@@ -1,6 +1,7 @@
 package com.weweibuy.framework.compensate.support;
 
-import com.weweibuy.framework.compensate.interfaces.CompensateTypeResolver;
+
+import com.weweibuy.framework.compensate.core.CompensateTypeResolver;
 
 import java.util.LinkedList;
 import java.util.List;

@@ -2,7 +2,6 @@ package com.weweibuy.framework.compensate.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.weweibuy.framework.compensate.core.*;
-import com.weweibuy.framework.compensate.interfaces.*;
 import com.weweibuy.framework.compensate.support.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
@@ -21,7 +20,7 @@ import java.util.concurrent.ExecutorService;
  * @date 2020/2/17 20:20
  **/
 @Configuration
-public class CompensateConfigurationSupport {
+public class CompensateAutoConfiguration {
 
     @Autowired
     private ApplicationContext applicationContext;
@@ -36,8 +35,6 @@ public class CompensateConfigurationSupport {
     @Bean
     public CompensateAnnotationMetaDataParser metaDataParser(CompensateConfigStore compensateConfigStore,
                                                              MethodArgsConverter argsConverter, CompensateTypeResolverComposite composite) {
-
-
         return new CompensateAnnotationMetaDataParser(compensateConfigStore, composite);
     }
 
