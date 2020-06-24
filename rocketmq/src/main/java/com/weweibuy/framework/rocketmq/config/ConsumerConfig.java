@@ -40,7 +40,8 @@ public class ConsumerConfig {
             });
         }
 
-        RocketBeanPostProcessor postProcessor = new RocketBeanPostProcessor(new DefaultRocketListenerContainerFactory(), messageHandlerMethodFactory(),
+        RocketBeanPostProcessor postProcessor = new RocketBeanPostProcessor(new DefaultRocketListenerContainerFactory(),
+                rocketMessageHandlerMethodFactory(),
                 rocketMqProperties, composite);
 
 
@@ -51,7 +52,7 @@ public class ConsumerConfig {
     }
 
     @Bean
-    public MessageHandlerMethodFactory messageHandlerMethodFactory() {
+    public MessageHandlerMethodFactory rocketMessageHandlerMethodFactory() {
         return new DefaultMessageHandlerMethodFactory();
     }
 

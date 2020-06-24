@@ -1,7 +1,7 @@
-package com.weweibuy.framework.rocketmq.core.provider;
+package com.weweibuy.framework.rocketmq.core.producer;
 
-import com.weweibuy.framework.rocketmq.annotation.EnableRocketProvider;
-import com.weweibuy.framework.rocketmq.annotation.RocketProvider;
+import com.weweibuy.framework.rocketmq.annotation.EnableRocketProducer;
+import com.weweibuy.framework.rocketmq.annotation.RocketProducer;
 import com.weweibuy.framework.rocketmq.core.ClassPathRocketScanner;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.AnnotatedBeanDefinition;
@@ -29,7 +29,7 @@ import java.util.Set;
  * @author durenhao
  * @date 2019/12/28 22:01
  **/
-public class RocketProviderRegister implements ImportBeanDefinitionRegistrar, ResourceLoaderAware, EnvironmentAware {
+public class RocketProducerRegister implements ImportBeanDefinitionRegistrar, ResourceLoaderAware, EnvironmentAware {
 
     private BeanNameGenerator beanNameGenerator = new AnnotationBeanNameGenerator();
 
@@ -45,7 +45,7 @@ public class RocketProviderRegister implements ImportBeanDefinitionRegistrar, Re
     public void registerBeanDefinitions(AnnotationMetadata metadata,
                                         BeanDefinitionRegistry registry) {
         AnnotationTypeFilter annotationTypeFilter = new AnnotationTypeFilter(
-                RocketProvider.class);
+                RocketProducer.class);
         ClassPathRocketScanner classPathRocketScanner = new ClassPathRocketScanner(registry, environment, resourceLoader);
         classPathRocketScanner.addIncludeFilter(annotationTypeFilter);
 
@@ -64,12 +64,12 @@ public class RocketProviderRegister implements ImportBeanDefinitionRegistrar, Re
             AnnotationMetadata annotationMetadata = annotatedBeanDefinition.getMetadata();
 
             Map<String, Object> attributes = annotationMetadata
-                    .getAnnotationAttributes(RocketProvider.class.getCanonicalName());
+                    .getAnnotationAttributes(RocketProducer.class.getCanonicalName());
 
             validateAnnotationMetadata(attributes);
             String beanName = beanNameGenerator.generateBeanName(beanDefinition, registry);
             BeanDefinitionBuilder definitionBuilder = BeanDefinitionBuilder
-                    .genericBeanDefinition(RocketProviderFactoryBean.class)
+                    .genericBeanDefinition(RocketProducerFactoryBean.class)
                     .addPropertyValue("name", beanName)
                     .addPropertyValue("type", annotatedBeanDefinition.getBeanClassName())
                     .addPropertyValue("topic", attributes.get("topic"))
@@ -91,7 +91,7 @@ public class RocketProviderRegister implements ImportBeanDefinitionRegistrar, Re
 
     protected Set<String> getBasePackages(AnnotationMetadata importingClassMetadata) {
         Map<String, Object> attributes = importingClassMetadata
-                .getAnnotationAttributes(EnableRocketProvider.class.getCanonicalName());
+                .getAnnotationAttributes(EnableRocketProducer.class.getCanonicalName());
 
         Set<String> basePackages = new HashSet<>();
         for (String pkg : (String[]) attributes.get("value")) {

@@ -19,7 +19,7 @@ public class RocketMqConfig {
     @Bean
     @DependsOn("jackJsonUtils")
     @ConditionalOnMissingBean(MessageConverter.class)
-    public MessageConverter stringMessageConverter() {
+    public MessageConverter jacksonRocketMqMessageConverter() {
         return new JacksonRocketMqMessageConverter();
     }
 

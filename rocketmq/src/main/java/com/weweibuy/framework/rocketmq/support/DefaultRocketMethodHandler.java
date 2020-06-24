@@ -1,6 +1,6 @@
 package com.weweibuy.framework.rocketmq.support;
 
-import com.weweibuy.framework.rocketmq.core.provider.*;
+import com.weweibuy.framework.rocketmq.core.producer.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.rocketmq.client.producer.MQProducer;

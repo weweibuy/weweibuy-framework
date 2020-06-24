@@ -1,8 +1,8 @@
 package com.weweibuy.framework.rocketmq.support;
 
 import com.weweibuy.framework.rocketmq.core.MessageConverter;
-import com.weweibuy.framework.rocketmq.core.provider.MethodParameterProcessor;
-import com.weweibuy.framework.rocketmq.core.provider.RocketMethodMetadata;
+import com.weweibuy.framework.rocketmq.core.producer.MethodParameterProcessor;
+import com.weweibuy.framework.rocketmq.core.producer.RocketMethodMetadata;
 import org.apache.rocketmq.common.message.Message;
 import org.springframework.util.Assert;
 

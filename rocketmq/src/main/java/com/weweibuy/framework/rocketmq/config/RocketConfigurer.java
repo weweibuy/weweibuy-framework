@@ -2,8 +2,8 @@ package com.weweibuy.framework.rocketmq.config;
 
 import com.weweibuy.framework.rocketmq.core.consumer.ConsumerFilter;
 import com.weweibuy.framework.rocketmq.core.consumer.HandlerMethodArgumentResolverComposite;
-import com.weweibuy.framework.rocketmq.core.provider.AnnotatedParameterProcessorComposite;
-import com.weweibuy.framework.rocketmq.core.provider.MessageSendFilter;
+import com.weweibuy.framework.rocketmq.core.producer.AnnotatedParameterProcessorComposite;
+import com.weweibuy.framework.rocketmq.core.producer.MessageSendFilter;
 
 import java.util.List;
 

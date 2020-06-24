@@ -1,8 +1,8 @@
 package com.weweibuy.framework.rocketmq.support;
 
-import com.weweibuy.framework.rocketmq.core.provider.MethodHandler;
-import com.weweibuy.framework.rocketmq.core.provider.ProxyHandlerFactory;
-import com.weweibuy.framework.rocketmq.core.provider.RocketProviderProxy;
+import com.weweibuy.framework.rocketmq.core.producer.MethodHandler;
+import com.weweibuy.framework.rocketmq.core.producer.ProxyHandlerFactory;
+import com.weweibuy.framework.rocketmq.core.producer.RocketProducerProxy;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -18,6 +18,6 @@ public class DefaultProxyHandlerFactory implements ProxyHandlerFactory {
 
     @Override
     public InvocationHandler create(Map<Method, MethodHandler> methodMethodHandlerMap) {
-        return new RocketProviderProxy(methodMethodHandlerMap);
+        return new RocketProducerProxy(methodMethodHandlerMap);
     }
 }

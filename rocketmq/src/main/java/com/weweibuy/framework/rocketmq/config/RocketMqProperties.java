@@ -25,7 +25,7 @@ public class RocketMqProperties {
     /**
      * 生产者配置
      */
-    private Provider provider;
+    private Producer producer;
 
     /**
      * 消费者配置
@@ -34,7 +34,7 @@ public class RocketMqProperties {
 
 
     @Data
-    public static class Provider {
+    public static class Producer {
 
         /**
          * 组名

@@ -2,7 +2,7 @@ package com.weweibuy.framework.rocketmq.support;
 
 import com.weweibuy.framework.rocketmq.annotation.Payload;
 import com.weweibuy.framework.rocketmq.core.MessageConverter;
-import com.weweibuy.framework.rocketmq.core.provider.AnnotatedParameterProcessor;
+import com.weweibuy.framework.rocketmq.core.producer.AnnotatedParameterProcessor;
 
 import java.lang.annotation.Annotation;
 

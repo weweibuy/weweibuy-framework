@@ -13,7 +13,7 @@ import java.util.Collection;
  * @author durenhao
  * @date 2019/12/29 10:26
  **/
-@RocketProvider(topic = "${rocket-mq.provider.sample-provider.topic}") // TOPIC 支持EL 表达式的形式
+@RocketProducer(topic = "${rocket-mq.producer.sample-provider.topic}") // TOPIC 支持EL 表达式的形式
 public interface SampleProvider {
 
     /**
@@ -24,7 +24,7 @@ public interface SampleProvider {
      * @param key  messageKey
      * @return
      */
-    @RocketProviderHandler(tag = "${rocket-mq.provider.sample-provider.tag}")
+    @RocketProducerHandler(tag = "${rocket-mq.producer.sample-provider.tag}")
     SendResult send(SampleUser user, @Tag String s, @Key String key);
 
     /**
@@ -34,8 +34,8 @@ public interface SampleProvider {
      * @param header
      * @return
      */
-    @RocketProviderHandler(tag = "QQQ")
-    SendResult sendHeader(SampleUser user, @Header("MessageConst.PROPERTY_TAGS") String header);
+    @RocketProducerHandler(tag = "QQQ")
+    SendResult sendHeader(SampleUser user, @Property("MessageConst.PROPERTY_TAGS") String header);
 
 
     /**
@@ -46,7 +46,7 @@ public interface SampleProvider {
      * @param key          messageKey
      * @return
      */
-    @RocketProviderHandler(tag = "TEST_TAG", orderly = true)
+    @RocketProducerHandler(tag = "TEST_TAG", orderly = true)
     void sendAsync(SampleUser user, SendCallback sendCallback, @Key String key);
 
     /**
@@ -55,7 +55,7 @@ public interface SampleProvider {
      * @param users 消息体为 SampleUser, 参数必须为 Collection的形式
      * @return
      */
-    @RocketProviderHandler(tag = "BBB", batch = true)
+    @RocketProducerHandler(tag = "BBB", batch = true)
     SendResult sendBatch(Collection<SampleUser> users);
 
     /**
@@ -63,7 +63,7 @@ public interface SampleProvider {
      *
      * @param user
      */
-    @RocketProviderHandler(tag = "QQQ", oneWay = true)
+    @RocketProducerHandler(tag = "QQQ", oneWay = true)
     void sendOneWay(SampleUser user);
 
     /**
@@ -71,7 +71,7 @@ public interface SampleProvider {
      *
      * @param user
      */
-    @RocketProviderHandler(tag = "QQQ", orderly = true)
+    @RocketProducerHandler(tag = "QQQ", orderly = true)
     void sendOrder(SampleUser user, @Key String key);
 
 }

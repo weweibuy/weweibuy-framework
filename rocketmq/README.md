@@ -47,8 +47,8 @@ rocket-mq.provider.group = MY_PROVIDER_GROUP
 package com.weweibuy.framework.samples.mq.provider;
 
 import com.weweibuy.framework.rocketmq.annotation.Key;
-import com.weweibuy.framework.rocketmq.annotation.RocketProvider;
-import com.weweibuy.framework.rocketmq.annotation.RocketProviderHandler;
+import com.weweibuy.framework.rocketmq.annotation.RocketProducer;
+import com.weweibuy.framework.rocketmq.annotation.RocketProducerHandler;
 import com.weweibuy.framework.rocketmq.annotation.Tag;
 import com.weweibuy.framework.rocketmq.support.JacksonRocketMqMessageConverter;
 import com.weweibuy.framework.samples.message.SampleUser;
@@ -62,7 +62,7 @@ import java.util.Collection;
  * @author durenhao
  * @date 2019/12/29 10:26
  **/
-@RocketProvider(topic = "${rocket-mq.provider.sample-provider.topic}") // TOPIC 支持EL 表达式的形式
+@RocketProducer(topic = "${rocket-mq.provider.sample-provider.topic}") // TOPIC 支持EL 表达式的形式
 public interface SampleProvider {
 
     /**
@@ -73,7 +73,7 @@ public interface SampleProvider {
      * @param key  messageKey
      * @return
      */
-    @RocketProviderHandler(tag = "${rocket-mq.provider.sample-provider.tag}")
+    @RocketProducerHandler(tag = "${rocket-mq.provider.sample-provider.tag}")
     SendResult send(SampleUser user, @Tag String s, @Key String key);
 
     /**
@@ -84,7 +84,7 @@ public interface SampleProvider {
      * @param key          messageKey
      * @return
      */
-    @RocketProviderHandler(tag = "TEST_TAG", orderly = true)
+    @RocketProducerHandler(tag = "TEST_TAG", orderly = true)
     void sendAsync(SampleUser user, SendCallback sendCallback, @Key String key);
 
     /**
@@ -93,7 +93,7 @@ public interface SampleProvider {
      * @param users 消息体为 SampleUser, 参数必须为 Collection的形式
      * @return
      */
-    @RocketProviderHandler(tag = "BBB", batch = true)
+    @RocketProducerHandler(tag = "BBB", batch = true)
     SendResult sendBatch(Collection<SampleUser> users);
 
     /**
@@ -101,7 +101,7 @@ public interface SampleProvider {
      *
      * @param user
      */
-    @RocketProviderHandler(tag = "CCC", oneWay = true)
+    @RocketProducerHandler(tag = "CCC", oneWay = true)
     void sendOneWay(SampleUser user);
 }
 
@@ -115,7 +115,7 @@ public interface SampleProvider {
 #### 1.2 自定义参数处理
   实现接口: 
 ```
-com.weweibuy.framework.rocketmq.core.provider.MethodParameterProcessor
+com.weweibuy.framework.rocketmq.core.producer.MethodParameterProcessor
 ```
   写具体逻辑  
   通过  
@@ -128,7 +128,7 @@ com.weweibuy.framework.rocketmq.config.RocketConfigurer
 ```java
 package com.weweibuy.framework.samples.mq.consumer;
 
-import com.weweibuy.framework.rocketmq.annotation.Header;
+import com.weweibuy.framework.rocketmq.annotation.Property;
 import com.weweibuy.framework.rocketmq.annotation.Payload;
 import com.weweibuy.framework.rocketmq.annotation.RocketConsumerHandler;
 import com.weweibuy.framework.rocketmq.annotation.RocketListener;
@@ -168,7 +168,7 @@ public class SampleConsumer {
      * @param headerMap 消息属性
      */
     @RocketConsumerHandler(tags = "AAA")
-    public void onMessage2(@Payload SampleUser<SampleDog> user, @Header(MessageConst.PROPERTY_TAGS) String tag, @Header Map<String, String> headerMap) {
+    public void onMessage2(@Payload SampleUser<SampleDog> user, @Property(MessageConst.PROPERTY_TAGS) String tag, @Property Map<String, String> headerMap) {
         log.info("收到消息: {}", user);
     }
 

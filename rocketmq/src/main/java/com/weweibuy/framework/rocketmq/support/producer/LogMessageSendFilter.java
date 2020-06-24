@@ -1,9 +1,9 @@
-package com.weweibuy.framework.rocketmq.support.provider;
+package com.weweibuy.framework.rocketmq.support.producer;
 
 import com.weweibuy.framework.common.core.support.ObjectWrapper;
-import com.weweibuy.framework.rocketmq.core.provider.MessageSendContext;
-import com.weweibuy.framework.rocketmq.core.provider.MessageSendFilter;
-import com.weweibuy.framework.rocketmq.core.provider.MessageSendFilterChain;
+import com.weweibuy.framework.rocketmq.core.producer.MessageSendContext;
+import com.weweibuy.framework.rocketmq.core.producer.MessageSendFilter;
+import com.weweibuy.framework.rocketmq.core.producer.MessageSendFilterChain;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.rocketmq.client.producer.SendResult;
