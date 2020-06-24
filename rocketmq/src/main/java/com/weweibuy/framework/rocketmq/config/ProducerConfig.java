@@ -68,7 +68,7 @@ public class ProducerConfig {
         composite.addProcessor(new TagParameterProcessor());
         composite.addProcessor(new PayloadParameterProcessor(messageConverter));
         composite.addProcessor(new KeyParameterProcessor());
-        composite.addProcessor(new HeaderParameterProcessor());
+        composite.addProcessor(new PropertyParameterProcessor());
 
         if (!CollectionUtils.isEmpty(configurer)) {
             configurer.forEach(c -> c.addAnnotatedParameterProcessor(composite));

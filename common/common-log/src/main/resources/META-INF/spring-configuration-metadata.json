@@ -1,0 +1,29 @@
+{
+  "groups": [
+    {
+      "name": "common.log",
+      "type": "com.weweibuy.framework.common.log.config.CommonLogProperties",
+      "sourceType": "com.weweibuy.framework.common.log.config.CommonLogProperties"
+    }
+  ],
+  "properties": [
+    {
+      "name": "common.log.enable",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.weweibuy.framework.common.log.config.CommonLogProperties",
+      "defaultValue":true
+    },
+    {
+      "name": "common.log.http",
+      "type": "com.weweibuy.framework.common.log.config.CommonLogProperties$CommonLogHttpProperties",
+      "sourceType": "com.weweibuy.framework.common.log.config.CommonLogProperties$CommonLogHttpProperties"
+    },
+    {
+      "name": "common.log.http.disablePath",
+      "type": "java.util.Set<java.lang.String>",
+      "sourceType": "com.weweibuy.framework.common.log.config.CommonLogProperties$CommonLogHttpProperties"
+    }
+
+  ],
+  "hints": []
+}

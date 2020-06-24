@@ -30,7 +30,7 @@ public class ConsumerConfig {
 
         HandlerMethodArgumentResolverComposite composite = new HandlerMethodArgumentResolverComposite();
         composite.addResolver(new PayloadMethodArgumentResolver(messageConverter));
-        composite.addResolver(new HeaderMethodArgumentResolver());
+        composite.addResolver(new PropertyMethodArgumentResolver());
 
         List<ConsumerFilter> list = new ArrayList<>();
         if (!CollectionUtils.isEmpty(configurerList)) {
