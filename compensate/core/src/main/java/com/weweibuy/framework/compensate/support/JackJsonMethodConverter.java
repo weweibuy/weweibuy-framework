@@ -2,7 +2,7 @@ package com.weweibuy.framework.compensate.support;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.weweibuy.framework.compensate.interfaces.model.CompensateInfo;
+import com.weweibuy.framework.compensate.model.CompensateInfo;
 
 import java.util.List;
 

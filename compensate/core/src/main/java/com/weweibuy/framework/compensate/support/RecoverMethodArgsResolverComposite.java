@@ -1,6 +1,7 @@
 package com.weweibuy.framework.compensate.support;
 
-import com.weweibuy.framework.compensate.interfaces.RecoverMethodArgsResolver;
+
+import com.weweibuy.framework.compensate.core.RecoverMethodArgsResolver;
 
 import java.util.LinkedList;
 import java.util.List;

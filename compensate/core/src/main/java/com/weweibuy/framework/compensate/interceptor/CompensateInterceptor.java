@@ -1,10 +1,10 @@
 package com.weweibuy.framework.compensate.interceptor;
 
 
-import com.weweibuy.framework.compensate.interfaces.CompensateAlarmService;
-import com.weweibuy.framework.compensate.interfaces.CompensateStore;
-import com.weweibuy.framework.compensate.interfaces.annotation.Compensate;
-import com.weweibuy.framework.compensate.interfaces.model.CompensateInfo;
+import com.weweibuy.framework.compensate.annotation.Compensate;
+import com.weweibuy.framework.compensate.core.CompensateAlarmService;
+import com.weweibuy.framework.compensate.core.CompensateStore;
+import com.weweibuy.framework.compensate.model.CompensateInfo;
 import com.weweibuy.framework.compensate.support.CompensateAnnotationMetaDataParser;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;

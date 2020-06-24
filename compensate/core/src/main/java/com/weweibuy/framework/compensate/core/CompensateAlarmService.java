@@ -1,8 +1,8 @@
-package com.weweibuy.framework.compensate.interfaces;
+package com.weweibuy.framework.compensate.core;
 
 
-import com.weweibuy.framework.compensate.interfaces.model.CompensateInfo;
-import com.weweibuy.framework.compensate.interfaces.model.CompensateInfoExt;
+import com.weweibuy.framework.compensate.model.CompensateInfo;
+import com.weweibuy.framework.compensate.model.CompensateInfoExt;
 
 /**
  * 补偿报警服务

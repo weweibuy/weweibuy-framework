@@ -1,12 +1,9 @@
 package com.weweibuy.framework.compensate.core;
 
 import com.weweibuy.framework.compensate.exception.CompensateException;
-import com.weweibuy.framework.compensate.interfaces.CompensateAlarmService;
-import com.weweibuy.framework.compensate.interfaces.CompensateStore;
-import com.weweibuy.framework.compensate.interfaces.RecoverMethodArgsResolver;
-import com.weweibuy.framework.compensate.interfaces.model.CompensateInfoExt;
-import com.weweibuy.framework.compensate.interfaces.model.CompensateResult;
-import com.weweibuy.framework.compensate.interfaces.model.CompensateResultEum;
+import com.weweibuy.framework.compensate.model.CompensateInfoExt;
+import com.weweibuy.framework.compensate.model.CompensateResult;
+import com.weweibuy.framework.compensate.model.CompensateResultEum;
 import com.weweibuy.framework.compensate.support.CompensateTypeResolverComposite;
 import com.weweibuy.framework.compensate.support.LogCompensateAlarmService;
 import lombok.extern.slf4j.Slf4j;

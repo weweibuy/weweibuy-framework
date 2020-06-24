@@ -1,8 +1,8 @@
 package com.weweibuy.framework.compensate.support;
 
-import com.weweibuy.framework.compensate.interfaces.CompensateAlarmService;
-import com.weweibuy.framework.compensate.interfaces.model.CompensateInfo;
-import com.weweibuy.framework.compensate.interfaces.model.CompensateInfoExt;
+import com.weweibuy.framework.compensate.core.CompensateAlarmService;
+import com.weweibuy.framework.compensate.model.CompensateInfo;
+import com.weweibuy.framework.compensate.model.CompensateInfoExt;
 import lombok.extern.slf4j.Slf4j;
 
 /**

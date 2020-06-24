@@ -1,11 +1,11 @@
 package com.weweibuy.framework.compensate.mybatis.store;
 
-import com.weweibuy.framework.compensate.interfaces.CompensateConfigStore;
-import com.weweibuy.framework.compensate.interfaces.CompensateStore;
-import com.weweibuy.framework.compensate.interfaces.model.BuiltInCompensateType;
-import com.weweibuy.framework.compensate.interfaces.model.CompensateConfigProperties;
-import com.weweibuy.framework.compensate.interfaces.model.CompensateInfo;
-import com.weweibuy.framework.compensate.interfaces.model.CompensateInfoExt;
+import com.weweibuy.framework.compensate.core.CompensateConfigStore;
+import com.weweibuy.framework.compensate.core.CompensateStore;
+import com.weweibuy.framework.compensate.model.BuiltInCompensateType;
+import com.weweibuy.framework.compensate.model.CompensateConfigProperties;
+import com.weweibuy.framework.compensate.model.CompensateInfo;
+import com.weweibuy.framework.compensate.model.CompensateInfoExt;
 import com.weweibuy.framework.compensate.mybatis.constant.CompensateStatusConstant;
 import com.weweibuy.framework.compensate.mybatis.mapper.CompensateMapper;
 import com.weweibuy.framework.compensate.mybatis.po.Compensate;

@@ -1,9 +1,8 @@
 package com.weweibuy.framework.compensate.core;
 
-import com.weweibuy.framework.compensate.interfaces.CompensateConfigStore;
-import com.weweibuy.framework.compensate.interfaces.CompensateStore;
-import com.weweibuy.framework.compensate.interfaces.model.CompensateInfo;
-import com.weweibuy.framework.compensate.interfaces.model.CompensateInfoExt;
+
+import com.weweibuy.framework.compensate.model.CompensateInfo;
+import com.weweibuy.framework.compensate.model.CompensateInfoExt;
 
 import java.time.LocalDateTime;
 import java.util.Collection;

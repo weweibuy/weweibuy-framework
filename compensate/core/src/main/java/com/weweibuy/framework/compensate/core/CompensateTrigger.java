@@ -1,6 +1,7 @@
-package com.weweibuy.framework.compensate.interfaces;
+package com.weweibuy.framework.compensate.core;
 
-import com.weweibuy.framework.compensate.interfaces.model.CompensateResult;
+
+import com.weweibuy.framework.compensate.model.CompensateResult;
 
 import java.util.List;
 import java.util.Set;

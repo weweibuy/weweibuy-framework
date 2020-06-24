@@ -1,4 +1,4 @@
-package com.weweibuy.framework.compensate.interfaces.annotation;
+package com.weweibuy.framework.compensate.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
