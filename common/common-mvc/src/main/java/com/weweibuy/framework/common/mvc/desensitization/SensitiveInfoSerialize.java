@@ -37,6 +37,15 @@ public class SensitiveInfoSerialize extends JsonSerializer<String> implements Co
         jsonGenerator.writeString(replaceStr(value));
     }
 
+    /**
+     * 该方法只会初始化一次
+     * {@link SerializerProvider#_findExplicitUntypedSerializer(java.lang.Class)}
+     *
+     * @param serializerProvider
+     * @param beanProperty
+     * @return
+     * @throws JsonMappingException
+     */
     @Override
     public JsonSerializer<?> createContextual(SerializerProvider serializerProvider, BeanProperty beanProperty) throws JsonMappingException {
         if (beanProperty != null) {
