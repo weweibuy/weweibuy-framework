@@ -1,5 +1,9 @@
 package com.weweibuy.framework.rocketmq.core.consumer;
 
+import org.apache.rocketmq.common.message.MessageExt;
+
+import java.util.List;
+
 /**
  * MQ 消费过滤器
  *
@@ -11,12 +15,12 @@ public interface ConsumerFilter {
     /**
      * 过滤
      *
-     * @param messageObject MessageExt 或者 List<MessageExt>
+     * @param messageExtList MessageExt 或者 List<MessageExt>
      * @param originContext ConsumeConcurrentlyContext or ConsumeOrderlyContext
      * @param chain
      * @return
      */
-    Object filter(Object messageObject, Object originContext, MessageConsumerFilterChain chain);
+    Object filter(List<MessageExt> messageExtList, Object originContext, MessageConsumerFilterChain chain);
 
     /**
      * 获取执行顺序

@@ -78,35 +78,58 @@ public abstract class AbstractRocketListenerContainer<T, R> implements RocketLis
 
     @Override
     public R consume(List<MessageExt> list, T context) {
+        return filterAndOnMessage(list, context);
+    }
 
-        if (batchSize == 1) {
-            // 单个消费
-            MessageExt messageExt = list.get(0);
-            String tags = messageExt.getTags();
-            RocketMessageListener<R> rocketMessageListener = selectMessageListener(tags);
-            if (rocketMessageListener == null) {
-                log.error("MQ消息 tag: [{}], 无法找到对应的监听器", tags);
-                throw new IllegalStateException("MQ消息 tag: [" + tags + "], 无法找到对应的监听器");
+    private R filterAndOnMessage(List<MessageExt> list, T originContext) {
+        return (R) new MessageConsumerFilterEnter()
+                .doFilter(list, originContext);
+    }
+
+
+    class MessageConsumerFilterEnter<T> implements MessageConsumerFilterChain {
+
+        private int pos = 0;
+
+        private int size = messageSendFilterList.size();
+
+        @Override
+        public Object doFilter(List<MessageExt> messageExtList, Object originContext) {
+            if (pos < size) {
+                return messageSendFilterList.get(pos++).filter(messageExtList, originContext, this);
             }
-            return filterAndOnMessage(rocketMessageListener, messageExt, context);
-        } else if (batchHandlerModel.equals(BatchHandlerModel.FOREACH)) {
-            // TODO 遇到第一个消费失败,后续是否继续消费?
-            // TODO 迭代消费日志问题,显示消费成功问题
-            boolean match = list.stream()
-                    .map(m -> filterAndOnMessage(selectMessageListener(m.getTags()), m, context))
-                    .anyMatch(r -> !isSuccess(r));
-            if (match) {
-                return fail;
+            return onMessage(messageExtList, originContext);
+        }
+
+
+        public Object onMessage(List<MessageExt> messageExtList, Object originContext) {
+            if (batchSize == 1) {
+                // 单个消费
+                MessageExt messageExt = messageExtList.get(0);
+                String tags = messageExt.getTags();
+                RocketMessageListener<R> rocketMessageListener = selectMessageListener(tags);
+                return checkListenerAndOnMessage(rocketMessageListener, messageExt, originContext);
+            } else if (batchHandlerModel.equals(BatchHandlerModel.FOREACH)) {
+                boolean match = messageExtList.stream()
+                        .map(m -> checkListenerAndOnMessage(selectMessageListener(m.getTags()), m, originContext))
+                        .anyMatch(r -> !isSuccess(r));
+                if (match) {
+                    return fail;
+                }
+                return success;
+            } else {
+                // 批量一起消费
+                return checkListenerAndOnMessage(selectMessageListener(messageExtList), messageExtList, originContext);
             }
-            return success;
-        } else {
-            // 批量一起消费
-            return filterAndOnMessage(selectMessageListener(list), list, context);
         }
     }
 
-    private R filterAndOnMessage(RocketMessageListener rocketMessageListener, Object messageObject, Object originContext) {
-        return (R) new MessageConsumerFilterEnter(messageSendFilterList, rocketMessageListener).doFilter(messageObject, originContext);
+    private R checkListenerAndOnMessage(RocketMessageListener<R> messageListener, Object messageObject, Object originContext) {
+        if (messageListener == null) {
+            log.error("MQ消息: {},  无法找到对应的监听器", messageObject);
+            throw new IllegalStateException("MQ消息 : [" + messageObject + "], 无法找到对应的监听器");
+        }
+        return messageListener.onMessage(messageObject, originContext);
     }
 
 

@@ -16,28 +16,24 @@ public class LogMessageConsumerFilter implements ConsumerFilter {
 
 
     @Override
-    public Object filter(Object messageObject, Object originContext, MessageConsumerFilterChain chain) {
+    public Object filter(List<MessageExt> messageExtList, Object originContext, MessageConsumerFilterChain chain) {
         Object result = null;
         try {
-            result = chain.doFilter(messageObject, originContext);
+            result = chain.doFilter(messageExtList, originContext);
         } finally {
-            log(messageObject, result);
+            log(messageExtList, result);
         }
         return result;
 
     }
 
-    private void log(Object messageObject, Object result) {
+    private void log(List<MessageExt> messageExtList, Object result) {
 
-        if (messageObject instanceof MessageExt) {
-            doLog((MessageExt) messageObject, result);
-        } else if (messageObject instanceof List) {
-            List messageObjectList = (List) messageObject;
-            messageObjectList.stream()
-                    .filter(m -> m instanceof MessageExt)
-                    .forEach(m -> doLog((MessageExt) m, result));
+        if (messageExtList.size() == 1) {
+            doLog(messageExtList.get(0), result);
         } else {
-            log.info("收到MQ 消息: {}, 消费结果: {}", messageObject, result);
+            messageExtList.stream()
+                    .forEach(m -> doLog(m, result));
         }
 
     }
@@ -49,11 +45,6 @@ public class LogMessageConsumerFilter implements ConsumerFilter {
                 messageExt.getKeys(),
                 new String(messageExt.getBody()),
                 result);
-    }
-
-
-    private void doLogResult(Object result) {
-        log.info("消费MQ消息: 结果: {}", result);
     }
 
 

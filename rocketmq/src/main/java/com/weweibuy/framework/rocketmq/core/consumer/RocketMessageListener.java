@@ -9,8 +9,8 @@ package com.weweibuy.framework.rocketmq.core.consumer;
 public interface RocketMessageListener<R> {
 
     /**
-     * @param messageObject 消息体
-     * @param originContext 原始消费上下文
+     * @param messageObject 消息体   MessageExt 或者 List<MessageExt>
+     * @param originContext 原始消费上下文  ConsumeConcurrentlyContext or ConsumeOrderlyContext
      * @return
      */
     R onMessage(Object messageObject, Object originContext);

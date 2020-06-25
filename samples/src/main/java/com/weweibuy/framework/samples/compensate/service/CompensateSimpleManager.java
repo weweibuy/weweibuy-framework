@@ -20,10 +20,6 @@ public class CompensateSimpleManager {
 
     @Compensate(key = "CompensateSimpleManager_8", bizId = "#userMap")
     public String run8(Map<String, User> userMap) {
-        if (true) {
-            integer++;
-            throw new RuntimeException("....");
-        }
         integer = 0;
         return "success";
     }
