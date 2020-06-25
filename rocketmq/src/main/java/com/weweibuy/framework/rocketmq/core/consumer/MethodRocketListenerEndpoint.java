@@ -33,8 +33,6 @@ public class MethodRocketListenerEndpoint {
 
     private Long consumeTimeout;
 
-    private Integer maxRetry;
-
     private Integer threadMin;
 
     private Integer threadMax;
