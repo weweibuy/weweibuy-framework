@@ -56,13 +56,6 @@ public @interface RocketListener {
     long timeout() default 15L;
 
     /**
-     * 最大重试消费次数
-     *
-     * @return
-     */
-    int maxRetry() default 16;
-
-    /**
      * 最小消费线程数
      *
      * @return

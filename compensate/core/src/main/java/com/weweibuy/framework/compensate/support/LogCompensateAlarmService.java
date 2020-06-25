@@ -19,7 +19,7 @@ public class LogCompensateAlarmService implements CompensateAlarmService {
 
     @Override
     public void sendSaveCompensateAlarm(CompensateInfo compensateInfo, Exception e) {
-        log.warn("保存补偿信息: {} 时出现异常: {}", compensateInfo, e);
+        log.warn("保存补偿信息: {} 时出现异常: ", compensateInfo, e);
     }
 
 

@@ -129,11 +129,6 @@ public class RocketMqProperties {
         private Long consumeTimeout;
 
         /**
-         * 最大重试消费次数 默认16 TODO 完成该功能
-         */
-        private Integer maxRetry;
-
-        /**
          * 最小消费线程数
          */
         private Integer threadMin;

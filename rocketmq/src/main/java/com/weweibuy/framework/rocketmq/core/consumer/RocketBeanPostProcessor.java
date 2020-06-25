@@ -143,19 +143,12 @@ public class RocketBeanPostProcessor implements BeanPostProcessor, SmartInitiali
                 listenerEndpoint.setThreadMin(rocketListener.threadMin());
             }
 
-            if (consumer.getMaxRetry() != null) {
-                listenerEndpoint.setMaxRetry(consumer.getMaxRetry());
-            } else {
-                listenerEndpoint.setMaxRetry(rocketListener.maxRetry());
-            }
-
         } else {
             listenerEndpoint.setTopic(SpringResourcesUtils.resolve(rocketListener.topic(), resourceLoader));
             listenerEndpoint.setGroup(SpringResourcesUtils.resolve(rocketListener.group(), resourceLoader));
 
             listenerEndpoint.setThreadMin(rocketListener.threadMin());
             listenerEndpoint.setThreadMax(rocketListener.threadMax());
-            listenerEndpoint.setMaxRetry(rocketListener.maxRetry());
             listenerEndpoint.setConsumeTimeout(rocketListener.timeout());
         }
         return listenerEndpoint;
