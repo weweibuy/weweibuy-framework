@@ -15,5 +15,4 @@ public interface RocketMessageListener<R> {
      */
     R onMessage(Object messageObject, Object originContext);
 
-
 }

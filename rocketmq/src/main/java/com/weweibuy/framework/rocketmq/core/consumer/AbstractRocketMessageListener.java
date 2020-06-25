@@ -3,6 +3,7 @@ package com.weweibuy.framework.rocketmq.core.consumer;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.common.message.MessageExt;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -34,27 +35,34 @@ public abstract class AbstractRocketMessageListener<R> implements RocketMessageL
     @Override
     public R onMessage(Object messageObject, Object originContext) {
         Object reValue = null;
+        Exception exception = null;
         try {
             reValue = rocketHandlerMethod.invoke(messageObject, originContext);
+            return handleResult(reValue);
+        } catch (InvocationTargetException ex) {
+            exception = (Exception) ex.getTargetException();
         } catch (Exception e) {
-            if (errorHandler != null) {
-                if (errorHandler.handlerException(e, messageObject, isOrderly())) {
-                    return getSuccessReturnValue();
-                }
-            } else {
-                if (messageObject instanceof Collection) {
-                    logException((List) messageObject, e);
-                } else if (messageObject instanceof MessageExt) {
-                    logException(Collections.singletonList((MessageExt) messageObject), e);
-                } else {
-                    log.warn("消费MQ消息: {}, 时异常: {}", messageObject, e);
-                }
-            }
-            return getFailReturnValue();
+            exception = e;
         }
-        return handleResult(reValue);
+        return handlerException(exception, messageObject);
     }
 
+    private R handlerException(Exception throwable, Object messageObject) {
+        if (errorHandler != null) {
+            if (errorHandler.handlerException(throwable, messageObject, isOrderly())) {
+                return getSuccessReturnValue();
+            }
+        } else {
+            if (messageObject instanceof Collection) {
+                logException((List) messageObject, throwable);
+            } else if (messageObject instanceof MessageExt) {
+                logException(Collections.singletonList((MessageExt) messageObject), throwable);
+            } else {
+                log.warn("消费MQ消息: {}, 时异常: {}", messageObject, throwable);
+            }
+        }
+        return getFailReturnValue();
+    }
 
     private void logException(List<MessageExt> messageExtList, Exception e) {
         StringBuilder stringBuilder = new StringBuilder();
@@ -64,7 +72,7 @@ public abstract class AbstractRocketMessageListener<R> implements RocketMessageL
                     .append(" Tag:【").append(messageExtList.get(i).getTags()).append("】")
                     .append(" Key:【").append(messageExtList.get(i).getKeys()).append("】")
                     .append(" Body:【").append(new String(messageExtList.get(i).getBody())).append("】");
-            if (i != messageExtList.size()) {
+            if (i + 1 != messageExtList.size()) {
                 stringBuilder.append("\r\n");
             }
         }
@@ -98,11 +106,21 @@ public abstract class AbstractRocketMessageListener<R> implements RocketMessageL
     }
 
 
-    protected abstract boolean isOrderly();
-
+    /**
+     * 消费成功返回值 CONSUME_SUCCESS or   ConsumeOrderlyStatus.SUCCESS
+     *
+     * @return
+     */
     protected abstract R getSuccessReturnValue();
 
+    /**
+     * 消费失败返回值   ConsumeConcurrentlyStatus.RECONSUME_LATER or ConsumeOrderlyStatus.SUSPEND_CURRENT_QUEUE_A_MOMENT
+     *
+     * @return
+     */
     protected abstract R getFailReturnValue();
+
+    protected abstract boolean isOrderly();
 
 
 }

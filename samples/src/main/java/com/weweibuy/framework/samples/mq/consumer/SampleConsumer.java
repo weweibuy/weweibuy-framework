@@ -1,7 +1,7 @@
 package com.weweibuy.framework.samples.mq.consumer;
 
-import com.weweibuy.framework.rocketmq.annotation.Property;
 import com.weweibuy.framework.rocketmq.annotation.Payload;
+import com.weweibuy.framework.rocketmq.annotation.Property;
 import com.weweibuy.framework.rocketmq.annotation.RocketConsumerHandler;
 import com.weweibuy.framework.rocketmq.annotation.RocketListener;
 import com.weweibuy.framework.rocketmq.constant.MessageExtPropertyConstant;

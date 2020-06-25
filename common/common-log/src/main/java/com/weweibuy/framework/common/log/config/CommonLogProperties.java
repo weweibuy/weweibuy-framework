@@ -13,9 +13,9 @@ import java.util.Set;
 @ConfigurationProperties(prefix = "common.log")
 public class CommonLogProperties {
 
-    private Boolean enable;
+    private Boolean enable = true;
 
-    private CommonLogHttpProperties http;
+    private CommonLogHttpProperties http = new CommonLogHttpProperties();
 
     @Data
     public static class CommonLogHttpProperties {

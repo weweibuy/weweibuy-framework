@@ -39,7 +39,7 @@ public abstract class AbstractRocketListenerContainer<T, R> implements RocketLis
 
     public AbstractRocketListenerContainer(DefaultMQPushConsumer mqPushConsumer,
                                            Integer batchSize, BatchHandlerModel batchHandlerModel,
-                                           List<ConsumerFilter> messageSendFilterList) {
+                                           List<ConsumerFilter> messageSendFilterList, R success, R fail) {
         this.mqPushConsumer = mqPushConsumer;
         this.mqPushConsumer.setMessageListener(getMessageListener());
         this.batchSize = batchSize;
@@ -49,6 +49,8 @@ public abstract class AbstractRocketListenerContainer<T, R> implements RocketLis
         }
         this.messageSendFilterList = messageSendFilterList.stream()
                 .sorted(Comparator.comparing(ConsumerFilter::getOrder)).collect(Collectors.toList());
+        this.fail = fail;
+        this.success = success;
     }
 
 
@@ -88,6 +90,8 @@ public abstract class AbstractRocketListenerContainer<T, R> implements RocketLis
             }
             return filterAndOnMessage(rocketMessageListener, messageExt, context);
         } else if (batchHandlerModel.equals(BatchHandlerModel.FOREACH)) {
+            // TODO 遇到第一个消费失败,后续是否继续消费?
+            // TODO 迭代消费日志问题,显示消费成功问题
             boolean match = list.stream()
                     .map(m -> filterAndOnMessage(selectMessageListener(m.getTags()), m, context))
                     .anyMatch(r -> !isSuccess(r));
@@ -113,7 +117,9 @@ public abstract class AbstractRocketListenerContainer<T, R> implements RocketLis
      */
     protected abstract MessageListener getMessageListener();
 
-    protected abstract boolean isSuccess(R r);
+    protected boolean isSuccess(R r) {
+        return success.equals(r);
+    }
 
     @Override
     public void start() throws MQClientException {
