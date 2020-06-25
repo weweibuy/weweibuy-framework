@@ -1,5 +1,6 @@
 package com.weweibuy.framework.samples.idempotent;
 
+import com.weweibuy.framework.compensate.annotation.Compensate;
 import com.weweibuy.framework.idempotent.core.annotation.Idempotent;
 import com.weweibuy.framework.samples.model.User;
 import com.weweibuy.framework.samples.model.dto.CommonCodeJsonResponse;
@@ -23,6 +24,7 @@ public class IdempotentService {
 
     @Transactional(rollbackFor = Exception.class)
     @Idempotent(key = "#user.name + '_' + #user.age")
+    @Compensate(key = "IdempotentService")
     public String doBiz2(User user){
         log.info("Idempotent biz ......");
         return "null";

@@ -50,7 +50,6 @@ public class IdempotentInfoParser extends CommonCachedExpressionEvaluator {
         Method method = methodInvocation.getMethod();
         Object target = methodInvocation.getThis();
         Object[] arguments = methodInvocation.getArguments();
-        // TODO 获取真实方法 而非代理方法?
         IdempotentAnnotationMeta metaData = annotationMetaDataHolder.getMetaData(method);
 
         String key = evaluatorKey(metaData.getKey(), target, method, arguments);

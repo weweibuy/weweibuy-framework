@@ -168,7 +168,7 @@ public class CompensateHandlerService {
         try {
             doCompensate(compensateInfo);
         } catch (Exception e) {
-            log.warn("补偿: {} 时发生异常: ", compensateInfo, e);
+            log.warn("补偿: {} 时发生异常: ", compensateInfo, e instanceof InvocationTargetException ? ((InvocationTargetException) e).getTargetException() : e);
             if (force) {
                 compensateStore.updateCompensateInfo(compensateInfo.getId(), compensateInfo.addRetryToCompensateInfo(null));
                 return CompensateResult.fromCompensateInfoExt(compensateInfo, CompensateResultEum.RETRY_FAIL);

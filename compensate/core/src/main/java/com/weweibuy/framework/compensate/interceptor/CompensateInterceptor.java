@@ -1,6 +1,7 @@
 package com.weweibuy.framework.compensate.interceptor;
 
 
+import com.weweibuy.framework.common.core.utils.Jdk9Option;
 import com.weweibuy.framework.compensate.annotation.Compensate;
 import com.weweibuy.framework.compensate.core.CompensateAlarmService;
 import com.weweibuy.framework.compensate.core.CompensateStore;
@@ -48,11 +49,9 @@ public class CompensateInterceptor implements MethodInterceptor {
         try {
             return methodInvocation.proceed();
         } catch (Exception e) {
-            if (executorService != null) {
-                executorService.execute(() -> parseAndSaveCompensateInfo(methodInvocation, e));
-            } else {
-                parseAndSaveCompensateInfo(methodInvocation, e);
-            }
+            Jdk9Option.ofNullable(executorService)
+                    .ifPresentOrElse(es -> es.execute(() -> parseAndSaveCompensateInfo(methodInvocation, e)),
+                            () -> parseAndSaveCompensateInfo(methodInvocation, e));
             throw e;
         }
     }
