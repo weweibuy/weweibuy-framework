@@ -3,10 +3,12 @@ package com.weweibuy.framework.compensate.interceptor;
 
 import com.weweibuy.framework.common.core.utils.Jdk9Option;
 import com.weweibuy.framework.compensate.annotation.Compensate;
+import com.weweibuy.framework.compensate.annotation.Propagation;
 import com.weweibuy.framework.compensate.core.CompensateAlarmService;
 import com.weweibuy.framework.compensate.core.CompensateStore;
 import com.weweibuy.framework.compensate.model.CompensateInfo;
 import com.weweibuy.framework.compensate.support.CompensateAnnotationMetaDataParser;
+import com.weweibuy.framework.compensate.support.CompensateContext;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 
@@ -46,13 +48,27 @@ public class CompensateInterceptor implements MethodInterceptor {
 
     @Override
     public Object invoke(MethodInvocation methodInvocation) throws Throwable {
+        boolean bind = false;
+        Boolean compensate = CompensateContext.getCompensate();
+        if (compensate == null) {
+            CompensateContext.setCompensate();
+            bind = true;
+        }
         try {
             return methodInvocation.proceed();
         } catch (Exception e) {
-            Jdk9Option.ofNullable(executorService)
-                    .ifPresentOrElse(es -> es.execute(() -> parseAndSaveCompensateInfo(methodInvocation, e)),
-                            () -> parseAndSaveCompensateInfo(methodInvocation, e));
+            Compensate annotation = methodInvocation.getMethod().getAnnotation(Compensate.class);
+            Boolean bindCompensate = CompensateContext.getCompensate();
+            if (bind || bindCompensate == null || annotation.propagation().equals(Propagation.REQUIRES_NEW)) {
+                Jdk9Option.ofNullable(executorService)
+                        .ifPresentOrElse(es -> es.execute(() -> parseAndSaveCompensateInfo(methodInvocation, e)),
+                                () -> parseAndSaveCompensateInfo(methodInvocation, e));
+            }
             throw e;
+        } finally {
+            if (bind) {
+                CompensateContext.removeCompensate();
+            }
         }
     }
 

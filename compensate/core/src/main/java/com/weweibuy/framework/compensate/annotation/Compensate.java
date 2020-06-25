@@ -31,6 +31,13 @@ public @interface Compensate {
     String bizId() default "";
 
     /**
+     * 传播特性
+     *
+     * @return
+     */
+    Propagation propagation() default Propagation.REQUIRED;
+
+    /**
      * 补偿包含的异常
      *
      * @return
