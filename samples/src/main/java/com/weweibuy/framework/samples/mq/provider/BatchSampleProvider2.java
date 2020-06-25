@@ -11,11 +11,11 @@ import java.util.Collection;
  * @author durenhao
  * @date 2019/12/29 10:26
  **/
-@RocketProducer(topic = "${rocket-mq.producer.batch-sample-provider.topic}")
-public interface BatchSampleProvider {
+@RocketProducer(topic = "TEST_SAMPLE_BATCH_02")
+public interface BatchSampleProvider2 {
 
 
-    @RocketProducerHandler(tag = "CCC", batch = true)
+    @RocketProducerHandler(tag = "BBB", batch = true)
     SendResult sendBatch(Collection<SampleUser> users);
 
 

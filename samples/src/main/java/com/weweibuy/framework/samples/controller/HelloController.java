@@ -4,10 +4,7 @@ import com.weweibuy.framework.common.core.utils.IdWorker;
 import com.weweibuy.framework.samples.message.SampleDog;
 import com.weweibuy.framework.samples.message.SampleUser;
 import com.weweibuy.framework.samples.model.dto.CommonDataJsonResponse;
-import com.weweibuy.framework.samples.mq.provider.BatchSampleProvider;
-import com.weweibuy.framework.samples.mq.provider.SampleProvider;
-import com.weweibuy.framework.samples.mq.provider.ServerChangeMessage;
-import com.weweibuy.framework.samples.mq.provider.lbServiceChangeProvider;
+import com.weweibuy.framework.samples.mq.provider.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.client.producer.SendCallback;
 import org.apache.rocketmq.client.producer.SendResult;
@@ -31,10 +28,13 @@ public class HelloController {
 
     private lbServiceChangeProvider lbServiceChangeProvider;
 
-    public HelloController(SampleProvider sampleProvider, BatchSampleProvider batchSampleProvider, com.weweibuy.framework.samples.mq.provider.lbServiceChangeProvider lbServiceChangeProvider) {
+    private BatchSampleProvider2 batchSampleProvider2;
+
+    public HelloController(SampleProvider sampleProvider, BatchSampleProvider batchSampleProvider, com.weweibuy.framework.samples.mq.provider.lbServiceChangeProvider lbServiceChangeProvider, BatchSampleProvider2 batchSampleProvider2) {
         this.sampleProvider = sampleProvider;
         this.batchSampleProvider = batchSampleProvider;
         this.lbServiceChangeProvider = lbServiceChangeProvider;
+        this.batchSampleProvider2 = batchSampleProvider2;
     }
 
     @GetMapping("/hello")
@@ -102,6 +102,24 @@ public class HelloController {
         list.add(user1);
         list.add(user1);
         batchSampleProvider.sendBatch(list);
+        return "hello";
+    }
+
+
+    @GetMapping("/hello-batch-foreach")
+    public String helloBatchForeach(String msg) {
+        SampleUser user = user(msg);
+        user.setSampleDog(dog());
+        SampleUser user1 = user(msg + "QQQ");
+        user1.setSampleDog(dog());
+        ArrayList<SampleUser> list = new ArrayList<>();
+        list.add(user);
+        list.add(user1);
+        list.add(user1);
+        list.add(user1);
+        list.add(user1);
+        list.add(user1);
+        batchSampleProvider2.sendBatch(list);
         return "hello";
     }
 

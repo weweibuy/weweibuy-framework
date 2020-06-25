@@ -23,7 +23,7 @@ public class ConcurrentlyRocketListenerContainer extends AbstractRocketListenerC
     private MessageListener messageListener;
 
     public ConcurrentlyRocketListenerContainer(DefaultMQPushConsumer mqPushConsumer, List<ConsumerFilter> filterList, Integer batchSize, BatchHandlerModel batchHandlerModel) {
-        super(mqPushConsumer, batchSize, batchHandlerModel, filterList);
+        super(mqPushConsumer, batchSize, batchHandlerModel, filterList, ConsumeConcurrentlyStatus.CONSUME_SUCCESS, ConsumeConcurrentlyStatus.RECONSUME_LATER);
     }
 
 
@@ -38,11 +38,6 @@ public class ConcurrentlyRocketListenerContainer extends AbstractRocketListenerC
             };
         }
         return messageListener;
-    }
-
-    @Override
-    protected boolean isSuccess(ConsumeConcurrentlyStatus consumeConcurrentlyStatus) {
-        return ConsumeConcurrentlyStatus.CONSUME_SUCCESS.equals(consumeConcurrentlyStatus);
     }
 
 
