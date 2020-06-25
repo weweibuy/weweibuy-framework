@@ -4,6 +4,7 @@ import com.weweibuy.framework.compensate.exception.CompensateException;
 import com.weweibuy.framework.compensate.model.CompensateInfoExt;
 import com.weweibuy.framework.compensate.model.CompensateResult;
 import com.weweibuy.framework.compensate.model.CompensateResultEum;
+import com.weweibuy.framework.compensate.support.CompensateContext;
 import com.weweibuy.framework.compensate.support.CompensateTypeResolverComposite;
 import com.weweibuy.framework.compensate.support.LogCompensateAlarmService;
 import lombok.extern.slf4j.Slf4j;
@@ -65,7 +66,7 @@ public class CompensateHandlerService {
             return compensateConcurrently(compensateInfoCollection);
         } else {
             return compensateInfoCollection.stream()
-                    .map(c -> compensate(c, false))
+                    .map(c -> bindContextAndCompensate(c, false))
                     .collect(Collectors.toList());
         }
     }
@@ -73,7 +74,7 @@ public class CompensateHandlerService {
 
     private List<CompensateResult> compensateConcurrently(Collection<CompensateInfoExt> compensateInfoCollection) {
         List<Future<CompensateResult>> futureList = compensateInfoCollection.stream()
-                .map(c -> executorService.submit(() -> compensate(c, false)))
+                .map(c -> executorService.submit(() -> bindContextAndCompensate(c, false)))
                 .collect(Collectors.toList());
         return futureList.stream().map(f -> {
             try {
@@ -95,14 +96,14 @@ public class CompensateHandlerService {
             return compensateForceConcurrently(compensateInfoCollection);
         } else {
             return compensateInfoCollection.stream()
-                    .map(c -> compensate(c, true))
+                    .map(c -> bindContextAndCompensate(c, true))
                     .collect(Collectors.toList());
         }
     }
 
     private List<CompensateResult> compensateForceConcurrently(Collection<CompensateInfoExt> compensateInfoCollection) {
         List<Future<CompensateResult>> futureList = compensateInfoCollection.stream()
-                .map(c -> executorService.submit(() -> compensate(c, true)))
+                .map(c -> executorService.submit(() -> bindContextAndCompensate(c, true)))
                 .collect(Collectors.toList());
         return futureList.stream().map(f -> {
             try {
@@ -113,6 +114,21 @@ public class CompensateHandlerService {
         }).collect(Collectors.toList());
     }
 
+    /**
+     * 防止 在传播特性中  不应该补偿的方法出现的补偿
+     *
+     * @param compensateInfo
+     * @param force
+     * @return
+     */
+    public CompensateResult bindContextAndCompensate(CompensateInfoExt compensateInfo, Boolean force) {
+        CompensateContext.setCompensate();
+        try {
+            return compensate(compensateInfo, force);
+        } finally {
+            CompensateContext.removeCompensate();
+        }
+    }
 
     public CompensateResult compensate(CompensateInfoExt compensateInfo, Boolean force) {
         log.info("发起补偿: {} ", compensateInfo, force);

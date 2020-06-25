@@ -31,7 +31,7 @@ public class IdempotentService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    @Idempotent(key = "", sharding = "#user.name")
+//    @Idempotent(key = "", sharding = "#user.name")
     public CommonCodeJsonResponse doBiz3(User user){
         log.info("Idempotent biz ......");
         return CommonCodeJsonResponse.success();

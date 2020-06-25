@@ -4,6 +4,7 @@ import com.weweibuy.framework.samples.idempotent.IdempotentService;
 import com.weweibuy.framework.samples.model.User;
 import com.weweibuy.framework.samples.model.dto.CommonCodeJsonResponse;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -39,6 +40,7 @@ public class IdempotentController {
     }
 
     @RequestMapping("/jdbc3")
+    @Transactional(rollbackFor = Exception.class)
     public Object jdbc3() {
         User user = new User();
         user.setName("tom");
