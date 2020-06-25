@@ -46,7 +46,7 @@ public class RocketHandlerMethod {
      */
     private Object[] getMethodArgumentValues(Object message, Object... providedArgs) {
         Object[] args = new Object[methodParameters.length];
-
+        // TODO 对于批量一起消费的支持
         for (int i = 0; i < methodParameters.length; i++) {
             MethodParameter methodParameter = methodParameters[i];
 
