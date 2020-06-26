@@ -131,14 +131,18 @@ public class CompensateHandlerService {
     }
 
     public CompensateResult compensate(CompensateInfoExt compensateInfo, Boolean force) {
-        log.info("发起补偿: {} ", compensateInfo, force);
+        log.info("发起补偿: 补偿id: {}, 补偿Key: {}, 业务Id: {}, 补偿方式: {}",
+                compensateInfo.getId(),
+                compensateInfo.getCompensateKey(),
+                compensateInfo.getBizId(),
+                compensateInfo.getCompensateType());
         // 补偿状态
         CompensateResult result = null;
-        if (force) {
+        if (!force) {
             CompensateInfoExt.CompensateStatus compensateStatus = RuleParser.parserToStatus(compensateInfo);
             switch (compensateStatus) {
                 case RETRY_ABLE:
-                    result = execCompensate(compensateInfo, force);
+                    result = execCompensate(compensateInfo, false);
                     break;
                 case ALARM_ABLE:
                     result = execAlarm(compensateInfo);
@@ -149,8 +153,9 @@ public class CompensateHandlerService {
                 default:
                     return null;
             }
+        } else {
+            result = execCompensate(compensateInfo, true);
         }
-        result = execCompensate(compensateInfo, force);
         log.info("补偿id: {}, 结果: {}", compensateInfo.getId(), result.getResult());
         return result;
     }
