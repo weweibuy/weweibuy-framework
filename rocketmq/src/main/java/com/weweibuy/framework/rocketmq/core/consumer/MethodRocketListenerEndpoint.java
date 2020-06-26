@@ -1,5 +1,6 @@
 package com.weweibuy.framework.rocketmq.core.consumer;
 
+import com.weweibuy.framework.rocketmq.annotation.BatchForEachConsumerFailPolicy;
 import com.weweibuy.framework.rocketmq.annotation.BatchHandlerModel;
 import lombok.Data;
 import org.apache.rocketmq.client.AccessChannel;
@@ -40,6 +41,8 @@ public class MethodRocketListenerEndpoint {
     private Integer consumeMessageBatchMaxSize;
 
     private BatchHandlerModel batchHandlerModel;
+
+    private BatchForEachConsumerFailPolicy batchForEachConsumerFailPolicy;
 
     private String accessKey;
 

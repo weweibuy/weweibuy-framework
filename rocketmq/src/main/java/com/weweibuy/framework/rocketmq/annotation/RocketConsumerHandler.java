@@ -22,11 +22,5 @@ public @interface RocketConsumerHandler {
      */
     String tags() default "*";
 
-    /**
-     * 批量处理模式
-     *
-     * @return
-     */
-    BatchHandlerModel batchHandlerModel() default BatchHandlerModel.FOREACH;
 
 }
