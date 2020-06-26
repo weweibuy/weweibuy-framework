@@ -23,7 +23,7 @@ public interface HandlerMethodArgumentResolver {
      * 解析参数
      *
      * @param parameter
-     * @param messageObject
+     * @param messageObject MessageExt Or List<MessageExt>
      * @return
      */
     Object resolveArgument(MethodParameter parameter, Object messageObject);

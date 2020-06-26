@@ -1,14 +1,21 @@
 package com.weweibuy.framework.rocketmq.core.consumer;
 
+import com.weweibuy.framework.rocketmq.annotation.BatchHandlerModel;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.rocketmq.common.message.Message;
 import org.springframework.core.BridgeMethodResolver;
 import org.springframework.core.MethodParameter;
 import org.springframework.core.annotation.SynthesizingMethodParameter;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.ReflectionUtils;
+import org.springframework.util.TypeUtils;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.Collection;
+import java.util.Collections;
 
 /**
  * @author durenhao
@@ -27,12 +34,14 @@ public class RocketHandlerMethod {
 
     private Integer batchMaxSize;
 
+    private BatchHandlerModel batchHandlerModel;
 
     public RocketHandlerMethod(MethodRocketListenerEndpoint endpoint) {
         this.bean = endpoint.getBean();
         this.bridgedMethod = BridgeMethodResolver.findBridgedMethod(endpoint.getMethod());
         this.argumentResolverComposite = endpoint.getArgumentResolverComposite();
         this.batchMaxSize = endpoint.getConsumeMessageBatchMaxSize();
+        this.batchHandlerModel = endpoint.getBatchHandlerModel();
         this.methodParameters = initMethodParameters();
     }
 
@@ -46,7 +55,6 @@ public class RocketHandlerMethod {
      */
     private Object[] getMethodArgumentValues(Object message, Object... providedArgs) {
         Object[] args = new Object[methodParameters.length];
-        // TODO 对于批量一起消费的支持
         for (int i = 0; i < methodParameters.length; i++) {
             MethodParameter methodParameter = methodParameters[i];
 
@@ -75,9 +83,19 @@ public class RocketHandlerMethod {
 
         Class<?> parameterType = parameter.getParameterType();
 
-
-        if (parameterType.isInstance(message)) {
+        // 单个消费 参数类型为 MessageExt
+        if (batchMaxSize == 1 && parameterType.isInstance(message)) {
             return message;
+        }
+
+        Type type = parameter.getNestedGenericParameterType();
+
+        // 参数为List<Message>
+        if (isListMessage(type)) {
+            if (message instanceof Collection) {
+                return message;
+            }
+            return Collections.unmodifiableList(Collections.singletonList(message));
         }
 
         if (!ObjectUtils.isEmpty(providedArgs)) {
@@ -123,5 +141,19 @@ public class RocketHandlerMethod {
         return result;
     }
 
+
+    private boolean isBatchTogetherModel() {
+        return batchMaxSize > 1 && BatchHandlerModel.TOGETHER.equals(batchHandlerModel);
+    }
+
+
+    private boolean isListMessage(Type type) {
+        boolean assignable = TypeUtils.isAssignable(Collection.class, type);
+        if (assignable && type instanceof ParameterizedType) {
+            Type[] actualTypeArguments = ((ParameterizedType) type).getActualTypeArguments();
+            return actualTypeArguments.length > 0 && TypeUtils.isAssignable(Message.class, actualTypeArguments[0]);
+        }
+        return false;
+    }
 
 }
