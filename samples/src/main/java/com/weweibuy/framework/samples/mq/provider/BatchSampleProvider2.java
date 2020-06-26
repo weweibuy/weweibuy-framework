@@ -2,6 +2,7 @@ package com.weweibuy.framework.samples.mq.provider;
 
 import com.weweibuy.framework.rocketmq.annotation.RocketProducer;
 import com.weweibuy.framework.rocketmq.annotation.RocketProducerHandler;
+import com.weweibuy.framework.rocketmq.annotation.Tag;
 import com.weweibuy.framework.samples.message.SampleUser;
 import org.apache.rocketmq.client.producer.SendResult;
 
@@ -16,7 +17,7 @@ public interface BatchSampleProvider2 {
 
 
     @RocketProducerHandler(tag = "BBB", batch = true)
-    SendResult sendBatch(Collection<SampleUser> users);
+    SendResult sendBatch(Collection<SampleUser> users, @Tag String tag);
 
 
 }

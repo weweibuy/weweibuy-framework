@@ -5,8 +5,8 @@ import com.weweibuy.framework.rocketmq.annotation.BatchHandlerModel;
 import com.weweibuy.framework.rocketmq.annotation.RocketConsumerHandler;
 import com.weweibuy.framework.rocketmq.annotation.RocketListener;
 import com.weweibuy.framework.rocketmq.config.RocketMqProperties;
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.rocketmq.common.protocol.heartbeat.MessageModel;
 import org.springframework.beans.BeanUtils;
@@ -178,18 +178,19 @@ public class RocketBeanPostProcessor implements BeanPostProcessor, SmartInitiali
 
 
     private void validateEndpoint() {
-        Map<String, List<MethodRocketListenerEndpoint>> endpointMap = endpointList.stream()
-                .collect(Collectors.groupingBy(e -> e.getGroup() + "_" + e.getTopic()));
+        Map<TopicGroupKey, List<MethodRocketListenerEndpoint>> endpointMap = endpointList.stream()
+                .collect(Collectors.groupingBy(e -> new TopicGroupKey(e.getTopic(), e.getGroup())));
 
         endpointMap.forEach((k, v) -> {
             if (v.size() > 1) {
                 List<String> tagList = new ArrayList<>();
                 Map<SameRocketEndpointKey, List<MethodRocketListenerEndpoint>> collect = v.stream()
-                        .peek(e -> Assert.isTrue(!"*".equals(e.getTags()), "同一Topic与Group的RocketListener, 其中RocketConsumerHandler的Tag不能为 *"))
+                        .peek(e -> Assert.isTrue(!"*".equals(e.getTags()), "Topic: [ " + k.getTopic() + "], Group: [" + k.getGroup() + "]同一Topic与Group的RocketListener, 其中RocketConsumerHandler的Tag不能为 *"))
                         .peek(e -> tagList.add(e.getTags()))
                         .collect(Collectors.groupingBy(this::toRocketEndpointKey));
-                Assert.isTrue(collect.size() == 1, "同一Topic与Group的RocketListener, orderly,timeout,maxRetry,threadMin" +
-                        "threadMax,consumeMessageBatchMaxSize,accessKey,secretKey,accessChannel 必须相同");
+                Assert.isTrue(collect.size() == 1, "Topic: [" + k.getTopic() + "], Group: [" + k.getGroup() + "] , " +
+                        "同一Topic与Group的RocketListener, orderly,timeout,maxRetry,threadMin" +
+                        "threadMax,consumeMessageBatchMaxSize,accessKey,secretKey,accessChannel,batchHandlerModel 必须相同");
 
                 for (int i = 0; i < tagList.size(); i++) {
                     for (int j = 0; j < tagList.size(); j++) {
@@ -211,11 +212,11 @@ public class RocketBeanPostProcessor implements BeanPostProcessor, SmartInitiali
                 Method method = e.getMethod();
 
                 Assert.isTrue(!(consumeMessageBatchMaxSize == 1 && BatchHandlerModel.TOGETHER.equals(batchHandlerModel)),
-                        method.toString() + " consumeMessageBatchMaxSize 为 1 时, batchHandlerModel 不能为: TOGETHER");
+                        ClassUtils.getQualifiedMethodName(method) + " consumeMessageBatchMaxSize 为 1 时, batchHandlerModel 不能为: TOGETHER");
 
 
-                Assert.isTrue(!(consumeMessageBatchMaxSize > 1 && v.size() > 1),
-                        method.toString() + " consumeMessageBatchMaxSize 大于 1 时, 不支持多个 TAG 的形式");
+                Assert.isTrue(!(consumeMessageBatchMaxSize > 1 && v.size() > 1 && BatchHandlerModel.TOGETHER.equals(batchHandlerModel)),
+                        ClassUtils.getQualifiedMethodName(method) + " consumeMessageBatchMaxSize 大于 1 , BatchHandlerModel: TOGETHER 时, 不支持多个 TAG 的形式");
 
 
                 if (BatchHandlerModel.TOGETHER.equals(batchHandlerModel)) {
@@ -227,8 +228,7 @@ public class RocketBeanPostProcessor implements BeanPostProcessor, SmartInitiali
                 }
                 Class[] parameters = method.getParameterTypes();
                 Assert.isTrue(parameters != null && parameters.length > 0,
-                        method.toString() + " 消费方法必须有形参");
-
+                        ClassUtils.getQualifiedMethodName(method) + " 消费方法必须有形参");
             });
 
 
@@ -271,7 +271,17 @@ public class RocketBeanPostProcessor implements BeanPostProcessor, SmartInitiali
 
 
     @Data
-    @EqualsAndHashCode
+    @AllArgsConstructor
+    private static class TopicGroupKey {
+
+        private String topic;
+
+        private String group;
+
+    }
+
+
+    @Data
     private static class SameRocketEndpointKey {
 
         private boolean orderly;
@@ -294,6 +304,7 @@ public class RocketBeanPostProcessor implements BeanPostProcessor, SmartInitiali
 
         private MessageModel messageModel;
 
+        private BatchHandlerModel batchHandlerModel;
 
     }
 

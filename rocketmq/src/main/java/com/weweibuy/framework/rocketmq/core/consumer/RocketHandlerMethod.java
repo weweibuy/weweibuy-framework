@@ -84,7 +84,8 @@ public class RocketHandlerMethod {
         Class<?> parameterType = parameter.getParameterType();
 
         // 单个消费 参数类型为 MessageExt
-        if (batchMaxSize == 1 && parameterType.isInstance(message)) {
+        if ((batchMaxSize == 1 || BatchHandlerModel.FOREACH.equals(batchHandlerModel))
+                && parameterType.isInstance(message)) {
             return message;
         }
 

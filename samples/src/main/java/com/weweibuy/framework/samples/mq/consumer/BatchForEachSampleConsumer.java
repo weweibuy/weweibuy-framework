@@ -7,7 +7,10 @@ import com.weweibuy.framework.rocketmq.annotation.RocketListener;
 import com.weweibuy.framework.samples.message.SampleDog;
 import com.weweibuy.framework.samples.message.SampleUser;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.rocketmq.common.message.MessageExt;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 /**
  * 批量消息迭代消费
@@ -26,5 +29,9 @@ public class BatchForEachSampleConsumer {
         log.info("收到消息: {}", user);
     }
 
+    @RocketConsumerHandler(tags = "DDD", batchHandlerModel = BatchHandlerModel.FOREACH)
+    public void onMessage2(@Payload SampleUser<SampleDog> user, MessageExt messageExt, List<MessageExt> messageExtList) {
+        log.info("收到消息: {}", user);
+    }
 
 }

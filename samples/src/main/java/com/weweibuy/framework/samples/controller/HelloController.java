@@ -107,7 +107,7 @@ public class HelloController {
 
 
     @GetMapping("/hello-batch-foreach")
-    public String helloBatchForeach(String msg) {
+    public String helloBatchForeach(String msg, String tag) {
         SampleUser user = user(msg);
         user.setSampleDog(dog());
         SampleUser user1 = user(msg + "QQQ");
@@ -119,7 +119,7 @@ public class HelloController {
         list.add(user1);
         list.add(user1);
         list.add(user1);
-        batchSampleProvider2.sendBatch(list);
+        batchSampleProvider2.sendBatch(list, tag);
         return "hello";
     }
 
