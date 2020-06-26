@@ -8,15 +8,8 @@ import org.apache.rocketmq.client.consumer.listener.ConsumeOrderlyStatus;
  **/
 public class OrderlyRocketMessageListener extends AbstractRocketMessageListener<ConsumeOrderlyStatus> {
 
-    public OrderlyRocketMessageListener(Integer batchSize, String tags, RocketListenerErrorHandler errorHandler,
-                                        RocketHandlerMethod handlerMethod) {
-        super(batchSize, tags, errorHandler, handlerMethod);
-    }
-
-
-    @Override
-    protected boolean isOrderly() {
-        return true;
+    public OrderlyRocketMessageListener(MethodRocketListenerEndpoint endpoint, RocketHandlerMethod handlerMethod) {
+        super(endpoint, handlerMethod);
     }
 
     @Override

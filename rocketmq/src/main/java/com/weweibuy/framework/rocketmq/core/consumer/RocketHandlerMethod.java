@@ -116,17 +116,26 @@ public class RocketHandlerMethod {
      * @param args
      * @return
      */
-    private Object doInvoke(Object[] args) throws InvocationTargetException {
+    private Object doInvoke(Object[] args) throws Exception {
         ReflectionUtils.makeAccessible(bridgedMethod);
         try {
             return bridgedMethod.invoke(bean, args);
         } catch (IllegalAccessException e) {
             throw new IllegalStateException(e);
+        } catch (InvocationTargetException e) {
+            Throwable targetException = e.getTargetException();
+            if (targetException instanceof Exception) {
+                throw (Exception) targetException;
+            } else if (targetException instanceof Error) {
+                throw (Error) targetException;
+            } else {
+                throw new IllegalStateException(targetException);
+            }
         }
     }
 
 
-    public Object invoke(Object message, Object... providedArgs) throws InvocationTargetException {
+    public Object invoke(Object message, Object... providedArgs) throws Exception {
 
         Object[] args = getMethodArgumentValues(message, providedArgs);
         return doInvoke(args);

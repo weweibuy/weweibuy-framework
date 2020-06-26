@@ -2,6 +2,7 @@ package com.weweibuy.framework.rocketmq.support.consumer;
 
 import com.weweibuy.framework.rocketmq.core.consumer.ConsumerFilter;
 import com.weweibuy.framework.rocketmq.core.consumer.MessageConsumerFilterChain;
+import com.weweibuy.framework.rocketmq.support.RocketMqLogger;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.common.message.MessageExt;
 
@@ -21,30 +22,24 @@ public class LogMessageConsumerFilter implements ConsumerFilter {
         try {
             result = chain.doFilter(messageExtList, originContext);
         } finally {
-            log(messageExtList, result);
+            log(messageExtList, originContext, result);
         }
         return result;
 
     }
 
-    private void log(List<MessageExt> messageExtList, Object result) {
-
+    private void log(List<MessageExt> messageExtList, Object originContext, Object result) {
         if (messageExtList.size() == 1) {
-            doLog(messageExtList.get(0), result);
+            doLog(messageExtList.get(0), originContext, result);
         } else {
             messageExtList.stream()
-                    .forEach(m -> doLog(m, result));
+                    .forEach(m -> doLog(m, originContext, result));
         }
 
     }
 
-    private void doLog(MessageExt messageExt, Object result) {
-        log.info("消费MQ消息: Topic:【{}】, Tag:【{}】, Key:【{}】, Body: {}, 消费结果: {}",
-                messageExt.getTopic(),
-                messageExt.getTags(),
-                messageExt.getKeys(),
-                new String(messageExt.getBody()),
-                result);
+    private void doLog(MessageExt messageExt, Object originContext, Object result) {
+        RocketMqLogger.logConsumerMessage(messageExt, originContext, result);
     }
 
 

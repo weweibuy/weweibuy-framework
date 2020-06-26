@@ -4,9 +4,8 @@ import com.weweibuy.framework.common.core.support.ObjectWrapper;
 import com.weweibuy.framework.rocketmq.core.producer.MessageSendContext;
 import com.weweibuy.framework.rocketmq.core.producer.MessageSendFilter;
 import com.weweibuy.framework.rocketmq.core.producer.MessageSendFilterChain;
+import com.weweibuy.framework.rocketmq.support.RocketMqLogger;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.rocketmq.client.producer.SendResult;
 import org.apache.rocketmq.common.message.Message;
 
 import java.util.Collection;
@@ -43,30 +42,8 @@ public class LogMessageSendFilter implements MessageSendFilter {
         return result;
     }
 
-
     private void doLog(MessageSendContext context, Message message, Object sendResult) {
-        log.info("MQ消息 Topic:【{}】, Tag:【{}】, Key:【{}】, Body: {}, 发送结果: {}",
-                message.getTopic(),
-                message.getTags(),
-                message.getKeys(),
-                new String(message.getBody()),
-                sendResult(context, sendResult));
-    }
-
-    private String sendResult(MessageSendContext context, Object sendResult) {
-
-        if (sendResult == null) {
-            if (MessageSendContext.SendModel.shouldHasResult(context.getSendModel())) {
-                return "已发送";
-            } else {
-                return "null";
-            }
-        }
-        if (sendResult instanceof SendResult) {
-            return ((SendResult) sendResult).getSendStatus().toString();
-        }
-        return StringUtils.EMPTY;
-
+        RocketMqLogger.logProducerMessage(context, message, sendResult);
     }
 
 

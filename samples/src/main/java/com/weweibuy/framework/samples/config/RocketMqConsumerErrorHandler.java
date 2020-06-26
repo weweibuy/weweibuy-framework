@@ -14,7 +14,7 @@ public class RocketMqConsumerErrorHandler implements RocketListenerErrorHandler 
 
 
     @Override
-    public boolean handlerException(Exception e, Object messageObject, Boolean orderly) {
+    public boolean handlerException(Exception e, Object messageObject, Object context) {
         if (messageObject instanceof MessageExt) {
             MessageExt messageExt = (MessageExt) messageObject;
             log.warn("消费MQ消息: Topic:【{}】, Tag:【{}】, Key:【{}】 Body: 【{}】, 出现异常: ",
