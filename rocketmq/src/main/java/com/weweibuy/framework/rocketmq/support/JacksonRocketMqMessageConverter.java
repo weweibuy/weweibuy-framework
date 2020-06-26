@@ -50,7 +50,8 @@ public class JacksonRocketMqMessageConverter implements MessageConverter {
         return javaTypeMap.computeIfAbsent(parameter, p -> {
             Type parameterType = p.getNestedGenericParameterType();
 
-            Type arg = null;
+            // 没有泛型就转Map
+            Type arg = Map.class;
             if (parameterType instanceof ParameterizedType) {
                 Type[] args = ((ParameterizedType) parameterType).getActualTypeArguments();
                 arg = args[0];
