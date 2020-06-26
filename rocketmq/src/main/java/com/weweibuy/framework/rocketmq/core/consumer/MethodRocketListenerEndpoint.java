@@ -76,9 +76,9 @@ public class MethodRocketListenerEndpoint {
 
     private RocketMessageListener createListener(RocketHandlerMethod handlerMethod) {
         if (orderly) {
-            return new OrderlyRocketMessageListener(consumeMessageBatchMaxSize, tags, errorHandler, handlerMethod);
+            return new OrderlyRocketMessageListener(this, handlerMethod);
         }
-        return new ConcurrentRocketMessageListener(consumeMessageBatchMaxSize, tags, errorHandler, handlerMethod);
+        return new ConcurrentRocketMessageListener(this, handlerMethod);
     }
 
 }

@@ -1,5 +1,6 @@
 package com.weweibuy.framework.rocketmq.core.consumer;
 
+import com.weweibuy.framework.rocketmq.support.RocketMqLogger;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.common.message.MessageExt;
 
@@ -23,13 +24,11 @@ public abstract class AbstractRocketMessageListener<R> implements RocketMessageL
 
     private RocketHandlerMethod rocketHandlerMethod;
 
-    public AbstractRocketMessageListener(Integer batchSize, String tags,
-                                         RocketListenerErrorHandler errorHandler,
-                                         RocketHandlerMethod rocketHandlerMethod) {
-        this.batchSize = batchSize;
-        this.errorHandler = errorHandler;
-        this.rocketHandlerMethod = rocketHandlerMethod;
-        this.tags = tags;
+    public AbstractRocketMessageListener(MethodRocketListenerEndpoint endpoint, RocketHandlerMethod handlerMethod) {
+        this.batchSize = endpoint.getConsumeMessageBatchMaxSize();
+        this.errorHandler = endpoint.getErrorHandler();
+        this.rocketHandlerMethod = handlerMethod;
+        this.tags = endpoint.getTags();
     }
 
     @Override
@@ -44,19 +43,19 @@ public abstract class AbstractRocketMessageListener<R> implements RocketMessageL
         } catch (Exception e) {
             exception = e;
         }
-        return handlerException(exception, messageObject);
+        return handlerException(exception, messageObject, originContext);
     }
 
-    private R handlerException(Exception throwable, Object messageObject) {
+    private R handlerException(Exception throwable, Object messageObject, Object originContext) {
         if (errorHandler != null) {
-            if (errorHandler.handlerException(throwable, messageObject, isOrderly())) {
+            if (errorHandler.handlerException(throwable, messageObject, originContext)) {
                 return getSuccessReturnValue();
             }
         } else {
             if (messageObject instanceof Collection) {
-                logException((List) messageObject, throwable);
+                logException((List) messageObject, originContext, throwable);
             } else if (messageObject instanceof MessageExt) {
-                logException(Collections.singletonList((MessageExt) messageObject), throwable);
+                logException(Collections.singletonList((MessageExt) messageObject), originContext, throwable);
             } else {
                 log.warn("消费MQ消息: {}, 时异常: {}", messageObject, throwable);
             }
@@ -64,20 +63,8 @@ public abstract class AbstractRocketMessageListener<R> implements RocketMessageL
         return getFailReturnValue();
     }
 
-    private void logException(List<MessageExt> messageExtList, Exception e) {
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("消费MQ消息: ");
-        for (int i = 0; i < messageExtList.size(); i++) {
-            stringBuilder.append(" Topic:【").append(messageExtList.get(i).getTags()).append("】")
-                    .append(" Tag:【").append(messageExtList.get(i).getTags()).append("】")
-                    .append(" Key:【").append(messageExtList.get(i).getKeys()).append("】")
-                    .append(" Body:【").append(new String(messageExtList.get(i).getBody())).append("】");
-            if (i + 1 != messageExtList.size()) {
-                stringBuilder.append("\r\n");
-            }
-        }
-        stringBuilder.append("出现异常: ");
-        log.warn(stringBuilder.toString(), e);
+    private void logException(List<MessageExt> messageExtList, Object originContext, Exception e) {
+        RocketMqLogger.logConsumerException(messageExtList, originContext, e);
     }
 
     /**
@@ -119,8 +106,6 @@ public abstract class AbstractRocketMessageListener<R> implements RocketMessageL
      * @return
      */
     protected abstract R getFailReturnValue();
-
-    protected abstract boolean isOrderly();
 
 
 }

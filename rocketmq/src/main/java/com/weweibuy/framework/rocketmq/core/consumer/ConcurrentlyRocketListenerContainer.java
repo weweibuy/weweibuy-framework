@@ -1,6 +1,5 @@
 package com.weweibuy.framework.rocketmq.core.consumer;
 
-import com.weweibuy.framework.rocketmq.annotation.BatchHandlerModel;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
 import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyContext;
@@ -22,8 +21,8 @@ public class ConcurrentlyRocketListenerContainer extends AbstractRocketListenerC
 
     private MessageListener messageListener;
 
-    public ConcurrentlyRocketListenerContainer(DefaultMQPushConsumer mqPushConsumer, List<ConsumerFilter> filterList, Integer batchSize, BatchHandlerModel batchHandlerModel) {
-        super(mqPushConsumer, batchSize, batchHandlerModel, filterList, ConsumeConcurrentlyStatus.CONSUME_SUCCESS, ConsumeConcurrentlyStatus.RECONSUME_LATER);
+    public ConcurrentlyRocketListenerContainer(DefaultMQPushConsumer mqPushConsumer, MethodRocketListenerEndpoint endpoint) {
+        super(mqPushConsumer, endpoint, ConsumeConcurrentlyStatus.CONSUME_SUCCESS, ConsumeConcurrentlyStatus.RECONSUME_LATER);
     }
 
 

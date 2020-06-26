@@ -8,16 +8,10 @@ import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyStatus;
  **/
 public class ConcurrentRocketMessageListener extends AbstractRocketMessageListener<ConsumeConcurrentlyStatus> {
 
-    public ConcurrentRocketMessageListener(Integer batchSize, String tags, RocketListenerErrorHandler errorHandler,
-                                           RocketHandlerMethod handlerMethod) {
-        super(batchSize, tags, errorHandler, handlerMethod);
+    public ConcurrentRocketMessageListener(MethodRocketListenerEndpoint endpoint, RocketHandlerMethod handlerMethod) {
+        super(endpoint, handlerMethod);
     }
 
-
-    @Override
-    protected boolean isOrderly() {
-        return false;
-    }
 
     @Override
     protected ConsumeConcurrentlyStatus getSuccessReturnValue() {

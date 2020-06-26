@@ -38,17 +38,17 @@ public abstract class AbstractRocketListenerContainer<T, R> implements RocketLis
     private R fail;
 
     public AbstractRocketListenerContainer(DefaultMQPushConsumer mqPushConsumer,
-                                           Integer batchSize, BatchHandlerModel batchHandlerModel,
-                                           List<ConsumerFilter> messageSendFilterList, R success, R fail) {
+                                           MethodRocketListenerEndpoint endpoint, R success, R fail) {
         this.mqPushConsumer = mqPushConsumer;
         this.mqPushConsumer.setMessageListener(getMessageListener());
-        this.batchSize = batchSize;
-        this.batchHandlerModel = batchHandlerModel;
-        if (CollectionUtils.isEmpty(messageSendFilterList)) {
-            messageSendFilterList = Collections.emptyList();
+        this.batchSize = endpoint.getConsumeMessageBatchMaxSize();
+        this.batchHandlerModel = endpoint.getBatchHandlerModel();
+        if (CollectionUtils.isEmpty(endpoint.getConsumerFilterFilterList())) {
+            this.messageSendFilterList = Collections.emptyList();
+        } else {
+            this.messageSendFilterList = endpoint.getConsumerFilterFilterList().stream()
+                    .sorted(Comparator.comparing(ConsumerFilter::getOrder)).collect(Collectors.toList());
         }
-        this.messageSendFilterList = messageSendFilterList.stream()
-                .sorted(Comparator.comparing(ConsumerFilter::getOrder)).collect(Collectors.toList());
         this.fail = fail;
         this.success = success;
     }
@@ -110,6 +110,7 @@ public abstract class AbstractRocketListenerContainer<T, R> implements RocketLis
                 RocketMessageListener<R> rocketMessageListener = selectMessageListener(tags);
                 return checkListenerAndOnMessage(rocketMessageListener, messageExt, originContext);
             } else if (batchHandlerModel.equals(BatchHandlerModel.FOREACH)) {
+                // TODO 策略
                 boolean match = messageExtList.stream()
                         .map(m -> checkListenerAndOnMessage(selectMessageListener(m.getTags()), m, originContext))
                         .anyMatch(r -> !isSuccess(r));

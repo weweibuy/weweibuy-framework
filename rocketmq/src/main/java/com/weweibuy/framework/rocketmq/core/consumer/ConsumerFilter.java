@@ -16,7 +16,7 @@ public interface ConsumerFilter {
      * 过滤
      *
      * @param messageExtList MessageExt 或者 List<MessageExt>
-     * @param originContext ConsumeConcurrentlyContext or ConsumeOrderlyContext
+     * @param originContext  ConsumeConcurrentlyContext or ConsumeOrderlyContext
      * @param chain
      * @return
      */
