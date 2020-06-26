@@ -1,5 +1,6 @@
 package com.weweibuy.framework.rocketmq.core.consumer;
 
+import com.weweibuy.framework.rocketmq.annotation.BatchForEachConsumerFailPolicy;
 import com.weweibuy.framework.rocketmq.annotation.BatchHandlerModel;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
@@ -11,6 +12,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * 抽象监听容器
@@ -33,6 +35,8 @@ public abstract class AbstractRocketListenerContainer<T, R> implements RocketLis
 
     private BatchHandlerModel batchHandlerModel;
 
+    private BatchForEachConsumerFailPolicy batchForEachConsumerFailPolicy;
+
     private R success;
 
     private R fail;
@@ -43,6 +47,7 @@ public abstract class AbstractRocketListenerContainer<T, R> implements RocketLis
         this.mqPushConsumer.setMessageListener(getMessageListener());
         this.batchSize = endpoint.getConsumeMessageBatchMaxSize();
         this.batchHandlerModel = endpoint.getBatchHandlerModel();
+        this.batchForEachConsumerFailPolicy = endpoint.getBatchForEachConsumerFailPolicy();
         if (CollectionUtils.isEmpty(endpoint.getConsumerFilterFilterList())) {
             this.messageSendFilterList = Collections.emptyList();
         } else {
@@ -110,14 +115,16 @@ public abstract class AbstractRocketListenerContainer<T, R> implements RocketLis
                 RocketMessageListener<R> rocketMessageListener = selectMessageListener(tags);
                 return checkListenerAndOnMessage(rocketMessageListener, messageExt, originContext);
             } else if (batchHandlerModel.equals(BatchHandlerModel.FOREACH)) {
-                // TODO 策略
-                boolean match = messageExtList.stream()
-                        .map(m -> checkListenerAndOnMessage(selectMessageListener(m.getTags()), m, originContext))
-                        .anyMatch(r -> !isSuccess(r));
-                if (match) {
-                    return fail;
+                Stream<R> messageStream = messageExtList.stream()
+                        .map(m -> checkListenerAndOnMessage(selectMessageListener(m.getTags()), m, originContext));
+                boolean match = false;
+                if (BatchForEachConsumerFailPolicy.MATCH_FIRST_FAIL.equals(batchForEachConsumerFailPolicy)) {
+                    match = messageStream.anyMatch(r -> !isSuccess(r));
+                } else {
+                    match = messageStream.collect(Collectors.toSet()).stream()
+                            .anyMatch(r -> !isSuccess(r));
                 }
-                return success;
+                return match ? fail : success;
             } else {
                 // 批量一起消费
                 return checkListenerAndOnMessage(selectMessageListener(messageExtList), messageExtList, originContext);

@@ -1,6 +1,7 @@
 package com.weweibuy.framework.rocketmq.core.consumer;
 
 import com.weweibuy.framework.common.core.utils.SpringResourcesUtils;
+import com.weweibuy.framework.rocketmq.annotation.BatchForEachConsumerFailPolicy;
 import com.weweibuy.framework.rocketmq.annotation.BatchHandlerModel;
 import com.weweibuy.framework.rocketmq.annotation.RocketConsumerHandler;
 import com.weweibuy.framework.rocketmq.annotation.RocketListener;
@@ -96,7 +97,8 @@ public class RocketBeanPostProcessor implements BeanPostProcessor, SmartInitiali
         listenerEndpoint.setConsumeMessageBatchMaxSize(rocketListener.consumeMessageBatchMaxSize());
         listenerEndpoint.setErrorHandler(errorHandler);
         listenerEndpoint.setArgumentResolverComposite(argumentResolverComposite);
-        listenerEndpoint.setBatchHandlerModel(consumerHandler.batchHandlerModel());
+        listenerEndpoint.setBatchHandlerModel(rocketListener.batchHandlerModel());
+        listenerEndpoint.setBatchForEachConsumerFailPolicy(rocketListener.foreachFailPolicy());
 
         listenerEndpoint.setNameServer(rocketMqProperties.getNameServer());
         listenerEndpoint.setTags(consumerHandler.tags());
@@ -173,6 +175,7 @@ public class RocketBeanPostProcessor implements BeanPostProcessor, SmartInitiali
         // 注册容器
         rocketEndpointRegistrar.setEndpointList(endpointList);
         rocketEndpointRegistrar.registerListenerContainer();
+        // 启动容器
         rocketEndpointRegistrar.startUpAllContainer();
     }
 
@@ -305,6 +308,8 @@ public class RocketBeanPostProcessor implements BeanPostProcessor, SmartInitiali
         private MessageModel messageModel;
 
         private BatchHandlerModel batchHandlerModel;
+
+        private BatchForEachConsumerFailPolicy batchForEachConsumerFailPolicy;
 
     }
 

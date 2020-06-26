@@ -82,4 +82,18 @@ public @interface RocketListener {
      * @return
      */
     MessageModel messageModel() default MessageModel.CLUSTERING;
+
+    /**
+     * 批量处理模式
+     *
+     * @return
+     */
+    BatchHandlerModel batchHandlerModel() default BatchHandlerModel.FOREACH;
+
+    /**
+     * 批量迭代消费时失败处理策略
+     *
+     * @return
+     */
+    BatchForEachConsumerFailPolicy foreachFailPolicy() default BatchForEachConsumerFailPolicy.MATCH_FIRST_FAIL;
 }

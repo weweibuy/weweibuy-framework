@@ -1,6 +1,6 @@
 package com.weweibuy.framework.samples.mq.consumer;
 
-import com.weweibuy.framework.rocketmq.annotation.BatchHandlerModel;
+import com.weweibuy.framework.rocketmq.annotation.BatchForEachConsumerFailPolicy;
 import com.weweibuy.framework.rocketmq.annotation.Payload;
 import com.weweibuy.framework.rocketmq.annotation.RocketConsumerHandler;
 import com.weweibuy.framework.rocketmq.annotation.RocketListener;
@@ -20,16 +20,17 @@ import java.util.List;
  **/
 @Slf4j
 @Component
-@RocketListener(topic = "TEST_SAMPLE_BATCH_02", group = "TEST_SAMPLE_BATCH_02_C_GROUP", consumeMessageBatchMaxSize = 50)
+@RocketListener(topic = "TEST_SAMPLE_BATCH_02", group = "TEST_SAMPLE_BATCH_02_C_GROUP", consumeMessageBatchMaxSize = 50,
+        foreachFailPolicy = BatchForEachConsumerFailPolicy.CONTINUE_OTHERS)
 public class BatchForEachSampleConsumer {
 
 
-    @RocketConsumerHandler(tags = "AAA||BBB||CCC", batchHandlerModel = BatchHandlerModel.FOREACH)
+    @RocketConsumerHandler(tags = "AAA||BBB||CCC")
     public void onMessage(@Payload SampleUser<SampleDog> user) {
         log.info("收到消息: {}", user);
     }
 
-    @RocketConsumerHandler(tags = "DDD", batchHandlerModel = BatchHandlerModel.FOREACH)
+    @RocketConsumerHandler(tags = "DDD")
     public void onMessage2(@Payload SampleUser<SampleDog> user, MessageExt messageExt, List<MessageExt> messageExtList) {
         log.info("收到消息: {}", user);
     }
