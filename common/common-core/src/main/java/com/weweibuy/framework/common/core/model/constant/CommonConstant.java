@@ -33,6 +33,11 @@ public interface CommonConstant {
      */
     String UNDERLINE_STR = "_";
 
+    /**
+     * null  String
+     */
+    String NULL_STR = "null";
+
     public interface DateConstant {
 
         String TIME_OFFSET_ID = "+8";
