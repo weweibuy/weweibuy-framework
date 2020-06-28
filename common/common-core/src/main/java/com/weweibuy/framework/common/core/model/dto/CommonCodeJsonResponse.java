@@ -28,31 +28,31 @@ public class CommonCodeJsonResponse {
         return new CommonCodeJsonResponse(CommonHttpResponseEum.SUCCESS);
     }
 
-    public  static final CommonCodeJsonResponse unknownException() {
+    public static final CommonCodeJsonResponse unknownException() {
         return new CommonCodeJsonResponse(CommonHttpResponseEum.UNKNOWN_EXCEPTION);
     }
 
-    public  static  final CommonCodeJsonResponse requestLimit() {
+    public static final CommonCodeJsonResponse requestLimit() {
         return new CommonCodeJsonResponse(CommonHttpResponseEum.TOO_MANY_REQUESTS);
     }
 
-    public  static final CommonCodeJsonResponse badRequestParam() {
+    public static final CommonCodeJsonResponse badRequestParam() {
         return new CommonCodeJsonResponse(CommonHttpResponseEum.BAD_REQUEST_PARAM);
     }
 
-    public  static final CommonCodeJsonResponse unSupportedMediaType() {
+    public static final CommonCodeJsonResponse unSupportedMediaType() {
         return new CommonCodeJsonResponse(CommonHttpResponseEum.UNSUPPORTED_MEDIA_TYPE);
     }
 
-    public  static final CommonCodeJsonResponse badRequestParam(String msg) {
+    public static final CommonCodeJsonResponse badRequestParam(String msg) {
         return new CommonCodeJsonResponse(CommonHttpResponseEum.BAD_REQUEST_PARAM.getCode(), msg);
     }
 
-    public  static final CommonCodeJsonResponse badSystemRequestParam() {
+    public static final CommonCodeJsonResponse badSystemRequestParam() {
         return new CommonCodeJsonResponse(CommonHttpResponseEum.BAD_SYSTEM_REQUEST_PARAM);
     }
 
-    public  static final CommonCodeJsonResponse unauthorized() {
+    public static final CommonCodeJsonResponse unauthorized() {
         return new CommonCodeJsonResponse(CommonHttpResponseEum.UNAUTHORIZED);
     }
 
@@ -60,11 +60,11 @@ public class CommonCodeJsonResponse {
         return new CommonCodeJsonResponse(CommonHttpResponseEum.FORBIDDEN);
     }
 
-    public  static final CommonCodeJsonResponse response(String code, String msg) {
+    public static final CommonCodeJsonResponse response(String code, String msg) {
         return new CommonCodeJsonResponse(code, msg);
     }
 
-    public  static final CommonCodeJsonResponse response(ResponseCodeAndMsg responseCodeAndMsg) {
+    public static final CommonCodeJsonResponse response(ResponseCodeAndMsg responseCodeAndMsg) {
         return new CommonCodeJsonResponse(responseCodeAndMsg);
     }
 
