@@ -8,12 +8,13 @@ spring:
     url: jdbc:mysql://106.12.208.53:3306/webuy_learning?useUnicode=true&characterEncoding=UTF-8&allowMutiQueries=true
     username: user01
     password: ak402507979
+    hikari:
+      register-mbeans: true
   jackson:
     property-naming-strategy: SNAKE_CASE
   redis:
     host: 122.51.171.126
     password: ak402507979
-
 
 
 mybatis:

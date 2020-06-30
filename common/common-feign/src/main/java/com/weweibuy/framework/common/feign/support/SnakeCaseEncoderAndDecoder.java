@@ -25,7 +25,6 @@ public class SnakeCaseEncoderAndDecoder extends EncoderAndDecoder {
                     new MappingJackson2HttpMessageConverter(JackJsonUtils.getSnakeCaseMapper());
             HttpMessageConverters converters = new HttpMessageConverters(messageConverter);
             httpMessageConvertersObjectFactory = () -> converters;
-            return httpMessageConvertersObjectFactory;
         }
         return httpMessageConvertersObjectFactory;
     }
