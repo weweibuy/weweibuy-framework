@@ -24,18 +24,19 @@ public class MetricConfig {
                 8086, 2000, "java_metric",
                 "metric");
 
-        InfluxDbHttpSender influxDbHttpSender = new InfluxDbHttpSender("http", "106.12.208.53", 8086, "java_metric", "",
+        InfluxDbHttpSender influxDbHttpSender = new InfluxDbHttpSender(
+                "http", "106.12.208.53", 8086, "java_metric", "",
                 TimeUnit.MILLISECONDS);
 
         InfluxDbUdpSender influxDbUdpSender = new InfluxDbUdpSender("106.12.208.53",
                 8089, 2000, "java_metric",
-                "metric");
+                "");
 
         MetricRegistry metricRegistry = new MetricRegistry();
         InfluxDbReporter reporter = InfluxDbReporter.forRegistry(metricRegistry)
                 .convertRatesTo(TimeUnit.SECONDS)
                 .convertDurationsTo(TimeUnit.MILLISECONDS)
-                .build(influxDbUdpSender);
+                .build(influxDbHttpSender);
 
         reporter.start(10, TimeUnit.SECONDS);
         return metricRegistry;

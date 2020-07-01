@@ -16,6 +16,7 @@
         <module>compensate</module>
         <module>mybatis-plugin</module>
         <module>http-client</module>
+        <module>common/common-metric</module>
     </modules>
 
     <properties>
@@ -89,6 +90,12 @@
             <dependency>
                 <groupId>com.weweibuy.framework</groupId>
                 <artifactId>common-log</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.weweibuy.framework</groupId>
+                <artifactId>common-metric</artifactId>
                 <version>${project.version}</version>
             </dependency>
 

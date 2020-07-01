@@ -95,12 +95,11 @@
         </dependency>
 
         <dependency>
-            <groupId>io.dropwizard.metrics</groupId>
-            <artifactId>metrics-core</artifactId>
-            <version>4.1.9</version>
+            <groupId>com.weweibuy.framework</groupId>
+            <artifactId>common-metric</artifactId>
+            <version>${project.version}</version>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/com.izettle/dropwizard-metrics-influxdb -->
         <dependency>
             <groupId>com.izettle</groupId>
             <artifactId>dropwizard-metrics-influxdb</artifactId>
