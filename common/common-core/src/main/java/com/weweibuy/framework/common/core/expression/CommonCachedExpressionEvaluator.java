@@ -19,11 +19,11 @@ import java.util.concurrent.ConcurrentHashMap;
  **/
 public abstract class CommonCachedExpressionEvaluator extends CachedExpressionEvaluator {
 
-    private static final Map<ExpressionKey, Expression> bizIdExpressionCache = new ConcurrentHashMap<>();
+    private static final Map<ExpressionKey, Expression> expressionCache = new ConcurrentHashMap<>();
 
 
     public String evaluatorExpressionStr(@NonNull String expressionStr, Object target, Class clazz, Method method, Object[] args) {
-        Expression expression = getExpression(bizIdExpressionCache, new AnnotatedElementKey(method, target.getClass()), expressionStr);
+        Expression expression = getExpression(expressionCache, new AnnotatedElementKey(method, target.getClass()), expressionStr);
         Object value = expression.getValue(createEvaluationContext(target, clazz, method, args));
         return value.toString();
     }

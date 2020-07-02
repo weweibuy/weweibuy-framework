@@ -35,13 +35,13 @@ public class HttpLogger {
             return;
         }
         if (parameterMap != null && !parameterMap.isEmpty()) {
-            log.info("请求路径: {}, Method: {}, 参数: {} , Body:{}",
+            log.info("Http 请求路径: {}, Method: {}, 参数: {} , Body:{}",
                     path,
                     method,
                     HttpRequestUtils.parameterMapToString(parameterMap),
                     body);
         } else {
-            log.info("请求路径: {}, Method: {}, Body:  {}",
+            log.info("Http 请求路径: {}, Method: {}, Body:  {}",
                     path,
                     method,
                     body);
@@ -53,7 +53,7 @@ public class HttpLogger {
         if (!shouldLog(path)) {
             return;
         }
-        log.info("请求路径: {}, Method: {}, 参数: {}",
+        log.info("Http 请求路径: {}, Method: {}, 参数: {}",
                 request.getRequestURI(),
                 request.getMethod(),
                 HttpRequestUtils.parameterMapToString(request.getParameterMap()));
@@ -65,7 +65,7 @@ public class HttpLogger {
             return;
         }
         Long timestamp = HttpRequestUtils.getRequestAttribute(RequestContextHolder.getRequestAttributes(), CommonConstant.HttpServletConstant.REQUEST_TIMESTAMP);
-        log.info("响应数据: {}, 请求耗时: {}",
+        log.info("Http 响应数据: {}, 请求耗时: {}",
                 JackJsonUtils.write(body),
                 System.currentTimeMillis() - timestamp);
     }
