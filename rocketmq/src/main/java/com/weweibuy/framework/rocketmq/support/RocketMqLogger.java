@@ -27,7 +27,7 @@ public class RocketMqLogger {
      */
     public static void logConsumerException(List<MessageExt> list, Object originContext, Exception exception) {
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("消费MQ消息: ");
+        stringBuilder.append("RocketMQ 消费MQ消息: ");
         for (int i = 0; i < list.size(); i++) {
             stringBuilder.append(" Topic:【").append(list.get(i).getTags()).append("】")
                     .append(" Tag:【").append(list.get(i).getTags()).append("】")
@@ -49,7 +49,7 @@ public class RocketMqLogger {
      * @param sendResult
      */
     public static void logProducerMessage(MessageSendContext context, Message message, Object sendResult) {
-        log.info("MQ消息 Topic:【{}】, Tag:【{}】, Key:【{}】, Body: {}, 发送结果: {}",
+        log.info("RocketMQ 发送消息: Topic:【{}】, Tag:【{}】, Key:【{}】, Body: {}, 发送结果: {}",
                 message.getTopic(),
                 message.getTags(),
                 message.getKeys(),
@@ -79,7 +79,7 @@ public class RocketMqLogger {
      * @param result
      */
     public static void logConsumerMessage(MessageExt messageExt, Object originContext, Object result) {
-        log.info("消费MQ消息: Topic:【{}】, Tag:【{}】, Key:【{}】, Body: {}, 消费结果: {}",
+        log.info("RocketMQ 消费消息: Topic:【{}】, Tag:【{}】, Key:【{}】, Body: {}, 消费结果: {}",
                 messageExt.getTopic(),
                 messageExt.getTags(),
                 messageExt.getKeys(),
