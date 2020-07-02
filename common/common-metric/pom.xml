@@ -19,6 +19,11 @@
         </dependency>
 
         <dependency>
+            <groupId>com.zaxxer</groupId>
+            <artifactId>HikariCP</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>com.izettle</groupId>
             <artifactId>dropwizard-metrics-influxdb</artifactId>
             <version>1.3.2</version>
@@ -30,6 +35,12 @@
             </exclusions>
             <optional>true</optional>
         </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-autoconfigure</artifactId>
+        </dependency>
+
     </dependencies>
 
 </project>

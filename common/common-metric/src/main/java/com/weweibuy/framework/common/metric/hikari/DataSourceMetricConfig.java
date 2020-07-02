@@ -1,8 +1,9 @@
-package com.weweibuy.framework.samples.config;
+package com.weweibuy.framework.common.metric.hikari;
 
 import com.codahale.metrics.MetricRegistry;
 import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.context.annotation.Configuration;
 
 /**
@@ -10,6 +11,7 @@ import org.springframework.context.annotation.Configuration;
  * @date 2020/6/30 20:45
  **/
 @Configuration
+@ConditionalOnBean(HikariDataSource.class)
 public class DataSourceMetricConfig implements InitializingBean {
 
     private final HikariDataSource dataSource;
@@ -20,6 +22,7 @@ public class DataSourceMetricConfig implements InitializingBean {
         this.dataSource = dataSource;
         this.metricRegistry = metricRegistry;
     }
+
 
     @Override
     public void afterPropertiesSet() throws Exception {

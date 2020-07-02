@@ -1,12 +1,14 @@
-package com.weweibuy.framework.samples.config;
+package com.weweibuy.framework.common.metric;
 
 import com.codahale.metrics.MetricRegistry;
 import com.izettle.metrics.influxdb.InfluxDbHttpSender;
 import com.izettle.metrics.influxdb.InfluxDbReporter;
 import com.izettle.metrics.influxdb.InfluxDbTcpSender;
 import com.izettle.metrics.influxdb.InfluxDbUdpSender;
+import com.weweibuy.framework.common.metric.hikari.DataSourceMetricConfig;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 
 import java.util.concurrent.TimeUnit;
 
@@ -15,11 +17,12 @@ import java.util.concurrent.TimeUnit;
  * @date 2020/6/30 20:56
  **/
 @Configuration
+@Import(value = {DataSourceMetricConfig.class})
 public class MetricConfig {
 
     @Bean
     public MetricRegistry metricRegistry() throws Exception {
-
+        // TODO sender 优化
         InfluxDbTcpSender influxDbTcpSender = new InfluxDbTcpSender("106.12.208.53",
                 8086, 2000, "java_metric",
                 "metric");
