@@ -1,4 +1,4 @@
-package com.weweibuy.framework.common.log.utils;
+package com.weweibuy.framework.common.core.utils;
 
 import com.weweibuy.framework.common.core.exception.SystemException;
 import com.weweibuy.framework.common.core.model.constant.CommonConstant;
