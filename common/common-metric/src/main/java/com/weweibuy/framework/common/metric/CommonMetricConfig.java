@@ -18,7 +18,7 @@ import java.util.concurrent.TimeUnit;
  **/
 @Configuration
 @Import(value = {DataSourceMetricConfig.class})
-public class MetricConfig {
+public class CommonMetricConfig {
 
     @Bean
     public MetricRegistry metricRegistry() throws Exception {
