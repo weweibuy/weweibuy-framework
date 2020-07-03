@@ -2,8 +2,8 @@ package com.weweibuy.framework.common.mvc.advice;
 
 import com.weweibuy.framework.common.core.model.constant.CommonConstant;
 import com.weweibuy.framework.common.core.model.eum.CommonHttpResponseEum;
+import com.weweibuy.framework.common.core.utils.HttpRequestUtils;
 import com.weweibuy.framework.common.log.logger.HttpLogger;
-import com.weweibuy.framework.common.log.utils.HttpRequestUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.web.servlet.error.DefaultErrorAttributes;

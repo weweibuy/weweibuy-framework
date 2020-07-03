@@ -1,8 +1,8 @@
 package com.weweibuy.framework.common.log.logger;
 
 import com.weweibuy.framework.common.core.model.constant.CommonConstant;
+import com.weweibuy.framework.common.core.utils.HttpRequestUtils;
 import com.weweibuy.framework.common.core.utils.JackJsonUtils;
-import com.weweibuy.framework.common.log.utils.HttpRequestUtils;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,7 +28,9 @@ import java.util.Set;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class HttpLogger {
 
-    private static Set<String> disabledPath;
+    private static Set<String> patternDisabledPath;
+
+    private static Set<String> exactDisabledPath;
 
     public static void logForJsonRequest(String path, String method, Map<String, String[]> parameterMap, String body) {
         if (!shouldLog(path)) {
@@ -102,14 +104,18 @@ public class HttpLogger {
     }
 
     private static boolean shouldLog(String path) {
-        if (CollectionUtils.isEmpty(disabledPath)) {
-            return true;
+        if (CollectionUtils.isNotEmpty(exactDisabledPath) && (exactDisabledPath.contains(path))) {
+            return false;
         }
-        return !disabledPath.stream().anyMatch(p -> HttpRequestUtils.isMatchPath(p, path));
+        if (CollectionUtils.isEmpty(patternDisabledPath) && patternDisabledPath.stream().anyMatch(p -> HttpRequestUtils.isMatchPath(p, path))) {
+            return false;
+        }
+        return true;
     }
 
-    public static void setDisabledPath(Set<String> disabledPath) {
-        HttpLogger.disabledPath = disabledPath;
+    public static void configDisabledPath(Set<String> patternDisabledPath, Set<String> exactDisabledPath) {
+        HttpLogger.patternDisabledPath = patternDisabledPath;
+        HttpLogger.exactDisabledPath = exactDisabledPath;
     }
 
 }

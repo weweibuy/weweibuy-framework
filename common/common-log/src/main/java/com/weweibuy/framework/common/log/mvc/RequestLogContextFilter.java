@@ -1,10 +1,10 @@
 package com.weweibuy.framework.common.log.mvc;
 
 import com.weweibuy.framework.common.core.model.constant.CommonConstant;
+import com.weweibuy.framework.common.core.utils.HttpRequestUtils;
 import com.weweibuy.framework.common.log.desensitization.SensitizationMappingConfigurer;
 import com.weweibuy.framework.common.log.desensitization.SensitizationMappingOperator;
 import com.weweibuy.framework.common.log.logger.HttpLogger;
-import com.weweibuy.framework.common.log.utils.HttpRequestUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.annotation.Order;
