@@ -18,13 +18,24 @@ public class SensitizationMappingConfigurer {
 
     private List<MappingBuilder> sensitizationMappingBuilders = new ArrayList<>();
 
-
+    /**
+     * Http 脱敏配置
+     *
+     * @return
+     */
     public HttpSensitizationMapping.HttpSensitizationMappingBuilder http() {
         HttpSensitizationMapping.HttpSensitizationMappingBuilder builder = new HttpSensitizationMapping.HttpSensitizationMappingBuilder();
         this.sensitizationMappingBuilders.add(builder);
         return builder;
     }
 
+    // TODO 暂未实现
+
+    /**
+     * RocketMq 脱敏配置
+     *
+     * @return
+     */
     public RocketMqSensitizationMapping.RocketMqSensitizationMappingBuilder rocketMq() {
         RocketMqSensitizationMapping.RocketMqSensitizationMappingBuilder builder = new RocketMqSensitizationMapping.RocketMqSensitizationMappingBuilder();
         this.sensitizationMappingBuilders.add(builder);
@@ -69,6 +80,9 @@ public class SensitizationMappingConfigurer {
              */
             private Set<String> sensitizationField;
 
+            /**
+             * Logger 用于精确匹配
+             */
             private String logger;
 
             /**

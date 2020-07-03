@@ -14,6 +14,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 /**
  * @author durenhao
  * @date 2020/3/1 10:39
@@ -49,6 +53,13 @@ public class CommonLogConfig implements WebMvcConfigurer, InitializingBean {
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        HttpLogger.setDisabledPath(commonLogProperties.getHttp().getDisablePath());
+        Set<String> disablePath = commonLogProperties.getHttp().getDisablePath();
+        // 对规则匹配的进行分组
+        // true为匹配型 false为精确型
+        Map<Boolean, Set<String>> matchPathMap = disablePath.stream()
+                .collect(Collectors.groupingBy(s -> s.indexOf("*") != -1,
+                        Collectors.toSet()));
+
+        HttpLogger.configDisabledPath(matchPathMap.get(true), matchPathMap.get(false));
     }
 }

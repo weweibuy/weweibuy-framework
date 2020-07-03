@@ -1,7 +1,7 @@
 package com.weweibuy.framework.common.log.mvc;
 
+import com.weweibuy.framework.common.core.utils.HttpRequestUtils;
 import com.weweibuy.framework.common.log.logger.HttpLogger;
-import com.weweibuy.framework.common.log.utils.HttpRequestUtils;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.method.HandlerMethod;
