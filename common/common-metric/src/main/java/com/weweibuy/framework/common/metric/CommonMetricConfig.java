@@ -5,7 +5,8 @@ import com.izettle.metrics.influxdb.InfluxDbHttpSender;
 import com.izettle.metrics.influxdb.InfluxDbReporter;
 import com.izettle.metrics.influxdb.InfluxDbTcpSender;
 import com.izettle.metrics.influxdb.InfluxDbUdpSender;
-import com.weweibuy.framework.common.metric.hikari.DataSourceMetricConfig;
+import com.weweibuy.framework.common.metric.hikari.CommonDataSourceMetricConfig;
+import com.weweibuy.framework.common.metric.http.CommonHttpMetricConfig;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -17,7 +18,7 @@ import java.util.concurrent.TimeUnit;
  * @date 2020/6/30 20:56
  **/
 @Configuration
-@Import(value = {DataSourceMetricConfig.class})
+@Import(value = {CommonDataSourceMetricConfig.class, CommonHttpMetricConfig.class})
 public class CommonMetricConfig {
 
     @Bean

@@ -3,6 +3,7 @@ package com.weweibuy.framework.common.log.config;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -20,7 +21,7 @@ public class CommonLogProperties {
     @Data
     public static class CommonLogHttpProperties {
 
-        private Set<String> disablePath;
+        private Set<String> disablePath = new HashSet<>();
 
     }
 }
