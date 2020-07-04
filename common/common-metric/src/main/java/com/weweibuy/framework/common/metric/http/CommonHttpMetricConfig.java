@@ -1,6 +1,7 @@
 package com.weweibuy.framework.common.metric.http;
 
 import com.codahale.metrics.MetricRegistry;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
@@ -31,10 +32,12 @@ public class CommonHttpMetricConfig {
         if (commonHttpMetricConfigurers != null) {
             namePrefixOpt = commonHttpMetricConfigurers.stream()
                     .peek(c -> c.addPathNameMapping(pathNameMappingMap))
+                    .filter(c -> StringUtils.isNotBlank(c.configurerNamePrefix()))
                     .findFirst()
                     .map(CommonHttpMetricConfigurer::configurerNamePrefix);
         }
         String namePrefix = namePrefixOpt.orElse(environment.getProperty("spring.application.name"));
+        namePrefix = namePrefix + ".http";
         return new HttpMetricOperator(metricRegistry, namePrefix, pathNameMappingMap);
     }
 
