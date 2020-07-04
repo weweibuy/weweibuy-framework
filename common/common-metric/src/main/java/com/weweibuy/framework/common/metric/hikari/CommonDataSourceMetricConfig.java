@@ -4,6 +4,7 @@ import com.codahale.metrics.MetricRegistry;
 import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Configuration;
 
 /**
@@ -12,13 +13,14 @@ import org.springframework.context.annotation.Configuration;
  **/
 @Configuration
 @ConditionalOnBean(HikariDataSource.class)
-public class DataSourceMetricConfig implements InitializingBean {
+@ConditionalOnProperty(prefix = "common.metric.hikari", name = "enable", havingValue = "true", matchIfMissing = true)
+public class CommonDataSourceMetricConfig implements InitializingBean {
 
     private final HikariDataSource dataSource;
 
     private final MetricRegistry metricRegistry;
 
-    public DataSourceMetricConfig(HikariDataSource dataSource, MetricRegistry metricRegistry) {
+    public CommonDataSourceMetricConfig(HikariDataSource dataSource, MetricRegistry metricRegistry) {
         this.dataSource = dataSource;
         this.metricRegistry = metricRegistry;
     }

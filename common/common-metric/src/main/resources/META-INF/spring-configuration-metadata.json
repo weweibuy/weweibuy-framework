@@ -1,0 +1,30 @@
+{
+  "groups": [
+    {
+      "name": "common.metric.http",
+      "type": "com.weweibuy.framework.common.metric.http.HttpMetricProperties",
+      "sourceType": "com.weweibuy.framework.common.metric.http.CommonHttpMetricConfig"
+    },
+    {
+      "name": "common.metric.hikari",
+      "type": "com.weweibuy.framework.common.metric.hikari.CommonDataSourceMetricConfig",
+      "sourceType": "com.weweibuy.framework.common.metric.hikari.CommonDataSourceMetricConfig"
+    }
+  ],
+  "properties": [
+    {
+      "name": "common.metric.http.enable",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.weweibuy.framework.common.metric.http.CommonHttpMetricConfig",
+      "defaultValue":true
+    },
+    {
+      "name": "common.metric.hikari.enable",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.weweibuy.framework.common.metric.hikari.CommonDataSourceMetricConfig",
+      "defaultValue":true
+    }
+
+  ],
+  "hints": []
+}

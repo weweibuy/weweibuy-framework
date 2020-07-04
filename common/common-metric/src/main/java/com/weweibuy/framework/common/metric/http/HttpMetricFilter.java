@@ -1,7 +1,5 @@
 package com.weweibuy.framework.common.metric.http;
 
-import com.codahale.metrics.MetricRegistry;
-import com.codahale.metrics.Timer;
 import org.springframework.core.annotation.Order;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -10,11 +8,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Collections;
-import java.util.Map;
-import java.util.Optional;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 /**
  * @author durenhao
@@ -23,28 +19,14 @@ import java.util.stream.Collectors;
 @Order(-100)
 public class HttpMetricFilter extends OncePerRequestFilter {
 
-    private final MetricRegistry metricRegistry;
+    private static final ThreadPoolExecutor EXECUTOR = new ThreadPoolExecutor(1, 1,
+            0L, TimeUnit.MILLISECONDS,
+            new LinkedBlockingQueue<Runnable>(5000), new ThreadPoolExecutor.DiscardPolicy());
 
-    private Map<String, String> patternPath;
+    private final HttpMetricOperator httpMetricOperator;
 
-    private Map<String, String> exactPath;
-
-    private final Timer rtTimer;
-
-    public HttpMetricFilter(MetricRegistry metricRegistry, HttpMetricProperties httpMetricProperties) {
-        this.metricRegistry = metricRegistry;
-        init(httpMetricProperties);
-        this.rtTimer = metricRegistry.timer(MetricRegistry.name("poolName", "METRIC_CATEGORY", "METRIC_NAME_WAIT"));
-    }
-
-    private void init(HttpMetricProperties properties) {
-        Map<Boolean, Map<String, String>> mapMap = properties.getPathMapping().entrySet().stream()
-                .collect(Collectors.groupingBy(e -> e.getKey().indexOf("*") != -1,
-                        Collectors.toMap(e -> e.getKey(), e -> e.getValue())));
-        patternPath = Optional.ofNullable(mapMap.get(true))
-                .orElse(Collections.emptyMap());
-        exactPath = Optional.ofNullable(mapMap.get(false))
-                .orElse(Collections.emptyMap());
+    public HttpMetricFilter(HttpMetricOperator httpMetricOperator) {
+        this.httpMetricOperator = httpMetricOperator;
     }
 
 
@@ -52,12 +34,12 @@ public class HttpMetricFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
         String requestURI = request.getRequestURI();
-
-        long startTime = System.currentTimeMillis();
+        String method = request.getMethod();
+        long startTime = System.nanoTime();
         try {
             filterChain.doFilter(request, response);
         } finally {
-            rtTimer.update(System.currentTimeMillis() - startTime, TimeUnit.MILLISECONDS);
+            EXECUTOR.execute(() -> httpMetricOperator.onRequestMetric(requestURI, method, startTime, response.getStatus()));
         }
 
     }

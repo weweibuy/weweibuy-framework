@@ -107,7 +107,7 @@ public class HttpLogger {
         if (CollectionUtils.isNotEmpty(exactDisabledPath) && (exactDisabledPath.contains(path))) {
             return false;
         }
-        if (CollectionUtils.isEmpty(patternDisabledPath) && patternDisabledPath.stream().anyMatch(p -> HttpRequestUtils.isMatchPath(p, path))) {
+        if (CollectionUtils.isNotEmpty(patternDisabledPath) && patternDisabledPath.stream().anyMatch(p -> HttpRequestUtils.isMatchPath(p, path))) {
             return false;
         }
         return true;
