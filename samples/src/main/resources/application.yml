@@ -83,3 +83,9 @@ feign:
 #      myFeignClient2:
 #        connect-timeout: 2000
 #        readTimeout: 5000
+common:
+  metric:
+    influx:
+      host: 106.12.208.53:8086
+      database: java_metric
+
