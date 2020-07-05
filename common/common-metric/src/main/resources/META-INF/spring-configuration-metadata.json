@@ -9,6 +9,11 @@
       "name": "common.metric.hikari",
       "type": "com.weweibuy.framework.common.metric.hikari.CommonDataSourceMetricConfig",
       "sourceType": "com.weweibuy.framework.common.metric.hikari.CommonDataSourceMetricConfig"
+    },
+    {
+      "name": "common.metric.influx",
+      "type": "com.weweibuy.framework.common.metric.MetricInfluxDbProperties",
+      "sourceType": "com.weweibuy.framework.common.metric.MetricInfluxDbProperties"
     }
   ],
   "properties": [
@@ -23,6 +28,36 @@
       "type": "java.lang.Boolean",
       "sourceType": "com.weweibuy.framework.common.metric.hikari.CommonDataSourceMetricConfig",
       "defaultValue":true
+    },
+    {
+      "name": "common.metric.influx.host",
+      "type": "java.lang.String",
+      "sourceType": "com.weweibuy.framework.common.metric.MetricInfluxDbProperties"
+    },
+    {
+      "name": "common.metric.influx.database",
+      "type": "java.lang.String",
+      "sourceType": "com.weweibuy.framework.common.metric.MetricInfluxDbProperties"
+    },
+    {
+      "name": "common.metric.influx.authString",
+      "type": "java.lang.String",
+      "sourceType": "com.weweibuy.framework.common.metric.MetricInfluxDbProperties"
+    },
+    {
+      "name": "common.metric.influx.connectionTimeout",
+      "type": "java.lang.Integer",
+      "sourceType": "com.weweibuy.framework.common.metric.MetricInfluxDbProperties"
+    },
+    {
+      "name": "common.metric.influx.socketTimeout",
+      "type": "java.lang.Integer",
+      "sourceType": "com.weweibuy.framework.common.metric.MetricInfluxDbProperties"
+    },
+    {
+      "name": "common.metric.influx.timePrecision",
+      "type": "java.util.concurrent.TimeUnit",
+      "sourceType": "com.weweibuy.framework.common.metric.MetricInfluxDbProperties"
     }
 
   ],

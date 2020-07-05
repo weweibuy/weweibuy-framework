@@ -1,11 +1,12 @@
 package com.weweibuy.framework.common.metric;
 
 import com.codahale.metrics.MetricRegistry;
-import com.izettle.metrics.influxdb.InfluxDbHttpSender;
 import com.izettle.metrics.influxdb.InfluxDbReporter;
 import com.weweibuy.framework.common.metric.hikari.CommonDataSourceMetricConfig;
 import com.weweibuy.framework.common.metric.http.CommonHttpMetricConfig;
+import com.weweibuy.framework.common.metric.influxdb.InfluxDbHttpClientSender;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -35,6 +36,9 @@ public class CommonMetricConfig {
     @Autowired
     private MetricInfluxDbProperties metricInfluxDbProperties;
 
+    @Autowired
+    private CloseableHttpClient closeableHttpClient;
+
     @Bean
     public MetricRegistry metricRegistry(Environment environment) throws Exception {
         MetricRegistry metricRegistry = new MetricRegistry();
@@ -44,10 +48,7 @@ public class CommonMetricConfig {
 
 
     private void startReporter(MetricRegistry metricRegistry) throws Exception {
-        InfluxDbHttpSender influxDbHttpSender = new InfluxDbHttpSender(
-                "http", "106.12.208.53", 8086, "java_metric", "",
-                TimeUnit.MILLISECONDS);
-
+        InfluxDbHttpClientSender httpClientSender = new InfluxDbHttpClientSender(metricInfluxDbProperties, closeableHttpClient);
 
         String hostName = InetAddress.getLocalHost().getHostName();
         InfluxDbReporter.Builder builder = InfluxDbReporter.forRegistry(metricRegistry)
@@ -65,7 +66,7 @@ public class CommonMetricConfig {
                     .tagsTransformer(transformerComposite);
         }
 
-        InfluxDbReporter reporter = builder.build(influxDbHttpSender);
+        InfluxDbReporter reporter = builder.build(httpClientSender);
         reporter.start(10, TimeUnit.SECONDS);
     }
 
