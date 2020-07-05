@@ -123,4 +123,24 @@ public class HttpRequestUtils {
         return ANT_PATH_MATCHER.match(pattern, path);
     }
 
+    /**
+     * 出去多余的 /
+     * @param path
+     * @return
+     */
+    public static String sanitizedPath(final String path) {
+        String sanitized = path;
+        while (true) {
+            int index = sanitized.indexOf("//");
+            if (index < 0) {
+                break;
+            }
+            else {
+                sanitized = sanitized.substring(0, index) + sanitized.substring(index + 1);
+            }
+        }
+        return sanitized;
+    }
+
+
 }

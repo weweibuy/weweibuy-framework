@@ -3,14 +3,21 @@ package com.weweibuy.framework.common.metric;
 import com.codahale.metrics.MetricRegistry;
 import com.izettle.metrics.influxdb.InfluxDbHttpSender;
 import com.izettle.metrics.influxdb.InfluxDbReporter;
-import com.izettle.metrics.influxdb.InfluxDbTcpSender;
-import com.izettle.metrics.influxdb.InfluxDbUdpSender;
 import com.weweibuy.framework.common.metric.hikari.CommonDataSourceMetricConfig;
 import com.weweibuy.framework.common.metric.http.CommonHttpMetricConfig;
+import org.apache.commons.collections4.CollectionUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.core.env.Environment;
 
+import java.net.InetAddress;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -19,30 +26,48 @@ import java.util.concurrent.TimeUnit;
  **/
 @Configuration
 @Import(value = {CommonDataSourceMetricConfig.class, CommonHttpMetricConfig.class})
+@EnableConfigurationProperties(MetricInfluxDbProperties.class)
 public class CommonMetricConfig {
 
-    @Bean
-    public MetricRegistry metricRegistry() throws Exception {
-        // TODO sender 优化
-        InfluxDbTcpSender influxDbTcpSender = new InfluxDbTcpSender("106.12.208.53",
-                8086, 2000, "java_metric",
-                "metric");
+    @Autowired(required = false)
+    private List<MeasurementMappingConfigurer> measurementMappingConfigurerList;
 
+    @Autowired
+    private MetricInfluxDbProperties metricInfluxDbProperties;
+
+    @Bean
+    public MetricRegistry metricRegistry(Environment environment) throws Exception {
+        MetricRegistry metricRegistry = new MetricRegistry();
+        startReporter(metricRegistry);
+        return metricRegistry;
+    }
+
+
+    private void startReporter(MetricRegistry metricRegistry) throws Exception {
         InfluxDbHttpSender influxDbHttpSender = new InfluxDbHttpSender(
                 "http", "106.12.208.53", 8086, "java_metric", "",
                 TimeUnit.MILLISECONDS);
 
-        InfluxDbUdpSender influxDbUdpSender = new InfluxDbUdpSender("106.12.208.53",
-                8089, 2000, "java_metric",
-                "");
 
-        MetricRegistry metricRegistry = new MetricRegistry();
-        InfluxDbReporter reporter = InfluxDbReporter.forRegistry(metricRegistry)
+        String hostName = InetAddress.getLocalHost().getHostName();
+        InfluxDbReporter.Builder builder = InfluxDbReporter.forRegistry(metricRegistry)
                 .convertRatesTo(TimeUnit.SECONDS)
-                .convertDurationsTo(TimeUnit.MILLISECONDS)
-                .build(influxDbHttpSender);
+                .convertDurationsTo(TimeUnit.MILLISECONDS);
 
+        if (CollectionUtils.isNotEmpty(measurementMappingConfigurerList)) {
+            Map<String, String> measurementMapping = new HashMap<>();
+            TransformerComposite transformerComposite = new TransformerComposite();
+            transformerComposite.addTagTransformer(name -> Collections.singletonMap("server", hostName));
+            measurementMappingConfigurerList.stream()
+                    .peek(c -> c.configurerMeasurementMappings(measurementMapping))
+                    .forEach(c -> c.configurerTagTransformer(transformerComposite));
+            builder.measurementMappings(measurementMapping)
+                    .tagsTransformer(transformerComposite);
+        }
+
+        InfluxDbReporter reporter = builder.build(influxDbHttpSender);
         reporter.start(10, TimeUnit.SECONDS);
-        return metricRegistry;
     }
+
+
 }

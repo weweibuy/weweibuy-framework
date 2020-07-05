@@ -3,7 +3,7 @@ package com.weweibuy.framework.samples.metric;
 import com.weweibuy.framework.common.metric.http.CommonHttpMetricConfigurer;
 import org.springframework.stereotype.Component;
 
-import java.util.Map;
+import java.util.Set;
 
 /**
  * @author durenhao
@@ -13,7 +13,7 @@ import java.util.Map;
 public class SampleCommonHttpMetricConfigurer implements CommonHttpMetricConfigurer {
 
     @Override
-    public void addPathNameMapping(Map<String, String> pathNameMapping) {
-        pathNameMapping.put("/hello", "hello");
+    public void addMetricPath(Set<String> pathSet) {
+        pathSet.add("/hello");
     }
 }
