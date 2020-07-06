@@ -17,6 +17,8 @@ import java.util.Map;
 @Slf4j
 public class FeignLogger extends Logger {
 
+    private static final String EMPTY_BODY_STR = "Binary data";
+
     public static void logForRequest(String path, Map<String, Collection<String>> header, String body) {
         log.info("Feign 请求地址: {}, 请求头: {}, 请求数据: {}",
                 path,
@@ -41,10 +43,21 @@ public class FeignLogger extends Logger {
 
     @Override
     protected void logRequest(String configKey, Level logLevel, Request request) {
-        log.info("Feign 请求地址: {}, 请求头: {}, 请求数据: {}",
-                request.url(),
-                request.headers(),
-                request.requestBody().asString());
+        Request.HttpMethod httpMethod = request.httpMethod();
+        String bodyStr = request.requestBody().asString();
+        if(Request.HttpMethod.GET.equals(httpMethod) && EMPTY_BODY_STR.equals(bodyStr)){
+            log.info("Feign 请求地址: {}, Method: {},  Header: {} ",
+                    request.url(),
+                    httpMethod,
+                    request.headers());
+        }else {
+            log.info("Feign 请求地址: {}, Method: {}, 请求头: {}, Body: {}",
+                    request.url(),
+                    httpMethod,
+                    request.headers(),
+                    bodyStr);
+        }
+
     }
 
     @Override
