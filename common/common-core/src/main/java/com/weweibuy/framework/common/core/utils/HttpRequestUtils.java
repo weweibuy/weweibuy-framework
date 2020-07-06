@@ -1,7 +1,9 @@
 package com.weweibuy.framework.common.core.utils;
 
 import com.weweibuy.framework.common.core.exception.SystemException;
+import com.weweibuy.framework.common.core.model.ResponseCodeAndMsg;
 import com.weweibuy.framework.common.core.model.constant.CommonConstant;
+import com.weweibuy.framework.common.core.model.dto.CommonCodeJsonResponse;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
@@ -123,8 +125,21 @@ public class HttpRequestUtils {
         return ANT_PATH_MATCHER.match(pattern, path);
     }
 
+
+    /**
+     * 转为 Json 格式的Code msg 为 ResponseCodeAndMsg
+     *
+     * @param msgJsonStr
+     * @return
+     */
+    public static ResponseCodeAndMsg convertJsonStrToCodeAndMsg(String msgJsonStr) {
+        return JackJsonUtils.readValue(msgJsonStr, CommonCodeJsonResponse.class);
+    }
+
+
     /**
      * 出去多余的 /
+     *
      * @param path
      * @return
      */
@@ -134,8 +149,7 @@ public class HttpRequestUtils {
             int index = sanitized.indexOf("//");
             if (index < 0) {
                 break;
-            }
-            else {
+            } else {
                 sanitized = sanitized.substring(0, index) + sanitized.substring(index + 1);
             }
         }

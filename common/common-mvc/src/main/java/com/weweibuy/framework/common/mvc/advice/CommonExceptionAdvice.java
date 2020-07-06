@@ -2,10 +2,15 @@ package com.weweibuy.framework.common.mvc.advice;
 
 import com.weweibuy.framework.common.core.exception.BusinessException;
 import com.weweibuy.framework.common.core.exception.SystemException;
+import com.weweibuy.framework.common.core.model.ResponseCodeAndMsg;
 import com.weweibuy.framework.common.core.model.dto.CommonCodeJsonResponse;
+import com.weweibuy.framework.common.core.model.eum.CommonErrorCodeEum;
+import com.weweibuy.framework.common.core.model.eum.CommonHttpResponseEum;
 import com.weweibuy.framework.common.core.utils.HttpRequestUtils;
+import com.weweibuy.framework.common.feign.support.MethodKeyFeignException;
 import com.weweibuy.framework.common.log.logger.HttpLogger;
 import com.weweibuy.framework.idempotent.core.exception.IdempotentNoLockException;
+import feign.FeignException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -33,6 +38,9 @@ public class CommonExceptionAdvice {
     @Autowired(required = false)
     private UnknownExceptionHandler unknownExceptionHandler;
 
+    @Autowired(required = false)
+    private FeignExceptionHandler exceptionHandler;
+
     @ExceptionHandler(BusinessException.class)
     public ResponseEntity<CommonCodeJsonResponse> handler(HttpServletRequest request, BusinessException e) throws IOException {
         logForJsonRequest(request);
@@ -40,6 +48,38 @@ public class CommonExceptionAdvice {
         log.warn("业务异常: ", e);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(CommonCodeJsonResponse.response(e.getCodeAndMsg()));
     }
+
+    /**
+     * FeignException 处理
+     *
+     * @param request
+     * @param e
+     * @return
+     * @throws IOException
+     */
+    @ExceptionHandler(FeignException.class)
+    public ResponseEntity<CommonCodeJsonResponse> handler(HttpServletRequest request, FeignException e) throws IOException {
+        logForJsonRequest(request);
+
+        log.warn("调用外部接口异常: ", e);
+        Throwable cause = e.getCause();
+        if (cause instanceof IOException) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(CommonCodeJsonResponse.response(CommonErrorCodeEum.NETWORK_EXCEPTION));
+        }
+        if (exceptionHandler != null && e instanceof MethodKeyFeignException) {
+            return exceptionHandler.handlerException(request, (MethodKeyFeignException) e);
+        }
+
+        ResponseCodeAndMsg codeAndMsg = null;
+        if (e.status() < 500) {
+            codeAndMsg = CommonHttpResponseEum.REQUEST_EXCEPTION;
+        } else {
+            codeAndMsg = CommonHttpResponseEum.UNKNOWN_SERVER_EXCEPTION;
+        }
+
+        return ResponseEntity.status(e.status()).body(CommonCodeJsonResponse.response(codeAndMsg));
+    }
+
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<CommonCodeJsonResponse> handler(HttpServletRequest request, MethodArgumentNotValidException e) throws IOException {

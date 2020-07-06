@@ -4,6 +4,8 @@ package com.weweibuy.framework.common.core.exception;
 import com.weweibuy.framework.common.core.model.ResponseCodeAndMsg;
 import com.weweibuy.framework.common.core.model.eum.CommonErrorCodeEum;
 
+import static com.weweibuy.framework.common.core.utils.ResponseCodeUtils.newResponseCodeAndMsg;
+
 /**
  * 系统级别异常
  *
@@ -20,17 +22,17 @@ public class SystemException extends RuntimeException {
 
     public SystemException(String code, String msg) {
         super(msg);
-        this.codeAndMsg = Exceptions.newResponseCodeAndMsg(code, msg);
+        this.codeAndMsg = newResponseCodeAndMsg(code, msg);
     }
 
     public SystemException(String msg) {
         super(msg);
-        this.codeAndMsg = Exceptions.newResponseCodeAndMsg(CommonErrorCodeEum.UNKNOWN_EXCEPTION.getCode(), msg);
+        this.codeAndMsg = newResponseCodeAndMsg(CommonErrorCodeEum.UNKNOWN_EXCEPTION.getCode(), msg);
     }
 
     public SystemException(String msg, Throwable cause) {
         super(msg, cause);
-        this.codeAndMsg = Exceptions.newResponseCodeAndMsg(CommonErrorCodeEum.UNKNOWN_EXCEPTION.getCode(), msg);
+        this.codeAndMsg = newResponseCodeAndMsg(CommonErrorCodeEum.UNKNOWN_EXCEPTION.getCode(), msg);
     }
 
     public SystemException(ResponseCodeAndMsg codeAndMsg) {

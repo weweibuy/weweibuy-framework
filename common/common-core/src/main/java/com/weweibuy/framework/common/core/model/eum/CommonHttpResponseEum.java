@@ -13,11 +13,14 @@ public enum CommonHttpResponseEum implements ResponseCodeAndMsg {
 
     SUCCESS("200", "请求成功"),
     BAD_REQUEST_PARAM("400", "请求参数错误"),
+    REQUEST_EXCEPTION("400", "请求异常"),
+
     UNAUTHORIZED("401", "认证失败"),
     FORBIDDEN("403", "没有权限"),
     UNSUPPORTED_MEDIA_TYPE("415", "不支持的请求格式"),
     TOO_MANY_REQUESTS("429", "请求限流"),
     UNKNOWN_EXCEPTION("500", "系统异常"),
+    UNKNOWN_SERVER_EXCEPTION("500", "服务异常"),
 
     BAD_SYSTEM_REQUEST_PARAM("101010101", "系统级输入参数错误"),
     ;
