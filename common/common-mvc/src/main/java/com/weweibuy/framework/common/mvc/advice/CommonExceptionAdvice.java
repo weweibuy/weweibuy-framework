@@ -1,16 +1,10 @@
 package com.weweibuy.framework.common.mvc.advice;
 
 import com.weweibuy.framework.common.core.exception.BusinessException;
+import com.weweibuy.framework.common.core.exception.IdempotentNoLockException;
 import com.weweibuy.framework.common.core.exception.SystemException;
-import com.weweibuy.framework.common.core.model.ResponseCodeAndMsg;
 import com.weweibuy.framework.common.core.model.dto.CommonCodeJsonResponse;
-import com.weweibuy.framework.common.core.model.eum.CommonErrorCodeEum;
-import com.weweibuy.framework.common.core.model.eum.CommonHttpResponseEum;
-import com.weweibuy.framework.common.core.utils.HttpRequestUtils;
-import com.weweibuy.framework.common.feign.support.MethodKeyFeignException;
 import com.weweibuy.framework.common.log.logger.HttpLogger;
-import com.weweibuy.framework.idempotent.core.exception.IdempotentNoLockException;
-import feign.FeignException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -38,103 +32,133 @@ public class CommonExceptionAdvice {
     @Autowired(required = false)
     private UnknownExceptionHandler unknownExceptionHandler;
 
-    @Autowired(required = false)
-    private FeignExceptionHandler exceptionHandler;
-
-    @ExceptionHandler(BusinessException.class)
-    public ResponseEntity<CommonCodeJsonResponse> handler(HttpServletRequest request, BusinessException e) throws IOException {
-        logForJsonRequest(request);
-
-        log.warn("业务异常: ", e);
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(CommonCodeJsonResponse.response(e.getCodeAndMsg()));
-    }
 
     /**
-     * FeignException 处理
+     * 业务异常
      *
      * @param request
      * @param e
      * @return
      * @throws IOException
      */
-    @ExceptionHandler(FeignException.class)
-    public ResponseEntity<CommonCodeJsonResponse> handler(HttpServletRequest request, FeignException e) throws IOException {
-        logForJsonRequest(request);
+    @ExceptionHandler(BusinessException.class)
+    public ResponseEntity<CommonCodeJsonResponse> handler(HttpServletRequest request, BusinessException e) throws IOException {
+        HttpLogger.determineAndLogForJsonRequest(request);
 
-        log.warn("调用外部接口异常: ", e);
-        Throwable cause = e.getCause();
-        if (cause instanceof IOException) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(CommonCodeJsonResponse.response(CommonErrorCodeEum.NETWORK_EXCEPTION));
-        }
-        if (exceptionHandler != null && e instanceof MethodKeyFeignException) {
-            return exceptionHandler.handlerException(request, (MethodKeyFeignException) e);
-        }
-
-        ResponseCodeAndMsg codeAndMsg = null;
-        if (e.status() < 500) {
-            codeAndMsg = CommonHttpResponseEum.REQUEST_EXCEPTION;
-        } else {
-            codeAndMsg = CommonHttpResponseEum.UNKNOWN_SERVER_EXCEPTION;
-        }
-
-        return ResponseEntity.status(e.status()).body(CommonCodeJsonResponse.response(codeAndMsg));
+        log.warn("业务异常: ", e);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(CommonCodeJsonResponse.response(e.getCodeAndMsg()));
     }
 
 
+    /**
+     * 参数验证异常
+     *
+     * @param request
+     * @param e
+     * @return
+     * @throws IOException
+     */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<CommonCodeJsonResponse> handler(HttpServletRequest request, MethodArgumentNotValidException e) throws IOException {
-        logForJsonRequest(request);
+        HttpLogger.determineAndLogForJsonRequest(request);
 
         log.warn("输入参数错误: {}", e.getMessage());
         String defaultMessage = e.getBindingResult().getFieldError().getDefaultMessage();
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(CommonCodeJsonResponse.badRequestParam(defaultMessage));
     }
 
+    /**
+     * 参数验证异常
+     *
+     * @param request
+     * @param e
+     * @return
+     * @throws IOException
+     */
     @ExceptionHandler(BindException.class)
     public ResponseEntity<CommonCodeJsonResponse> handler(HttpServletRequest request, BindException e) throws IOException {
-        logForJsonRequest(request);
+        HttpLogger.determineAndLogForJsonRequest(request);
 
         log.warn("输入参数错误: {}", e.getMessage());
         String defaultMessage = e.getFieldError().getDefaultMessage();
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(CommonCodeJsonResponse.badRequestParam(defaultMessage));
     }
 
+    /**
+     * 无法读取请求报文
+     *
+     * @param request
+     * @param e
+     * @return
+     * @throws IOException
+     */
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<CommonCodeJsonResponse> handler(HttpServletRequest request, HttpMessageNotReadableException e) throws IOException {
-        logForJsonRequest(request);
+        HttpLogger.determineAndLogForJsonRequest(request);
 
         log.warn("输入参数格式错误: {}", e.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(CommonCodeJsonResponse.badRequestParam("输入参数格式错误"));
     }
 
-
+    /**
+     * 系统异常
+     *
+     * @param request
+     * @param e
+     * @return
+     * @throws IOException
+     */
     @ExceptionHandler(SystemException.class)
     public ResponseEntity<CommonCodeJsonResponse> handler(HttpServletRequest request, SystemException e) throws IOException {
-        logForJsonRequest(request);
+        HttpLogger.determineAndLogForJsonRequest(request);
 
         log.error("系统异常: ", e);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(CommonCodeJsonResponse.response(e.getCodeAndMsg()));
     }
 
+    /**
+     * 方法不支持
+     *
+     * @param request
+     * @param e
+     * @return
+     * @throws IOException
+     */
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public ResponseEntity<CommonCodeJsonResponse> handler(HttpServletRequest request, HttpRequestMethodNotSupportedException e) throws IOException {
-        logForJsonRequest(request);
+        HttpLogger.determineAndLogForJsonRequest(request);
 
         log.warn("请求 HttpMethod 错误: {}", e.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(CommonCodeJsonResponse.badRequestParam("请求HttpMethod错误"));
     }
 
+    /**
+     * 幂等异常
+     *
+     * @param request
+     * @param e
+     * @return
+     * @throws IOException
+     */
     @ExceptionHandler(IdempotentNoLockException.class)
     public ResponseEntity<CommonCodeJsonResponse> handler(HttpServletRequest request, IdempotentNoLockException e) throws IOException {
-        logForJsonRequest(request);
+        HttpLogger.determineAndLogForJsonRequest(request);
+
         log.warn("幂等异常: ", e.getMessage());
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(CommonCodeJsonResponse.requestLimit());
+        return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).body(CommonCodeJsonResponse.requestLimit());
     }
 
-
+    /**
+     * 未知异常
+     *
+     * @param request
+     * @param e
+     * @return
+     * @throws IOException
+     */
     @ExceptionHandler(Exception.class)
     public ResponseEntity<CommonCodeJsonResponse> handler(HttpServletRequest request, Exception e) throws IOException {
-        logForJsonRequest(request);
+        HttpLogger.determineAndLogForJsonRequest(request);
 
         if (unknownExceptionHandler != null) {
             return unknownExceptionHandler.handlerException(request, e);
@@ -143,10 +167,5 @@ public class CommonExceptionAdvice {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(CommonCodeJsonResponse.unknownException());
     }
 
-    private void logForJsonRequest(HttpServletRequest request) {
-        if (HttpRequestUtils.isJsonRequest(request.getContentType())) {
-            HttpLogger.logForJsonRequest(request, true);
-        }
-    }
 
 }

@@ -51,6 +51,7 @@
         <dependency>
             <groupId>com.weweibuy.framework</groupId>
             <artifactId>common-feign</artifactId>
+            <optional>true</optional>
         </dependency>
 
     </dependencies>

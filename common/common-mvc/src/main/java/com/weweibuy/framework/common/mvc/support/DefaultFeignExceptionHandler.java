@@ -1,10 +1,10 @@
 package com.weweibuy.framework.common.mvc.support;
 
+import com.weweibuy.framework.common.core.exception.MethodKeyFeignException;
 import com.weweibuy.framework.common.core.model.ResponseCodeAndMsg;
 import com.weweibuy.framework.common.core.model.dto.CommonCodeJsonResponse;
 import com.weweibuy.framework.common.core.model.eum.CommonHttpResponseEum;
 import com.weweibuy.framework.common.core.utils.HttpRequestUtils;
-import com.weweibuy.framework.common.feign.support.MethodKeyFeignException;
 import com.weweibuy.framework.common.mvc.advice.FeignExceptionHandler;
 import com.weweibuy.framework.common.mvc.advice.FeignMethodKeyMappingConverter;
 import lombok.extern.slf4j.Slf4j;

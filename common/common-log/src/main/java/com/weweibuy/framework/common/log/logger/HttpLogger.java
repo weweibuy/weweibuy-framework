@@ -77,6 +77,14 @@ public class HttpLogger {
         logForJsonRequest(requestAttributes, body);
     }
 
+
+    public static void determineAndLogForJsonRequest(HttpServletRequest request) {
+        if (HttpRequestUtils.isJsonRequest(request.getContentType())) {
+            logForJsonRequest(request, true);
+        }
+    }
+
+
     public static void logForJsonRequest(HttpServletRequest request, boolean useWrapper) {
         logForJsonRequest(request.getRequestURI(), request.getMethod(), request.getParameterMap(),
                 HttpRequestUtils.readRequestBodyForJson(request, useWrapper));

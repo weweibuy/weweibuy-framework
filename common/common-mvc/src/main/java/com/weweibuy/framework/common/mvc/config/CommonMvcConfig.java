@@ -7,9 +7,9 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.weweibuy.framework.common.core.model.constant.CommonConstant;
 import com.weweibuy.framework.common.mvc.advice.CommonErrorAttributes;
 import com.weweibuy.framework.common.mvc.advice.CommonExceptionAdvice;
+import com.weweibuy.framework.common.mvc.advice.FeignExceptionAdvice;
 import com.weweibuy.framework.common.mvc.advice.FeignMethodKeyMappingConverter;
 import com.weweibuy.framework.common.mvc.support.DefaultFeignExceptionHandler;
-import feign.Feign;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
@@ -32,10 +32,23 @@ public class CommonMvcConfig {
     @Autowired(required = false)
     private List<FeignMethodKeyMappingConverter> feignMethodKeyMappingConverterList;
 
+
+    /**
+     * 注意顺序必须在  {@link CommonMvcConfig#commonExceptionAdvice() 之前}
+     *
+     * @return
+     */
+    @Bean
+    @ConditionalOnClass(name = {"feign.Feign", "com.weweibuy.framework.common.core.exception.MethodKeyFeignException"})
+    public FeignExceptionAdvice feignExceptionAdvice() {
+        return new FeignExceptionAdvice();
+    }
+
     @Bean
     public CommonExceptionAdvice commonExceptionAdvice() {
         return new CommonExceptionAdvice();
     }
+
 
     @Bean
     @Primary
@@ -59,7 +72,7 @@ public class CommonMvcConfig {
     }
 
     @Bean
-    @ConditionalOnClass(value = Feign.class, name = "com.weweibuy.framework.common.feign.support.MethodKeyFeignException")
+    @ConditionalOnClass(name = {"feign.Feign", "com.weweibuy.framework.common.core.exception.MethodKeyFeignException"})
     public DefaultFeignExceptionHandler defaultFeignExceptionHandler() {
         return new DefaultFeignExceptionHandler(feignMethodKeyMappingConverterList);
     }

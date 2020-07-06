@@ -1,4 +1,4 @@
-package com.weweibuy.framework.common.feign.support;
+package com.weweibuy.framework.common.core.exception;
 
 import feign.Feign;
 import feign.FeignException;
@@ -12,7 +12,7 @@ public class MethodKeyFeignException extends FeignException {
 
     /**
      * 方法的key
-     * {@link Feign#configKey(java.lang.Class, java.lang.reflect.Method)}
+     * {@link Feign#configKey(Class, java.lang.reflect.Method)}
      */
     private String methodKey;
 

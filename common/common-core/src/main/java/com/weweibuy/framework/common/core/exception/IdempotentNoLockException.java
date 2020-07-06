@@ -1,4 +1,4 @@
-package com.weweibuy.framework.idempotent.core.exception;
+package com.weweibuy.framework.common.core.exception;
 
 /**
  * 幂等无法获取锁异常

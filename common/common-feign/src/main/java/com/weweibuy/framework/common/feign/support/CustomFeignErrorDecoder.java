@@ -1,5 +1,8 @@
 package com.weweibuy.framework.common.feign.support;
 
+import com.weweibuy.framework.common.core.exception.MethodKeyFeignClientException;
+import com.weweibuy.framework.common.core.exception.MethodKeyFeignException;
+import com.weweibuy.framework.common.core.exception.MethodKeyFeignServerException;
 import feign.FeignException;
 import feign.Response;
 import feign.Util;

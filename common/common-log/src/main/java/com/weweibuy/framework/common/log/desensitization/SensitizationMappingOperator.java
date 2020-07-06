@@ -29,11 +29,11 @@ public class SensitizationMappingOperator {
 
     private static final SensitizationMappingConfigurer CONFIGURER = new SensitizationMappingConfigurer();
 
-    private static List<SensitizationMappingConfigurer.HttpSensitizationMapping> httpPatternMappingList;
+    private static List<SensitizationMappingConfigurer.HttpSensitizationMapping> httpPatternMappingList = Collections.emptyList();
 
-    private static Map<String, SensitizationMappingConfigurer.HttpSensitizationMapping> httpExactMappingMap;
+    private static Map<String, SensitizationMappingConfigurer.HttpSensitizationMapping> httpExactMappingMap = Collections.emptyMap();
 
-    private static List<SensitizationMappingConfigurer.RocketMqSensitizationMapping> rocketMqMappingList;
+    private static List<SensitizationMappingConfigurer.RocketMqSensitizationMapping> rocketMqMappingList = Collections.emptyList();
 
     private static ConcurrentHashMap<String, Optional<SensitizationMappingConfigurer.RocketMqSensitizationMapping>> ROCKET_MQ_MAPPING_MAP = new ConcurrentHashMap<>(8);
 

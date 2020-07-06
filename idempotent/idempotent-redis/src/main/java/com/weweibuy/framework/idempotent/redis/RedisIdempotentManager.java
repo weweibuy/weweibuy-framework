@@ -1,6 +1,6 @@
 package com.weweibuy.framework.idempotent.redis;
 
-import com.weweibuy.framework.idempotent.core.exception.IdempotentNoLockException;
+import com.weweibuy.framework.common.core.exception.IdempotentNoLockException;
 import com.weweibuy.framework.idempotent.core.support.IdempotentInfo;
 import com.weweibuy.framework.idempotent.core.support.IdempotentManager;
 import org.apache.commons.lang3.StringUtils;

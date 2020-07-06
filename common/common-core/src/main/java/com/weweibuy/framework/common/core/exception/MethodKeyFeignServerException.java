@@ -1,4 +1,4 @@
-package com.weweibuy.framework.common.feign.support;
+package com.weweibuy.framework.common.core.exception;
 
 import feign.Request;
 
