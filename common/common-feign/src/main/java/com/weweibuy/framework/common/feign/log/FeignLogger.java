@@ -5,6 +5,7 @@ import feign.Request;
 import feign.Response;
 import feign.Util;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -27,7 +28,7 @@ public class FeignLogger extends Logger {
     }
 
     public static void logForResponse(Map<String, Collection<String>> header, String body, int status, long elapsedTime) {
-        log.info("Feign 响应status: {} , 响应头: {}, 响应数据: {}, 耗时: {}",
+        log.info("Feign 响应status: {} , Header: {}, Body: {}, 耗时: {}",
                 status,
                 header,
                 body,
@@ -45,19 +46,11 @@ public class FeignLogger extends Logger {
     protected void logRequest(String configKey, Level logLevel, Request request) {
         Request.HttpMethod httpMethod = request.httpMethod();
         String bodyStr = request.requestBody().asString();
-        if(Request.HttpMethod.GET.equals(httpMethod) && EMPTY_BODY_STR.equals(bodyStr)){
-            log.info("Feign 请求地址: {}, Method: {},  Header: {} ",
-                    request.url(),
-                    httpMethod,
-                    request.headers());
-        }else {
-            log.info("Feign 请求地址: {}, Method: {}, 请求头: {}, Body: {}",
-                    request.url(),
-                    httpMethod,
-                    request.headers(),
-                    bodyStr);
-        }
-
+        log.info("Feign 请求地址: {}, Method: {}, Header: {}, Body: {}",
+                request.url(),
+                httpMethod,
+                request.headers(),
+                EMPTY_BODY_STR.equals(bodyStr) ? StringUtils.EMPTY : bodyStr);
     }
 
     @Override
