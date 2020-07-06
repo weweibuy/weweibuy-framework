@@ -1,6 +1,7 @@
 package com.weweibuy.framework.common.feign.config;
 
 import com.weweibuy.framework.common.feign.log.FeignLogger;
+import com.weweibuy.framework.common.feign.support.CustomFeignErrorDecoder;
 import feign.Feign;
 import feign.Logger;
 import feign.Retryer;
@@ -29,14 +30,15 @@ public class CommonFeignConfig {
     @Bean
     @Scope("prototype")
     public Feign.Builder feignBuilder(Retryer retryer) {
-       return Feign.builder()
+        return Feign.builder()
                 .retryer(retryer)
-                .logLevel(Logger.Level.BASIC);
+                .logLevel(Logger.Level.BASIC)
+                .errorDecoder(new CustomFeignErrorDecoder());
     }
 
 
     @Bean
-    public FeignLogger feignLogger(){
+    public FeignLogger feignLogger() {
         return new FeignLogger();
     }
 

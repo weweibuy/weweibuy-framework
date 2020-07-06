@@ -22,4 +22,5 @@ public interface ResponseCodeAndMsg {
      */
     String getMsg();
 
+
 }

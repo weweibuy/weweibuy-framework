@@ -7,6 +7,11 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.weweibuy.framework.common.core.model.constant.CommonConstant;
 import com.weweibuy.framework.common.mvc.advice.CommonErrorAttributes;
 import com.weweibuy.framework.common.mvc.advice.CommonExceptionAdvice;
+import com.weweibuy.framework.common.mvc.advice.FeignMethodKeyMappingConverter;
+import com.weweibuy.framework.common.mvc.support.DefaultFeignExceptionHandler;
+import feign.Feign;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,14 +19,18 @@ import org.springframework.context.annotation.Primary;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * @author durenhao
  * @date 2020/3/2 17:53
  **/
 @Configuration
-public class CommonMvcConfig   {
+public class CommonMvcConfig {
 
+
+    @Autowired(required = false)
+    private List<FeignMethodKeyMappingConverter> feignMethodKeyMappingConverterList;
 
     @Bean
     public CommonExceptionAdvice commonExceptionAdvice() {
@@ -30,7 +39,7 @@ public class CommonMvcConfig   {
 
     @Bean
     @Primary
-    public CommonErrorAttributes commonErrorAttributes(){
+    public CommonErrorAttributes commonErrorAttributes() {
         return new CommonErrorAttributes();
     }
 
@@ -47,6 +56,12 @@ public class CommonMvcConfig   {
         return builder ->
                 builder.serializerByType(LocalDate.class, localDateSerializer())
                         .deserializerByType(LocalDate.class, localDateDeserializer());
+    }
+
+    @Bean
+    @ConditionalOnClass(value = Feign.class, name = "com.weweibuy.framework.common.feign.support.MethodKeyFeignException")
+    public DefaultFeignExceptionHandler defaultFeignExceptionHandler() {
+        return new DefaultFeignExceptionHandler(feignMethodKeyMappingConverterList);
     }
 
 

@@ -5,6 +5,8 @@ import com.weweibuy.framework.common.core.model.eum.CommonHttpResponseEum;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
+import static com.weweibuy.framework.common.core.utils.ResponseCodeUtils.newResponseCodeAndMsg;
+
 /**
  * @author durenhao
  * @date 2020/2/29 20:31
@@ -40,19 +42,7 @@ public class Exceptions {
         return new SystemException(CommonHttpResponseEum.UNKNOWN_EXCEPTION);
     }
 
-    static ResponseCodeAndMsg newResponseCodeAndMsg(String code, String msg) {
-        return new ResponseCodeAndMsg() {
-            @Override
-            public String getCode() {
-                return code;
-            }
 
-            @Override
-            public String getMsg() {
-                return msg;
-            }
-        };
-    }
 
 
 }

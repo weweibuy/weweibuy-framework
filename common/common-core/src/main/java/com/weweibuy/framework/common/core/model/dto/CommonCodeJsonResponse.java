@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class CommonCodeJsonResponse {
+public class CommonCodeJsonResponse implements ResponseCodeAndMsg{
 
     private String code;
 

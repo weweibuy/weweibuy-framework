@@ -17,7 +17,10 @@ public enum CommonErrorCodeEum implements ResponseCodeAndMsg {
 
     JSON_WRITE_EXCEPTION("100002", "Json序列化异常"),
 
-    UNKNOWN_EXCEPTION("999999", "Json数据解析异常"),
+    UNKNOWN_EXCEPTION("999999", "未知异常"),
+
+    NETWORK_EXCEPTION("999998", "网络超时"),
+
 
     ;
 
