@@ -1,7 +1,6 @@
 package com.weweibuy.framework.idempotent.core.annotation;
 
 import com.weweibuy.framework.idempotent.core.aspect.IdempotentAspect;
-import com.weweibuy.framework.idempotent.core.exception.IdempotentNoLockException;
 import com.weweibuy.framework.idempotent.core.support.IdempotentExpressionRootObject;
 import com.weweibuy.framework.idempotent.core.support.IdempotentManager;
 

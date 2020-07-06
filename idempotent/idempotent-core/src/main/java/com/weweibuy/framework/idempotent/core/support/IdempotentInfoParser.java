@@ -1,7 +1,7 @@
 package com.weweibuy.framework.idempotent.core.support;
 
+import com.weweibuy.framework.common.core.exception.IdempotentException;
 import com.weweibuy.framework.common.core.expression.CommonCachedExpressionEvaluator;
-import com.weweibuy.framework.idempotent.core.exception.IdempotentException;
 import org.aopalliance.intercept.MethodInvocation;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.Assert;

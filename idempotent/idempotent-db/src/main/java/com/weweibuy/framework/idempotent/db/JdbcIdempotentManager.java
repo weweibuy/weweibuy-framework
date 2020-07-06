@@ -1,7 +1,7 @@
 package com.weweibuy.framework.idempotent.db;
 
+import com.weweibuy.framework.common.core.exception.IdempotentException;
 import com.weweibuy.framework.common.core.utils.JackJsonUtils;
-import com.weweibuy.framework.idempotent.core.exception.IdempotentException;
 import com.weweibuy.framework.idempotent.core.support.IdempotentInfo;
 import com.weweibuy.framework.idempotent.core.support.IdempotentManager;
 import lombok.extern.slf4j.Slf4j;
