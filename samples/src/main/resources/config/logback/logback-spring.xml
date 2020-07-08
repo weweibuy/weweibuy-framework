@@ -14,7 +14,7 @@
 
     <!-- name的值是变量的名称，value的值时变量定义的值。通过定义的值会被插入到logger上下文中。定义后，可以使“${}”来使用变量。 -->
     <springProfile name="dev">
-        <property name="log.path" value="E:/logs/${app_name}/pmp" />
+        <property name="log.path" value="E:/logs/${app_name}" />
         <!-- 下面配置一些第三方包的日志过滤级别，用于避免刷屏 -->
         <logger name="c.n.d.shared" level="INFO" />
         <logger name="com.netflix.discovery" level="INFO" />
@@ -23,7 +23,7 @@
         <logger name="o.s.d.redis.core" level="INFO"/>
     </springProfile>
     <springProfile name="test">
-        <property name="log.path" value="/logs/${app_name}/pmp" />
+        <property name="log.path" value="/logs/${app_name}" />
         <!--<logger name="com.weweibuy.framework.samples.client" level="DEBUG"/>-->
         <logger name="com.weweibuy.framework.samples.mybatis.plugin.mapper" level="DEBUG"/>
     </springProfile>
@@ -59,9 +59,9 @@
 
     <!--2. 输出到文档-->
     <!-- 2.1 level为 DEBUG 日志，时间滚动输出  -->
-    <appender name="DEBUG_FILE" additivity="false" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <appender name="DEBUG_FILE"  class="ch.qos.logback.core.rolling.RollingFileAppender">
         <!-- 正在记录的日志文档的路径及文档名 -->
-        <file>${log.path}/web_debug.log</file>
+        <file>${log.path}/web-debug.log</file>
         <!--日志文档输出格式-->
         <encoder>
             <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n</pattern>
@@ -86,9 +86,9 @@
     </appender>
 
     <!-- 2.2 level为 INFO 日志，时间滚动输出  -->
-    <appender name="INFO_FILE"  additivity="false" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <appender name="INFO_FILE"  class="ch.qos.logback.core.rolling.RollingFileAppender">
         <!-- 正在记录的日志文档的路径及文档名 -->
-        <file>${log.path}/web_info.log</file>
+        <file>${log.path}/web-info.log</file>
         <!--日志文档输出格式-->
         <encoder>
             <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n</pattern>
@@ -113,9 +113,9 @@
     </appender>
 
     <!-- 2.3 level为 WARN 日志，时间滚动输出  -->
-    <appender name="WARN_FILE" additivity="false" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <appender name="WARN_FILE"  class="ch.qos.logback.core.rolling.RollingFileAppender">
         <!-- 正在记录的日志文档的路径及文档名 -->
-        <file>${log.path}/web_warn.log</file>
+        <file>${log.path}/web-warn.log</file>
         <!--日志文档输出格式-->
         <encoder>
             <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n</pattern>
@@ -139,9 +139,9 @@
     </appender>
 
     <!-- 2.4 level为 ERROR 日志，时间滚动输出  -->
-    <appender name="ERROR_FILE" additivity="false" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <appender name="ERROR_FILE"  class="ch.qos.logback.core.rolling.RollingFileAppender">
         <!-- 正在记录的日志文档的路径及文档名 -->
-        <file>${log.path}/web_error.log</file>
+        <file>${log.path}/web-error.log</file>
         <!--日志文档输出格式-->
         <encoder>
             <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n</pattern>
@@ -207,7 +207,7 @@
 
     <!--4.2 生产环境:输出到文档-->
     <springProfile name="test">
-        <root level="info">
+        <root level="info" >
             <appender-ref ref="CONSOLE" />
             <appender-ref ref="INFO_FILE" />
             <appender-ref ref="ERROR_FILE" />
@@ -216,7 +216,7 @@
     </springProfile>
 
     <springProfile name="pro">
-        <root level="info">
+        <root level="info" >
             <appender-ref ref="INFO_FILE" />
             <appender-ref ref="ERROR_FILE" />
             <appender-ref ref="WARN_FILE" />
