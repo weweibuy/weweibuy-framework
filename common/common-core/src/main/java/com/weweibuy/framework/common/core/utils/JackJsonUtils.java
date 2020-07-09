@@ -1,6 +1,7 @@
 package com.weweibuy.framework.common.core.utils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
@@ -62,6 +63,14 @@ public class JackJsonUtils {
         }
     }
 
+    public static <T> T readSnakeCaseValue(String json, TypeReference<T> valueTypeRef) {
+        try {
+            return SNAKE_CASE_MAPPER.readValue(json, valueTypeRef);
+        } catch (IOException e) {
+            throw Exceptions.system(CommonErrorCodeEum.JSON_PARSE_EXCEPTION, e);
+        }
+    }
+
     public static <T> T readSnakeCaseValue(String json, JavaType javaType) {
         try {
             return SNAKE_CASE_MAPPER.readValue(json, javaType);
@@ -70,9 +79,18 @@ public class JackJsonUtils {
         }
     }
 
+
     public static <T> T readSnakeCaseValue(byte[] json, Class<? extends T> clazz) {
         try {
             return SNAKE_CASE_MAPPER.readValue(json, clazz);
+        } catch (IOException e) {
+            throw Exceptions.system(CommonErrorCodeEum.JSON_PARSE_EXCEPTION, e);
+        }
+    }
+
+    public static <T> T readSnakeCaseValue(byte[] json, TypeReference<T> valueTypeRef) {
+        try {
+            return SNAKE_CASE_MAPPER.readValue(json, valueTypeRef);
         } catch (IOException e) {
             throw Exceptions.system(CommonErrorCodeEum.JSON_PARSE_EXCEPTION, e);
         }
@@ -201,7 +219,6 @@ public class JackJsonUtils {
             throw Exceptions.system(CommonErrorCodeEum.JSON_WRITE_EXCEPTION, e);
         }
     }
-
 
 
     public static ObjectMapper getCamelCaseMapper() {

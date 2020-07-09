@@ -14,7 +14,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import java.util.Collections;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -60,6 +62,7 @@ public class CommonLogConfig implements WebMvcConfigurer, InitializingBean {
                 .collect(Collectors.groupingBy(s -> s.indexOf("*") != -1,
                         Collectors.toSet()));
 
-        HttpLogger.configDisabledPath(matchPathMap.get(true), matchPathMap.get(false));
+        HttpLogger.configDisabledPath(Optional.ofNullable(matchPathMap.get(true)).orElse(Collections.emptySet()),
+                Optional.ofNullable(matchPathMap.get(false)).orElse(Collections.emptySet()));
     }
 }

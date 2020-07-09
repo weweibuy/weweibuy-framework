@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * http 请求响应日志输出
@@ -122,8 +123,12 @@ public class HttpLogger {
     }
 
     public static void configDisabledPath(Set<String> patternDisabledPath, Set<String> exactDisabledPath) {
-        HttpLogger.patternDisabledPath = patternDisabledPath;
-        HttpLogger.exactDisabledPath = exactDisabledPath;
+        HttpLogger.patternDisabledPath = patternDisabledPath.stream()
+                .map(HttpRequestUtils::sanitizedPath)
+                .collect(Collectors.toSet());
+        HttpLogger.exactDisabledPath = exactDisabledPath.stream()
+                .map(HttpRequestUtils::sanitizedPath)
+                .collect(Collectors.toSet());
     }
 
 }
