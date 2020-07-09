@@ -30,32 +30,32 @@
       "defaultValue":true
     },
     {
-      "name": "common.metric.influx.host",
+      "name": "common.metric.influx-db.host",
       "type": "java.lang.String",
       "sourceType": "com.weweibuy.framework.common.metric.MetricInfluxDbProperties"
     },
     {
-      "name": "common.metric.influx.database",
+      "name": "common.metric.influx-db.database",
       "type": "java.lang.String",
       "sourceType": "com.weweibuy.framework.common.metric.MetricInfluxDbProperties"
     },
     {
-      "name": "common.metric.influx.authString",
+      "name": "common.metric.influx-db.authString",
       "type": "java.lang.String",
       "sourceType": "com.weweibuy.framework.common.metric.MetricInfluxDbProperties"
     },
     {
-      "name": "common.metric.influx.connectionTimeout",
+      "name": "common.metric.influx-db.connectionTimeout",
       "type": "java.lang.Integer",
       "sourceType": "com.weweibuy.framework.common.metric.MetricInfluxDbProperties"
     },
     {
-      "name": "common.metric.influx.socketTimeout",
+      "name": "common.metric.influx-db.socketTimeout",
       "type": "java.lang.Integer",
       "sourceType": "com.weweibuy.framework.common.metric.MetricInfluxDbProperties"
     },
     {
-      "name": "common.metric.influx.timePrecision",
+      "name": "common.metric.influx-db.timePrecision",
       "type": "java.util.concurrent.TimeUnit",
       "sourceType": "com.weweibuy.framework.common.metric.MetricInfluxDbProperties"
     }

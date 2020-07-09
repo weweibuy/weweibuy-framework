@@ -10,7 +10,7 @@ import java.util.concurrent.TimeUnit;
  * @date 2020/7/5 20:49
  **/
 @Data
-@ConfigurationProperties(prefix = "common.metric.influx")
+@ConfigurationProperties(prefix = "common.metric.influx-db")
 public class MetricInfluxDbProperties {
 
     private String host;
