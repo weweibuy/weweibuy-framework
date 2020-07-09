@@ -85,7 +85,7 @@ feign:
 #        readTimeout: 5000
 common:
   metric:
-    influx:
+    influx-db:
       host: 106.12.208.53:8086
       database: java_metric
 
