@@ -1,8 +1,7 @@
 package com.weweibuy.framework.common.log.mvc;
 
-import com.weweibuy.framework.common.core.utils.IdWorker;
-import com.weweibuy.framework.common.log.constant.LogMdcConstant;
-import org.slf4j.MDC;
+import com.weweibuy.framework.common.core.support.LogTraceCodeGetter;
+import com.weweibuy.framework.common.log.support.LogTraceContext;
 import org.springframework.core.annotation.Order;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -21,15 +20,17 @@ import java.io.IOException;
 @Order(0)
 public class TraceCodeFilter extends OncePerRequestFilter {
 
+    private final LogTraceCodeGetter logTraceCodeGetter = new HttpSimpleLoggerCodeGetter();
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
         try {
-            MDC.put(LogMdcConstant.TID_FIELD_NAME, IdWorker.nextStringId());
+            LogTraceContext.setTraceCodeAndUserCode(logTraceCodeGetter.getTraceCode(request),
+                    logTraceCodeGetter.getUserCode(request));
             filterChain.doFilter(request, response);
         } finally {
-            MDC.remove(LogMdcConstant.TID_FIELD_NAME);
+            LogTraceContext.clear();
         }
     }
 }

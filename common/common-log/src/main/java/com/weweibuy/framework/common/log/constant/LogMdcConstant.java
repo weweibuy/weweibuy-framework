@@ -22,4 +22,7 @@ public interface LogMdcConstant {
 
     String TID_FIELD_NAME = "tid";
 
+    String UID_FIELD_NAME = "uid";
+
+
 }

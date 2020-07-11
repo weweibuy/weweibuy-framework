@@ -25,6 +25,17 @@
         </dependency>
 
         <dependency>
+            <groupId>com.weweibuy.framework</groupId>
+            <artifactId>common-log</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter-web</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-commons</artifactId>
         </dependency>
