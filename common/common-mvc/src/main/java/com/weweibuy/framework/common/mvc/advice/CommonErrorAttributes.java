@@ -28,8 +28,8 @@ public class CommonErrorAttributes extends DefaultErrorAttributes {
 
 
     public CommonErrorAttributes() {
-        notFoundAttributes.put("code", "404");
-        notFoundAttributes.put("msg", "请求地址不存在");
+        notFoundAttributes.put("code", CommonHttpResponseEum.NOT_FOUND.getCode());
+        notFoundAttributes.put("msg", CommonHttpResponseEum.NOT_FOUND.getMsg());
         unKnownAttributes.put("code", CommonHttpResponseEum.UNKNOWN_EXCEPTION.getCode());
         unKnownAttributes.put("msg", CommonHttpResponseEum.UNKNOWN_EXCEPTION.getMsg());
         requestExceptionAttributes.put("msg", "请求参数错误");

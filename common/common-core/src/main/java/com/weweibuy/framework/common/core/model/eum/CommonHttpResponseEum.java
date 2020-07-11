@@ -17,6 +17,7 @@ public enum CommonHttpResponseEum implements ResponseCodeAndMsg {
 
     UNAUTHORIZED("401", "认证失败"),
     FORBIDDEN("403", "没有权限"),
+    NOT_FOUND("404", "请求地址不存在"),
     UNSUPPORTED_MEDIA_TYPE("415", "不支持的请求格式"),
     TOO_MANY_REQUESTS("429", "请求限流"),
     UNKNOWN_EXCEPTION("500", "系统异常"),
