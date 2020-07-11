@@ -38,7 +38,7 @@ public class CommonLogConfig implements WebMvcConfigurer, InitializingBean {
     }
 
     @Bean
-    @ConditionalOnProperty(prefix = "common.log.trace", name = "enable", havingValue = "true")
+    @ConditionalOnProperty(prefix = "common.log.trace", name = "enable", havingValue = "true", matchIfMissing = true)
     public TraceCodeFilter traceCodeFilter() {
         return new TraceCodeFilter();
     }
