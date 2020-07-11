@@ -11,7 +11,7 @@ import com.weweibuy.framework.common.core.model.ResponseCodeAndMsg;
  **/
 public enum CommonHttpResponseEum implements ResponseCodeAndMsg {
 
-    SUCCESS("200", "请求成功"),
+    SUCCESS("0", "请求成功"),
     BAD_REQUEST_PARAM("400", "请求参数错误"),
     REQUEST_EXCEPTION("400", "请求异常"),
 
