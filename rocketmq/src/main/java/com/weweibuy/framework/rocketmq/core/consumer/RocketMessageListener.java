@@ -6,7 +6,7 @@ package com.weweibuy.framework.rocketmq.core.consumer;
  * @author durenhao
  * @date 2020/1/8 11:14
  **/
-public interface RocketMessageListener<R> {
+public interface  RocketMessageListener<R> {
 
     /**
      * 处理消息

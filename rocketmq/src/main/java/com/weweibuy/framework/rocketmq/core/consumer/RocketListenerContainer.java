@@ -16,14 +16,6 @@ public interface RocketListenerContainer<T, R> {
     /**
      * 选项监听器
      *
-     * @param list
-     * @return
-     */
-    RocketMessageListener<R> selectMessageListener(List<MessageExt> list);
-
-    /**
-     * 选项监听器
-     *
      * @param tag
      * @return
      */

@@ -60,23 +60,11 @@ public abstract class AbstractRocketListenerContainer<T, R> implements RocketLis
 
 
     @Override
-    public RocketMessageListener<R> selectMessageListener(List<MessageExt> list) {
-        if (batchSize == 1) {
-            if (listenerMap.containsKey("*")) {
-                return rocketMessageListenerList.get(0);
-            }
-            return listenerMap.get(list.get(0).getTags());
-        } else {
-            return rocketMessageListenerList.get(0);
-        }
-
-    }
-
-    @Override
     public RocketMessageListener<R> selectMessageListener(String tag) {
-        if (org.apache.commons.lang3.StringUtils.isBlank(tag)) {
-            // tag 为空 说明监听tag为*, tag为* 监听有且只能有一个
-            return listenerMap.get("*");
+        // 监听为*, 直接返回监听
+        RocketMessageListener<R> listener;
+        if ((listener = listenerMap.get("*")) != null) {
+            return listener;
         }
         return listenerMap.get(tag);
     }
@@ -117,20 +105,35 @@ public abstract class AbstractRocketListenerContainer<T, R> implements RocketLis
             } else if (batchHandlerModel.equals(BatchHandlerModel.FOREACH)) {
                 Stream<R> messageStream = messageExtList.stream()
                         .map(m -> checkListenerAndOnMessage(selectMessageListener(m.getTags()), m, originContext));
-                boolean match = false;
-                if (BatchForEachConsumerFailPolicy.MATCH_FIRST_FAIL.equals(batchForEachConsumerFailPolicy)) {
-                    match = messageStream.anyMatch(r -> !isSuccess(r));
-                } else {
-                    match = messageStream.collect(Collectors.toSet()).stream()
-                            .anyMatch(r -> !isSuccess(r));
-                }
-                return match ? fail : success;
+                return batchConsumerWithFailFailPolicy(messageStream);
             } else {
-                // 批量一起消费
-                return checkListenerAndOnMessage(selectMessageListener(messageExtList), messageExtList, originContext);
+                // 批量一起消费 将Message 通过tag分组
+                Map<String, List<MessageExt>> tagMessageMap = messageExtList.stream()
+                        .collect(Collectors.groupingBy(m -> Optional.ofNullable(m.getTags()).orElse("*")));
+                Stream<R> messageStream = tagMessageMap.entrySet().stream()
+                        .map(e -> checkListenerAndOnMessage(selectMessageListener(e.getKey()), e.getValue(), originContext));
+                return batchConsumerWithFailFailPolicy(messageStream);
             }
         }
     }
+
+    /**
+     * 根据失败策略批量消费
+     *
+     * @param messageStream
+     * @return
+     */
+    private R batchConsumerWithFailFailPolicy(Stream<R> messageStream) {
+        boolean match = false;
+        if (BatchForEachConsumerFailPolicy.MATCH_FIRST_FAIL.equals(batchForEachConsumerFailPolicy)) {
+            match = messageStream.anyMatch(r -> !isSuccess(r));
+        } else {
+            match = messageStream.collect(Collectors.toSet()).stream()
+                    .anyMatch(r -> !isSuccess(r));
+        }
+        return match ? fail : success;
+    }
+
 
     private R checkListenerAndOnMessage(RocketMessageListener<R> messageListener, Object messageObject, Object originContext) {
         if (messageListener == null) {

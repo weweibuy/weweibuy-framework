@@ -217,11 +217,6 @@ public class RocketBeanPostProcessor implements BeanPostProcessor, SmartInitiali
                 Assert.isTrue(!(consumeMessageBatchMaxSize == 1 && BatchHandlerModel.TOGETHER.equals(batchHandlerModel)),
                         ClassUtils.getQualifiedMethodName(method) + " consumeMessageBatchMaxSize 为 1 时, batchHandlerModel 不能为: TOGETHER");
 
-
-                Assert.isTrue(!(consumeMessageBatchMaxSize > 1 && v.size() > 1 && BatchHandlerModel.TOGETHER.equals(batchHandlerModel)),
-                        ClassUtils.getQualifiedMethodName(method) + " consumeMessageBatchMaxSize 大于 1 , BatchHandlerModel: TOGETHER 时, 不支持多个 TAG 的形式");
-
-
                 if (BatchHandlerModel.TOGETHER.equals(batchHandlerModel)) {
                     Class<?>[] parameterTypes = e.getMethod().getParameterTypes();
                     Arrays.stream(parameterTypes)
