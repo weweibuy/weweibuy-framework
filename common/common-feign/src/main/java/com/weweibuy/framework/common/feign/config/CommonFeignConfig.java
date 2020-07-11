@@ -1,6 +1,7 @@
 package com.weweibuy.framework.common.feign.config;
 
 import com.weweibuy.framework.common.feign.log.FeignLogger;
+import com.weweibuy.framework.common.feign.log.TraceContextFeignInterceptor;
 import com.weweibuy.framework.common.feign.support.CustomFeignErrorDecoder;
 import feign.Feign;
 import feign.Logger;
@@ -11,6 +12,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 
 /**
+ * feign配置
+ *
  * @author durenhao
  * @date 2020/3/2 19:39
  **/
@@ -33,9 +36,14 @@ public class CommonFeignConfig {
         return Feign.builder()
                 .retryer(retryer)
                 .logLevel(Logger.Level.BASIC)
+                .requestInterceptor(traceContextFeignInterceptor())
                 .errorDecoder(new CustomFeignErrorDecoder());
     }
 
+    @Bean
+    public TraceContextFeignInterceptor traceContextFeignInterceptor() {
+        return new TraceContextFeignInterceptor();
+    }
 
     @Bean
     public FeignLogger feignLogger() {

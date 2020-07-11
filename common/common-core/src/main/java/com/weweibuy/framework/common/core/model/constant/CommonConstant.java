@@ -67,6 +67,14 @@ public interface CommonConstant {
 
     }
 
+    public interface LogTraceConstant {
+
+        public static final String HTTP_TRACE_CODE_HEADER = "X-Tid";
+
+        public static final String HTTP_USER_CODE_HEADER = "X-Uid";
+
+    }
+
     /**
      * Http常量
      */

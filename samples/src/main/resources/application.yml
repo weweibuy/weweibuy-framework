@@ -20,8 +20,6 @@ spring:
 mybatis:
   mapper-locations: classpath*:config/mybatis/mapper/**/*.xml
 
-logging:
-  config: classpath:config/logback/logback-spring.xml
 
 idempotent:
   jdbc:
