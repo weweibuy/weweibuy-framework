@@ -93,7 +93,7 @@ public final class IdWorker {
         this.workerId = id;
     }
 
-    private long nextId() {
+    private long getNextId() {
         synchronized (this) {
             long timestamp = currentTimestamp();
             if (this.lastTimestamp == timestamp) {
@@ -126,8 +126,8 @@ public final class IdWorker {
         return System.currentTimeMillis();
     }
 
-    public static long getNextId() {
-        return WORKER.nextId();
+    public static long nextId() {
+        return WORKER.getNextId();
     }
 
 
@@ -227,6 +227,6 @@ public final class IdWorker {
     }
 
     public static String nextStringId() {
-        return getNextId() + "";
+        return nextId() + "";
     }
 }

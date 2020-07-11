@@ -1,0 +1,60 @@
+{
+  "groups": [
+    {
+      "name": "common.feign.http-client",
+      "type": "com.weweibuy.framework.common.feign.config.HttpClientProperties",
+      "sourceType": "com.weweibuy.framework.common.feign.config.HttpClientProperties"
+    }
+  ],
+  "properties": [
+    {
+      "name": "common.feign.http-client.useSSL",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.weweibuy.framework.common.feign.config.HttpClientProperties",
+      "defaultValue":false
+    },
+    {
+      "name": "common.feign.http-client.maxTotal",
+      "type": "java.lang.Integer",
+      "sourceType": "com.weweibuy.framework.common.feign.config.HttpClientProperties",
+      "defaultValue":300
+    },
+    {
+      "name": "common.feign.http-client.defaultMaxPerRoute",
+      "type": "java.lang.Integer",
+      "sourceType": "com.weweibuy.framework.common.feign.config.HttpClientProperties",
+      "defaultValue":50
+    },
+    {
+      "name": "common.feign.http-client.connectTimeout",
+      "type": "java.lang.Integer",
+      "sourceType": "com.weweibuy.framework.common.feign.config.HttpClientProperties",
+      "defaultValue":1000
+    },
+    {
+      "name": "common.feign.http-client.connectionRequestTimeout",
+      "type": "java.lang.Integer",
+      "sourceType": "com.weweibuy.framework.common.feign.config.HttpClientProperties",
+      "defaultValue":500
+    },
+    {
+      "name": "common.feign.http-client.socketTimeout",
+      "type": "java.lang.Integer",
+      "sourceType": "com.weweibuy.framework.common.feign.config.HttpClientProperties",
+      "defaultValue":5000
+    },
+    {
+      "name": "common.feign.http-client.checkExpiredConnectionInterval",
+      "type": "java.lang.Integer",
+      "sourceType": "com.weweibuy.framework.common.feign.config.HttpClientProperties",
+      "defaultValue":60000
+    },
+    {
+      "name": "common.feign.http-client.maxLifeTime",
+      "type": "java.lang.Integer",
+      "sourceType": "com.weweibuy.framework.common.feign.config.HttpClientProperties",
+      "defaultValue":-1
+    }
+  ],
+  "hints": []
+}
