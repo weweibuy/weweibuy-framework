@@ -35,7 +35,11 @@ public class RequestResponseBodyLogAdvice implements RequestBodyAdvice, Response
 
     @Override
     public Object afterBodyRead(Object body, HttpInputMessage inputMessage, MethodParameter parameter, Type targetType, Class<? extends HttpMessageConverter<?>> converterType) {
-        HttpLogger.logForJsonBodyRequest(body);
+        try {
+            HttpLogger.logForJsonBodyRequest(body);
+        } catch (Exception e) {
+            log.warn("输出请求日志异常: {}", e.getMessage());
+        }
         return body;
     }
 
@@ -54,7 +58,11 @@ public class RequestResponseBodyLogAdvice implements RequestBodyAdvice, Response
 
     @Override
     public Object beforeBodyWrite(Object body, MethodParameter returnType, MediaType selectedContentType, Class selectedConverterType, ServerHttpRequest request, ServerHttpResponse response) {
-        HttpLogger.logResponse(body);
+        try {
+            HttpLogger.logResponse(body);
+        } catch (Exception e) {
+            log.warn("输出响应日志异常: {}", e.getMessage());
+        }
         return body;
     }
 
