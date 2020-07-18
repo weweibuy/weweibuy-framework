@@ -4,6 +4,7 @@
     <springProperty scope="context" name="app_name" source="spring.application.name"/>
 
     <contextName>logback</contextName>
+    <contextListener class="com.weweibuy.framework.common.log.ttl.TtlMdcListener"/>
 
     <property name="log.path" value="${log.path:-/logs/${app_name}}"/>
 
@@ -13,11 +14,7 @@
     <conversionRule conversionWord="wEx"
                     converterClass="org.springframework.boot.logging.logback.ExtendedWhitespaceThrowableProxyConverter"/>
 
-    <conversionRule conversionWord="msg"
-                    converterClass="com.weweibuy.framework.common.log.desensitization.DesensitizationLogMessageConverter"/>
     <conversionRule conversionWord="m"
-                    converterClass="com.weweibuy.framework.common.log.desensitization.DesensitizationLogMessageConverter"/>
-    <conversionRule conversionWord="message"
                     converterClass="com.weweibuy.framework.common.log.desensitization.DesensitizationLogMessageConverter"/>
 
     <property name="CONSOLE_LOG_PATTERN"
@@ -36,7 +33,7 @@
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${log.path}/application.log</file>
         <encoder>
-            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} [%X{uid},%X{tid}] - %msg%n</pattern>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} [%X{uid},%X{tid}] - %m%n</pattern>
             <charset>UTF-8</charset>
         </encoder>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
