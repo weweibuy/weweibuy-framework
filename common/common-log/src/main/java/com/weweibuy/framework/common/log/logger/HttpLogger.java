@@ -57,7 +57,7 @@ public class HttpLogger {
             return;
         }
         log.info("Http 请求路径: {}, Method: {}, 参数: {}",
-                request.getRequestURI(),
+                path,
                 request.getMethod(),
                 HttpRequestUtils.parameterMapToString(request.getParameterMap()));
     }
@@ -112,16 +112,6 @@ public class HttpLogger {
                 .orElse(StringUtils.EMPTY);
     }
 
-    private static boolean shouldLog(String path) {
-        if (CollectionUtils.isNotEmpty(exactDisabledPath) && (exactDisabledPath.contains(path))) {
-            return false;
-        }
-        if (CollectionUtils.isNotEmpty(patternDisabledPath) && patternDisabledPath.stream().anyMatch(p -> HttpRequestUtils.isMatchPath(p, path))) {
-            return false;
-        }
-        return true;
-    }
-
     public static void configDisabledPath(Set<String> patternDisabledPath, Set<String> exactDisabledPath) {
         HttpLogger.patternDisabledPath = patternDisabledPath.stream()
                 .map(HttpRequestUtils::sanitizedPath)
@@ -129,6 +119,19 @@ public class HttpLogger {
         HttpLogger.exactDisabledPath = exactDisabledPath.stream()
                 .map(HttpRequestUtils::sanitizedPath)
                 .collect(Collectors.toSet());
+    }
+
+    private static boolean shouldLog(String path) {
+        if (StringUtils.isBlank(path)) {
+            return false;
+        }
+        if (CollectionUtils.isNotEmpty(exactDisabledPath) && (exactDisabledPath.contains(path))) {
+            return false;
+        }
+        if (CollectionUtils.isNotEmpty(patternDisabledPath) && patternDisabledPath.stream().anyMatch(p -> HttpRequestUtils.isMatchPath(p, path))) {
+            return false;
+        }
+        return true;
     }
 
 }
