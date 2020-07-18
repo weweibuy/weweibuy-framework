@@ -16,8 +16,12 @@ public class TtlMdcListener extends ContextAwareBase implements LoggerContextLis
 
 
     public void start() {
-        this.addInfo("load TtlMDCAdapter...");
-        TtlMDCAdapter.getInstance();
+        boolean enableTtl = Boolean.getBoolean("common.log.ttl.enable");
+        // 替换MDC实现
+        if (enableTtl) {
+            this.addInfo("load TtlMDCAdapter...");
+            TtlMDCAdapter.getInstance();
+        }
     }
 
     public void stop() {
