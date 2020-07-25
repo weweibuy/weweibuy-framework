@@ -3,10 +3,10 @@ package com.weweibuy.framework.common.log.logger;
 import com.weweibuy.framework.common.core.model.constant.CommonConstant;
 import com.weweibuy.framework.common.core.utils.HttpRequestUtils;
 import com.weweibuy.framework.common.core.utils.JackJsonUtils;
+import com.weweibuy.framework.common.log.config.LogDisablePath;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -29,12 +29,12 @@ import java.util.stream.Collectors;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class HttpLogger {
 
-    private static Set<String> patternDisabledPath;
+    private static Map<String, LogDisablePath.Type> patternDisabledPath;
 
-    private static Set<String> exactDisabledPath;
+    private static Map<String, LogDisablePath.Type> exactDisabledPath;
 
     public static void logForJsonRequest(String path, String method, Map<String, String[]> parameterMap, String body) {
-        if (!shouldLog(path)) {
+        if (!shouldLogRequest(path)) {
             return;
         }
         if (parameterMap != null && !parameterMap.isEmpty()) {
@@ -53,7 +53,7 @@ public class HttpLogger {
 
     public static void logForNotJsonRequest(HttpServletRequest request) {
         String path = request.getRequestURI();
-        if (!shouldLog(path)) {
+        if (!shouldLogRequest(path)) {
             return;
         }
         log.info("Http 请求路径: {}, Method: {}, 参数: {}",
@@ -64,7 +64,7 @@ public class HttpLogger {
 
     public static void logResponse(Object body) {
         String path = HttpRequestUtils.getRequestAttribute(RequestContextHolder.getRequestAttributes(), CommonConstant.HttpServletConstant.REQUEST_PATH);
-        if (!shouldLog(path)) {
+        if (!shouldLogResponse(path)) {
             return;
         }
         Long timestamp = HttpRequestUtils.getRequestAttribute(RequestContextHolder.getRequestAttributes(), CommonConstant.HttpServletConstant.REQUEST_TIMESTAMP);
@@ -112,26 +112,50 @@ public class HttpLogger {
                 .orElse(StringUtils.EMPTY);
     }
 
-    public static void configDisabledPath(Set<String> patternDisabledPath, Set<String> exactDisabledPath) {
+    public static void configDisabledPath(Set<LogDisablePath> patternDisabledPath,
+                                          Set<LogDisablePath> exactDisabledPath) {
         HttpLogger.patternDisabledPath = patternDisabledPath.stream()
-                .map(HttpRequestUtils::sanitizedPath)
-                .collect(Collectors.toSet());
+                .peek(d -> d.setPath(HttpRequestUtils.sanitizedPath(d.getPath())))
+                .collect(Collectors.toMap(d -> d.getPath(), d -> d.getType(), (o, n) -> n));
         HttpLogger.exactDisabledPath = exactDisabledPath.stream()
-                .map(HttpRequestUtils::sanitizedPath)
-                .collect(Collectors.toSet());
+                .peek(d -> d.setPath(HttpRequestUtils.sanitizedPath(d.getPath())))
+                .collect(Collectors.toMap(d -> d.getPath(), d -> d.getType(), (o, n) -> n));
     }
 
-    private static boolean shouldLog(String path) {
+    private static boolean shouldLogRequest(String path) {
         if (StringUtils.isBlank(path)) {
             return false;
         }
-        if (CollectionUtils.isNotEmpty(exactDisabledPath) && (exactDisabledPath.contains(path))) {
+        LogDisablePath.Type type = null;
+        if ((type = exactDisabledPath.get(path)) != null &&
+                (LogDisablePath.Type.REQ.equals(type)) || (LogDisablePath.Type.ALL.equals(type))) {
             return false;
         }
-        if (CollectionUtils.isNotEmpty(patternDisabledPath) && patternDisabledPath.stream().anyMatch(p -> HttpRequestUtils.isMatchPath(p, path))) {
+        if (patternDisabledPath.entrySet().stream()
+                .anyMatch(p -> HttpRequestUtils.isMatchPath(p.getKey(), path) &&
+                        (LogDisablePath.Type.REQ.equals(p.getValue())) || (LogDisablePath.Type.ALL.equals(p.getValue())))) {
             return false;
         }
         return true;
     }
+
+
+    private static boolean shouldLogResponse(String path) {
+        if (StringUtils.isBlank(path)) {
+            return false;
+        }
+        LogDisablePath.Type type = null;
+        if ((type = exactDisabledPath.get(path)) != null &&
+                (LogDisablePath.Type.RESP.equals(type) || LogDisablePath.Type.ALL.equals(type))) {
+            return false;
+        }
+        if (patternDisabledPath.entrySet().stream()
+                .anyMatch(p -> HttpRequestUtils.isMatchPath(p.getKey(), path) &&
+                        (LogDisablePath.Type.RESP.equals(p.getValue()) || LogDisablePath.Type.ALL.equals(p.getValue())))) {
+            return false;
+        }
+        return true;
+    }
+
 
 }

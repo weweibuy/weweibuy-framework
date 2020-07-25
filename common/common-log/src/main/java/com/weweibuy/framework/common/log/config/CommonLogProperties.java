@@ -21,7 +21,12 @@ public class CommonLogProperties {
     @Data
     public static class CommonLogHttpProperties {
 
+        /**
+         * 配置形式:  RES_/**; RESP_/**; /**
+         */
         private Set<String> disablePath = new HashSet<>();
 
     }
+
+
 }

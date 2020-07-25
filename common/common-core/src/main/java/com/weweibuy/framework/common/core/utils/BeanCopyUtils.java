@@ -4,10 +4,15 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.cglib.beans.BeanCopier;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 /**
  * @author durenhao
@@ -33,14 +38,46 @@ public class BeanCopyUtils {
         Class<?> srcClazz = src.getClass();
         Key key = new Key(srcClazz, destClazz);
         BeanCopier beanCopier = BEAN_COPIER_MAP.computeIfAbsent(key, k -> BeanCopier.create(srcClazz, destClazz, false));
-        T newInstance = null;
+        T newInstance = newInstance(destClazz);
+        beanCopier.copy(src, newInstance, null);
+        return newInstance;
+    }
+
+    /**
+     * 集合拷贝
+     *
+     * @param collection
+     * @param srcClazz
+     * @param destClazz
+     * @param <R>
+     * @param <T>
+     * @return
+     */
+    public static <R, T> List<R> copyCollection(Collection<T> collection, Class<T> srcClazz, Class<R> destClazz) {
+        if (CollectionUtils.isEmpty(collection)) {
+            return Collections.emptyList();
+        }
+        if (srcClazz == null || destClazz == null) {
+            throw new NullPointerException();
+        }
+        Key key = new Key(srcClazz, destClazz);
+        BeanCopier beanCopier = BEAN_COPIER_MAP.computeIfAbsent(key, k -> BeanCopier.create(srcClazz, destClazz, false));
+        return collection.stream()
+                .map(c -> {
+                    R newInstance = newInstance(destClazz);
+                    beanCopier.copy(c, newInstance, null);
+                    return newInstance;
+                })
+                .collect(Collectors.toList());
+
+    }
+
+    private static <T> T newInstance(Class<T> destClazz) {
         try {
-            newInstance = destClazz.newInstance();
+            return destClazz.newInstance();
         } catch (InstantiationException | IllegalAccessException e) {
             throw new IllegalArgumentException(destClazz.getName() + " 必须含有公共空参构造");
         }
-        beanCopier.copy(src, newInstance, null);
-        return newInstance;
     }
 
 
