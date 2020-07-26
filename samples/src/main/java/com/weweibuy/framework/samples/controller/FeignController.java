@@ -4,11 +4,19 @@ import com.weweibuy.framework.samples.client.FileClient;
 import com.weweibuy.framework.samples.client.MyFeignClient;
 import com.weweibuy.framework.samples.client.MyFeignClient2;
 import com.weweibuy.framework.samples.model.dto.CommonDataJsonResponse;
+import feign.Response;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * @author durenhao
@@ -35,8 +43,22 @@ public class FeignController {
     }
 
     @PostMapping("/upload")
-    public ResponseEntity uploadFile(MultipartFile file, String name) {
-        return fileClient.uploadFile(file, name);
+    public ResponseEntity<StreamingResponseBody> uploadFile(MultipartFile file, String name) throws IOException {
+        Response response = fileClient.uploadFile(file, name);
+        try (InputStream inputStream = response.body().asInputStream()) {
+            return ResponseEntity.status(HttpStatus.OK)
+                    .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + name)
+                    .body(outputStream ->
+                    {
+                        byte[] buf = new byte[1024];
+                        int len = 0;
+                        while ((len = inputStream.read(buf)) != -1) {
+                            outputStream.write(buf);
+                        }
+                    });
+        }
+
     }
 
 }
