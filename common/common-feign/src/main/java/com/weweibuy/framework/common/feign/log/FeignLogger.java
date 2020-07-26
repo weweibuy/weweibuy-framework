@@ -5,7 +5,9 @@ import feign.Request;
 import feign.Response;
 import feign.Util;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.http.HttpHeaders;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -71,8 +73,16 @@ public class FeignLogger extends Logger {
 
     static Response logAndRebufferResponse(Response response, long elapsedTime) throws IOException {
         int status = response.status();
+
         String bodyStr = "";
-        if (response.body() != null && !(status == 204 || status == 205)) {
+
+        Collection<String> collection = response.headers().get(HttpHeaders.CONTENT_TYPE);
+        if (CollectionUtils.isNotEmpty(collection)) {
+            String next = collection.iterator().next();
+            if (next.indexOf("stream") != -1) {
+                bodyStr = EMPTY_BODY_STR;
+            }
+        } else if (response.body() != null && !(status == 204 || status == 205)) {
             byte[] bodyData = Util.toByteArray(response.body().asInputStream());
             bodyStr = new String(bodyData);
             response = response.toBuilder().body(bodyData).build();
