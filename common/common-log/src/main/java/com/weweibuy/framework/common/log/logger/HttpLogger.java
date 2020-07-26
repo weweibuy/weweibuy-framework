@@ -128,12 +128,12 @@ public class HttpLogger {
         }
         LogDisablePath.Type type = null;
         if ((type = exactDisabledPath.get(path)) != null &&
-                (LogDisablePath.Type.REQ.equals(type)) || (LogDisablePath.Type.ALL.equals(type))) {
+                (LogDisablePath.Type.REQ.equals(type) || LogDisablePath.Type.ALL.equals(type))) {
             return false;
         }
         if (patternDisabledPath.entrySet().stream()
                 .anyMatch(p -> HttpRequestUtils.isMatchPath(p.getKey(), path) &&
-                        (LogDisablePath.Type.REQ.equals(p.getValue())) || (LogDisablePath.Type.ALL.equals(p.getValue())))) {
+                        (LogDisablePath.Type.REQ.equals(p.getValue()) || LogDisablePath.Type.ALL.equals(p.getValue())))) {
             return false;
         }
         return true;
