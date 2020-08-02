@@ -13,4 +13,6 @@ public class Dog {
 
     private Integer age;
 
+    private String address;
+
 }
