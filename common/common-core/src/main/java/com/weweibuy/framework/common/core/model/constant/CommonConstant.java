@@ -1,5 +1,7 @@
 package com.weweibuy.framework.common.core.model.constant;
 
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.time.format.DateTimeFormatter;
 
 /**
@@ -58,6 +60,7 @@ public interface CommonConstant {
 
         String UTF8_STR = "UTF-8";
 
+        Charset UT8 = StandardCharsets.UTF_8;
 
     }
 
