@@ -30,6 +30,14 @@ public class Exceptions {
         return new SystemException(responseCodeAndMsg);
     }
 
+    public static SystemException system(String msg) {
+        return new SystemException(CommonHttpResponseEum.UNKNOWN_EXCEPTION.getCode(), msg);
+    }
+
+    public static SystemException system(String msg, Throwable e) {
+        return new SystemException(msg, e);
+    }
+
     public static SystemException system(ResponseCodeAndMsg responseCodeAndMsg, Throwable cause) {
         return new SystemException(responseCodeAndMsg, cause);
     }
@@ -41,8 +49,6 @@ public class Exceptions {
     public static SystemException unknown() {
         return new SystemException(CommonHttpResponseEum.UNKNOWN_EXCEPTION);
     }
-
-
 
 
 }

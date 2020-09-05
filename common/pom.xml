@@ -16,6 +16,7 @@
         <module>common-feign</module>
         <module>common-mvc</module>
         <module>common-core</module>
+        <module>common-db</module>
     </modules>
 
 
