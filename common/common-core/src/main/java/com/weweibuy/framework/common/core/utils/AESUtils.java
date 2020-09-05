@@ -40,6 +40,16 @@ public class AESUtils {
     }
 
     /**
+     * 生成 16进制key
+     *
+     * @return
+     */
+    public static String generateKeyHex() {
+        return HexUtils.toHexString(generateKey().getEncoded());
+    }
+
+
+    /**
      * Creates a new {@link SecretKey} based on a password.
      *
      * @param password The password that will be the {@link SecretKey}.
