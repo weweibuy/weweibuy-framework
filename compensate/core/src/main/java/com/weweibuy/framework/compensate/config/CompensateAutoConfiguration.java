@@ -70,13 +70,7 @@ public class CompensateAutoConfiguration {
 
     @Bean
     public CompensateMethodRegister compensateMethodRegister() {
-
-        RecoverMethodArgsResolverComposite composite = new RecoverMethodArgsResolverComposite();
-        if (!CollectionUtils.isEmpty(configurerList)) {
-            configurerList.forEach(c -> c.addRecoverMethodArgsResolver(composite));
-        }
-        composite.addResolver(new AppendArgsRecoverMethodArgsResolver());
-        return new CompensateMethodRegister(applicationContext, composite);
+        return new CompensateMethodRegister(applicationContext);
     }
 
     @Bean
@@ -87,15 +81,25 @@ public class CompensateAutoConfiguration {
 
     @Bean
     public CompensateHandlerService compensateHandlerService(CompensateMethodRegister compensateMethodRegister, CompensateStore compensateStore,
-                                                             CompensateTypeResolverComposite composite, CompensateAlarmService alarmService) {
+                                                             CompensateTypeResolverComposite composite, CompensateAlarmService alarmService,
+                                                             CompensateRecorder compensateRecorder) {
         ExecutorService executorService = null;
         if (!CollectionUtils.isEmpty(configurerList)) {
             executorService = configurerList.stream().map(CompensateConfigurer::getCompensateExecutorService)
                     .filter(Objects::nonNull)
                     .findFirst().orElse(null);
         }
-        return new CompensateHandlerService(compensateMethodRegister, compensateStore, composite, alarmService, executorService);
+        return new CompensateHandlerService(compensateMethodRegister, compensateStore, composite, alarmService,
+                executorService, compensateRecorder);
     }
+
+
+    @Bean
+    @ConditionalOnMissingBean(CompensateRecorder.class)
+    public CompensateRecorder compensateRecorder() {
+        return new LogCompensateRecorder();
+    }
+
 
     @Bean
     @ConditionalOnMissingBean(CompensateAlarmService.class)

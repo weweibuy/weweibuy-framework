@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.weweibuy.framework.compensate.mybatis.mapper.CompensateMethodArgsExtMapper">
-  <resultMap id="BaseResultMap" type="com.weweibuy.framework.compensate.mybatis.po.CompensateMethodArgsExt">
+<mapper namespace="com.weweibuy.framework.compensate.mybatis.mapper.CompensateLogMapper">
+  <resultMap id="BaseResultMap" type="com.weweibuy.framework.compensate.mybatis.po.CompensateLog">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="compensate_id" jdbcType="BIGINT" property="compensateId" />
-    <result column="method_args" jdbcType="VARCHAR" property="methodArgs" />
-    <result column="args_order" jdbcType="TINYINT" property="argsOrder" />
+    <result column="trigger_type" jdbcType="VARCHAR" property="triggerType" />
+    <result column="compensate_state" jdbcType="VARCHAR" property="compensateState" />
+    <result column="compensate_result" jdbcType="VARCHAR" property="compensateResult" />
+    <result column="exception_info" jdbcType="VARCHAR" property="exceptionInfo" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
@@ -68,15 +70,16 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, compensate_id, method_args, args_order, create_time, update_time
+    id, compensate_id, trigger_type, compensate_state, compensate_result, exception_info, 
+    create_time, update_time
   </sql>
-  <select id="selectByExample" parameterType="com.weweibuy.framework.compensate.mybatis.po.CompensateMethodArgsExtExample" resultMap="BaseResultMap">
+  <select id="selectByExample" parameterType="com.weweibuy.framework.compensate.mybatis.po.CompensateLogExample" resultMap="BaseResultMap">
     select
     <if test="distinct">
       distinct
     </if>
     <include refid="Base_Column_List" />
-    from compensate_method_args_ext
+    from cm_compensate_log
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -90,7 +93,7 @@
       distinct
     </if>
     <include refid="Base_Column_List" />
-    from compensate_method_args_ext
+    from cm_compensate_log
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -104,29 +107,29 @@
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from compensate_method_args_ext
+    from cm_compensate_log
     where id = #{id,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from compensate_method_args_ext
+    delete from cm_compensate_log
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <delete id="deleteByExample" parameterType="com.weweibuy.framework.compensate.mybatis.po.CompensateMethodArgsExtExample">
-    delete from compensate_method_args_ext
+  <delete id="deleteByExample" parameterType="com.weweibuy.framework.compensate.mybatis.po.CompensateLogExample">
+    delete from cm_compensate_log
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.weweibuy.framework.compensate.mybatis.po.CompensateMethodArgsExt">
-    insert into compensate_method_args_ext (id, compensate_id, method_args, 
-      args_order, create_time, update_time
-      )
-    values (#{id,jdbcType=BIGINT}, #{compensateId,jdbcType=BIGINT}, #{methodArgs,jdbcType=VARCHAR}, 
-      #{argsOrder,jdbcType=TINYINT}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}
-      )
+  <insert id="insert" parameterType="com.weweibuy.framework.compensate.mybatis.po.CompensateLog">
+    insert into cm_compensate_log (id, compensate_id, trigger_type, 
+      compensate_state, compensate_result, exception_info, 
+      create_time, update_time)
+    values (#{id,jdbcType=BIGINT}, #{compensateId,jdbcType=BIGINT}, #{triggerType,jdbcType=VARCHAR}, 
+      #{compensateState,jdbcType=VARCHAR}, #{compensateResult,jdbcType=VARCHAR}, #{exceptionInfo,jdbcType=VARCHAR}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
   </insert>
-  <insert id="insertSelective" parameterType="com.weweibuy.framework.compensate.mybatis.po.CompensateMethodArgsExt">
-    insert into compensate_method_args_ext
+  <insert id="insertSelective" parameterType="com.weweibuy.framework.compensate.mybatis.po.CompensateLog">
+    insert into cm_compensate_log
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,
@@ -134,11 +137,17 @@
       <if test="compensateId != null">
         compensate_id,
       </if>
-      <if test="methodArgs != null">
-        method_args,
+      <if test="triggerType != null">
+        trigger_type,
       </if>
-      <if test="argsOrder != null">
-        args_order,
+      <if test="compensateState != null">
+        compensate_state,
+      </if>
+      <if test="compensateResult != null">
+        compensate_result,
+      </if>
+      <if test="exceptionInfo != null">
+        exception_info,
       </if>
       <if test="createTime != null">
         create_time,
@@ -154,11 +163,17 @@
       <if test="compensateId != null">
         #{compensateId,jdbcType=BIGINT},
       </if>
-      <if test="methodArgs != null">
-        #{methodArgs,jdbcType=VARCHAR},
+      <if test="triggerType != null">
+        #{triggerType,jdbcType=VARCHAR},
       </if>
-      <if test="argsOrder != null">
-        #{argsOrder,jdbcType=TINYINT},
+      <if test="compensateState != null">
+        #{compensateState,jdbcType=VARCHAR},
+      </if>
+      <if test="compensateResult != null">
+        #{compensateResult,jdbcType=VARCHAR},
+      </if>
+      <if test="exceptionInfo != null">
+        #{exceptionInfo,jdbcType=VARCHAR},
       </if>
       <if test="createTime != null">
         #{createTime,jdbcType=TIMESTAMP},
@@ -168,14 +183,14 @@
       </if>
     </trim>
   </insert>
-  <select id="countByExample" parameterType="com.weweibuy.framework.compensate.mybatis.po.CompensateMethodArgsExtExample" resultType="java.lang.Long">
-    select count(*) from compensate_method_args_ext
+  <select id="countByExample" parameterType="com.weweibuy.framework.compensate.mybatis.po.CompensateLogExample" resultType="java.lang.Long">
+    select count(*) from cm_compensate_log
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </select>
   <update id="updateByExampleSelective" parameterType="map">
-    update compensate_method_args_ext
+    update cm_compensate_log
     <set>
       <if test="record.id != null">
         id = #{record.id,jdbcType=BIGINT},
@@ -183,11 +198,17 @@
       <if test="record.compensateId != null">
         compensate_id = #{record.compensateId,jdbcType=BIGINT},
       </if>
-      <if test="record.methodArgs != null">
-        method_args = #{record.methodArgs,jdbcType=VARCHAR},
+      <if test="record.triggerType != null">
+        trigger_type = #{record.triggerType,jdbcType=VARCHAR},
       </if>
-      <if test="record.argsOrder != null">
-        args_order = #{record.argsOrder,jdbcType=TINYINT},
+      <if test="record.compensateState != null">
+        compensate_state = #{record.compensateState,jdbcType=VARCHAR},
+      </if>
+      <if test="record.compensateResult != null">
+        compensate_result = #{record.compensateResult,jdbcType=VARCHAR},
+      </if>
+      <if test="record.exceptionInfo != null">
+        exception_info = #{record.exceptionInfo,jdbcType=VARCHAR},
       </if>
       <if test="record.createTime != null">
         create_time = #{record.createTime,jdbcType=TIMESTAMP},
@@ -201,28 +222,36 @@
     </if>
   </update>
   <update id="updateByExample" parameterType="map">
-    update compensate_method_args_ext
+    update cm_compensate_log
     set id = #{record.id,jdbcType=BIGINT},
       compensate_id = #{record.compensateId,jdbcType=BIGINT},
-      method_args = #{record.methodArgs,jdbcType=VARCHAR},
-      args_order = #{record.argsOrder,jdbcType=TINYINT},
+      trigger_type = #{record.triggerType,jdbcType=VARCHAR},
+      compensate_state = #{record.compensateState,jdbcType=VARCHAR},
+      compensate_result = #{record.compensateResult,jdbcType=VARCHAR},
+      exception_info = #{record.exceptionInfo,jdbcType=VARCHAR},
       create_time = #{record.createTime,jdbcType=TIMESTAMP},
       update_time = #{record.updateTime,jdbcType=TIMESTAMP}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
-  <update id="updateByPrimaryKeySelective" parameterType="com.weweibuy.framework.compensate.mybatis.po.CompensateMethodArgsExt">
-    update compensate_method_args_ext
+  <update id="updateByPrimaryKeySelective" parameterType="com.weweibuy.framework.compensate.mybatis.po.CompensateLog">
+    update cm_compensate_log
     <set>
       <if test="compensateId != null">
         compensate_id = #{compensateId,jdbcType=BIGINT},
       </if>
-      <if test="methodArgs != null">
-        method_args = #{methodArgs,jdbcType=VARCHAR},
+      <if test="triggerType != null">
+        trigger_type = #{triggerType,jdbcType=VARCHAR},
       </if>
-      <if test="argsOrder != null">
-        args_order = #{argsOrder,jdbcType=TINYINT},
+      <if test="compensateState != null">
+        compensate_state = #{compensateState,jdbcType=VARCHAR},
+      </if>
+      <if test="compensateResult != null">
+        compensate_result = #{compensateResult,jdbcType=VARCHAR},
+      </if>
+      <if test="exceptionInfo != null">
+        exception_info = #{exceptionInfo,jdbcType=VARCHAR},
       </if>
       <if test="createTime != null">
         create_time = #{createTime,jdbcType=TIMESTAMP},
@@ -233,19 +262,21 @@
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.weweibuy.framework.compensate.mybatis.po.CompensateMethodArgsExt">
-    update compensate_method_args_ext
+  <update id="updateByPrimaryKey" parameterType="com.weweibuy.framework.compensate.mybatis.po.CompensateLog">
+    update cm_compensate_log
     set compensate_id = #{compensateId,jdbcType=BIGINT},
-      method_args = #{methodArgs,jdbcType=VARCHAR},
-      args_order = #{argsOrder,jdbcType=TINYINT},
+      trigger_type = #{triggerType,jdbcType=VARCHAR},
+      compensate_state = #{compensateState,jdbcType=VARCHAR},
+      compensate_result = #{compensateResult,jdbcType=VARCHAR},
+      exception_info = #{exceptionInfo,jdbcType=VARCHAR},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       update_time = #{updateTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <select id="selectOneByExample" parameterType="com.weweibuy.framework.compensate.mybatis.po.CompensateMethodArgsExtExample" resultMap="BaseResultMap">
+  <select id="selectOneByExample" parameterType="com.weweibuy.framework.compensate.mybatis.po.CompensateLogExample" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
-    from compensate_method_args_ext
+    from cm_compensate_log
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>

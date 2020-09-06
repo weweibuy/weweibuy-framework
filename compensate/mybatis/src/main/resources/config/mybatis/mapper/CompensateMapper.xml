@@ -8,9 +8,10 @@
     <result column="compensate_type" jdbcType="VARCHAR" property="compensateType" />
     <result column="method_args" jdbcType="VARCHAR" property="methodArgs" />
     <result column="next_trigger_time" jdbcType="TIMESTAMP" property="nextTriggerTime" />
-    <result column="retry_count" jdbcType="TINYINT" property="retryCount" />
+    <result column="retry_count" jdbcType="INTEGER" property="retryCount" />
     <result column="compensate_status" jdbcType="TINYINT" property="compensateStatus" />
-    <result column="alarm_count" jdbcType="TINYINT" property="alarmCount" />
+    <result column="compensate_result" jdbcType="TINYINT" property="compensateResult" />
+    <result column="alarm_count" jdbcType="INTEGER" property="alarmCount" />
     <result column="has_args_ext" jdbcType="BIT" property="hasArgsExt" />
     <result column="is_delete" jdbcType="BIT" property="isDelete" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
@@ -76,7 +77,8 @@
   </sql>
   <sql id="Base_Column_List">
     id, compensate_key, biz_id, compensate_type, method_args, next_trigger_time, retry_count, 
-    compensate_status, alarm_count, has_args_ext, is_delete, create_time, update_time
+    compensate_status, compensate_result, alarm_count, has_args_ext, is_delete, create_time, 
+    update_time
   </sql>
   <select id="selectByExample" parameterType="com.weweibuy.framework.compensate.mybatis.po.CompensateExample" resultMap="BaseResultMap">
     select
@@ -84,7 +86,7 @@
       distinct
     </if>
     <include refid="Base_Column_List" />
-    from compensate
+    from cm_compensate
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -98,7 +100,7 @@
       distinct
     </if>
     <include refid="Base_Column_List" />
-    from compensate
+    from cm_compensate
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -112,33 +114,33 @@
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from compensate
+    from cm_compensate
     where id = #{id,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from compensate
+    delete from cm_compensate
     where id = #{id,jdbcType=BIGINT}
   </delete>
   <delete id="deleteByExample" parameterType="com.weweibuy.framework.compensate.mybatis.po.CompensateExample">
-    delete from compensate
+    delete from cm_compensate
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
   <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.weweibuy.framework.compensate.mybatis.po.Compensate" useGeneratedKeys="true">
-    insert into compensate (compensate_key, biz_id, compensate_type, 
+    insert into cm_compensate (compensate_key, biz_id, compensate_type, 
       method_args, next_trigger_time, retry_count, 
-      compensate_status, alarm_count, has_args_ext, 
-      is_delete, create_time, update_time
-      )
+      compensate_status, compensate_result, alarm_count, 
+      has_args_ext, is_delete, create_time, 
+      update_time)
     values (#{compensateKey,jdbcType=VARCHAR}, #{bizId,jdbcType=VARCHAR}, #{compensateType,jdbcType=VARCHAR}, 
-      #{methodArgs,jdbcType=VARCHAR}, #{nextTriggerTime,jdbcType=TIMESTAMP}, #{retryCount,jdbcType=TINYINT}, 
-      #{compensateStatus,jdbcType=TINYINT}, #{alarmCount,jdbcType=TINYINT}, #{hasArgsExt,jdbcType=BIT}, 
-      #{isDelete,jdbcType=BIT}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}
-      )
+      #{methodArgs,jdbcType=VARCHAR}, #{nextTriggerTime,jdbcType=TIMESTAMP}, #{retryCount,jdbcType=INTEGER}, 
+      #{compensateStatus,jdbcType=TINYINT}, #{compensateResult,jdbcType=TINYINT}, #{alarmCount,jdbcType=INTEGER}, 
+      #{hasArgsExt,jdbcType=BIT}, #{isDelete,jdbcType=BIT}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{updateTime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.weweibuy.framework.compensate.mybatis.po.Compensate" useGeneratedKeys="true">
-    insert into compensate
+    insert into cm_compensate
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="compensateKey != null">
         compensate_key,
@@ -160,6 +162,9 @@
       </if>
       <if test="compensateStatus != null">
         compensate_status,
+      </if>
+      <if test="compensateResult != null">
+        compensate_result,
       </if>
       <if test="alarmCount != null">
         alarm_count,
@@ -194,13 +199,16 @@
         #{nextTriggerTime,jdbcType=TIMESTAMP},
       </if>
       <if test="retryCount != null">
-        #{retryCount,jdbcType=TINYINT},
+        #{retryCount,jdbcType=INTEGER},
       </if>
       <if test="compensateStatus != null">
         #{compensateStatus,jdbcType=TINYINT},
       </if>
+      <if test="compensateResult != null">
+        #{compensateResult,jdbcType=TINYINT},
+      </if>
       <if test="alarmCount != null">
-        #{alarmCount,jdbcType=TINYINT},
+        #{alarmCount,jdbcType=INTEGER},
       </if>
       <if test="hasArgsExt != null">
         #{hasArgsExt,jdbcType=BIT},
@@ -217,13 +225,13 @@
     </trim>
   </insert>
   <select id="countByExample" parameterType="com.weweibuy.framework.compensate.mybatis.po.CompensateExample" resultType="java.lang.Long">
-    select count(*) from compensate
+    select count(*) from cm_compensate
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </select>
   <update id="updateByExampleSelective" parameterType="map">
-    update compensate
+    update cm_compensate
     <set>
       <if test="record.id != null">
         id = #{record.id,jdbcType=BIGINT},
@@ -244,13 +252,16 @@
         next_trigger_time = #{record.nextTriggerTime,jdbcType=TIMESTAMP},
       </if>
       <if test="record.retryCount != null">
-        retry_count = #{record.retryCount,jdbcType=TINYINT},
+        retry_count = #{record.retryCount,jdbcType=INTEGER},
       </if>
       <if test="record.compensateStatus != null">
         compensate_status = #{record.compensateStatus,jdbcType=TINYINT},
       </if>
+      <if test="record.compensateResult != null">
+        compensate_result = #{record.compensateResult,jdbcType=TINYINT},
+      </if>
       <if test="record.alarmCount != null">
-        alarm_count = #{record.alarmCount,jdbcType=TINYINT},
+        alarm_count = #{record.alarmCount,jdbcType=INTEGER},
       </if>
       <if test="record.hasArgsExt != null">
         has_args_ext = #{record.hasArgsExt,jdbcType=BIT},
@@ -270,16 +281,17 @@
     </if>
   </update>
   <update id="updateByExample" parameterType="map">
-    update compensate
+    update cm_compensate
     set id = #{record.id,jdbcType=BIGINT},
       compensate_key = #{record.compensateKey,jdbcType=VARCHAR},
       biz_id = #{record.bizId,jdbcType=VARCHAR},
       compensate_type = #{record.compensateType,jdbcType=VARCHAR},
       method_args = #{record.methodArgs,jdbcType=VARCHAR},
       next_trigger_time = #{record.nextTriggerTime,jdbcType=TIMESTAMP},
-      retry_count = #{record.retryCount,jdbcType=TINYINT},
+      retry_count = #{record.retryCount,jdbcType=INTEGER},
       compensate_status = #{record.compensateStatus,jdbcType=TINYINT},
-      alarm_count = #{record.alarmCount,jdbcType=TINYINT},
+      compensate_result = #{record.compensateResult,jdbcType=TINYINT},
+      alarm_count = #{record.alarmCount,jdbcType=INTEGER},
       has_args_ext = #{record.hasArgsExt,jdbcType=BIT},
       is_delete = #{record.isDelete,jdbcType=BIT},
       create_time = #{record.createTime,jdbcType=TIMESTAMP},
@@ -289,7 +301,7 @@
     </if>
   </update>
   <update id="updateByPrimaryKeySelective" parameterType="com.weweibuy.framework.compensate.mybatis.po.Compensate">
-    update compensate
+    update cm_compensate
     <set>
       <if test="compensateKey != null">
         compensate_key = #{compensateKey,jdbcType=VARCHAR},
@@ -307,13 +319,16 @@
         next_trigger_time = #{nextTriggerTime,jdbcType=TIMESTAMP},
       </if>
       <if test="retryCount != null">
-        retry_count = #{retryCount,jdbcType=TINYINT},
+        retry_count = #{retryCount,jdbcType=INTEGER},
       </if>
       <if test="compensateStatus != null">
         compensate_status = #{compensateStatus,jdbcType=TINYINT},
       </if>
+      <if test="compensateResult != null">
+        compensate_result = #{compensateResult,jdbcType=TINYINT},
+      </if>
       <if test="alarmCount != null">
-        alarm_count = #{alarmCount,jdbcType=TINYINT},
+        alarm_count = #{alarmCount,jdbcType=INTEGER},
       </if>
       <if test="hasArgsExt != null">
         has_args_ext = #{hasArgsExt,jdbcType=BIT},
@@ -331,15 +346,16 @@
     where id = #{id,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.weweibuy.framework.compensate.mybatis.po.Compensate">
-    update compensate
+    update cm_compensate
     set compensate_key = #{compensateKey,jdbcType=VARCHAR},
       biz_id = #{bizId,jdbcType=VARCHAR},
       compensate_type = #{compensateType,jdbcType=VARCHAR},
       method_args = #{methodArgs,jdbcType=VARCHAR},
       next_trigger_time = #{nextTriggerTime,jdbcType=TIMESTAMP},
-      retry_count = #{retryCount,jdbcType=TINYINT},
+      retry_count = #{retryCount,jdbcType=INTEGER},
       compensate_status = #{compensateStatus,jdbcType=TINYINT},
-      alarm_count = #{alarmCount,jdbcType=TINYINT},
+      compensate_result = #{compensateResult,jdbcType=TINYINT},
+      alarm_count = #{alarmCount,jdbcType=INTEGER},
       has_args_ext = #{hasArgsExt,jdbcType=BIT},
       is_delete = #{isDelete,jdbcType=BIT},
       create_time = #{createTime,jdbcType=TIMESTAMP},
@@ -349,7 +365,7 @@
   <select id="selectOneByExample" parameterType="com.weweibuy.framework.compensate.mybatis.po.CompensateExample" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
-    from compensate
+    from cm_compensate
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>

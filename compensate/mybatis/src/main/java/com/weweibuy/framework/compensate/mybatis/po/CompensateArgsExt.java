@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 import lombok.Data;
 
 @Data
-public class CompensateMethodArgsExt {
+public class CompensateArgsExt {
     /**
      * id
      */

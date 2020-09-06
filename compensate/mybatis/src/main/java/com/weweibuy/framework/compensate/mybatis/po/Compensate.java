@@ -46,6 +46,11 @@ public class Compensate {
     private Byte compensateStatus;
 
     /**
+     * 补偿结果: 0:失败; 1: 成功
+     */
+    private Byte compensateResult;
+
+    /**
      * 告警次数
      */
     private Integer alarmCount;

@@ -1,7 +1,6 @@
 package com.weweibuy.framework.compensate.config;
 
 import com.weweibuy.framework.compensate.support.CompensateTypeResolverComposite;
-import com.weweibuy.framework.compensate.support.RecoverMethodArgsResolverComposite;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
@@ -44,10 +43,6 @@ public class CompensateConfigurerComposite implements CompensateConfigurer {
         delegates.forEach(d -> d.addCompensateTypeResolver(handlers));
     }
 
-    @Override
-    public void addRecoverMethodArgsResolver(RecoverMethodArgsResolverComposite handlers) {
-        delegates.forEach(d -> d.addRecoverMethodArgsResolver(handlers));
-    }
 
 
 

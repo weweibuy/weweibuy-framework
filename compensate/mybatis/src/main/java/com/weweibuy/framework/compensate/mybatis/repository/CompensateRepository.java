@@ -1,10 +1,10 @@
 package com.weweibuy.framework.compensate.mybatis.repository;
 
+import com.weweibuy.framework.compensate.mybatis.mapper.CompensateArgsExtMapper;
 import com.weweibuy.framework.compensate.mybatis.mapper.CompensateMapper;
-import com.weweibuy.framework.compensate.mybatis.mapper.CompensateMethodArgsExtMapper;
 import com.weweibuy.framework.compensate.mybatis.po.Compensate;
-import com.weweibuy.framework.compensate.mybatis.po.CompensateMethodArgsExt;
-import com.weweibuy.framework.compensate.mybatis.po.CompensateMethodArgsExtExample;
+import com.weweibuy.framework.compensate.mybatis.po.CompensateArgsExt;
+import com.weweibuy.framework.compensate.mybatis.po.CompensateArgsExtExample;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,7 +23,7 @@ public class CompensateRepository {
     private CompensateMapper compensateMapper;
 
     @Autowired
-    private CompensateMethodArgsExtMapper compensateMethodArgsExtMapper;
+    private CompensateArgsExtMapper compensateMethodArgsExtMapper;
 
 
     @Transactional(rollbackFor = Exception.class)
@@ -33,10 +33,10 @@ public class CompensateRepository {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public int insertCompensate(Compensate compensate, List<CompensateMethodArgsExt> collect) {
+    public int insertCompensate(Compensate compensate, List<CompensateArgsExt> collect) {
         int i1 = compensateMapper.insertSelective(compensate);
         for (int i = 0; i < collect.size(); i++) {
-            CompensateMethodArgsExt compensateMethodArgsExt = collect.get(i);
+            CompensateArgsExt compensateMethodArgsExt = collect.get(i);
             compensateMethodArgsExt.setCompensateId(compensate.getId());
             compensateMethodArgsExt.setArgsOrder(i);
             compensateMethodArgsExtMapper.insertSelective(compensateMethodArgsExt);
@@ -52,8 +52,8 @@ public class CompensateRepository {
     }
 
 
-    public List<CompensateMethodArgsExt> selectExtByCompensateId(List<Long> idList) {
-        CompensateMethodArgsExtExample extExample = new CompensateMethodArgsExtExample();
+    public List<CompensateArgsExt> selectExtByCompensateId(List<Long> idList) {
+        CompensateArgsExtExample extExample = new CompensateArgsExtExample();
         extExample.createCriteria().andCompensateIdIn(idList);
         return compensateMethodArgsExtMapper.selectByExample(extExample);
     }

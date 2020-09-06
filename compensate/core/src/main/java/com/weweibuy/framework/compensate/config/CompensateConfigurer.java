@@ -1,7 +1,6 @@
 package com.weweibuy.framework.compensate.config;
 
 import com.weweibuy.framework.compensate.support.CompensateTypeResolverComposite;
-import com.weweibuy.framework.compensate.support.RecoverMethodArgsResolverComposite;
 
 import java.util.concurrent.ExecutorService;
 
@@ -24,9 +23,5 @@ public interface CompensateConfigurer {
 
     default void addCompensateTypeResolver(CompensateTypeResolverComposite composite) {
     }
-
-    default void addRecoverMethodArgsResolver(RecoverMethodArgsResolverComposite composite) {
-    }
-
 
 }

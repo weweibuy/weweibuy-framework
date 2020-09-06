@@ -2,6 +2,7 @@ package com.weweibuy.framework.compensate.core;
 
 import com.weweibuy.framework.common.core.utils.DateTimeUtils;
 import com.weweibuy.framework.compensate.model.CompensateInfoExt;
+import com.weweibuy.framework.compensate.model.CompensateStatus;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -82,16 +83,16 @@ public class RuleParser {
         return true;
     }
 
-    static CompensateInfoExt.CompensateStatus parserToStatus(CompensateInfoExt compensateInfo) {
+    static CompensateStatus parserToStatus(CompensateInfoExt compensateInfo) {
         long retryTime = parser(compensateInfo.getRetryCount(), compensateInfo.getRetryRule());
         if (retryTime == -1) {
             long alarmTime = parser(compensateInfo.getAlarmCount(), compensateInfo.getAlarmRule());
             if (alarmTime == -1) {
-                return CompensateInfoExt.CompensateStatus.OVER_ALARM_COUNT;
+                return CompensateStatus.OVER_ALARM_COUNT;
             }
-            return CompensateInfoExt.CompensateStatus.ALARM_ABLE;
+            return CompensateStatus.ALARM_ABLE;
         }
-        return CompensateInfoExt.CompensateStatus.RETRY_ABLE;
+        return CompensateStatus.RETRY_ABLE;
     }
 
 
