@@ -9,18 +9,15 @@ import com.weweibuy.framework.compensate.model.CompensateInfoExt;
 import com.weweibuy.framework.compensate.mybatis.constant.CompensateStatusConstant;
 import com.weweibuy.framework.compensate.mybatis.mapper.CompensateMapper;
 import com.weweibuy.framework.compensate.mybatis.po.Compensate;
+import com.weweibuy.framework.compensate.mybatis.po.CompensateArgsExt;
 import com.weweibuy.framework.compensate.mybatis.po.CompensateExample;
-import com.weweibuy.framework.compensate.mybatis.po.CompensateMethodArgsExt;
 import com.weweibuy.framework.compensate.mybatis.repository.CompensateRepository;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -28,7 +25,7 @@ import java.util.stream.Stream;
  * @author durenhao
  * @date 2020/2/16 12:22
  **/
-public class JdbcCompensateStore implements CompensateStore, InitializingBean {
+public class JdbcCompensateStore implements CompensateStore {
 
     @Autowired
     private CompensateMapper compensateMapper;
@@ -63,9 +60,9 @@ public class JdbcCompensateStore implements CompensateStore, InitializingBean {
 
             String substring1 = methodArgs.substring(compensateFieldLength, methodArgs.length());
 
-            List<CompensateMethodArgsExt> collect = stringSpilt(substring1, compensateExtFieldLength).stream()
+            List<CompensateArgsExt> collect = stringSpilt(substring1, compensateExtFieldLength).stream()
                     .map(m -> {
-                        CompensateMethodArgsExt compensateMethodArgs = new CompensateMethodArgsExt();
+                        CompensateArgsExt compensateMethodArgs = new CompensateArgsExt();
                         compensateMethodArgs.setMethodArgs(m);
                         return compensateMethodArgs;
                     })
@@ -98,18 +95,18 @@ public class JdbcCompensateStore implements CompensateStore, InitializingBean {
         }
 
         List<Long> idList = hasExtCompensateList.stream().map(Compensate::getId).collect(Collectors.toList());
-        Map<Long, List<CompensateMethodArgsExt>> compensateMethodArgsExtMap = compensateRepository.selectExtByCompensateId(idList).stream()
-                .collect(Collectors.groupingBy(CompensateMethodArgsExt::getCompensateId));
+        Map<Long, List<CompensateArgsExt>> compensateMethodArgsExtMap = compensateRepository.selectExtByCompensateId(idList).stream()
+                .collect(Collectors.groupingBy(CompensateArgsExt::getCompensateId));
 
         Stream<Compensate> compensateStream = hasExtCompensateList.stream()
                 .map(c -> {
-                    List<CompensateMethodArgsExt> compensateMethodArgsExtList = compensateMethodArgsExtMap.get(c.getId());
+                    List<CompensateArgsExt> compensateMethodArgsExtList = compensateMethodArgsExtMap.get(c.getId());
                     if (CollectionUtils.isEmpty(compensateMethodArgsExtList)) {
                         return null;
                     }
                     String collect = compensateMethodArgsExtList.stream()
-                            .sorted(Comparator.comparing(CompensateMethodArgsExt::getArgsOrder))
-                            .map(CompensateMethodArgsExt::getMethodArgs)
+                            .sorted(Comparator.comparing(CompensateArgsExt::getArgsOrder))
+                            .map(CompensateArgsExt::getMethodArgs)
                             .collect(Collectors.joining());
                     c.setMethodArgs(c.getMethodArgs() + collect);
                     return c;
@@ -154,33 +151,6 @@ public class JdbcCompensateStore implements CompensateStore, InitializingBean {
         return compensateMapper.updateByPrimaryKeySelective(compensate);
     }
 
-
-    @Override
-    public void afterPropertiesSet() throws Exception {
-        Pattern pattern = Pattern.compile("(?<=\\()[^\\)]+");
-        List<Map<String, Object>> compensateMapsList = jdbcTemplate.queryForList("DESC compensate ");
-        compensateFieldLength = getLength(compensateMapsList, pattern);
-
-        List<Map<String, Object>> compensateExtMapsList = jdbcTemplate.queryForList("DESC compensate_method_args_ext ");
-        compensateExtFieldLength = getLength(compensateExtMapsList, pattern);
-    }
-
-    private Integer getLength(List<Map<String, Object>> mapsList, Pattern pattern) {
-        return mapsList.stream()
-                .filter(m -> "method_args".equals(m.get("Field")))
-                .map(m -> m.get("Type"))
-                .filter(Objects::nonNull)
-                .map(s -> {
-                    String s1 = (String) s;
-                    Matcher matcher = pattern.matcher(s1);
-                    if (matcher.find()) {
-                        return Integer.valueOf(matcher.group());
-                    }
-                    return 5000;
-                })
-                .findFirst()
-                .orElse(5000);
-    }
 
     private CompensateInfoExt toCompensateInfoExt(Compensate compensate) {
         CompensateInfoExt infoExt = new CompensateInfoExt();

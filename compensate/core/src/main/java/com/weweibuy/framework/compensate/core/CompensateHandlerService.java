@@ -1,10 +1,13 @@
 package com.weweibuy.framework.compensate.core;
 
+import com.weweibuy.framework.common.core.exception.Exceptions;
 import com.weweibuy.framework.compensate.exception.CompensateException;
 import com.weweibuy.framework.compensate.model.CompensateInfoExt;
 import com.weweibuy.framework.compensate.model.CompensateResult;
 import com.weweibuy.framework.compensate.model.CompensateResultEum;
+import com.weweibuy.framework.compensate.model.CompensateStatus;
 import com.weweibuy.framework.compensate.support.CompensateContext;
+import com.weweibuy.framework.compensate.support.CompensateRecorder;
 import com.weweibuy.framework.compensate.support.CompensateTypeResolverComposite;
 import com.weweibuy.framework.compensate.support.LogCompensateAlarmService;
 import lombok.extern.slf4j.Slf4j;
@@ -36,23 +39,27 @@ public class CompensateHandlerService {
 
     private CompensateAlarmService compensateAlarmService;
 
+    private CompensateRecorder compensateRecorder;
+
 
     public CompensateHandlerService(CompensateMethodRegister compensateMethodRegister,
                                     CompensateStore compensateStore, CompensateTypeResolverComposite composite,
-                                    CompensateAlarmService compensateAlarmService, ExecutorService executorService) {
+                                    CompensateAlarmService compensateAlarmService, ExecutorService executorService, CompensateRecorder compensateRecorder) {
         this.compensateMethodRegister = compensateMethodRegister;
         this.compensateStore = compensateStore;
         this.composite = composite;
         this.compensateAlarmService = compensateAlarmService;
         this.executorService = executorService;
+        this.compensateRecorder = compensateRecorder;
     }
 
     public CompensateHandlerService(ExecutorService executorService, CompensateMethodRegister compensateMethodRegister,
-                                    CompensateStore compensateStore, CompensateTypeResolverComposite composite) {
+                                    CompensateStore compensateStore, CompensateTypeResolverComposite composite, CompensateRecorder compensateRecorder) {
         this.executorService = executorService;
         this.compensateMethodRegister = compensateMethodRegister;
         this.compensateStore = compensateStore;
         this.composite = composite;
+        this.compensateRecorder = compensateRecorder;
         compensateAlarmService = new LogCompensateAlarmService();
     }
 
@@ -138,8 +145,9 @@ public class CompensateHandlerService {
                 compensateInfo.getCompensateType());
         // 补偿状态
         CompensateResult result = null;
+        CompensateStatus compensateStatus = null;
         if (!force) {
-            CompensateInfoExt.CompensateStatus compensateStatus = RuleParser.parserToStatus(compensateInfo);
+            compensateStatus = RuleParser.parserToStatus(compensateInfo);
             switch (compensateStatus) {
                 case RETRY_ABLE:
                     result = execCompensate(compensateInfo, false);
@@ -154,9 +162,10 @@ public class CompensateHandlerService {
                     return null;
             }
         } else {
+            compensateStatus = CompensateStatus.RETRY_ABLE;
             result = execCompensate(compensateInfo, true);
         }
-        log.info("补偿id: {}, 结果: {}", compensateInfo.getId(), result.getResult());
+        compensateRecorder.recorderCompensate(result, force, compensateStatus);
         return result;
     }
 
@@ -186,33 +195,51 @@ public class CompensateHandlerService {
      * @return
      */
     private CompensateResult execCompensate(CompensateInfoExt compensateInfo, Boolean force) {
+        Object[] objects = composite.getArgumentResolver(compensateInfo.getCompensateType()).deResolver(compensateInfo);
+        CompensateHandlerMethod compensateHandlerMethod = compensateMethodRegister.getCompensateHandlerMethod(compensateInfo.getCompensateKey());
         try {
-            doCompensate(compensateInfo);
+            doCompensate(compensateHandlerMethod, objects);
         } catch (Exception e) {
-            log.warn("补偿: {} 时发生异常: ", compensateInfo, e instanceof InvocationTargetException ? ((InvocationTargetException) e).getTargetException() : e);
+            Throwable throwable = e instanceof InvocationTargetException ? ((InvocationTargetException) e).getTargetException() : e;
+            log.warn("补偿: {} 时发生异常: ", compensateInfo, throwable);
             if (force) {
-                compensateStore.updateCompensateInfo(compensateInfo.getId(), compensateInfo.addRetryToCompensateInfo(null));
-                return CompensateResult.fromCompensateInfoExt(compensateInfo, CompensateResultEum.RETRY_FAIL);
+                // 强制触发 不计入重试次数
+                return CompensateResult.fromCompensateInfoExt(compensateInfo, CompensateResultEum.RETRY_FAIL, throwable.getMessage());
             }
             compensateStore.updateCompensateInfo(compensateInfo.getId(),
                     compensateInfo.addRetryToCompensateInfo(RuleParser.nextTriggerTime(compensateInfo)));
-            return CompensateResult.fromCompensateInfoExt(compensateInfo, CompensateResultEum.RETRY_FAIL);
+            if (compensateHandlerMethod.hasRecoverMethod() &&
+                    CompensateStatus.ALARM_ABLE.equals(RuleParser.parserToStatus(compensateInfo))) {
+                // 执行recover 方法
+                invokeRecover(compensateHandlerMethod, objects);
+                return CompensateResult.fromCompensateInfoExt(compensateInfo, CompensateResultEum.RETRY_FAIL_RECOVER, throwable.getMessage());
+            }
+            return CompensateResult.fromCompensateInfoExt(compensateInfo, CompensateResultEum.RETRY_FAIL, throwable.getMessage());
         }
         compensateStore.deleteCompensateInfo(compensateInfo.getId(), true);
         return CompensateResult.fromCompensateInfoExt(compensateInfo, CompensateResultEum.RETRY_SUCCESS);
     }
 
-    private void doCompensate(CompensateInfoExt compensateInfo) throws InvocationTargetException {
-        Object[] objects = composite.getArgumentResolver(compensateInfo.getCompensateType()).deResolver(compensateInfo);
-        CompensateHandlerMethod compensateHandlerMethod = compensateMethodRegister.getCompensateHandlerMethod(compensateInfo.getCompensateKey());
-        Object invoke = compensateHandlerMethod.invoke(objects);
-        if (compensateHandlerMethod.hasRecoverMethod()) {
-            RecoverMethodArgsResolver argumentResolver = compensateHandlerMethod.getComposite().getArgumentResolver(compensateInfo.getCompensateKey());
-            Object[] resolver = argumentResolver.resolver(invoke, objects);
-            // 转为Recover 方法参数
-            compensateHandlerMethod.invokeRecover(resolver);
+    private void doCompensate(CompensateHandlerMethod compensateHandlerMethod, Object[] args) throws InvocationTargetException {
+        compensateHandlerMethod.invoke(args);
+    }
+
+
+    private void invokeRecover(CompensateHandlerMethod compensateHandlerMethod, Object[] args) {
+        if (executorService != null) {
+            executorService.execute(() ->
+                    doInvokeRecover(compensateHandlerMethod, args));
+        } else {
+            doInvokeRecover(compensateHandlerMethod, args);
         }
     }
 
+    private void doInvokeRecover(CompensateHandlerMethod compensateHandlerMethod, Object[] objects) {
+        try {
+            compensateHandlerMethod.invokeRecover(objects);
+        } catch (InvocationTargetException e) {
+            throw Exceptions.system("执行补偿Recover方法异常", e.getCause());
+        }
+    }
 
 }

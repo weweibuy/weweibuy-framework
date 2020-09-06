@@ -4,14 +4,14 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CompensateMethodArgsExtExample {
+public class CompensateArgsExtExample {
     protected String orderByClause;
 
     protected boolean distinct;
 
     protected List<Criteria> oredCriteria;
 
-    public CompensateMethodArgsExtExample() {
+    public CompensateArgsExtExample() {
         oredCriteria = new ArrayList<Criteria>();
     }
 
@@ -45,12 +45,12 @@ public class CompensateMethodArgsExtExample {
         return criteria;
     }
 
-    public CompensateMethodArgsExtExample orderBy(String orderByClause) {
+    public CompensateArgsExtExample orderBy(String orderByClause) {
         this.setOrderByClause(orderByClause);
         return this;
     }
 
-    public CompensateMethodArgsExtExample orderBy(String ... orderByClauses) {
+    public CompensateArgsExtExample orderBy(String ... orderByClauses) {
         StringBuffer sb = new StringBuffer();
         for (int i = 0; i < orderByClauses.length; i++) {
             sb.append(orderByClauses[i]);
@@ -82,18 +82,18 @@ public class CompensateMethodArgsExtExample {
     }
 
     public static Criteria newAndCreateCriteria() {
-        CompensateMethodArgsExtExample example = new CompensateMethodArgsExtExample();
+        CompensateArgsExtExample example = new CompensateArgsExtExample();
         return example.createCriteria();
     }
 
-    public CompensateMethodArgsExtExample when(boolean condition, IExampleWhen then) {
+    public CompensateArgsExtExample when(boolean condition, IExampleWhen then) {
         if (condition) {
             then.example(this);
         }
         return this;
     }
 
-    public CompensateMethodArgsExtExample when(boolean condition, IExampleWhen then, IExampleWhen otherwise) {
+    public CompensateArgsExtExample when(boolean condition, IExampleWhen then, IExampleWhen otherwise) {
         if (condition) {
             then.example(this);
         } else {
@@ -515,14 +515,14 @@ public class CompensateMethodArgsExtExample {
     }
 
     public static class Criteria extends GeneratedCriteria {
-        private CompensateMethodArgsExtExample example;
+        private CompensateArgsExtExample example;
 
-        protected Criteria(CompensateMethodArgsExtExample example) {
+        protected Criteria(CompensateArgsExtExample example) {
             super();
             this.example = example;
         }
 
-        public CompensateMethodArgsExtExample example() {
+        public CompensateArgsExtExample example() {
             return this.example;
         }
 
@@ -647,6 +647,6 @@ public class CompensateMethodArgsExtExample {
     }
 
     public interface IExampleWhen {
-        void example(com.weweibuy.framework.compensate.mybatis.po.CompensateMethodArgsExtExample example);
+        void example(com.weweibuy.framework.compensate.mybatis.po.CompensateArgsExtExample example);
     }
 }

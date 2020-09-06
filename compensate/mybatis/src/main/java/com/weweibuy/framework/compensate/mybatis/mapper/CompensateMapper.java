@@ -2,9 +2,8 @@ package com.weweibuy.framework.compensate.mybatis.mapper;
 
 import com.weweibuy.framework.compensate.mybatis.po.Compensate;
 import com.weweibuy.framework.compensate.mybatis.po.CompensateExample;
-import org.apache.ibatis.annotations.Param;
-
 import java.util.List;
+import org.apache.ibatis.annotations.Param;
 
 public interface CompensateMapper {
     long countByExample(CompensateExample example);

@@ -1,8 +1,8 @@
 package com.weweibuy.framework.compensate.core;
 
 import com.weweibuy.framework.compensate.annotation.Compensate;
-import com.weweibuy.framework.compensate.support.RecoverMethodArgsResolverComposite;
 import org.springframework.context.ApplicationContext;
+import org.springframework.core.BridgeMethodResolver;
 import org.springframework.util.Assert;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.util.StringUtils;
@@ -23,11 +23,8 @@ public class CompensateMethodRegister {
 
     private ApplicationContext applicationContext;
 
-    private RecoverMethodArgsResolverComposite composite;
-
-    public CompensateMethodRegister(ApplicationContext applicationContext, RecoverMethodArgsResolverComposite composite) {
+    public CompensateMethodRegister(ApplicationContext applicationContext) {
         this.applicationContext = applicationContext;
-        this.composite = composite;
     }
 
     public synchronized void register(Method method, Object bean, Compensate compensate) {
@@ -48,14 +45,13 @@ public class CompensateMethodRegister {
             boolean hashMethod = false;
             for (Method recoverMethod : declaredMethods) {
                 if (recoverMethod.getName().equals(recoverMethodName)) {
-                    handlerMethodBuilder.recoverMethod(recoverMethod);
+                    handlerMethodBuilder.recoverMethod(BridgeMethodResolver.findBridgedMethod(recoverMethod));
                     hashMethod = true;
                     break;
                 }
             }
             Assert.isTrue(hashMethod, bean.getClass().getCanonicalName() + method.getName() + " 补偿指定的 recoverMethod: " + recoverMethodName + " 不存在");
-            handlerMethodBuilder.recoverBean(recoverBean)
-                    .composite(composite);
+            handlerMethodBuilder.recoverBean(recoverBean);
         }
         compensateHandlerMethodMap.put(key, handlerMethodBuilder.build());
     }

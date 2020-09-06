@@ -20,10 +20,24 @@ public class CompensateResult extends CompensateInfoExt {
      */
     private CompensateResultEum result;
 
+    /**
+     * 异常信息, 重试失败时封装
+     */
+    private String exceptionMsg;
+
+
     public static CompensateResult fromCompensateInfoExt(CompensateInfoExt compensateInfoExt, CompensateResultEum result) {
         CompensateResult compensateResult = new CompensateResult();
         COPIER.copy(compensateInfoExt, compensateResult, null);
         compensateResult.setResult(result);
+        return compensateResult;
+    }
+
+    public static CompensateResult fromCompensateInfoExt(CompensateInfoExt compensateInfoExt, CompensateResultEum result, String exceptionMsg) {
+        CompensateResult compensateResult = new CompensateResult();
+        COPIER.copy(compensateInfoExt, compensateResult, null);
+        compensateResult.setResult(result);
+        compensateResult.setExceptionMsg(exceptionMsg);
         return compensateResult;
     }
 

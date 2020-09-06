@@ -72,25 +72,4 @@ public class CompensateInfoExt extends CompensateInfo {
         return this;
     }
 
-    /**
-     * 补偿状态
-     */
-    public enum CompensateStatus {
-        /**
-         * 可以重试
-         */
-        RETRY_ABLE,
-
-        /**
-         * 可以报警
-         */
-        ALARM_ABLE,
-
-        /**
-         * 超出报警次数
-         */
-        OVER_ALARM_COUNT,
-
-    }
-
 }
