@@ -17,6 +17,9 @@
 package com.weweibuy.framework.common.core.utils;
 
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 /**
  * Tables useful when converting byte arrays to and from strings of hexadecimal
  * digits.
@@ -24,6 +27,7 @@ package com.weweibuy.framework.common.core.utils;
  *
  * @author Craig R. McClanahan
  */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class HexUtils {
 
 
