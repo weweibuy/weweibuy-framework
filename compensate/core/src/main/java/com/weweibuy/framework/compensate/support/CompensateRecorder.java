@@ -10,6 +10,14 @@ import com.weweibuy.framework.compensate.model.CompensateStatus;
 public interface CompensateRecorder {
 
     /**
+     * 记录补偿任务创建
+     *
+     * @param id
+     * @param e
+     */
+    void recorderCompensateCreate(String id, Exception e);
+
+    /**
      * 记录补偿信息
      *
      * @param compensateResult

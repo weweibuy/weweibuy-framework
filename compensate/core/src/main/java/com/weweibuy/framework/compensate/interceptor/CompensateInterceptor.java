@@ -9,8 +9,10 @@ import com.weweibuy.framework.compensate.core.CompensateStore;
 import com.weweibuy.framework.compensate.model.CompensateInfo;
 import com.weweibuy.framework.compensate.support.CompensateAnnotationMetaDataParser;
 import com.weweibuy.framework.compensate.support.CompensateContext;
+import com.weweibuy.framework.compensate.support.CompensateRecorder;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.concurrent.ExecutorService;
 
@@ -30,19 +32,24 @@ public class CompensateInterceptor implements MethodInterceptor {
 
     private CompensateAlarmService compensateAlarmService;
 
+    private CompensateRecorder compensateRecorder;
+
+
     public CompensateInterceptor(CompensateStore compensateStore,
-                                 CompensateAnnotationMetaDataParser metaDataParser, CompensateAlarmService compensateAlarmService) {
+                                 CompensateAnnotationMetaDataParser metaDataParser, CompensateAlarmService compensateAlarmService, CompensateRecorder compensateRecorder) {
         this.compensateStore = compensateStore;
         this.metaDataParser = metaDataParser;
         this.compensateAlarmService = compensateAlarmService;
+        this.compensateRecorder = compensateRecorder;
     }
 
     public CompensateInterceptor(CompensateStore compensateStore, CompensateAnnotationMetaDataParser metaDataParser,
-                                 ExecutorService executorService, CompensateAlarmService compensateAlarmService) {
+                                 ExecutorService executorService, CompensateAlarmService compensateAlarmService, CompensateRecorder compensateRecorder) {
         this.compensateStore = compensateStore;
         this.metaDataParser = metaDataParser;
         this.executorService = executorService;
         this.compensateAlarmService = compensateAlarmService;
+        this.compensateRecorder = compensateRecorder;
     }
 
 
@@ -77,10 +84,15 @@ public class CompensateInterceptor implements MethodInterceptor {
         if (metaDataParser.shouldCompensate(annotation, e)) {
             CompensateInfo compensateInfo = metaDataParser.toCompensateInfo(annotation, methodInvocation.getThis(),
                     methodInvocation.getMethod(), methodInvocation.getArguments());
+            String id = null;
             try {
-                compensateStore.saveCompensateInfo(compensateInfo);
+                id = compensateStore.saveCompensateInfo(compensateInfo);
             } catch (Exception e1) {
                 compensateAlarmService.sendSaveCompensateAlarm(compensateInfo, e1);
+            } finally {
+                if (StringUtils.isNotBlank(id)) {
+                    compensateRecorder.recorderCompensateCreate(id, e);
+                }
             }
         }
     }

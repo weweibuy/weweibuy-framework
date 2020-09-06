@@ -45,10 +45,12 @@ public class JdbcCompensateStore implements CompensateStore {
 
 
     @Override
-    public int saveCompensateInfo(CompensateInfo compensateInfo) {
+    public String saveCompensateInfo(CompensateInfo compensateInfo) {
         if (BuiltInCompensateType.BIZ_ID.toString().equals(compensateInfo.getCompensateType()) ||
                 compensateInfo.getMethodArgs() == null) {
-            return compensateMapper.insertSelective(toCompensate(compensateInfo));
+            Compensate compensate = toCompensate(compensateInfo);
+            compensateMapper.insertSelective(compensate);
+            return compensate.getId() + "";
         }
 
         String methodArgs = compensateInfo.getMethodArgs();
@@ -67,11 +69,12 @@ public class JdbcCompensateStore implements CompensateStore {
                         return compensateMethodArgs;
                     })
                     .collect(Collectors.toList());
-            return compensateRepository.insertCompensate(compensate, collect);
-
+            compensateRepository.insertCompensate(compensate, collect);
+            return compensate.getId() + "";
         }
         Compensate compensate = toCompensate(compensateInfo);
-        return compensateMapper.insertSelective(compensate);
+        compensateMapper.insertSelective(compensate);
+        return compensate.getId() + "";
 
     }
 

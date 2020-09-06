@@ -7,6 +7,7 @@ import com.weweibuy.framework.compensate.interceptor.CompensateBeanFactoryPointc
 import com.weweibuy.framework.compensate.interceptor.CompensateInterceptor;
 import com.weweibuy.framework.compensate.interceptor.CompensatePointcut;
 import com.weweibuy.framework.compensate.support.CompensateAnnotationMetaDataParser;
+import com.weweibuy.framework.compensate.support.CompensateRecorder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Bean;
@@ -55,7 +56,7 @@ public class CompensateAdvisorConfig implements ImportAware {
     @Bean
     @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
     public CompensateBeanFactoryPointcutAdvisor compensateBeanFactoryPointcutAdvisor(CompensateAnnotationMetaDataParser parser,
-                                                                                     CompensateStore store) {
+                                                                                     CompensateStore store, CompensateRecorder compensateRecorder) {
         ExecutorService executorService = null;
         if (!CollectionUtils.isEmpty(configurerList)) {
             executorService = configurerList.stream().map(CompensateConfigurer::getAdviceExecutorService)
@@ -66,7 +67,7 @@ public class CompensateAdvisorConfig implements ImportAware {
         CompensateBeanFactoryPointcutAdvisor advisor = new CompensateBeanFactoryPointcutAdvisor();
         advisor.setPc(new CompensatePointcut());
         advisor.setOrder(enableCompensate.<Integer>getNumber("order"));
-        advisor.setAdvice(new CompensateInterceptor(store, parser, executorService, compensateAlarmService));
+        advisor.setAdvice(new CompensateInterceptor(store, parser, executorService, compensateAlarmService, compensateRecorder));
         return advisor;
     }
 

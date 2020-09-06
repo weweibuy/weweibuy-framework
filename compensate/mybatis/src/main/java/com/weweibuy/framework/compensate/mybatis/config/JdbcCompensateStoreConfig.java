@@ -5,10 +5,13 @@ import com.weweibuy.framework.compensate.core.CompensateStore;
 import com.weweibuy.framework.compensate.mybatis.mapper.CompensateMapper;
 import com.weweibuy.framework.compensate.mybatis.repository.CompensateRepository;
 import com.weweibuy.framework.compensate.mybatis.store.JdbcCompensateStore;
+import com.weweibuy.framework.compensate.mybatis.support.JdbcCompensateRecorder;
+import com.weweibuy.framework.compensate.support.CompensateRecorder;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 
 /**
  * @author durenhao
@@ -23,6 +26,13 @@ public class JdbcCompensateStoreConfig {
     public CompensateStore jdbcCompensateStore() {
         return new JdbcCompensateStore();
     }
+
+    @Bean
+    @Primary
+    public CompensateRecorder jdbcCompensateRecorder() {
+        return new JdbcCompensateRecorder();
+    }
+
 
     @Bean
     public CompensateRepository compensateRepository() {

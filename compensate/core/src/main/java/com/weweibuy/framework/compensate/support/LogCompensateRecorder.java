@@ -12,6 +12,11 @@ import lombok.extern.slf4j.Slf4j;
 public class LogCompensateRecorder implements CompensateRecorder {
 
     @Override
+    public void recorderCompensateCreate(String id, Exception e) {
+        log.warn("创建补偿任务id: {}, 异常原因:", id, e);
+    }
+
+    @Override
     public void recorderCompensate(CompensateResult compensateResult, Boolean force, CompensateStatus compensateStatus) {
         log.info("补偿id: {}, 结果: {}", compensateResult.getId(), compensateResult.getResult());
     }

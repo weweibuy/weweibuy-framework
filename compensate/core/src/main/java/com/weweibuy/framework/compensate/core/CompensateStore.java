@@ -15,11 +15,11 @@ import java.util.Set;
 public interface CompensateStore {
 
     /**
-     * 保存补偿信息
+     * 保存补偿信息, 返回对应id
      *
      * @param compensateInfo
      */
-    int saveCompensateInfo(CompensateInfo compensateInfo);
+    String saveCompensateInfo(CompensateInfo compensateInfo);
 
     /**
      * 查询补偿信息

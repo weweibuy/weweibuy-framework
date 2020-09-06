@@ -80,6 +80,20 @@ public class CompensateAutoConfiguration {
     }
 
     @Bean
+    @ConditionalOnMissingBean(CompensateRecorder.class)
+    public CompensateRecorder logCompensateRecorder() {
+        return new LogCompensateRecorder();
+    }
+
+
+    @Bean
+    @ConditionalOnMissingBean(CompensateAlarmService.class)
+    public CompensateAlarmService compensateAlarmService() {
+        return new LogCompensateAlarmService();
+    }
+
+
+    @Bean
     public CompensateHandlerService compensateHandlerService(CompensateMethodRegister compensateMethodRegister, CompensateStore compensateStore,
                                                              CompensateTypeResolverComposite composite, CompensateAlarmService alarmService,
                                                              CompensateRecorder compensateRecorder) {
@@ -93,19 +107,6 @@ public class CompensateAutoConfiguration {
                 executorService, compensateRecorder);
     }
 
-
-    @Bean
-    @ConditionalOnMissingBean(CompensateRecorder.class)
-    public CompensateRecorder compensateRecorder() {
-        return new LogCompensateRecorder();
-    }
-
-
-    @Bean
-    @ConditionalOnMissingBean(CompensateAlarmService.class)
-    public CompensateAlarmService compensateAlarmService() {
-        return new LogCompensateAlarmService();
-    }
 
 
     @Bean
