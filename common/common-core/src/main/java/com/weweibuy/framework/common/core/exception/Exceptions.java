@@ -1,7 +1,7 @@
 package com.weweibuy.framework.common.core.exception;
 
 import com.weweibuy.framework.common.core.model.ResponseCodeAndMsg;
-import com.weweibuy.framework.common.core.model.eum.CommonHttpResponseEum;
+import com.weweibuy.framework.common.core.model.eum.CommonErrorCodeEum;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -19,7 +19,7 @@ public class Exceptions {
     }
 
     public static BusinessException badRequestParam() {
-        return new BusinessException(CommonHttpResponseEum.BAD_REQUEST_PARAM);
+        return new BusinessException(CommonErrorCodeEum.BAD_REQUEST_PARAM);
     }
 
     public static BusinessException business(String code, String msg) {
@@ -27,7 +27,7 @@ public class Exceptions {
     }
 
     public static BusinessException business(String msg) {
-        return new BusinessException(newResponseCodeAndMsg(CommonHttpResponseEum.BAD_REQUEST_PARAM.getCode(), msg));
+        return new BusinessException(newResponseCodeAndMsg(CommonErrorCodeEum.BAD_REQUEST_PARAM.getCode(), msg));
     }
 
 
@@ -36,7 +36,7 @@ public class Exceptions {
     }
 
     public static SystemException system(String msg) {
-        return new SystemException(CommonHttpResponseEum.UNKNOWN_EXCEPTION.getCode(), msg);
+        return new SystemException(CommonErrorCodeEum.UNKNOWN_EXCEPTION.getCode(), msg);
     }
 
     public static SystemException system(String msg, Throwable e) {
@@ -52,7 +52,7 @@ public class Exceptions {
     }
 
     public static SystemException unknown() {
-        return new SystemException(CommonHttpResponseEum.UNKNOWN_EXCEPTION);
+        return new SystemException(CommonErrorCodeEum.UNKNOWN_EXCEPTION);
     }
 
 

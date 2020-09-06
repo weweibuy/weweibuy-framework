@@ -1,7 +1,7 @@
 package com.weweibuy.framework.common.core.model.dto;
 
 import com.weweibuy.framework.common.core.model.ResponseCodeAndMsg;
-import com.weweibuy.framework.common.core.model.eum.CommonHttpResponseEum;
+import com.weweibuy.framework.common.core.model.eum.CommonErrorCodeEum;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class CommonCodeJsonResponse implements ResponseCodeAndMsg{
+public class CommonCodeJsonResponse implements ResponseCodeAndMsg {
 
     private String code;
 
@@ -24,47 +24,47 @@ public class CommonCodeJsonResponse implements ResponseCodeAndMsg{
         this.msg = responseCodeAndMsg.getMsg();
     }
 
-    public static final CommonCodeJsonResponse success() {
-        return new CommonCodeJsonResponse(CommonHttpResponseEum.SUCCESS);
+    public static CommonCodeJsonResponse success() {
+        return new CommonCodeJsonResponse(CommonErrorCodeEum.SUCCESS);
     }
 
-    public static final CommonCodeJsonResponse unknownException() {
-        return new CommonCodeJsonResponse(CommonHttpResponseEum.UNKNOWN_EXCEPTION);
+    public static CommonCodeJsonResponse unknownException() {
+        return new CommonCodeJsonResponse(CommonErrorCodeEum.UNKNOWN_EXCEPTION);
     }
 
-    public static final CommonCodeJsonResponse requestLimit() {
-        return new CommonCodeJsonResponse(CommonHttpResponseEum.TOO_MANY_REQUESTS);
+    public static CommonCodeJsonResponse requestLimit() {
+        return new CommonCodeJsonResponse(CommonErrorCodeEum.TOO_MANY_REQUESTS);
     }
 
-    public static final CommonCodeJsonResponse badRequestParam() {
-        return new CommonCodeJsonResponse(CommonHttpResponseEum.BAD_REQUEST_PARAM);
+    public static CommonCodeJsonResponse badRequestParam() {
+        return new CommonCodeJsonResponse(CommonErrorCodeEum.BAD_REQUEST_PARAM);
     }
 
-    public static final CommonCodeJsonResponse unSupportedMediaType() {
-        return new CommonCodeJsonResponse(CommonHttpResponseEum.UNSUPPORTED_MEDIA_TYPE);
+    public static CommonCodeJsonResponse unSupportedMediaType() {
+        return new CommonCodeJsonResponse(CommonErrorCodeEum.UNSUPPORTED_MEDIA_TYPE);
     }
 
-    public static final CommonCodeJsonResponse badRequestParam(String msg) {
-        return new CommonCodeJsonResponse(CommonHttpResponseEum.BAD_REQUEST_PARAM.getCode(), msg);
+    public static CommonCodeJsonResponse badRequestParam(String msg) {
+        return new CommonCodeJsonResponse(CommonErrorCodeEum.BAD_REQUEST_PARAM.getCode(), msg);
     }
 
-    public static final CommonCodeJsonResponse badSystemRequestParam() {
-        return new CommonCodeJsonResponse(CommonHttpResponseEum.BAD_SYSTEM_REQUEST_PARAM);
+    public static CommonCodeJsonResponse badSystemRequestParam() {
+        return new CommonCodeJsonResponse(CommonErrorCodeEum.BAD_SYSTEM_REQUEST_PARAM);
     }
 
-    public static final CommonCodeJsonResponse unauthorized() {
-        return new CommonCodeJsonResponse(CommonHttpResponseEum.UNAUTHORIZED);
+    public static CommonCodeJsonResponse unauthorized() {
+        return new CommonCodeJsonResponse(CommonErrorCodeEum.UNAUTHORIZED);
     }
 
-    public static final CommonCodeJsonResponse forbidden() {
-        return new CommonCodeJsonResponse(CommonHttpResponseEum.FORBIDDEN);
+    public static CommonCodeJsonResponse forbidden() {
+        return new CommonCodeJsonResponse(CommonErrorCodeEum.FORBIDDEN);
     }
 
-    public static final CommonCodeJsonResponse response(String code, String msg) {
+    public static CommonCodeJsonResponse response(String code, String msg) {
         return new CommonCodeJsonResponse(code, msg);
     }
 
-    public static final CommonCodeJsonResponse response(ResponseCodeAndMsg responseCodeAndMsg) {
+    public static CommonCodeJsonResponse response(ResponseCodeAndMsg responseCodeAndMsg) {
         return new CommonCodeJsonResponse(responseCodeAndMsg);
     }
 

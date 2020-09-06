@@ -4,8 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -16,11 +16,15 @@ public class CommonPageResult<T> {
 
     private Long total;
 
-    private Collection<T> list;
+    private List<T> list;
 
     @SuppressWarnings("unchecked")
     public static final <T> CommonPageResult<T> empty() {
         return (CommonPageResult<T>) EMPTY;
+    }
+
+    public static final <T> CommonPageResult<T> withTotalAndList(Long total, List<T> list) {
+        return new CommonPageResult(total, list);
     }
 
 }
