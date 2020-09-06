@@ -1,0 +1,28 @@
+{
+  "groups": [
+    {
+      "name": "common.db.encrypt",
+      "type": "com.weweibuy.framework.common.db.properties.DBEncryptProperties",
+      "sourceType": "com.weweibuy.framework.common.db.properties.DBEncryptProperties"
+    }
+  ],
+  "properties": [
+    {
+      "name": "common.db.encrypt.enable",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.weweibuy.framework.common.db.properties.DBEncryptProperties",
+      "defaultValue": false
+    },
+    {
+      "name": "common.db.encrypt.password",
+      "type": "java.lang.String",
+      "sourceType": "com.weweibuy.framework.common.db.properties.DBEncryptProperties"
+    },
+    {
+      "name": "common.db.encrypt.passwordFile",
+      "type": "java.lang.String",
+      "sourceType": "com.weweibuy.framework.common.db.properties.DBEncryptProperties"
+    }
+  ],
+  "hints": []
+}

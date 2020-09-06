@@ -26,6 +26,11 @@ public class Exceptions {
         return new BusinessException(newResponseCodeAndMsg(code, msg));
     }
 
+    public static BusinessException business(String msg) {
+        return new BusinessException(newResponseCodeAndMsg(CommonHttpResponseEum.BAD_REQUEST_PARAM.getCode(), msg));
+    }
+
+
     public static SystemException system(ResponseCodeAndMsg responseCodeAndMsg) {
         return new SystemException(responseCodeAndMsg);
     }
