@@ -10,7 +10,6 @@
     <result column="next_trigger_time" jdbcType="TIMESTAMP" property="nextTriggerTime" />
     <result column="retry_count" jdbcType="INTEGER" property="retryCount" />
     <result column="compensate_status" jdbcType="TINYINT" property="compensateStatus" />
-    <result column="compensate_result" jdbcType="TINYINT" property="compensateResult" />
     <result column="alarm_count" jdbcType="INTEGER" property="alarmCount" />
     <result column="has_args_ext" jdbcType="BIT" property="hasArgsExt" />
     <result column="is_delete" jdbcType="BIT" property="isDelete" />
@@ -77,8 +76,7 @@
   </sql>
   <sql id="Base_Column_List">
     id, compensate_key, biz_id, compensate_type, method_args, next_trigger_time, retry_count, 
-    compensate_status, compensate_result, alarm_count, has_args_ext, is_delete, create_time, 
-    update_time
+    compensate_status, alarm_count, has_args_ext, is_delete, create_time, update_time
   </sql>
   <select id="selectByExample" parameterType="com.weweibuy.framework.compensate.mybatis.po.CompensateExample" resultMap="BaseResultMap">
     select
@@ -130,14 +128,14 @@
   <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.weweibuy.framework.compensate.mybatis.po.Compensate" useGeneratedKeys="true">
     insert into cm_compensate (compensate_key, biz_id, compensate_type, 
       method_args, next_trigger_time, retry_count, 
-      compensate_status, compensate_result, alarm_count, 
-      has_args_ext, is_delete, create_time, 
-      update_time)
+      compensate_status, alarm_count, has_args_ext, 
+      is_delete, create_time, update_time
+      )
     values (#{compensateKey,jdbcType=VARCHAR}, #{bizId,jdbcType=VARCHAR}, #{compensateType,jdbcType=VARCHAR}, 
       #{methodArgs,jdbcType=VARCHAR}, #{nextTriggerTime,jdbcType=TIMESTAMP}, #{retryCount,jdbcType=INTEGER}, 
-      #{compensateStatus,jdbcType=TINYINT}, #{compensateResult,jdbcType=TINYINT}, #{alarmCount,jdbcType=INTEGER}, 
-      #{hasArgsExt,jdbcType=BIT}, #{isDelete,jdbcType=BIT}, #{createTime,jdbcType=TIMESTAMP}, 
-      #{updateTime,jdbcType=TIMESTAMP})
+      #{compensateStatus,jdbcType=TINYINT}, #{alarmCount,jdbcType=INTEGER}, #{hasArgsExt,jdbcType=BIT}, 
+      #{isDelete,jdbcType=BIT}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}
+      )
   </insert>
   <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.weweibuy.framework.compensate.mybatis.po.Compensate" useGeneratedKeys="true">
     insert into cm_compensate
@@ -162,9 +160,6 @@
       </if>
       <if test="compensateStatus != null">
         compensate_status,
-      </if>
-      <if test="compensateResult != null">
-        compensate_result,
       </if>
       <if test="alarmCount != null">
         alarm_count,
@@ -203,9 +198,6 @@
       </if>
       <if test="compensateStatus != null">
         #{compensateStatus,jdbcType=TINYINT},
-      </if>
-      <if test="compensateResult != null">
-        #{compensateResult,jdbcType=TINYINT},
       </if>
       <if test="alarmCount != null">
         #{alarmCount,jdbcType=INTEGER},
@@ -257,9 +249,6 @@
       <if test="record.compensateStatus != null">
         compensate_status = #{record.compensateStatus,jdbcType=TINYINT},
       </if>
-      <if test="record.compensateResult != null">
-        compensate_result = #{record.compensateResult,jdbcType=TINYINT},
-      </if>
       <if test="record.alarmCount != null">
         alarm_count = #{record.alarmCount,jdbcType=INTEGER},
       </if>
@@ -290,7 +279,6 @@
       next_trigger_time = #{record.nextTriggerTime,jdbcType=TIMESTAMP},
       retry_count = #{record.retryCount,jdbcType=INTEGER},
       compensate_status = #{record.compensateStatus,jdbcType=TINYINT},
-      compensate_result = #{record.compensateResult,jdbcType=TINYINT},
       alarm_count = #{record.alarmCount,jdbcType=INTEGER},
       has_args_ext = #{record.hasArgsExt,jdbcType=BIT},
       is_delete = #{record.isDelete,jdbcType=BIT},
@@ -324,9 +312,6 @@
       <if test="compensateStatus != null">
         compensate_status = #{compensateStatus,jdbcType=TINYINT},
       </if>
-      <if test="compensateResult != null">
-        compensate_result = #{compensateResult,jdbcType=TINYINT},
-      </if>
       <if test="alarmCount != null">
         alarm_count = #{alarmCount,jdbcType=INTEGER},
       </if>
@@ -354,7 +339,6 @@
       next_trigger_time = #{nextTriggerTime,jdbcType=TIMESTAMP},
       retry_count = #{retryCount,jdbcType=INTEGER},
       compensate_status = #{compensateStatus,jdbcType=TINYINT},
-      compensate_result = #{compensateResult,jdbcType=TINYINT},
       alarm_count = #{alarmCount,jdbcType=INTEGER},
       has_args_ext = #{hasArgsExt,jdbcType=BIT},
       is_delete = #{isDelete,jdbcType=BIT},

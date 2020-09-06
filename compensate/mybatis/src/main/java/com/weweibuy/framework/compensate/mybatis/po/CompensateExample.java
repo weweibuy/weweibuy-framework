@@ -663,66 +663,6 @@ public class CompensateExample {
             return (Criteria) this;
         }
 
-        public Criteria andCompensateResultIsNull() {
-            addCriterion("compensate_result is null");
-            return (Criteria) this;
-        }
-
-        public Criteria andCompensateResultIsNotNull() {
-            addCriterion("compensate_result is not null");
-            return (Criteria) this;
-        }
-
-        public Criteria andCompensateResultEqualTo(Byte value) {
-            addCriterion("compensate_result =", value, "compensateResult");
-            return (Criteria) this;
-        }
-
-        public Criteria andCompensateResultNotEqualTo(Byte value) {
-            addCriterion("compensate_result <>", value, "compensateResult");
-            return (Criteria) this;
-        }
-
-        public Criteria andCompensateResultGreaterThan(Byte value) {
-            addCriterion("compensate_result >", value, "compensateResult");
-            return (Criteria) this;
-        }
-
-        public Criteria andCompensateResultGreaterThanOrEqualTo(Byte value) {
-            addCriterion("compensate_result >=", value, "compensateResult");
-            return (Criteria) this;
-        }
-
-        public Criteria andCompensateResultLessThan(Byte value) {
-            addCriterion("compensate_result <", value, "compensateResult");
-            return (Criteria) this;
-        }
-
-        public Criteria andCompensateResultLessThanOrEqualTo(Byte value) {
-            addCriterion("compensate_result <=", value, "compensateResult");
-            return (Criteria) this;
-        }
-
-        public Criteria andCompensateResultIn(List<Byte> values) {
-            addCriterion("compensate_result in", values, "compensateResult");
-            return (Criteria) this;
-        }
-
-        public Criteria andCompensateResultNotIn(List<Byte> values) {
-            addCriterion("compensate_result not in", values, "compensateResult");
-            return (Criteria) this;
-        }
-
-        public Criteria andCompensateResultBetween(Byte value1, Byte value2) {
-            addCriterion("compensate_result between", value1, value2, "compensateResult");
-            return (Criteria) this;
-        }
-
-        public Criteria andCompensateResultNotBetween(Byte value1, Byte value2) {
-            addCriterion("compensate_result not between", value1, value2, "compensateResult");
-            return (Criteria) this;
-        }
-
         public Criteria andAlarmCountIsNull() {
             addCriterion("alarm_count is null");
             return (Criteria) this;

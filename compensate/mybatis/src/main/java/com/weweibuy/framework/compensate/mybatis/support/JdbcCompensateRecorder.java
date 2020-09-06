@@ -20,6 +20,8 @@ import java.util.concurrent.ExecutorService;
  **/
 public class JdbcCompensateRecorder implements CompensateRecorder, InitializingBean {
 
+    private static final String INIT_COMPENSATE_STATE = "INIT";
+
     @Autowired
     private CompensateLogMapper compensateLogMapper;
 
@@ -29,6 +31,16 @@ public class JdbcCompensateRecorder implements CompensateRecorder, InitializingB
     private ExecutorService executorService;
 
     @Override
+    public void recorderCompensateCreate(String id, Exception e) {
+        String message = e.getMessage();
+        if (executorService != null) {
+            executorService.execute(() -> insert(id, message));
+        } else {
+            insert(id, message);
+        }
+    }
+
+    @Override
     public void recorderCompensate(CompensateResult compensateResult, Boolean force, CompensateStatus compensateStatus) {
         if (executorService != null) {
             executorService.execute(() -> insert(compensateResult, force, compensateStatus));
@@ -36,6 +48,17 @@ public class JdbcCompensateRecorder implements CompensateRecorder, InitializingB
             insert(compensateResult, force, compensateStatus);
         }
     }
+
+
+    public void insert(String id, String exceptionMsg) {
+        CompensateLog compensateLog = new CompensateLog();
+        compensateLog.setCompensateId(Long.valueOf(id));
+        compensateLog.setExceptionInfo(exceptionMsg);
+        compensateLog.setTriggerType(CompensateTriggerType.SYSTEM.toString());
+        compensateLog.setCompensateState(INIT_COMPENSATE_STATE);
+        insertCompensateLog(compensateLog);
+    }
+
 
     public void insert(CompensateResult compensateResult, Boolean force, CompensateStatus compensateStatus) {
         CompensateLog compensateLog = new CompensateLog();

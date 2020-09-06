@@ -29,10 +29,10 @@ public class SimpleCompensateStore implements CompensateStore {
     }
 
     @Override
-    public int saveCompensateInfo(CompensateInfo compensateInfo) {
+    public String saveCompensateInfo(CompensateInfo compensateInfo) {
         String id = atomicInteger.getAndDecrement() + "";
         compensateInfoMap.put(id, toCompensateInfoExt(id, compensateInfo));
-        return 1;
+        return id;
     }
 
     @Override
