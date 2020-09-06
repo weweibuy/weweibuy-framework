@@ -18,9 +18,15 @@ public enum CompensateResultEum {
     RETRY_FAIL,
 
     /**
-     * 补偿重试失败,触发恢复方法
+     * 补偿重试失败,触发恢复方法,失败
      */
-    RETRY_FAIL_RECOVER,
+    RETRY_FAIL_RECOVER_FAIL,
+
+    /**
+     * 补偿重试失败,触发恢复方法,成功
+     */
+    RETRY_FAIL_RECOVER_SUCCESS,
+
 
     /**
      * 补偿重试成功

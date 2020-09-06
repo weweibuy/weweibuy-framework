@@ -24,9 +24,18 @@ public class SimpleTimerCompensateTrigger extends AbstractCompensateTrigger {
         this.connectionManagerTimer.schedule(new TimerTask() {
             @Override
             public void run() {
-                trigger();
+                trigger0();
             }
         }, 5000, 3000);
+    }
+
+
+    private void trigger0() {
+        try {
+            trigger();
+        } catch (Exception e) {
+            log.warn("补偿时发生异常: ", e);
+        }
     }
 
 }
