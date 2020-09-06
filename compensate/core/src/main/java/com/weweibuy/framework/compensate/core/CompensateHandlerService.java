@@ -211,8 +211,15 @@ public class CompensateHandlerService {
             if (compensateHandlerMethod.hasRecoverMethod() &&
                     CompensateStatus.ALARM_ABLE.equals(RuleParser.parserToStatus(compensateInfo))) {
                 // 执行recover 方法
-                invokeRecover(compensateHandlerMethod, objects);
-                return CompensateResult.fromCompensateInfoExt(compensateInfo, CompensateResultEum.RETRY_FAIL_RECOVER, throwable.getMessage());
+                try {
+                    invokeRecover(compensateHandlerMethod, objects);
+                } catch (Exception e1) {
+                    Throwable recoverThrowable = e1 instanceof InvocationTargetException ? ((InvocationTargetException) e1).getTargetException() : e1;
+                    log.warn("补偿: {}, 调用恢复方法异常:", compensateInfo, recoverThrowable);
+                    return CompensateResult.fromCompensateInfoExt(compensateInfo, CompensateResultEum.RETRY_FAIL_RECOVER_FAIL, throwable.getMessage());
+                }
+                compensateStore.deleteCompensateInfo(compensateInfo.getId(), false);
+                return CompensateResult.fromCompensateInfoExt(compensateInfo, CompensateResultEum.RETRY_FAIL_RECOVER_SUCCESS, throwable.getMessage());
             }
             return CompensateResult.fromCompensateInfoExt(compensateInfo, CompensateResultEum.RETRY_FAIL, throwable.getMessage());
         }

@@ -61,15 +61,27 @@ public class CompensateSimpleService {
         return "success";
     }
 
-    @Compensate(key = "CompensateSimpleService_5", bizId = "#user.name + '_' + #user.age")
+    @Compensate(key = "CompensateSimpleService_5", bizId = "#user.name + '_' + #user.age",
+            recover = @Recover(beanName = "compensateSimpleService", method = "run61"))
     public String run5(User user, Dog dog) {
         if (integer < 10) {
             integer++;
-            throw new RuntimeException("....");
+            throw new RuntimeException("...." + integer);
         }
         integer = 0;
         return "success";
     }
+
+    @Compensate(key = "CompensateSimpleService_61")
+    public String run61(User user, Dog dog) {
+        if (integer < 20) {
+            integer++;
+            throw new RuntimeException("...." + integer);
+        }
+        integer = 0;
+        return "success";
+    }
+
 
     @Compensate(key = "CompensateSimpleService_6")
     public String run6(User user, Dog... dog) {

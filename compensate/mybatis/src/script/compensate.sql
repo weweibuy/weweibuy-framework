@@ -36,9 +36,9 @@ create table cm_compensate_log
 (
    id                   bigint unsigned not null auto_increment comment 'id',
    compensate_id        bigint unsigned not null comment '补偿id 关联补偿表',
-   trigger_type         varchar(20) not null comment '触发方式(SYSTEM:系统触发; FORCE:人工强制触发 )',
-   compensate_state     varchar(20) not null comment '补偿状态(INIT:初始态;RETRY_ABLE:可以重试; ALARM_ABLE:可以报警; OVER_ALARM_COUNT:超出报警次数)',
-   compensate_result    varchar(20) not null default '' comment '补偿结果: (RETRY_FAIL:补偿重试失败; RETRY_FAIL_RECOVER:补偿重试失败,触发恢复方法; RETRY_SUCCESS:补偿重试成功; ALARM:报警; OVER_ALARM_COUNT:超出报警上限 补偿失败)',
+   trigger_type         varchar(30) not null comment '触发方式(SYSTEM:系统触发; FORCE:人工强制触发 )',
+   compensate_state     varchar(30) not null comment '补偿状态(INIT:初始态;RETRY_ABLE:可以重试; ALARM_ABLE:可以报警; OVER_ALARM_COUNT:超出报警次数)',
+   compensate_result    varchar(30) not null default '' comment '补偿结果: (RETRY_FAIL:补偿重试失败; RETRY_FAIL_RECOVER_FAIL:重试失败,触发恢复方法失败; RETRY_FAIL_RECOVER_SUCCESS:重试失败,触发恢复方法成功 ;RETRY_SUCCESS:补偿重试成功; ALARM:报警; OVER_ALARM_COUNT:超出报警上限 补偿失败)',
    exception_info       varchar(5000) not null default '' comment '异常信息',
    create_time          timestamp not null default CURRENT_TIMESTAMP comment '创建时间',
    update_time          timestamp not null default CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP comment '更新时间',
