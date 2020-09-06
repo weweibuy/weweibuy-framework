@@ -91,6 +91,6 @@ common:
       disablePath: /hello1/**
   db:
     encrypt:
-      enable: false
+      enable: true
       password: 123456
-      password-file: E:/tmp/key/aes/aes.key
+     # password-file: E:/tmp/key/aes/aes.key
