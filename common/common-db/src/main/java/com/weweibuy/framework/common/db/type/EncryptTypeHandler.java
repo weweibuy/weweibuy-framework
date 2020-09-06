@@ -25,19 +25,23 @@ public class EncryptTypeHandler extends BaseTypeHandler<String> {
 
     @Override
     public String getNullableResult(ResultSet rs, String columnName) throws SQLException {
-        String r = rs.getString(columnName);
-        return r == null ? null : (AESEncryptHelper.isEncrypted(r) ? AESEncryptHelper.decrypt(r) : r);
+        return encrypted(rs.getString(columnName));
     }
 
     @Override
     public String getNullableResult(ResultSet rs, int columnIndex) throws SQLException {
-        String r = rs.getString(columnIndex);
-        return r == null ? null : (AESEncryptHelper.isEncrypted(r) ? AESEncryptHelper.decrypt(r) : r);
+        return encrypted(rs.getString(columnIndex));
     }
 
     @Override
     public String getNullableResult(CallableStatement cs, int columnIndex) throws SQLException {
-        String r = cs.getString(columnIndex);
-        return r == null ? null : (AESEncryptHelper.isEncrypted(r) ? AESEncryptHelper.decrypt(r) : r);
+        return encrypted(cs.getString(columnIndex));
     }
+
+
+    private String encrypted(String content) {
+        return content == null ? null : (AESEncryptHelper.isEncrypted(content) ?
+                AESEncryptHelper.decrypt(content) : content);
+    }
+
 }

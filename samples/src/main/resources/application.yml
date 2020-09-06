@@ -89,3 +89,8 @@ common:
   log:
     http:
       disablePath: /hello1/**
+  db:
+    encrypt:
+      enable: false
+      password: 123456
+      password-file: E:/tmp/key/aes/aes.key

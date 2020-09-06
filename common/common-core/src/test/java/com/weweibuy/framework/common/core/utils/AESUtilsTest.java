@@ -7,12 +7,20 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
+import java.io.File;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class AESUtilsTest {
+
+    @Test
+    public void writeKey() throws Exception {
+        SecretKey secretKey = AESUtils.generateKey();
+        SecretKey key = AESUtils.createKey("123456");
+        AESUtils.writeKey(key, new File("E:\\tmp\\key\\aes\\aes.key"));
+    }
 
     static String pw = "fc53445b6a2e2b2437f369d7ffbf7d05";
 
