@@ -1,7 +1,7 @@
 package com.weweibuy.framework.common.mvc.advice;
 
 import com.weweibuy.framework.common.core.model.constant.CommonConstant;
-import com.weweibuy.framework.common.core.model.eum.CommonHttpResponseEum;
+import com.weweibuy.framework.common.core.model.eum.CommonErrorCodeEum;
 import com.weweibuy.framework.common.core.utils.HttpRequestUtils;
 import com.weweibuy.framework.common.log.logger.HttpLogger;
 import lombok.extern.slf4j.Slf4j;
@@ -28,10 +28,10 @@ public class CommonErrorAttributes extends DefaultErrorAttributes {
 
 
     public CommonErrorAttributes() {
-        notFoundAttributes.put("code", CommonHttpResponseEum.NOT_FOUND.getCode());
-        notFoundAttributes.put("msg", CommonHttpResponseEum.NOT_FOUND.getMsg());
-        unKnownAttributes.put("code", CommonHttpResponseEum.UNKNOWN_EXCEPTION.getCode());
-        unKnownAttributes.put("msg", CommonHttpResponseEum.UNKNOWN_EXCEPTION.getMsg());
+        notFoundAttributes.put("code", CommonErrorCodeEum.NOT_FOUND.getCode());
+        notFoundAttributes.put("msg", CommonErrorCodeEum.NOT_FOUND.getMsg());
+        unKnownAttributes.put("code", CommonErrorCodeEum.UNKNOWN_EXCEPTION.getCode());
+        unKnownAttributes.put("msg", CommonErrorCodeEum.UNKNOWN_EXCEPTION.getMsg());
         requestExceptionAttributes.put("msg", "请求参数错误");
     }
 

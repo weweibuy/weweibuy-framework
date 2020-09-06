@@ -13,13 +13,33 @@ import lombok.Getter;
 @Getter
 public enum CommonErrorCodeEum implements ResponseCodeAndMsg {
 
-    JSON_PARSE_EXCEPTION("100001", "Json数据解析异常"),
+    SUCCESS("0", "请求成功"),
 
-    JSON_WRITE_EXCEPTION("100002", "Json序列化异常"),
+    BAD_REQUEST_PARAM("400", "请求参数错误"),
 
-    UNKNOWN_EXCEPTION("999999", "未知异常"),
+    REQUEST_EXCEPTION("400", "请求异常"),
 
-    NETWORK_EXCEPTION("999998", "网络超时"),
+    UNAUTHORIZED("401", "认证失败"),
+
+    FORBIDDEN("403", "没有权限"),
+
+    NOT_FOUND("404", "请求地址不存在"),
+
+    UNSUPPORTED_MEDIA_TYPE("415", "不支持的请求格式"),
+
+    TOO_MANY_REQUESTS("429", "请求限流"),
+
+    UNKNOWN_SERVER_EXCEPTION("500", "服务异常"),
+
+    JSON_PARSE_EXCEPTION("1000001", "Json数据解析异常"),
+
+    JSON_WRITE_EXCEPTION("1000002", "Json序列化异常"),
+
+    BAD_SYSTEM_REQUEST_PARAM("1000003", "系统级输入参数错误"),
+
+    UNKNOWN_EXCEPTION("9999999", "未知异常"),
+
+    NETWORK_EXCEPTION("9999998", "网络超时"),
 
 
     ;

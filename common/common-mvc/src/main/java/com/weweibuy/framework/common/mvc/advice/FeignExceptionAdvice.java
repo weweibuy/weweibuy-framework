@@ -4,7 +4,6 @@ import com.weweibuy.framework.common.core.exception.MethodKeyFeignException;
 import com.weweibuy.framework.common.core.model.ResponseCodeAndMsg;
 import com.weweibuy.framework.common.core.model.dto.CommonCodeJsonResponse;
 import com.weweibuy.framework.common.core.model.eum.CommonErrorCodeEum;
-import com.weweibuy.framework.common.core.model.eum.CommonHttpResponseEum;
 import com.weweibuy.framework.common.log.logger.HttpLogger;
 import feign.FeignException;
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +25,6 @@ import java.io.IOException;
 @RestControllerAdvice
 @Slf4j
 public class FeignExceptionAdvice {
-
 
     @Autowired(required = false)
     private FeignExceptionHandler exceptionHandler;
@@ -55,9 +53,9 @@ public class FeignExceptionAdvice {
 
         ResponseCodeAndMsg codeAndMsg = null;
         if (e.status() < 500) {
-            codeAndMsg = CommonHttpResponseEum.REQUEST_EXCEPTION;
+            codeAndMsg = CommonErrorCodeEum.REQUEST_EXCEPTION;
         } else {
-            codeAndMsg = CommonHttpResponseEum.UNKNOWN_SERVER_EXCEPTION;
+            codeAndMsg = CommonErrorCodeEum.UNKNOWN_SERVER_EXCEPTION;
         }
 
         return ResponseEntity.status(e.status()).body(CommonCodeJsonResponse.response(codeAndMsg));
