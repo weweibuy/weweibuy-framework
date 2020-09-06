@@ -17,8 +17,14 @@ public class DBEncryptProperties {
 
     private Boolean enable = false;
 
+    /**
+     * AES 加密密码 与 passwordFile 二选一
+     */
     private String password;
 
+    /**
+     * AES 加密密码文件  与 password 二选一
+     */
     private String passwordFile;
 
 
