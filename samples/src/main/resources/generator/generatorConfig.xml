@@ -77,5 +77,10 @@
             <columnOverride column="is_delete"  property="deleted"  javaType="Boolean"/>
         </table>
 
+        <table tableName="db_encrypt" domainObjectName="DBEncrypt" >
+            <columnOverride column="phone"  typeHandler="com.weweibuy.framework.common.db.type.EncryptTypeHandler"/>
+            <columnOverride column="id_no"  typeHandler="com.weweibuy.framework.common.db.type.EncryptTypeHandler"/>
+        </table>
+
     </context>
 </generatorConfiguration>

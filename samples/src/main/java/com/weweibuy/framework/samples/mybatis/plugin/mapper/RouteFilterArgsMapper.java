@@ -12,8 +12,6 @@ public interface RouteFilterArgsMapper {
 
     int deleteByExample(RouteFilterArgsExample example);
 
-    int deleteByPrimaryKey(Long id);
-
     int insert(RouteFilterArgs record);
 
     int insertSelective(RouteFilterArgs record);
@@ -26,13 +24,7 @@ public interface RouteFilterArgsMapper {
 
     List<RouteFilterArgs> selectByExample(RouteFilterArgsExample example);
 
-    RouteFilterArgs selectByPrimaryKey(Long id);
-
     int updateByExampleSelective(@Param("record") RouteFilterArgs record, @Param("example") RouteFilterArgsExample example);
 
     int updateByExample(@Param("record") RouteFilterArgs record, @Param("example") RouteFilterArgsExample example);
-
-    int updateByPrimaryKeySelective(RouteFilterArgs record);
-
-    int updateByPrimaryKey(RouteFilterArgs record);
 }
