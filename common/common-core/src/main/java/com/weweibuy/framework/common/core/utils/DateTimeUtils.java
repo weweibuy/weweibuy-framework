@@ -42,6 +42,36 @@ public class DateTimeUtils {
     }
 
     /**
+     * 标准时间转 LocalDateTime
+     *
+     * @param str yyyy-MM-dd HH:mm:ss
+     * @return
+     */
+    public static LocalDateTime stringToLocalDateTime(String str) {
+        return LocalDateTime.parse(str, CommonConstant.DateConstant.STANDARD_DATE_TIME_FORMATTER);
+    }
+
+    /**
+     * 标准时间转 LocalDate
+     *
+     * @param str yyyy-MM-dd
+     * @return
+     */
+    public static LocalDate stringToLocalDate(String str) {
+        return LocalDate.parse(str, CommonConstant.DateConstant.STANDARD_DATE_FORMATTER);
+    }
+
+    /**
+     * 转为标准日期 String
+     *
+     * @param date
+     * @return
+     */
+    public static String toStringDate(LocalDate date) {
+        return date.format(CommonConstant.DateConstant.STANDARD_DATE_FORMATTER);
+    }
+
+    /**
      * 转为时间日期 String
      *
      * @param date
@@ -63,6 +93,17 @@ public class DateTimeUtils {
     }
 
     /**
+     * data 转localDate
+     *
+     * @param date
+     * @return
+     */
+    public static LocalDate dateToLocalDate(Date date) {
+        return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+    }
+
+
+    /**
      * LocalDateTime 转 date
      *
      * @param localDateTime
@@ -71,6 +112,17 @@ public class DateTimeUtils {
     public static Date localDateTimeToDate(LocalDateTime localDateTime) {
         return Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
     }
+
+    /**
+     * localData 转 date
+     *
+     * @param localDate
+     * @return
+     */
+    public static Date localDateTimeToDate(LocalDate localDate) {
+        return Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+    }
+
 
     /**
      * 毫秒时间戳转 LocalDateTime
