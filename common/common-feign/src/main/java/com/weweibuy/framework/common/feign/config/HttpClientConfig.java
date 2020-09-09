@@ -21,12 +21,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.cloud.netflix.ribbon.SpringClientFactory;
-import org.springframework.cloud.openfeign.ribbon.CachingSpringLoadBalancerFactory;
-import org.springframework.cloud.openfeign.ribbon.LoadBalancerFeignClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.ExtractingResponseErrorHandler;
 import org.springframework.web.client.RestTemplate;
@@ -63,14 +59,6 @@ public class HttpClientConfig {
     @Bean
     public Client feignClient(HttpClient httpClient) {
         return new ApacheHttpClient(httpClient);
-    }
-
-    @Bean
-    @Primary
-    @ConditionalOnClass(name = "org.springframework.cloud.openfeign.ribbon.LoadBalancerFeignClient")
-    public Client feignClient(CachingSpringLoadBalancerFactory cachingFactory,
-                              SpringClientFactory clientFactory, Client client) {
-        return new LoadBalancerFeignClient(client, cachingFactory, clientFactory);
     }
 
 
