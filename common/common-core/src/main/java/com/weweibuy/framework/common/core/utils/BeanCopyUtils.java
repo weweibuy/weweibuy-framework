@@ -36,12 +36,33 @@ public class BeanCopyUtils {
             return null;
         }
         Class<?> srcClazz = src.getClass();
-        Key key = new Key(srcClazz, destClazz);
-        BeanCopier beanCopier = BEAN_COPIER_MAP.computeIfAbsent(key, k -> BeanCopier.create(srcClazz, destClazz, false));
+        BeanCopier beanCopier = beanCopier(srcClazz, destClazz);
         T newInstance = newInstance(destClazz);
         beanCopier.copy(src, newInstance, null);
         return newInstance;
     }
+
+
+    /**
+     * 拷贝bean 对象
+     *
+     * @param src        源对象
+     * @param destObject 必须有默认空参构造
+     * @param <T>
+     * @return
+     */
+    public static <T> T copy(Object src, T destObject) {
+        if (destObject == null) {
+            return null;
+        }
+        if (src == null) {
+            return destObject;
+        }
+        BeanCopier beanCopier = beanCopier(src.getClass(), destObject.getClass());
+        beanCopier.copy(src, destObject, null);
+        return destObject;
+    }
+
 
     /**
      * 集合拷贝
@@ -60,8 +81,7 @@ public class BeanCopyUtils {
         if (srcClazz == null || destClazz == null) {
             throw new NullPointerException();
         }
-        Key key = new Key(srcClazz, destClazz);
-        BeanCopier beanCopier = BEAN_COPIER_MAP.computeIfAbsent(key, k -> BeanCopier.create(srcClazz, destClazz, false));
+        BeanCopier beanCopier = beanCopier(srcClazz, destClazz);
         return collection.stream()
                 .map(c -> {
                     R newInstance = newInstance(destClazz);
@@ -70,6 +90,18 @@ public class BeanCopyUtils {
                 })
                 .collect(Collectors.toList());
 
+    }
+
+    /**
+     * 获取 BeanCopier
+     *
+     * @param srcClazz
+     * @param destClazz
+     * @return
+     */
+    private static BeanCopier beanCopier(Class srcClazz, Class destClazz) {
+        Key key = new Key(srcClazz, destClazz);
+        return BEAN_COPIER_MAP.computeIfAbsent(key, k -> BeanCopier.create(srcClazz, destClazz, false));
     }
 
     private static <T> T newInstance(Class<T> destClazz) {
