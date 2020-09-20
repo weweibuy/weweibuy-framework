@@ -2,6 +2,7 @@ package com.weweibuy.framework.common.mvc.advice;
 
 import com.weweibuy.framework.common.core.model.constant.CommonConstant;
 import com.weweibuy.framework.common.core.model.eum.CommonErrorCodeEum;
+import com.weweibuy.framework.common.core.support.SystemIdGetter;
 import com.weweibuy.framework.common.core.utils.HttpRequestUtils;
 import com.weweibuy.framework.common.log.logger.HttpLogger;
 import lombok.extern.slf4j.Slf4j;
@@ -12,6 +13,7 @@ import org.springframework.web.context.request.WebRequest;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * @author durenhao
@@ -19,6 +21,8 @@ import java.util.Map;
  **/
 @Slf4j
 public class CommonErrorAttributes extends DefaultErrorAttributes {
+
+    private SystemIdGetter systemIdGetter;
 
     private final Map<String, Object> notFoundAttributes = new LinkedHashMap<>(4);
 
@@ -28,12 +32,23 @@ public class CommonErrorAttributes extends DefaultErrorAttributes {
 
 
     public CommonErrorAttributes() {
-        notFoundAttributes.put("code", CommonErrorCodeEum.NOT_FOUND.getCode());
+        this(null);
+    }
+
+    public CommonErrorAttributes(SystemIdGetter systemIdGetter) {
+        notFoundAttributes.put("code", Optional.ofNullable(systemIdGetter)
+                .map(SystemIdGetter::getSystemId)
+                .map(id -> id + CommonErrorCodeEum.NOT_FOUND.getCode())
+                .orElse(CommonErrorCodeEum.NOT_FOUND.getCode()));
         notFoundAttributes.put("msg", CommonErrorCodeEum.NOT_FOUND.getMsg());
-        unKnownAttributes.put("code", CommonErrorCodeEum.UNKNOWN_EXCEPTION.getCode());
+        unKnownAttributes.put("code", Optional.ofNullable(systemIdGetter)
+                .map(SystemIdGetter::getSystemId)
+                .map(id -> id + CommonErrorCodeEum.UNKNOWN_EXCEPTION.getCode())
+                .orElse(CommonErrorCodeEum.UNKNOWN_EXCEPTION.getCode()));
         unKnownAttributes.put("msg", CommonErrorCodeEum.UNKNOWN_EXCEPTION.getMsg());
         requestExceptionAttributes.put("msg", "请求参数错误");
     }
+
 
     @Override
     public Map<String, Object> getErrorAttributes(WebRequest webRequest, boolean includeStackTrace) {
@@ -65,7 +80,11 @@ public class CommonErrorAttributes extends DefaultErrorAttributes {
         }
 
         if (HttpStatus.BAD_REQUEST.value() <= status && status < HttpStatus.INTERNAL_SERVER_ERROR.value()) {
-            requestExceptionAttributes.put("code", status);
+            requestExceptionAttributes.put("code", Optional.ofNullable(systemIdGetter)
+                    .map(SystemIdGetter::getSystemId)
+                    .map(id -> id + status)
+                    .orElse(status + ""));
+            unKnownAttributes.put("msg", CommonErrorCodeEum.UNKNOWN_EXCEPTION.getMsg());
             return requestExceptionAttributes;
         }
         return unKnownAttributes;

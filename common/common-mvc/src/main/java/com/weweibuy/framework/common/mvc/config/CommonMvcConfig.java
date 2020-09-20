@@ -5,6 +5,7 @@ import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.weweibuy.framework.common.core.model.constant.CommonConstant;
+import com.weweibuy.framework.common.core.support.SystemIdGetter;
 import com.weweibuy.framework.common.mvc.advice.CommonErrorAttributes;
 import com.weweibuy.framework.common.mvc.advice.CommonExceptionAdvice;
 import com.weweibuy.framework.common.mvc.advice.FeignExceptionAdvice;
@@ -28,6 +29,8 @@ import java.util.List;
 @Configuration
 public class CommonMvcConfig {
 
+    @Autowired(required = false)
+    private SystemIdGetter systemIdGetter;
 
     @Autowired(required = false)
     private List<FeignMethodKeyMappingConverter> feignMethodKeyMappingConverterList;
@@ -53,7 +56,7 @@ public class CommonMvcConfig {
     @Bean
     @Primary
     public CommonErrorAttributes commonErrorAttributes() {
-        return new CommonErrorAttributes();
+        return new CommonErrorAttributes(systemIdGetter);
     }
 
     @Bean
