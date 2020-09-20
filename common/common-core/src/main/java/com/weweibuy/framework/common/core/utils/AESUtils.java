@@ -183,29 +183,4 @@ public class AESUtils {
     }
 
 
-    public static void main(String[] args) throws Exception {
-
-        // the bytes you want to encrypt
-        byte[] message = "Hello world!".getBytes();
-
-        // create a key by using your own password
-        SecretKey secretKey = AESUtils.createKey("my-password");
-
-        // encrypt the message using the key that was generated
-        byte[] encrypted = AESUtils.encrypt(secretKey, message);
-
-        String hexString = HexUtils.toHexString(encrypted);
-
-        byte[] fromHexString = HexUtils.fromHexString(hexString);
-
-        // decrypt the message by entering a password
-        byte[] decrypted = AESUtils.decrypt(secretKey, fromHexString);
-
-        // results
-        System.out.println("original: " + new String(message));
-        System.out.println("encrypted: " + hexString);
-        System.out.println("decrypted: " + new String(decrypted));
-
-    }
-
 }
