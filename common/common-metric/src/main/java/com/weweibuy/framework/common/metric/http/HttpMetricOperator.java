@@ -67,7 +67,7 @@ public class HttpMetricOperator {
     /**
      * 增加一个统计
      *
-     * @param mappingMap
+     * @param metricPath
      */
     public synchronized Collection<HttpMetric> registryHttpMetric(Set<String> metricPath) {
         Map<String, String> stringMap = metricPath.stream()
