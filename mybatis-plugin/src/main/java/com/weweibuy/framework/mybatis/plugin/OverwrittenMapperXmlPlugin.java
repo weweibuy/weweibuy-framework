@@ -16,7 +16,12 @@ import java.io.File;
 @Slf4j
 public class OverwrittenMapperXmlPlugin extends BasePlugin {
 
-
+    /**
+     * 测试提交
+     * @param sqlMap
+     * @param introspectedTable
+     * @return
+     */
     @Override
     public boolean sqlMapGenerated(GeneratedXmlFile sqlMap, IntrospectedTable introspectedTable) {
         String dir = sqlMap.getTargetPackage();
@@ -37,5 +42,4 @@ public class OverwrittenMapperXmlPlugin extends BasePlugin {
         super.sqlMapGenerated(sqlMap, introspectedTable);
         return true;
     }
-
 }
