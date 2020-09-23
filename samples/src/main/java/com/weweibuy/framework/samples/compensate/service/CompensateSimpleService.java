@@ -70,7 +70,7 @@ public class CompensateSimpleService {
                 throw new RuntimeException("...." + integer);
             }
         }catch (Exception e){
-            throw new IllegalArgumentException(e);
+            throw new IllegalArgumentException("出错误了",e);
         }
 
         integer = 0;
