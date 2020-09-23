@@ -64,10 +64,15 @@ public class CompensateSimpleService {
     @Compensate(key = "CompensateSimpleService_5", bizId = "#user.name + '_' + #user.age",
             recover = @Recover(beanName = "compensateSimpleService", method = "run61"))
     public String run5(User user, Dog dog) {
-        if (integer < 10) {
-            integer++;
-            throw new RuntimeException("...." + integer);
+        try {
+            if (integer < 10) {
+                integer++;
+                throw new RuntimeException("...." + integer);
+            }
+        }catch (Exception e){
+            throw new IllegalArgumentException(e);
         }
+
         integer = 0;
         return "success";
     }
