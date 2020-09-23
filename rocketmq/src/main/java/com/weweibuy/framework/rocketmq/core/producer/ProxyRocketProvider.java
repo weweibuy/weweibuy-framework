@@ -3,10 +3,11 @@ package com.weweibuy.framework.rocketmq.core.producer;
 import com.weweibuy.framework.rocketmq.support.DefaultProxyHandlerFactory;
 import com.weweibuy.framework.rocketmq.support.DefaultRocketMethodHandler;
 import com.weweibuy.framework.rocketmq.support.TargetMethodMetaDataParser;
+import org.apache.rocketmq.client.exception.MQClientException;
 import org.apache.rocketmq.client.producer.MQProducer;
 import org.apache.rocketmq.client.producer.MessageQueueSelector;
 import org.springframework.beans.factory.DisposableBean;
-import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.SmartInitializingSingleton;
 import org.springframework.util.CollectionUtils;
 
 import java.lang.reflect.InvocationHandler;
@@ -20,7 +21,7 @@ import java.util.stream.Collectors;
  * @author durenhao
  * @date 2019/12/29 23:17
  **/
-public class ProxyRocketProvider implements InitializingBean, DisposableBean {
+public class ProxyRocketProvider implements SmartInitializingSingleton, DisposableBean {
 
     private final ProxyHandlerFactory proxyHandlerFactory = new DefaultProxyHandlerFactory();
 
@@ -61,12 +62,16 @@ public class ProxyRocketProvider implements InitializingBean, DisposableBean {
 
 
     @Override
-    public void afterPropertiesSet() throws Exception {
-        mqProducer.start();
+    public void destroy() throws Exception {
+        mqProducer.shutdown();
     }
 
     @Override
-    public void destroy() throws Exception {
-        mqProducer.shutdown();
+    public void afterSingletonsInstantiated() {
+        try {
+            mqProducer.start();
+        } catch (MQClientException e) {
+            throw new IllegalStateException(e);
+        }
     }
 }

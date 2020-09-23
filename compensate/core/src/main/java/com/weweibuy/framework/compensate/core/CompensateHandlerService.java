@@ -200,35 +200,52 @@ public class CompensateHandlerService {
         try {
             doCompensate(compensateHandlerMethod, objects);
         } catch (Exception e) {
-            Throwable throwable = e instanceof InvocationTargetException ? ((InvocationTargetException) e).getTargetException() : e;
-            log.warn("补偿: {} 时发生异常: ", compensateInfo, throwable);
-            if (force) {
-                // 强制触发 不计入重试次数
-                return CompensateResult.fromCompensateInfoExt(compensateInfo, CompensateResultEum.RETRY_FAIL, throwable.getMessage());
-            }
-            compensateStore.updateCompensateInfo(compensateInfo.getId(),
-                    compensateInfo.addRetryToCompensateInfo(RuleParser.nextTriggerTime(compensateInfo)));
-            if (compensateHandlerMethod.hasRecoverMethod() &&
-                    CompensateStatus.ALARM_ABLE.equals(RuleParser.parserToStatus(compensateInfo))) {
-                // 执行recover 方法
-                try {
-                    invokeRecover(compensateHandlerMethod, objects);
-                } catch (Exception e1) {
-                    Throwable recoverThrowable = e1 instanceof InvocationTargetException ? ((InvocationTargetException) e1).getTargetException() : e1;
-                    log.warn("补偿: {}, 调用恢复方法异常:", compensateInfo, recoverThrowable);
-                    return CompensateResult.fromCompensateInfoExt(compensateInfo, CompensateResultEum.RETRY_FAIL_RECOVER_FAIL, throwable.getMessage());
-                }
-                compensateStore.deleteCompensateInfo(compensateInfo.getId(), false);
-                return CompensateResult.fromCompensateInfoExt(compensateInfo, CompensateResultEum.RETRY_FAIL_RECOVER_SUCCESS, throwable.getMessage());
-            }
-            return CompensateResult.fromCompensateInfoExt(compensateInfo, CompensateResultEum.RETRY_FAIL, throwable.getMessage());
+            return handlerCompensateException(compensateHandlerMethod, objects, compensateInfo, force, e);
         }
         compensateStore.deleteCompensateInfo(compensateInfo.getId(), true);
         return CompensateResult.fromCompensateInfoExt(compensateInfo, CompensateResultEum.RETRY_SUCCESS);
     }
 
+
     private void doCompensate(CompensateHandlerMethod compensateHandlerMethod, Object[] args) throws InvocationTargetException {
         compensateHandlerMethod.invoke(args);
+    }
+
+
+    /**
+     * 处理补偿异常
+     *
+     * @param compensateHandlerMethod
+     * @param objects
+     * @param compensateInfo
+     * @param force
+     * @param e
+     * @return
+     */
+    private CompensateResult handlerCompensateException(CompensateHandlerMethod compensateHandlerMethod, Object[] objects,
+                                                        CompensateInfoExt compensateInfo, Boolean force, Exception e) {
+        Throwable throwable = e instanceof InvocationTargetException ? ((InvocationTargetException) e).getTargetException() : e;
+        log.warn("补偿: {} 时发生异常: ", compensateInfo, throwable);
+        if (force) {
+            // 强制触发 不计入重试次数
+            return CompensateResult.fromCompensateInfoExt(compensateInfo, CompensateResultEum.RETRY_FAIL, throwable);
+        }
+        compensateStore.updateCompensateInfo(compensateInfo.getId(),
+                compensateInfo.addRetryToCompensateInfo(RuleParser.nextTriggerTime(compensateInfo)));
+        if (compensateHandlerMethod.hasRecoverMethod() &&
+                CompensateStatus.ALARM_ABLE.equals(RuleParser.parserToStatus(compensateInfo))) {
+            // 执行recover 方法
+            try {
+                invokeRecover(compensateHandlerMethod, objects);
+            } catch (Exception e1) {
+                Throwable recoverThrowable = e1 instanceof InvocationTargetException ? ((InvocationTargetException) e1).getTargetException() : e1;
+                log.warn("补偿: {}, 调用恢复方法异常:", compensateInfo, recoverThrowable);
+                return CompensateResult.fromCompensateInfoExt(compensateInfo, CompensateResultEum.RETRY_FAIL_RECOVER_FAIL, throwable);
+            }
+            compensateStore.deleteCompensateInfo(compensateInfo.getId(), false);
+            return CompensateResult.fromCompensateInfoExt(compensateInfo, CompensateResultEum.RETRY_FAIL_RECOVER_SUCCESS, throwable);
+        }
+        return CompensateResult.fromCompensateInfoExt(compensateInfo, CompensateResultEum.RETRY_FAIL, throwable);
     }
 
 

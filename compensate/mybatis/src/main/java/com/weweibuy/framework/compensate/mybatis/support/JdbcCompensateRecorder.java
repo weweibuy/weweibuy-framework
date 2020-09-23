@@ -1,5 +1,6 @@
 package com.weweibuy.framework.compensate.mybatis.support;
 
+import com.weweibuy.framework.common.core.utils.ExceptionUtils;
 import com.weweibuy.framework.compensate.config.CompensateConfigurer;
 import com.weweibuy.framework.compensate.model.CompensateResult;
 import com.weweibuy.framework.compensate.model.CompensateStatus;
@@ -7,6 +8,7 @@ import com.weweibuy.framework.compensate.model.CompensateTriggerType;
 import com.weweibuy.framework.compensate.mybatis.mapper.CompensateLogMapper;
 import com.weweibuy.framework.compensate.mybatis.po.CompensateLog;
 import com.weweibuy.framework.compensate.support.CompensateRecorder;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -22,6 +24,8 @@ public class JdbcCompensateRecorder implements CompensateRecorder, InitializingB
 
     private static final String INIT_COMPENSATE_STATE = "INIT";
 
+    private static final Integer MAX_EXCEPTION_MSG_LENGTH = 5000;
+
     @Autowired
     private CompensateLogMapper compensateLogMapper;
 
@@ -32,11 +36,11 @@ public class JdbcCompensateRecorder implements CompensateRecorder, InitializingB
 
     @Override
     public void recorderCompensateCreate(String id, Exception e) {
-        String message = e.getMessage();
+        String msg = ExceptionUtils.exceptionMsg(e);
         if (executorService != null) {
-            executorService.execute(() -> insert(id, message));
+            executorService.execute(() -> insert(id, msg));
         } else {
-            insert(id, message);
+            insert(id, msg);
         }
     }
 
@@ -64,7 +68,11 @@ public class JdbcCompensateRecorder implements CompensateRecorder, InitializingB
         CompensateLog compensateLog = new CompensateLog();
         compensateLog.setCompensateId(Long.valueOf(compensateResult.getId()));
         compensateLog.setCompensateResult(compensateResult.getResult().toString());
-        compensateLog.setExceptionInfo(compensateResult.getExceptionMsg());
+        if (StringUtils.isNotBlank(compensateResult.getExceptionMsg()) && compensateResult.getExceptionMsg().length() > MAX_EXCEPTION_MSG_LENGTH) {
+            compensateLog.setExceptionInfo(compensateResult.getExceptionMsg().substring(0, MAX_EXCEPTION_MSG_LENGTH));
+        } else {
+            compensateLog.setExceptionInfo(compensateResult.getExceptionMsg());
+        }
         compensateLog.setTriggerType(force ? CompensateTriggerType.FORCE.toString()
                 : CompensateTriggerType.SYSTEM.toString());
 

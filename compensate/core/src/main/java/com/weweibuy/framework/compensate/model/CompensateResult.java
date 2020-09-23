@@ -1,5 +1,6 @@
 package com.weweibuy.framework.compensate.model;
 
+import com.weweibuy.framework.common.core.utils.ExceptionUtils;
 import lombok.Data;
 import org.springframework.cglib.beans.BeanCopier;
 
@@ -40,5 +41,10 @@ public class CompensateResult extends CompensateInfoExt {
         compensateResult.setExceptionMsg(exceptionMsg);
         return compensateResult;
     }
+
+    public static CompensateResult fromCompensateInfoExt(CompensateInfoExt compensateInfoExt, CompensateResultEum result, Throwable throwable) {
+        return fromCompensateInfoExt(compensateInfoExt, result, ExceptionUtils.exceptionMsg(throwable));
+    }
+
 
 }
