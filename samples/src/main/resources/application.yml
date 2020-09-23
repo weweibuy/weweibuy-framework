@@ -94,3 +94,11 @@ common:
       enable: true
       password: 123456
      # password-file: E:/tmp/key/aes/aes.key
+  swagger:
+    basePackage: com.weweibuy.framework.samples.controller
+    headers:
+      - name: Authorization
+        desc: token令牌
+    response:
+      - status: 400
+        desc: 业务异常

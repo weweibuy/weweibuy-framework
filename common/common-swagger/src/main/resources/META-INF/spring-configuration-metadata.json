@@ -1,0 +1,64 @@
+{
+  "groups": [
+    {
+      "name": "common.swagger",
+      "type": "com.weweibuy.framework.common.swagger.properties.SwaggerProperties",
+      "sourceType": "com.weweibuy.framework.common.swagger.properties.SwaggerProperties"
+    }
+  ],
+  "properties": [
+    {
+      "name": "common.swagger.group",
+      "type": "java.lang.String",
+      "sourceType": "com.weweibuy.framework.common.swagger.properties.SwaggerProperties",
+      "defaultValue": "swagger"
+    },
+    {
+      "name": "common.swagger.version",
+      "type": "java.lang.String",
+      "sourceType": "com.weweibuy.framework.common.swagger.properties.SwaggerProperties",
+      "defaultValue":"v1"
+    },
+    {
+      "name": "common.swagger.basePackage",
+      "type": "java.util.Set<String>",
+      "sourceType": "com.weweibuy.framework.common.swagger.properties.SwaggerProperties"
+    },
+    {
+      "name": "common.swagger.headers",
+      "type": "java.util.List<com.weweibuy.framework.common.swagger.properties.SwaggerProperties.SwaggerHeaderProperties>",
+      "sourceType": "com.weweibuy.framework.common.swagger.properties.SwaggerProperties.SwaggerHeaderProperties"
+    },
+    {
+      "name": "common.swagger.headers.name",
+      "type": "jjava.lang.String",
+      "sourceType": "com.weweibuy.framework.common.swagger.properties.SwaggerProperties.SwaggerHeaderProperties"
+    },
+    {
+      "name": "common.swagger.headers.desc",
+      "type": "java.lang.String",
+      "sourceType": "com.weweibuy.framework.common.swagger.properties.SwaggerProperties.SwaggerHeaderProperties"
+    },
+    {
+      "name": "common.swagger.headers.required",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.weweibuy.framework.common.swagger.properties.SwaggerProperties.SwaggerHeaderProperties"
+    },
+    {
+      "name": "common.swagger.response",
+      "type": "java.util.List<com.weweibuy.framework.common.swagger.properties.SwaggerProperties.HttpStatusDescProperties>",
+      "sourceType": "com.weweibuy.framework.common.swagger.properties.SwaggerProperties.HttpStatusDescProperties"
+    },
+    {
+      "name": "common.swagger.response.status",
+      "type": "java.lang.String",
+      "sourceType": "com.weweibuy.framework.common.swagger.properties.SwaggerProperties.HttpStatusDescProperties"
+    },
+    {
+      "name": "common.swagger.response.desc",
+      "type": "java.lang.String",
+      "sourceType": "com.weweibuy.framework.common.swagger.properties.SwaggerProperties.HttpStatusDescProperties"
+    }
+  ],
+  "hints": []
+}

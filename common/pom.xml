@@ -17,6 +17,7 @@
         <module>common-mvc</module>
         <module>common-core</module>
         <module>common-db</module>
+        <module>common-swagger</module>
     </modules>
 
 
