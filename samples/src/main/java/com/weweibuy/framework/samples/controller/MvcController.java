@@ -22,11 +22,8 @@ public class MvcController {
         return user;
     }
 
-    @RequestMapping("/test-snake")
+    @GetMapping("/test-snake")
     public Object request2(@SnakeCaseRequestParamBody @Valid MvcUser user) {
-//        if (true) {
-//            throw new RuntimeException("xxx");
-//        }
         return CommonDataJsonResponse.success(user);
     }
 
