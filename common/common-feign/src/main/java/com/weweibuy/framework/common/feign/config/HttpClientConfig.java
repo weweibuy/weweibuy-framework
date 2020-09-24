@@ -1,5 +1,6 @@
 package com.weweibuy.framework.common.feign.config;
 
+import com.weweibuy.framework.common.core.concurrent.LogExceptionThreadFactory;
 import com.weweibuy.framework.common.feign.support.NoSwitchHttpClientConnectionOperator;
 import feign.Client;
 import feign.httpclient.ApacheHttpClient;
@@ -32,8 +33,9 @@ import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -48,7 +50,7 @@ public class HttpClientConfig {
     @Autowired
     private HttpClientProperties httpClientProperties;
 
-    private Timer connectionManagerTimer = null;
+    private ScheduledExecutorService schedule;
 
     /**
      * LB 时 {@link 'HttpClientFeignLoadBalancedConfiguration'}
@@ -96,21 +98,17 @@ public class HttpClientConfig {
     }
 
 
-    private HttpClientConnectionManager httpClientConnectionManager() {
+    private synchronized HttpClientConnectionManager httpClientConnectionManager() {
         PoolingHttpClientConnectionManager connectionManager = poolingHttpClientConnectionManager();
         connectionManager.setMaxTotal(httpClientProperties.getMaxTotal());
         connectionManager.setDefaultMaxPerRoute(httpClientProperties.getDefaultMaxPerRoute());
-        if (this.connectionManagerTimer == null) {
-            this.connectionManagerTimer = new Timer(
-                    "HttpClientConfigTimer", true);
-            this.connectionManagerTimer.schedule(new TimerTask() {
-                @Override
-                public void run() {
-                    connectionManager.closeExpiredConnections();
-                }
-            }, 30000, httpClientProperties.getCheckExpiredConnectionInterval());
+        if (this.schedule == null) {
+            this.schedule = new ScheduledThreadPoolExecutor(1,
+                    new LogExceptionThreadFactory("close-expired-schedule-"),
+                    new ThreadPoolExecutor.DiscardPolicy());
+            this.schedule.scheduleWithFixedDelay(connectionManager::closeExpiredConnections,
+                    30000, httpClientProperties.getCheckExpiredConnectionInterval(), TimeUnit.MILLISECONDS);
         }
-
         return connectionManager;
     }
 
