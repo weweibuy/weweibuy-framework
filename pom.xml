@@ -17,6 +17,7 @@
         <module>mybatis-plugin</module>
         <module>http-client</module>
         <module>common/common-metric</module>
+        <module>load-balance</module>
     </modules>
 
     <properties>
@@ -159,6 +160,12 @@
             <dependency>
                 <groupId>com.weweibuy.framework</groupId>
                 <artifactId>common-swagger</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.weweibuy.framework</groupId>
+                <artifactId>load-balance</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
