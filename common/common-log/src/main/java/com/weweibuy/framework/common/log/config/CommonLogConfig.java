@@ -10,6 +10,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -28,6 +29,7 @@ import java.util.stream.Collectors;
 @Configuration
 @EnableConfigurationProperties({CommonLogProperties.class})
 @ConditionalOnProperty(prefix = "common.log", name = "enable", havingValue = "true", matchIfMissing = true)
+@ConditionalOnBean(type = "org.springframework.boot.autoconfigure.web.servlet.WebMvcAutoConfiguration")
 public class CommonLogConfig implements WebMvcConfigurer, InitializingBean {
 
     @Autowired
