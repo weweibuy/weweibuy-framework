@@ -16,7 +16,7 @@ import java.util.Map;
  * @date 2020/9/24 22:48
  **/
 @RestController
-@RequestMapping("/_common/_lb")
+@RequestMapping("/endpoint/_common/_lb")
 public class LoadBalanceEndpoint {
 
     private final LoadBalanceOperator loadBalanceOperator;

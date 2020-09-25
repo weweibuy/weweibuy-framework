@@ -5,12 +5,15 @@ import com.netflix.loadbalancer.ILoadBalancer;
 import com.netflix.loadbalancer.Server;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.BeanFactoryUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.netflix.ribbon.SpringClientFactory;
 import org.springframework.context.ApplicationContext;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -36,12 +39,11 @@ public class LoadBalanceOperator {
     }
 
     public Map<String, List<Server>> allServerMap() {
-        String[] typeIncludingAncestors = BeanFactoryUtils.beanNamesForTypeIncludingAncestors(applicationContext, ILoadBalancer.class);
-        Arrays.stream(typeIncludingAncestors)
-                .map(n -> applicationContext.getBean(n, ILoadBalancer.class))
-                .map(ILoadBalancer::getAllServers);
-        return Arrays.stream(typeIncludingAncestors)
-                .collect(Collectors.toMap(n -> n, n -> applicationContext.getBean(n, ILoadBalancer.class).getAllServers()));
+        return springClientFactory.getContextNames().stream()
+                .collect(Collectors.toMap(Function.identity(),
+                        name -> springClientFactory.getLoadBalancer(name)
+                                .getAllServers()));
+
     }
 
     public void update(String name) {
@@ -58,8 +60,7 @@ public class LoadBalanceOperator {
     }
 
     private void update() {
-        String[] typeIncludingAncestors = BeanFactoryUtils.beanNamesForTypeIncludingAncestors(applicationContext, ILoadBalancer.class);
-        Arrays.stream(typeIncludingAncestors)
+        springClientFactory.getContextNames().stream()
                 .forEach(this::update);
     }
 
