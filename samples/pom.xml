@@ -123,8 +123,8 @@
         </dependency>
 
         <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-netflix-ribbon</artifactId>
+            <groupId>com.weweibuy.framework</groupId>
+            <artifactId>load-balance</artifactId>
         </dependency>
 
     </dependencies>

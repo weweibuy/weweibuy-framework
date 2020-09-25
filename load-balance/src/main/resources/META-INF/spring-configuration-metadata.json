@@ -1,59 +1,26 @@
 {
   "groups": [
     {
-      "name": "common.feign.http-client",
-      "type": "com.weweibuy.framework.common.feign.config.HttpClientProperties",
-      "sourceType": "com.weweibuy.framework.common.feign.config.HttpClientProperties"
+      "name": "common.lb",
+      "type": "com.weweibuy.framework.lb.config.LoadBalanceProperties",
+      "sourceType": "com.weweibuy.framework.lb.config.LoadBalanceProperties"
     }
   ],
   "properties": [
     {
-      "name": "common.feign.http-client.useSSL",
-      "type": "java.lang.Boolean",
-      "sourceType": "com.weweibuy.framework.common.feign.config.HttpClientProperties",
-      "defaultValue":false
+      "name": "common.lb.interestingServers",
+      "type": "java.util.Set<java.lang.String>",
+      "sourceType": "com.weweibuy.framework.lb.config.LoadBalanceProperties"
     },
     {
-      "name": "common.feign.http-client.maxTotal",
-      "type": "java.lang.Integer",
-      "sourceType": "com.weweibuy.framework.common.feign.config.HttpClientProperties",
-      "defaultValue":300
+      "name": "common.lb.server-change-listener.topic",
+      "type": "java.lang.String",
+      "sourceType": "com.weweibuy.framework.lb.config.LoadBalanceProperties.ServerChangeListener"
     },
     {
-      "name": "common.feign.http-client.defaultMaxPerRoute",
-      "type": "java.lang.Integer",
-      "sourceType": "com.weweibuy.framework.common.feign.config.HttpClientProperties",
-      "defaultValue":50
-    },
-    {
-      "name": "common.feign.http-client.connectTimeout",
-      "type": "java.lang.Integer",
-      "sourceType": "com.weweibuy.framework.common.feign.config.HttpClientProperties",
-      "defaultValue":1000
-    },
-    {
-      "name": "common.feign.http-client.connectionRequestTimeout",
-      "type": "java.lang.Integer",
-      "sourceType": "com.weweibuy.framework.common.feign.config.HttpClientProperties",
-      "defaultValue":500
-    },
-    {
-      "name": "common.feign.http-client.socketTimeout",
-      "type": "java.lang.Integer",
-      "sourceType": "com.weweibuy.framework.common.feign.config.HttpClientProperties",
-      "defaultValue":5000
-    },
-    {
-      "name": "common.feign.http-client.checkExpiredConnectionInterval",
-      "type": "java.lang.Integer",
-      "sourceType": "com.weweibuy.framework.common.feign.config.HttpClientProperties",
-      "defaultValue":60000
-    },
-    {
-      "name": "common.feign.http-client.maxLifeTime",
-      "type": "java.lang.Integer",
-      "sourceType": "com.weweibuy.framework.common.feign.config.HttpClientProperties",
-      "defaultValue":-1
+      "name": "common.lb.server-change-listener.group",
+      "type": "java.lang.String",
+      "sourceType": "com.weweibuy.framework.lb.config.LoadBalanceProperties.ServerChangeListener"
     }
   ],
   "hints": []

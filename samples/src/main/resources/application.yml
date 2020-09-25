@@ -102,3 +102,8 @@ common:
     response:
       - status: 400
         desc: 业务异常
+  lb:
+    server-change-listener:
+      topic: COMMON_SERVER_UPDATE_TOPIC
+      group: COMMON_SERVER_UPDATE_C_GROUP
+
