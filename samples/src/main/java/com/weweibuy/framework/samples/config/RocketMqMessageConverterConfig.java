@@ -4,6 +4,7 @@ import com.weweibuy.framework.rocketmq.config.RocketConfigurer;
 import com.weweibuy.framework.rocketmq.core.consumer.ConsumerFilter;
 import com.weweibuy.framework.rocketmq.core.producer.MessageSendFilter;
 import com.weweibuy.framework.rocketmq.support.consumer.LogMessageConsumerFilter;
+import com.weweibuy.framework.rocketmq.support.consumer.TraceCodeMessageConsumerFilter;
 import com.weweibuy.framework.rocketmq.support.producer.AddMessageKeyFilter;
 import com.weweibuy.framework.rocketmq.support.producer.LogMessageSendFilter;
 import org.springframework.context.annotation.Configuration;
@@ -21,6 +22,7 @@ public class RocketMqMessageConverterConfig implements RocketConfigurer {
     @Override
     public void addConsumerFilter(List<ConsumerFilter> consumerFilter) {
         consumerFilter.add(new LogMessageConsumerFilter());
+        consumerFilter.add(new TraceCodeMessageConsumerFilter());
     }
 
     @Override
