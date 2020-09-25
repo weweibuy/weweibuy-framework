@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
  * @author durenhao
  * @date 2020/3/2 19:54
  **/
-@FeignClient(name = "sample-application" , contextId = "MyLbFeignClient", configuration = {SnakeCaseEncoderAndDecoder.class, MyLbFeignClient.MyRequest.class})
+@FeignClient(name = "webuy-auth" , contextId = "MyLbFeignClient", configuration = {SnakeCaseEncoderAndDecoder.class, MyLbFeignClient.MyRequest.class})
 public interface MyLbFeignClient {
 
     @PostMapping("/hello")

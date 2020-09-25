@@ -1,3 +1,6 @@
+server:
+  port: 8080
+
 
 spring:
   application:
@@ -15,6 +18,18 @@ spring:
   redis:
     host: 122.51.171.126
     password: ak402507979
+
+  cloud:
+    consul:
+      host: 127.0.0.1
+      discovery:
+        prefer-ip-address: true
+        instance-id: ${spring.application.name}:${spring.cloud.consul.discovery.ip-address}:${server.port}
+        ip-address: 127.0.0.1
+        health-check-path: /endpoint/_common/_health
+        health-check-critical-timeout: 10s
+        health-check-interval: 3s
+
 
 
 mybatis:
@@ -106,4 +121,5 @@ common:
     server-change-listener:
       topic: COMMON_SERVER_UPDATE_TOPIC
       group: COMMON_SERVER_UPDATE_C_GROUP
+
 
