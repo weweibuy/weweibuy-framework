@@ -39,7 +39,7 @@ public class DefaultRocketListenerContainerFactory implements RocketListenerCont
 
     private List<RocketMessageListener> createListener(List<MethodRocketListenerEndpoint> endpointList) {
         return endpointList.stream()
-                .map(endpoint -> endpoint.createRocketMessageListener())
+                .map(MethodRocketListenerEndpoint::createRocketMessageListener)
                 .collect(Collectors.toList());
 
     }
@@ -92,16 +92,16 @@ public class DefaultRocketListenerContainerFactory implements RocketListenerCont
 
 
     private String mergeTags(List<MethodRocketListenerEndpoint> endpointList) {
-        String tag = "";
+        StringBuilder tag = new StringBuilder();
         for (int i = 0; i < endpointList.size(); i++) {
             MethodRocketListenerEndpoint endpoint = endpointList.get(i);
             if (i != endpointList.size() - 1) {
-                tag += (endpoint.getTags() + "||");
+                tag.append(endpoint.getTags()).append("||");
             } else {
-                tag += endpoint.getTags();
+                tag.append(endpoint.getTags());
             }
         }
-        return tag;
+        return tag.toString();
     }
 
 

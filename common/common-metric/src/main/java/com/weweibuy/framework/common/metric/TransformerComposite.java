@@ -28,9 +28,5 @@ public class TransformerComposite implements Transformer {
         transformerList.add(transformer);
     }
 
-    public void addTagTransformer(List<Transformer> transformerList) {
-        transformerList.addAll(transformerList);
-    }
-
 
 }

@@ -64,9 +64,4 @@ public class DefaultFeignExceptionHandler implements FeignExceptionHandler {
     }
 
 
-    private boolean isCommonResponse(String methodKey) {
-        return true;
-    }
-
-
 }

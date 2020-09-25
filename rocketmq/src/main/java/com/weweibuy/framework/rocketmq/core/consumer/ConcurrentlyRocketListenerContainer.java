@@ -6,9 +6,6 @@ import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyContext;
 import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyStatus;
 import org.apache.rocketmq.client.consumer.listener.MessageListener;
 import org.apache.rocketmq.client.consumer.listener.MessageListenerConcurrently;
-import org.apache.rocketmq.common.message.MessageExt;
-
-import java.util.List;
 
 /**
  * 监听器容器
@@ -29,12 +26,7 @@ public class ConcurrentlyRocketListenerContainer extends AbstractRocketListenerC
     @Override
     protected MessageListener getMessageListener() {
         if (this.messageListener == null) {
-            messageListener = new MessageListenerConcurrently() {
-                @Override
-                public ConsumeConcurrentlyStatus consumeMessage(List<MessageExt> messageExtList, ConsumeConcurrentlyContext context) {
-                    return consume(messageExtList, context);
-                }
-            };
+            messageListener = (MessageListenerConcurrently) this::consume;
         }
         return messageListener;
     }

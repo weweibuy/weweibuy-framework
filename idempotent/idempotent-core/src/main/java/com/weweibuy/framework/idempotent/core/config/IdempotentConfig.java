@@ -38,10 +38,6 @@ public class IdempotentConfig implements ImportAware {
     public void setImportMetadata(AnnotationMetadata importMetadata) {
         this.enableCompensate = AnnotationAttributes.fromMap(
                 importMetadata.getAnnotationAttributes(EnableIdempotent.class.getName(), false));
-        if (this.enableCompensate == null) {
-            throw new IllegalArgumentException(
-                    "@EnableIdempotent is not present on importing class " + importMetadata.getClassName());
-        }
     }
 
     @Bean

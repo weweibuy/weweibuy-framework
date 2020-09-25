@@ -25,8 +25,6 @@ public abstract class AbstractRocketListenerContainer<T, R> implements RocketLis
 
     private DefaultMQPushConsumer mqPushConsumer;
 
-    private List<RocketMessageListener<R>> rocketMessageListenerList;
-
     private Map<String, RocketMessageListener<R>> listenerMap;
 
     private List<ConsumerFilter> messageSendFilterList;
@@ -80,7 +78,7 @@ public abstract class AbstractRocketListenerContainer<T, R> implements RocketLis
     }
 
 
-    class MessageConsumerFilterEnter<T> implements MessageConsumerFilterChain {
+    class MessageConsumerFilterEnter implements MessageConsumerFilterChain {
 
         private int pos = 0;
 
@@ -167,7 +165,6 @@ public abstract class AbstractRocketListenerContainer<T, R> implements RocketLis
 
     @Override
     public void setListeners(List<RocketMessageListener<R>> listenerList) {
-        this.rocketMessageListenerList = listenerList;
 
         Map<String, RocketMessageListener<R>> rocketMessageListenerMap = new HashMap<>();
 

@@ -46,10 +46,6 @@ public class CompensateAdvisorConfig implements ImportAware {
     public void setImportMetadata(AnnotationMetadata importMetadata) {
         this.enableCompensate = AnnotationAttributes.fromMap(
                 importMetadata.getAnnotationAttributes(EnableCompensate.class.getName(), false));
-        if (this.enableCompensate == null) {
-            throw new IllegalArgumentException(
-                    "@EnableCompensate is not present on importing class " + importMetadata.getClassName());
-        }
     }
 
 

@@ -81,7 +81,6 @@ public class JdbcIdempotentManager implements IdempotentManager {
         Object[] objects = prepareArgs(idempotentInfo);
         Object[] prepareArgs = new Object[objects.length + 1];
         System.arraycopy(objects, 0, prepareArgs, 1, objects.length);
-        String updateSql = jdbcIdempotentProperties.getUpdateSql();
         String resultJson = JackJsonUtils.writeCamelCase(result);
         prepareArgs[0] = resultJson;
         return prepareArgs;

@@ -21,7 +21,7 @@ public class CustomFeignErrorDecoder extends ErrorDecoder.Default {
 
     @Override
     public Exception decode(String methodKey, Response response) {
-        return (FeignException) decode0(methodKey, response);
+        return decode0(methodKey, response);
     }
 
     private FeignException decode0(String methodKey, Response response) {

@@ -1,5 +1,7 @@
 package com.weweibuy.framework.compensate.support;
 
+import java.util.Optional;
+
 /**
  * 补偿上下文
  *
@@ -16,8 +18,8 @@ public final class CompensateContext {
      * @return
      */
     public static Boolean isExistCompensate() {
-        Boolean aBoolean = BOOLEAN_THREAD_LOCAL.get();
-        return aBoolean != null ? aBoolean : false;
+        return Optional.ofNullable(BOOLEAN_THREAD_LOCAL.get())
+                .orElse(false);
     }
 
 

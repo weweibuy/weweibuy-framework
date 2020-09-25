@@ -70,9 +70,6 @@ public class HttpMetricOperator {
      * @param metricPath
      */
     public synchronized Collection<HttpMetric> registryHttpMetric(Set<String> metricPath) {
-        Map<String, String> stringMap = metricPath.stream()
-                .filter(p -> !isMatch(HttpRequestUtils.sanitizedPath(p)).isPresent())
-                .collect(Collectors.toMap(p -> HttpRequestUtils.sanitizedPath(p), p -> HttpRequestUtils.sanitizedPath(p)));
         Map<Boolean, ConcurrentMap<String, HttpMetric>> concurrentMapMap = groupMapping(metricPath);
         ConcurrentMap<String, HttpMetric> metricMap = null;
         if ((metricMap = concurrentMapMap.get(true)) != null) {
@@ -83,7 +80,7 @@ public class HttpMetricOperator {
         }
         return concurrentMapMap.entrySet().stream()
                 .flatMap(e -> e.getValue().entrySet().stream())
-                .map(e -> e.getValue())
+                .map(Map.Entry::getValue)
                 .collect(Collectors.toList());
     }
 
@@ -125,8 +122,8 @@ public class HttpMetricOperator {
 
     private Map<Boolean, ConcurrentMap<String, HttpMetric>> groupMapping(Set<String> metricPath) {
         return metricPath.stream()
-                .collect(Collectors.groupingBy(p -> p.indexOf("*") != -1,
-                        Collectors.toConcurrentMap(p -> HttpRequestUtils.sanitizedPath(p),
+                .collect(Collectors.groupingBy(p -> p.indexOf('*') != -1,
+                        Collectors.toConcurrentMap(HttpRequestUtils::sanitizedPath,
                                 p -> new HttpMetric(metricRegistry, namePrefix, HttpRequestUtils.sanitizedPath(p), HttpRequestUtils.sanitizedPath(p)))));
     }
 

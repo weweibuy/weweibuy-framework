@@ -40,8 +40,10 @@ public class EncryptTypeHandler extends BaseTypeHandler<String> {
 
 
     private String encrypted(String content) {
-        return content == null ? null : (AESEncryptHelper.isEncrypted(content) ?
-                AESEncryptHelper.decrypt(content) : content);
+        if (content == null) {
+            return null;
+        }
+        return AESEncryptHelper.isEncrypted(content) ? AESEncryptHelper.decrypt(content) : content;
     }
 
 }

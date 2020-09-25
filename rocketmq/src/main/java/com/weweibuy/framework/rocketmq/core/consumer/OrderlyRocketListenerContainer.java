@@ -5,9 +5,6 @@ import org.apache.rocketmq.client.consumer.listener.ConsumeOrderlyContext;
 import org.apache.rocketmq.client.consumer.listener.ConsumeOrderlyStatus;
 import org.apache.rocketmq.client.consumer.listener.MessageListener;
 import org.apache.rocketmq.client.consumer.listener.MessageListenerOrderly;
-import org.apache.rocketmq.common.message.MessageExt;
-
-import java.util.List;
 
 /**
  * @author durenhao
@@ -24,12 +21,7 @@ public class OrderlyRocketListenerContainer extends AbstractRocketListenerContai
     @Override
     protected MessageListener getMessageListener() {
         if (this.messageListener == null) {
-            messageListener = new MessageListenerOrderly() {
-                @Override
-                public ConsumeOrderlyStatus consumeMessage(List<MessageExt> messageExtList, ConsumeOrderlyContext context) {
-                    return consume(messageExtList, context);
-                }
-            };
+            messageListener = (MessageListenerOrderly) this::consume;
         }
         return messageListener;
     }

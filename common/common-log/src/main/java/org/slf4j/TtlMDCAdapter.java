@@ -160,7 +160,7 @@ public class TtlMDCAdapter implements MDCAdapter {
         if (hashMap == null) {
             return null;
         } else {
-            return new HashMap<String, String>(hashMap);
+            return new HashMap(hashMap);
         }
     }
 

@@ -32,7 +32,6 @@ public class MessageSendContext {
         this.tag = metadata.getTag();
         this.timeout = metadata.getTimeout();
         this.messageQueueSelector = messageQueueSelector;
-        this.sendCallback = sendCallback;
 
 
         if (metadata.getBatch()) {

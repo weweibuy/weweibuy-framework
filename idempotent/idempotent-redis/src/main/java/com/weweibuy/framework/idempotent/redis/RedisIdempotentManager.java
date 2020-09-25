@@ -37,7 +37,7 @@ public class RedisIdempotentManager implements IdempotentManager {
     @Override
     public boolean tryLock(IdempotentInfo idempotentInfo) {
         return valueOperations
-                .setIfAbsent(generatorKey(idempotentInfo.getKey()), pid + "_" + Thread.currentThread().getName(),
+                .setIfAbsent(generatorKey(idempotentInfo.getKey()), generatorValue(),
                         idempotentInfo.getMaxLockMilli(), TimeUnit.MILLISECONDS);
     }
 

@@ -22,11 +22,10 @@ public class UnRequestBodyJsonLogInterceptor implements HandlerInterceptor {
 
     private static final ConcurrentHashMap<HandlerMethod, Boolean> LOG_MAP = new ConcurrentHashMap<>(32);
 
+    @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
             throws Exception {
         if (HttpRequestUtils.isJsonRequest(request.getContentType()) && handler instanceof HandlerMethod) {
-            HandlerMethod handlerMethod = (HandlerMethod) handler;
-
             Boolean match = LOG_MAP.computeIfAbsent((HandlerMethod) handler, key ->
                     Arrays.stream(key.getMethodParameters()).anyMatch(this::supportsRequestBodyParameter));
 

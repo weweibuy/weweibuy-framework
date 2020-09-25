@@ -20,7 +20,7 @@ public class SwaggerProperties {
 
     private String version = "v1";
 
-    private Set<String> basePackage = Collections.EMPTY_SET;
+    private Set<String> basePackage = Collections.emptySet();
 
     private List<SwaggerHeaderProperties> headers = new ArrayList<>();
 

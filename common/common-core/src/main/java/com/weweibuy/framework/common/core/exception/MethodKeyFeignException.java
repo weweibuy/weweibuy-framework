@@ -14,7 +14,7 @@ public class MethodKeyFeignException extends FeignException {
      * 方法的key
      * {@link Feign#configKey(Class, java.lang.reflect.Method)}
      */
-    private String methodKey;
+    private final String methodKey;
 
 
     public MethodKeyFeignException(String methodKey, int status, String message, Request request, byte[] body) {
