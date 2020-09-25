@@ -80,6 +80,11 @@ public class CommonMvcConfig {
         return new DefaultFeignExceptionHandler(feignMethodKeyMappingConverterList);
     }
 
+    @Bean
+    public HealthLogDisableConfigurer healthLogDisableConfigurer() {
+        return new HealthLogDisableConfigurer();
+    }
+
 
     public LocalDateTimeSerializer localDateTimeSerializer() {
         return new LocalDateTimeSerializer(CommonConstant.DateConstant.STANDARD_DATE_TIME_FORMATTER);

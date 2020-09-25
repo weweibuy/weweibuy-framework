@@ -1,5 +1,6 @@
 package com.weweibuy.framework.common.mvc.endpoint;
 
+import com.weweibuy.framework.common.mvc.constant.HealthCheckConstant;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @date 2020/9/25 20:45
  **/
 @RestController
-@RequestMapping("/endpoint/_common/_health")
+@RequestMapping(HealthCheckConstant.HEALTH_CHECK_PATH)
 public class CustomHealthController {
 
     @GetMapping
