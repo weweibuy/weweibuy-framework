@@ -7,8 +7,6 @@ import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.util.Assert;
 
-import java.lang.reflect.Method;
-
 /**
  * 切面
  *
@@ -33,9 +31,6 @@ public class IdempotentAspect implements MethodInterceptor {
      */
     @Override
     public Object invoke(MethodInvocation methodInvocation) throws Throwable {
-
-        Object[] arguments = methodInvocation.getArguments();
-        Method method = methodInvocation.getMethod();
         IdempotentInfo idempotentInfo = idempotentKeyParser.parseIdempotentInfo(methodInvocation);
         IdempotentManager idempotentManager = idempotentInfo.getIdempotentManager();
         boolean lock = idempotentManager.tryLock(idempotentInfo);
