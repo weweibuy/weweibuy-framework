@@ -1,0 +1,67 @@
+package com.weweibuy.framework.lb.support;
+
+import com.netflix.loadbalancer.DynamicServerListLoadBalancer;
+import com.netflix.loadbalancer.ILoadBalancer;
+import com.netflix.loadbalancer.Server;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.BeanFactoryUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.netflix.ribbon.SpringClientFactory;
+import org.springframework.context.ApplicationContext;
+
+import java.util.*;
+import java.util.stream.Collectors;
+
+/**
+ * 操作 lb
+ *
+ * @author durenhao
+ * @date 2020/9/25 11:50
+ **/
+@Slf4j
+public class LoadBalanceOperator {
+
+    @Autowired
+    private SpringClientFactory springClientFactory;
+
+    @Autowired
+    private ApplicationContext applicationContext;
+
+
+    public List<Server> listServer(String name) {
+        return Optional.ofNullable(springClientFactory.getLoadBalancer(name))
+                .map(ILoadBalancer::getAllServers)
+                .orElse(Collections.emptyList());
+    }
+
+    public Map<String, List<Server>> allServerMap() {
+        String[] typeIncludingAncestors = BeanFactoryUtils.beanNamesForTypeIncludingAncestors(applicationContext, ILoadBalancer.class);
+        Arrays.stream(typeIncludingAncestors)
+                .map(n -> applicationContext.getBean(n, ILoadBalancer.class))
+                .map(ILoadBalancer::getAllServers);
+        return Arrays.stream(typeIncludingAncestors)
+                .collect(Collectors.toMap(n -> n, n -> applicationContext.getBean(n, ILoadBalancer.class).getAllServers()));
+    }
+
+    public void update(String name) {
+        if (StringUtils.isBlank(name)) {
+            return;
+        }
+        log.info("接受到服务: {} 变更消息", name);
+        ILoadBalancer loadBalancer = springClientFactory.getLoadBalancer(name);
+        if (loadBalancer instanceof DynamicServerListLoadBalancer) {
+            DynamicServerListLoadBalancer dynamicServerListLoadBalancer = (DynamicServerListLoadBalancer) loadBalancer;
+            dynamicServerListLoadBalancer.updateListOfServers();
+            log.info("更新服务信息成功");
+        }
+    }
+
+    private void update() {
+        String[] typeIncludingAncestors = BeanFactoryUtils.beanNamesForTypeIncludingAncestors(applicationContext, ILoadBalancer.class);
+        Arrays.stream(typeIncludingAncestors)
+                .forEach(this::update);
+    }
+
+
+}
