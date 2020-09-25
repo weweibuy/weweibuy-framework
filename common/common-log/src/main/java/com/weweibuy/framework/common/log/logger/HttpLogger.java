@@ -116,10 +116,10 @@ public class HttpLogger {
                                           Set<LogDisablePath> exactDisabledPath) {
         HttpLogger.patternDisabledPath = patternDisabledPath.stream()
                 .peek(d -> d.setPath(HttpRequestUtils.sanitizedPath(d.getPath())))
-                .collect(Collectors.toMap(d -> d.getPath(), d -> d.getType(), (o, n) -> n));
+                .collect(Collectors.toMap(LogDisablePath::getPath, LogDisablePath::getType, (o, n) -> n));
         HttpLogger.exactDisabledPath = exactDisabledPath.stream()
                 .peek(d -> d.setPath(HttpRequestUtils.sanitizedPath(d.getPath())))
-                .collect(Collectors.toMap(d -> d.getPath(), d -> d.getType(), (o, n) -> n));
+                .collect(Collectors.toMap(LogDisablePath::getPath, LogDisablePath::getType, (o, n) -> n));
     }
 
     private static boolean shouldLogRequest(String path) {
@@ -131,12 +131,9 @@ public class HttpLogger {
                 (LogDisablePath.Type.REQ.equals(type) || LogDisablePath.Type.ALL.equals(type))) {
             return false;
         }
-        if (patternDisabledPath.entrySet().stream()
+        return !patternDisabledPath.entrySet().stream()
                 .anyMatch(p -> HttpRequestUtils.isMatchPath(p.getKey(), path) &&
-                        (LogDisablePath.Type.REQ.equals(p.getValue()) || LogDisablePath.Type.ALL.equals(p.getValue())))) {
-            return false;
-        }
-        return true;
+                        (LogDisablePath.Type.REQ.equals(p.getValue()) || LogDisablePath.Type.ALL.equals(p.getValue())));
     }
 
 
@@ -149,12 +146,9 @@ public class HttpLogger {
                 (LogDisablePath.Type.RESP.equals(type) || LogDisablePath.Type.ALL.equals(type))) {
             return false;
         }
-        if (patternDisabledPath.entrySet().stream()
+        return !patternDisabledPath.entrySet().stream()
                 .anyMatch(p -> HttpRequestUtils.isMatchPath(p.getKey(), path) &&
-                        (LogDisablePath.Type.RESP.equals(p.getValue()) || LogDisablePath.Type.ALL.equals(p.getValue())))) {
-            return false;
-        }
-        return true;
+                        (LogDisablePath.Type.RESP.equals(p.getValue()) || LogDisablePath.Type.ALL.equals(p.getValue())));
     }
 
 

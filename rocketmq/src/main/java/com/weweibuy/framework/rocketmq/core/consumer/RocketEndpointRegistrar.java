@@ -1,5 +1,6 @@
 package com.weweibuy.framework.rocketmq.core.consumer;
 
+import com.weweibuy.framework.common.core.exception.Exceptions;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.rocketmq.client.exception.MQClientException;
 
@@ -45,7 +46,7 @@ public class RocketEndpointRegistrar {
                 try {
                     c.start();
                 } catch (MQClientException e) {
-                    throw new RuntimeException(e);
+                    throw Exceptions.system("启动mq异常", e);
                 }
             });
         }

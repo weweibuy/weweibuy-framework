@@ -17,7 +17,6 @@ import springfox.documentation.spring.web.plugins.ApiSelectorBuilder;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -43,7 +42,7 @@ public class SwaggerConfig {
     }
 
     @Bean
-    public Docket createRestApi() throws Exception {
+    public Docket createRestApi() {
 
         List<Parameter> parameters = swaggerProperties.getHeaders().stream()
                 .map(this::buildParameter)
@@ -88,7 +87,7 @@ public class SwaggerConfig {
     }
 
     //构建 api文档的详细信息函数
-    private ApiInfo apiInfo() throws IOException {
+    private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
                 //页面标题
                 .title(environment.getProperty("spring.application.name") + " 项目 Restful Apis")

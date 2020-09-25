@@ -49,19 +49,18 @@ public class SensitizationMappingOperator {
         // 区分匹配型路径 与 精确型路径
         Map<Boolean, List<SensitizationMappingConfigurer.HttpSensitizationMapping>> booleanListMap = Optional.ofNullable((List<SensitizationMappingConfigurer.HttpSensitizationMapping>) (Object) listMap.get(LogSensitizationEum.HTTP))
                 .map(m -> m.stream()
-                        .filter(i -> shouldPickHttpConfig(i))
+                        .filter(SensitizationMappingOperator::shouldPickHttpConfig)
                         .distinct()
-                        .collect(Collectors.groupingBy(i -> i.getPath().indexOf("*") != -1,
+                        .collect(Collectors.groupingBy(i -> i.getPath().indexOf('*') != -1,
                                 Collectors.toList())))
                 .orElse(Collections.emptyMap());
 
         httpPatternMappingList = Optional.ofNullable(booleanListMap.get(true))
                 .orElse(Collections.emptyList());
 
-        HttpMethod[] httpMethodArr = {HttpMethod.GET, HttpMethod.POST, HttpMethod.DELETE, HttpMethod.PUT};
         httpExactMappingMap = Optional.ofNullable(booleanListMap.get(false))
                 .map(m -> m.stream()
-                        .flatMap(i -> completionHttpMethod(i))
+                        .flatMap(SensitizationMappingOperator::completionHttpMethod)
                         .distinct()
                         .collect(Collectors.toMap(i ->
                                         StringConnectUtils.connect(CommonConstant.UNDERLINE_STR, i.getPath(), i.getHttpMethod().toString()),

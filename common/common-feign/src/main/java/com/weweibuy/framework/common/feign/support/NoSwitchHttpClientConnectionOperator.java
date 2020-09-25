@@ -104,7 +104,6 @@ public class NoSwitchHttpClientConnectionOperator implements HttpClientConnectio
             if (this.log.isDebugEnabled()) {
                 this.log.debug("Connection established " + conn);
             }
-            return;
         } catch (final SocketTimeoutException ex) {
             throw new ConnectTimeoutException(ex, host, addresses);
         } catch (final ConnectException ex) {

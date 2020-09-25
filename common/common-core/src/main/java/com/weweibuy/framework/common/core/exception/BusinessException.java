@@ -10,7 +10,7 @@ import com.weweibuy.framework.common.core.model.ResponseCodeAndMsg;
  **/
 public class BusinessException extends RuntimeException {
 
-    private ResponseCodeAndMsg codeAndMsg;
+    private final ResponseCodeAndMsg codeAndMsg;
 
     public BusinessException(ResponseCodeAndMsg codeAndMsg) {
         super(codeAndMsg.getMsg());

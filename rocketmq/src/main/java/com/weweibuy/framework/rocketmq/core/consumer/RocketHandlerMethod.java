@@ -152,11 +152,6 @@ public class RocketHandlerMethod {
     }
 
 
-    private boolean isBatchTogetherModel() {
-        return batchMaxSize > 1 && BatchHandlerModel.TOGETHER.equals(batchHandlerModel);
-    }
-
-
     private boolean isListMessage(Type type) {
         boolean assignable = TypeUtils.isAssignable(Collection.class, type);
         if (assignable && type instanceof ParameterizedType) {

@@ -30,6 +30,6 @@ public class SimpleTimerCompensateTrigger extends AbstractCompensateTrigger impl
 
     @Override
     public void afterSingletonsInstantiated() {
-        SCHEDULE.scheduleAtFixedRate(() -> trigger0(), 5, 10, TimeUnit.SECONDS);
+        SCHEDULE.scheduleAtFixedRate(this::trigger0, 5, 10, TimeUnit.SECONDS);
     }
 }

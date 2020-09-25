@@ -91,8 +91,8 @@ public class CommonLogConfig implements WebMvcConfigurer, InitializingBean {
         // 对规则匹配的进行分组
         // true为匹配型 false为精确型
         Map<Boolean, Set<LogDisablePath>> matchPathMap = disablePathMap.entrySet().stream()
-                .collect(Collectors.groupingBy(e -> e.getKey().indexOf("*") != -1,
-                        Collectors.mapping(e -> e.getValue(), Collectors.toSet())));
+                .collect(Collectors.groupingBy(e -> e.getKey().indexOf('*') != -1,
+                        Collectors.mapping(Map.Entry::getValue, Collectors.toSet())));
 
         HttpLogger.configDisabledPath(Optional.ofNullable(matchPathMap.get(true)).orElse(Collections.emptySet()),
                 Optional.ofNullable(matchPathMap.get(false)).orElse(Collections.emptySet()));

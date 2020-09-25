@@ -22,7 +22,7 @@ public class RocketMqUtils {
         }
         boolean hasSdk = true;
         try {
-            Class<?> clazz = Class.forName("org.apache.rocketmq.acl.common.AclClientRPCHook");
+            Class.forName("org.apache.rocketmq.acl.common.AclClientRPCHook");
         } catch (ClassNotFoundException e) {
             log.warn("没有发现 rocketMq ACL 的SDK");
             hasSdk = false;

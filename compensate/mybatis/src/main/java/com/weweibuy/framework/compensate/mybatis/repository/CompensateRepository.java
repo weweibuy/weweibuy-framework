@@ -47,7 +47,7 @@ public class CompensateRepository {
     @Transactional(rollbackFor = Exception.class)
     public void batchUpdate(Collection<Long> id, Compensate compensate) {
         id.stream()
-                .peek(i -> compensate.setId(i))
+                .peek(compensate::setId)
                 .forEach(i -> compensateMapper.updateByPrimaryKeySelective(compensate));
     }
 
