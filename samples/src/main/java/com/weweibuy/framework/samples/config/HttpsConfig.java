@@ -1,6 +1,5 @@
 package com.weweibuy.framework.samples.config;
 
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
@@ -10,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class HttpsConfig {
 
-    @Bean
+//    @Bean
     public HttpServletWebServerFactoryCustomizer httpServletWebServerFactoryCustomizer() {
         return new HttpServletWebServerFactoryCustomizer();
     }
