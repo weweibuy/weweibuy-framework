@@ -1,6 +1,8 @@
 server:
   port: 8080
-
+  ssl:
+    key-store: classpath:config/https/tomcatkeystore.p12
+    key-store-password: 123456
 
 spring:
   application:
