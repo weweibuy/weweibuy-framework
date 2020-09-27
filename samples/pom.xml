@@ -76,6 +76,11 @@
 
         <dependency>
             <groupId>com.weweibuy.framework</groupId>
+            <artifactId>common-codec</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.weweibuy.framework</groupId>
             <artifactId>idempotent-db</artifactId>
         </dependency>
 

@@ -1,5 +1,6 @@
-package com.weweibuy.framework.common.core.utils;
+package com.weweibuy.framework.common.codec;
 
+import com.weweibuy.framework.common.codec.aes.AESUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -72,7 +73,7 @@ public class AESUtilsTest {
 
 
     public void en(SecretKey key) throws InvalidKeyException, BadPaddingException, NoSuchAlgorithmException, IllegalBlockSizeException, NoSuchPaddingException {
-        String stringId = IdWorker.nextStringId();
+        String stringId = "111";
         String encrypt = AESUtils.encrypt(key, stringId);
         String decrypt = AESUtils.decrypt(key, encrypt);
         Assert.assertTrue(stringId.equals(decrypt));

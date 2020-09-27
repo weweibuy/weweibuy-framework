@@ -1,6 +1,6 @@
 package com.weweibuy.framework.samples.controller;
 
-import com.weweibuy.framework.common.core.utils.AESUtils;
+import com.weweibuy.framework.common.codec.aes.AESUtils;
 import com.weweibuy.framework.common.core.utils.IdWorker;
 import com.weweibuy.framework.samples.mybatis.plugin.mapper.DBEncryptMapper;
 import com.weweibuy.framework.samples.mybatis.plugin.model.example.DBEncryptExample;

@@ -1,5 +1,6 @@
-package com.weweibuy.framework.common.core.utils;
+package com.weweibuy.framework.common.codec;
 
+import com.weweibuy.framework.common.codec.rsa.RSAUtils;
 import org.junit.Test;
 
 import java.security.PrivateKey;
