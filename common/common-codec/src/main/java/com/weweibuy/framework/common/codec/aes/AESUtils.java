@@ -1,6 +1,6 @@
-package com.weweibuy.framework.common.core.utils;
+package com.weweibuy.framework.common.codec.aes;
 
-import com.weweibuy.framework.common.core.exception.Exceptions;
+import com.weweibuy.framework.common.codec.HexUtils;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -33,7 +33,7 @@ public class AESUtils {
         try {
             keyGenerator = KeyGenerator.getInstance(ALGORITHM);
         } catch (NoSuchAlgorithmException e) {
-            throw Exceptions.unknown();
+            throw new IllegalStateException(e);
         }
         keyGenerator.init(128);
         return keyGenerator.generateKey();
@@ -61,7 +61,7 @@ public class AESUtils {
         try {
             sha = MessageDigest.getInstance("SHA-1");
         } catch (NoSuchAlgorithmException e) {
-            throw Exceptions.unknown();
+            throw new IllegalStateException(e);
         }
         key = sha.digest(key);
         key = Arrays.copyOf(key, 16); // use only first 128 bit
@@ -84,7 +84,7 @@ public class AESUtils {
 
             return new SecretKeySpec(key, ALGORITHM);
         } catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
-            throw Exceptions.unknown();
+            throw new IllegalStateException(e);
         }
 
     }

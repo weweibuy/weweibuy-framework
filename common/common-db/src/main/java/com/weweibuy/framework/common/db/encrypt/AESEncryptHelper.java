@@ -1,7 +1,7 @@
 package com.weweibuy.framework.common.db.encrypt;
 
+import com.weweibuy.framework.common.codec.aes.AESUtils;
 import com.weweibuy.framework.common.core.exception.Exceptions;
-import com.weweibuy.framework.common.core.utils.AESUtils;
 import com.weweibuy.framework.common.db.properties.DBEncryptProperties;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;

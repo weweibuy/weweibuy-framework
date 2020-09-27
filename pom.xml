@@ -117,6 +117,12 @@
 
             <dependency>
                 <groupId>com.weweibuy.framework</groupId>
+                <artifactId>common-codec</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.weweibuy.framework</groupId>
                 <artifactId>compensate-core</artifactId>
                 <version>${project.version}</version>
             </dependency>
