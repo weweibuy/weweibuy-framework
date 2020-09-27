@@ -18,7 +18,8 @@ import java.util.Map;
 public class RocketMqProperties {
 
     /**
-     * nameServer 地址
+     *  nameServer 地址
+     *
      */
     private String nameServer;
 
