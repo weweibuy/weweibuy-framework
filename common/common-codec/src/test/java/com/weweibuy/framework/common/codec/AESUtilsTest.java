@@ -36,7 +36,6 @@ public class AESUtilsTest {
         Assert.assertTrue(decrypt.equals(src1));
         System.err.println(encrypt.length());
 
-
         String encrypt2 = AESUtils.encrypt(key, src2);
         String decrypt2 = AESUtils.decrypt(key, encrypt2);
         Assert.assertTrue(decrypt2.equals(src2));
