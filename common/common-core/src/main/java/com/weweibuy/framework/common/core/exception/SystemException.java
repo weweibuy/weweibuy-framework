@@ -14,10 +14,11 @@ import static com.weweibuy.framework.common.core.utils.ResponseCodeUtils.newResp
  **/
 public class SystemException extends RuntimeException {
 
-    private ResponseCodeAndMsg codeAndMsg;
+    private final ResponseCodeAndMsg codeAndMsg;
 
     public SystemException(Throwable cause) {
         super(cause);
+        this.codeAndMsg = CommonErrorCodeEum.UNKNOWN_EXCEPTION;
     }
 
     public SystemException(String code, String msg) {

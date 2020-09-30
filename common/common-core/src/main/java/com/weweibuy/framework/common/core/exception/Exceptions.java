@@ -39,6 +39,10 @@ public class Exceptions {
         return new SystemException(CommonErrorCodeEum.UNKNOWN_EXCEPTION.getCode(), msg);
     }
 
+    public static SystemException system(Throwable e) {
+        return new SystemException(CommonErrorCodeEum.UNKNOWN_EXCEPTION.getCode(), e);
+    }
+
     public static SystemException system(String msg, Throwable e) {
         return new SystemException(msg, e);
     }

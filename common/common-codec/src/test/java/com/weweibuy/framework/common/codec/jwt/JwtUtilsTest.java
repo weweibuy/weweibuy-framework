@@ -2,7 +2,10 @@ package com.weweibuy.framework.common.codec.jwt;
 
 import com.weweibuy.framework.common.codec.rsa.RsaKeyHelper;
 import com.weweibuy.framework.common.codec.rsa.RsaKeyHelperTest;
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.Header;
+import io.jsonwebtoken.Jwt;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 
@@ -33,18 +36,19 @@ public class JwtUtilsTest {
         claims.put("username", "tom");
         claims.put("usertype", "TEST");
 
-        String test_sub = JwtUtils.encode(keyPair.getPrivate(), claims, "TEST_SUB", System.currentTimeMillis() + 1000);
+        String test_sub = JwtUtils.encode(keyPair.getPrivate(), claims, "TEST_SUB", System.currentTimeMillis() + 10000);
         System.err.println(test_sub);
 
         Jwt parse = Jwts.parser()
                 .setSigningKey(keyPair.getPublic())
 //                .requireNotBefore(new Date(System.currentTimeMillis() - 1000))
                 .parse(test_sub);
-
         Object body = parse.getBody();
         Header header = parse.getHeader();
 
-        System.err.println(body);
+        Jwt<Header, Object> decode = JwtUtils.parser(keyPair.getPublic(), test_sub);
+
+        System.err.println(decode);
     }
 
 }
