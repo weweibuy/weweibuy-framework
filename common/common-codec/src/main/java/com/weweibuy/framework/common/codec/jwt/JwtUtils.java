@@ -1,10 +1,7 @@
 package com.weweibuy.framework.common.codec.jwt;
 
 
-import io.jsonwebtoken.Jwt;
-import io.jsonwebtoken.JwtBuilder;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -21,21 +18,49 @@ import java.util.Map;
 public class JwtUtils {
 
 
-    public static String encode(PrivateKey privateKey, Map<String, Object> claims, String subject, Long expireAt) {
-        JwtBuilder builder = Jwts.builder()
-                // 这里其实就是new一个JwtBuilder，设置jwt的body
-                // 如果有私有声明，一定要先设置这个自己创建的私有的声明，这个是给builder的claim赋值，一旦写在标准的声明赋值之后，就是覆盖了那些标准的声明的
-                .setClaims(claims)
-                .setHeaderParam("typ", "JWT")
-                .setSubject(subject)
-                .signWith(SignatureAlgorithm.RS256, privateKey)
-                .setExpiration(new Date(expireAt));
+    public static String encode(PrivateKey privateKey, Map<String, Object> claims, Map<String, Object> headers, String subject, Long expireAt) {
+        JwtBuilder builder = Jwts.builder().setClaims(claims)
+                .signWith(SignatureAlgorithm.RS256, privateKey);
+        if (headers != null) {
+            builder.setHeader(headers);
+        }
+        if (subject != null) {
+            builder.setSubject(subject);
+        }
+        if (expireAt != null) {
+            builder.setExpiration(new Date(expireAt));
+        }
+        builder.setHeaderParam(Header.TYPE, Header.JWT_TYPE);
         return builder.compact();
     }
 
 
-    public static void decode(PublicKey publicKey, String jwt) {
-        Jwt parse = Jwts.parser()
+    public static String encode(PrivateKey privateKey, Map<String, Object> claims, String subject, Long expireAt) {
+        return encode(privateKey, claims, null, subject, expireAt);
+    }
+
+    public static String encode(PrivateKey privateKey, Map<String, Object> claims, Long expireAt) {
+        return encode(privateKey, claims, null, null, expireAt);
+    }
+
+
+    /**
+     * @param publicKey
+     * @param jwt
+     * @param <H>
+     * @param <T>
+     * @return
+     * @throws MalformedJwtException    if the specified JWT was incorrectly constructed (and therefore invalid).
+     *                                  Invalid
+     *                                  JWTs should not be trusted and should be discarded.
+     * @throws SignatureException       if a JWS signature was discovered, but could not be verified.  JWTs that fail
+     *                                  signature validation should not be trusted and should be discarded.
+     * @throws ExpiredJwtException      if the specified JWT is a Claims JWT and the Claims has an expiration time
+     *                                  before the time this method is invoked.
+     * @throws IllegalArgumentException if the specified string is {@code null} or empty or only whitespace.
+     */
+    public static <H extends Header, T> Jwt<H, T> parser(PublicKey publicKey, String jwt) {
+        return Jwts.parser()
                 .setSigningKey(publicKey)
                 .parse(jwt);
     }
