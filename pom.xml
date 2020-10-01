@@ -16,7 +16,6 @@
         <module>compensate</module>
         <module>mybatis-plugin</module>
         <module>http-client</module>
-        <module>common/common-metric</module>
         <module>load-balance</module>
     </modules>
 
