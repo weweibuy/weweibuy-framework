@@ -1,6 +1,7 @@
 server:
   port: 8080
   ssl:
+    enabled: false  # 关闭
     key-store: classpath:config/https/tomcatkeystore.p12
     key-store-password: 123456
 
@@ -31,11 +32,16 @@ spring:
         health-check-path: /endpoint/_common/_health
         health-check-critical-timeout: 10s
         health-check-interval: 3s
-
+  elasticsearch:
+    rest:
+      uris: 106.12.208.53:9200
+      username: elastic
+      password: ak402507979
 
 
 mybatis:
   mapper-locations: classpath*:config/mybatis/mapper/**/*.xml
+
 
 
 idempotent:
