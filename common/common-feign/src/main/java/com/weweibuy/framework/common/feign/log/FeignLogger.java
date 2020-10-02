@@ -47,6 +47,10 @@ public class FeignLogger extends Logger {
     @Override
     protected void logRequest(String configKey, Level logLevel, Request request) {
         Request.HttpMethod httpMethod = request.httpMethod();
+        /*
+         * spring-boot 2.2.x 版本
+         * String bodyStr = request.requestBody().asString();
+         */
         String bodyStr = request.requestBody().asString();
         log.info("Feign 请求地址: {}, Method: {}, Header: {}, Body: {}",
                 request.url(),

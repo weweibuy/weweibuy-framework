@@ -14,7 +14,7 @@ public class Item {
     @JsonProperty("_id")
     private String esId;
 
-    private Long id;
+    private String id;
 
     private String title;
 
