@@ -10,6 +10,7 @@ import com.weweibuy.framework.common.mvc.advice.CommonErrorAttributes;
 import com.weweibuy.framework.common.mvc.advice.CommonExceptionAdvice;
 import com.weweibuy.framework.common.mvc.advice.FeignExceptionAdvice;
 import com.weweibuy.framework.common.mvc.advice.FeignMethodKeyMappingConverter;
+import com.weweibuy.framework.common.mvc.endpoint.CustomHealthController;
 import com.weweibuy.framework.common.mvc.support.DefaultFeignExceptionHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -50,6 +51,11 @@ public class CommonMvcConfig {
     @Bean
     public CommonExceptionAdvice commonExceptionAdvice() {
         return new CommonExceptionAdvice();
+    }
+
+    @Bean
+    public CustomHealthController customHealthController(){
+        return new CustomHealthController();
     }
 
 
