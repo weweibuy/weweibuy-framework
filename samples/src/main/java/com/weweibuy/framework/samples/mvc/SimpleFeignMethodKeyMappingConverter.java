@@ -1,6 +1,6 @@
 package com.weweibuy.framework.samples.mvc;
 
-import com.weweibuy.framework.common.core.model.dto.CommonCodeJsonResponse;
+import com.weweibuy.framework.common.core.model.dto.CommonCodeResponse;
 import com.weweibuy.framework.common.mvc.advice.FeignMethodKeyMappingConverter;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -13,8 +13,8 @@ import org.springframework.stereotype.Component;
 public class SimpleFeignMethodKeyMappingConverter implements FeignMethodKeyMappingConverter {
 
     @Override
-    public ResponseEntity<CommonCodeJsonResponse> convertResponse(Integer httpStatus, String content) {
-        return ResponseEntity.status(401).body(CommonCodeJsonResponse.requestLimit());
+    public ResponseEntity<CommonCodeResponse> convertResponse(Integer httpStatus, String content) {
+        return ResponseEntity.status(401).body(CommonCodeResponse.requestLimit());
     }
 
     @Override

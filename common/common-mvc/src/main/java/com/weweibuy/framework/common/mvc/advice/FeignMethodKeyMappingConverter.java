@@ -1,6 +1,6 @@
 package com.weweibuy.framework.common.mvc.advice;
 
-import com.weweibuy.framework.common.core.model.dto.CommonCodeJsonResponse;
+import com.weweibuy.framework.common.core.model.dto.CommonCodeResponse;
 import feign.Feign;
 import org.springframework.http.ResponseEntity;
 
@@ -19,7 +19,7 @@ public interface FeignMethodKeyMappingConverter {
      * @param content    feign响应报文
      * @return
      */
-    public ResponseEntity<CommonCodeJsonResponse> convertResponse(Integer httpStatus, String content);
+    public ResponseEntity<CommonCodeResponse> convertResponse(Integer httpStatus, String content);
 
 
     /**

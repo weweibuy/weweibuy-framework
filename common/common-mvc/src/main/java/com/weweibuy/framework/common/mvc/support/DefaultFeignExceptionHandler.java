@@ -2,7 +2,7 @@ package com.weweibuy.framework.common.mvc.support;
 
 import com.weweibuy.framework.common.core.exception.MethodKeyFeignException;
 import com.weweibuy.framework.common.core.model.ResponseCodeAndMsg;
-import com.weweibuy.framework.common.core.model.dto.CommonCodeJsonResponse;
+import com.weweibuy.framework.common.core.model.dto.CommonCodeResponse;
 import com.weweibuy.framework.common.core.model.eum.CommonErrorCodeEum;
 import com.weweibuy.framework.common.core.utils.HttpRequestUtils;
 import com.weweibuy.framework.common.mvc.advice.FeignExceptionHandler;
@@ -32,7 +32,7 @@ public class DefaultFeignExceptionHandler implements FeignExceptionHandler {
     }
 
     @Override
-    public ResponseEntity<CommonCodeJsonResponse> handlerException(HttpServletRequest request, MethodKeyFeignException e) {
+    public ResponseEntity<CommonCodeResponse> handlerException(HttpServletRequest request, MethodKeyFeignException e) {
         String methodKey = e.getMethodKey();
         int status = e.status();
         String content = e.contentUTF8();
@@ -46,7 +46,7 @@ public class DefaultFeignExceptionHandler implements FeignExceptionHandler {
         }
         try {
             return ResponseEntity.status(status).body(
-                    CommonCodeJsonResponse.response(HttpRequestUtils.convertJsonStrToCodeAndMsg(content)));
+                    CommonCodeResponse.response(HttpRequestUtils.convertJsonStrToCodeAndMsg(content)));
         } catch (Exception ex) {
             log.warn("Feign异常报文: {}, 无法转为 code ,msg 形式", content);
 
@@ -57,7 +57,7 @@ public class DefaultFeignExceptionHandler implements FeignExceptionHandler {
                 codeAndMsg = CommonErrorCodeEum.UNKNOWN_SERVER_EXCEPTION;
             }
 
-            return ResponseEntity.status(status).body(CommonCodeJsonResponse.response(codeAndMsg));
+            return ResponseEntity.status(status).body(CommonCodeResponse.response(codeAndMsg));
 
         }
 

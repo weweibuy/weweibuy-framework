@@ -2,7 +2,7 @@ package com.weweibuy.framework.common.mvc.advice;
 
 import com.weweibuy.framework.common.core.exception.MethodKeyFeignException;
 import com.weweibuy.framework.common.core.model.ResponseCodeAndMsg;
-import com.weweibuy.framework.common.core.model.dto.CommonCodeJsonResponse;
+import com.weweibuy.framework.common.core.model.dto.CommonCodeResponse;
 import com.weweibuy.framework.common.core.model.eum.CommonErrorCodeEum;
 import com.weweibuy.framework.common.log.logger.HttpLogger;
 import feign.FeignException;
@@ -39,13 +39,13 @@ public class FeignExceptionAdvice {
      * @throws IOException
      */
     @ExceptionHandler(FeignException.class)
-    public ResponseEntity<CommonCodeJsonResponse> handler(HttpServletRequest request, FeignException e) throws IOException {
+    public ResponseEntity<CommonCodeResponse> handler(HttpServletRequest request, FeignException e) throws IOException {
         HttpLogger.determineAndLogForJsonRequest(request);
 
         log.warn("调用外部接口异常: ", e);
         Throwable cause = e.getCause();
         if (cause instanceof IOException) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(CommonCodeJsonResponse.response(CommonErrorCodeEum.NETWORK_EXCEPTION));
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(CommonCodeResponse.response(CommonErrorCodeEum.NETWORK_EXCEPTION));
         }
         if (exceptionHandler != null && e instanceof MethodKeyFeignException) {
             return exceptionHandler.handlerException(request, (MethodKeyFeignException) e);
@@ -58,7 +58,7 @@ public class FeignExceptionAdvice {
             codeAndMsg = CommonErrorCodeEum.UNKNOWN_SERVER_EXCEPTION;
         }
 
-        return ResponseEntity.status(e.status()).body(CommonCodeJsonResponse.response(codeAndMsg));
+        return ResponseEntity.status(e.status()).body(CommonCodeResponse.response(codeAndMsg));
     }
 
 
