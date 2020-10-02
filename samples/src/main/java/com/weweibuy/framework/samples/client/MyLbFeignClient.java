@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.RequestHeader;
 @FeignClient(name = "webuy-auth" , contextId = "MyLbFeignClient", configuration = {SnakeCaseEncoderAndDecoder.class, MyLbFeignClient.MyRequest.class})
 public interface MyLbFeignClient {
 
-    @PostMapping("/hello")
-    CommonDataJsonResponse<String> helloPost(CommonDataJsonResponse<String> commonJsonResponse,
+    @PostMapping("/gw/authorize")
+    CommonDataJsonResponse helloPost(CommonDataJsonResponse<String> commonJsonResponse,
                                              @RequestHeader(value = "token") String token);
 
 

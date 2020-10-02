@@ -13,23 +13,23 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class CommonDataJsonResponse<T> extends CommonCodeJsonResponse {
+public class CommonDataResponse<T> extends CommonCodeResponse {
 
     private T data;
 
-    public CommonDataJsonResponse(ResponseCodeAndMsg codeAndMsg, T data) {
+    public CommonDataResponse(ResponseCodeAndMsg codeAndMsg, T data) {
         super(codeAndMsg);
         this.data = data;
     }
 
 
-    public static <T> CommonDataJsonResponse<T> success(T data) {
-        return new CommonDataJsonResponse(CommonErrorCodeEum.SUCCESS, data);
+    public static <T> CommonDataResponse<T> success(T data) {
+        return new CommonDataResponse(CommonErrorCodeEum.SUCCESS, data);
     }
 
 
-    public static <T> CommonDataJsonResponse<T> response(ResponseCodeAndMsg codeAndMsg, T data) {
-        return new CommonDataJsonResponse(codeAndMsg, data);
+    public static <T> CommonDataResponse<T> response(ResponseCodeAndMsg codeAndMsg, T data) {
+        return new CommonDataResponse(codeAndMsg, data);
     }
 
 }

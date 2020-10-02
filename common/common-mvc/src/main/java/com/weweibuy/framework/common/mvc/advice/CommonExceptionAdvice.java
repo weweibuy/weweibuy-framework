@@ -3,7 +3,7 @@ package com.weweibuy.framework.common.mvc.advice;
 import com.weweibuy.framework.common.core.exception.BusinessException;
 import com.weweibuy.framework.common.core.exception.IdempotentNoLockException;
 import com.weweibuy.framework.common.core.exception.SystemException;
-import com.weweibuy.framework.common.core.model.dto.CommonCodeJsonResponse;
+import com.weweibuy.framework.common.core.model.dto.CommonCodeResponse;
 import com.weweibuy.framework.common.core.model.eum.CommonErrorCodeEum;
 import com.weweibuy.framework.common.core.support.SystemIdGetter;
 import com.weweibuy.framework.common.core.utils.ResponseCodeUtils;
@@ -51,12 +51,12 @@ public class CommonExceptionAdvice implements InitializingBean {
      * @throws IOException
      */
     @ExceptionHandler(BusinessException.class)
-    public ResponseEntity<CommonCodeJsonResponse> handler(HttpServletRequest request, BusinessException e) throws IOException {
+    public ResponseEntity<CommonCodeResponse> handler(HttpServletRequest request, BusinessException e) throws IOException {
         HttpLogger.determineAndLogForJsonRequest(request);
 
         log.warn("业务异常: ", e);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(CommonCodeJsonResponse.response(
+                .body(CommonCodeResponse.response(
                         ResponseCodeUtils.appendSystemId(systemId, e.getCodeAndMsg())));
     }
 
@@ -70,13 +70,13 @@ public class CommonExceptionAdvice implements InitializingBean {
      * @throws IOException
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<CommonCodeJsonResponse> handler(HttpServletRequest request, MethodArgumentNotValidException e) throws IOException {
+    public ResponseEntity<CommonCodeResponse> handler(HttpServletRequest request, MethodArgumentNotValidException e) throws IOException {
         HttpLogger.determineAndLogForJsonRequest(request);
 
         log.warn("输入参数错误: {}", e.getMessage());
         String defaultMessage = e.getBindingResult().getFieldError().getDefaultMessage();
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(CommonCodeJsonResponse.response(
+                .body(CommonCodeResponse.response(
                         ResponseCodeUtils.appendSystemId(systemId, CommonErrorCodeEum.BAD_REQUEST_PARAM.getCode(), defaultMessage)));
     }
 
@@ -89,13 +89,13 @@ public class CommonExceptionAdvice implements InitializingBean {
      * @throws IOException
      */
     @ExceptionHandler(BindException.class)
-    public ResponseEntity<CommonCodeJsonResponse> handler(HttpServletRequest request, BindException e) throws IOException {
+    public ResponseEntity<CommonCodeResponse> handler(HttpServletRequest request, BindException e) throws IOException {
         HttpLogger.determineAndLogForJsonRequest(request);
 
         log.warn("输入参数错误: {}", e.getMessage());
         String defaultMessage = e.getFieldError().getDefaultMessage();
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(CommonCodeJsonResponse.response(
+                .body(CommonCodeResponse.response(
                         ResponseCodeUtils.appendSystemId(systemId, CommonErrorCodeEum.BAD_REQUEST_PARAM.getCode(), defaultMessage)));
     }
 
@@ -108,12 +108,12 @@ public class CommonExceptionAdvice implements InitializingBean {
      * @throws IOException
      */
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<CommonCodeJsonResponse> handler(HttpServletRequest request, HttpMessageNotReadableException e) throws IOException {
+    public ResponseEntity<CommonCodeResponse> handler(HttpServletRequest request, HttpMessageNotReadableException e) throws IOException {
         HttpLogger.determineAndLogForJsonRequest(request);
 
         log.warn("输入参数格式错误: {}", e.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(CommonCodeJsonResponse.response(
+                .body(CommonCodeResponse.response(
                         ResponseCodeUtils.appendSystemId(systemId, CommonErrorCodeEum.BAD_REQUEST_PARAM.getCode(), "输入参数格式错误")));
     }
 
@@ -126,12 +126,12 @@ public class CommonExceptionAdvice implements InitializingBean {
      * @throws IOException
      */
     @ExceptionHandler(SystemException.class)
-    public ResponseEntity<CommonCodeJsonResponse> handler(HttpServletRequest request, SystemException e) throws IOException {
+    public ResponseEntity<CommonCodeResponse> handler(HttpServletRequest request, SystemException e) throws IOException {
         HttpLogger.determineAndLogForJsonRequest(request);
 
         log.error("系统异常: ", e);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(CommonCodeJsonResponse.response(
+                .body(CommonCodeResponse.response(
                         ResponseCodeUtils.appendSystemId(systemId, e.getCodeAndMsg())));
     }
 
@@ -144,12 +144,12 @@ public class CommonExceptionAdvice implements InitializingBean {
      * @throws IOException
      */
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
-    public ResponseEntity<CommonCodeJsonResponse> handler(HttpServletRequest request, HttpRequestMethodNotSupportedException e) throws IOException {
+    public ResponseEntity<CommonCodeResponse> handler(HttpServletRequest request, HttpRequestMethodNotSupportedException e) throws IOException {
         HttpLogger.determineAndLogForJsonRequest(request);
 
         log.warn("请求 HttpMethod 错误: {}", e.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(CommonCodeJsonResponse.response(
+                .body(CommonCodeResponse.response(
                         ResponseCodeUtils.appendSystemId(systemId, CommonErrorCodeEum.BAD_REQUEST_PARAM.getCode(), "请求HttpMethod错误")));
     }
 
@@ -162,12 +162,12 @@ public class CommonExceptionAdvice implements InitializingBean {
      * @throws IOException
      */
     @ExceptionHandler(IdempotentNoLockException.class)
-    public ResponseEntity<CommonCodeJsonResponse> handler(HttpServletRequest request, IdempotentNoLockException e) throws IOException {
+    public ResponseEntity<CommonCodeResponse> handler(HttpServletRequest request, IdempotentNoLockException e) throws IOException {
         HttpLogger.determineAndLogForJsonRequest(request);
 
         log.warn("幂等异常: ", e.getMessage());
         return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS)
-                .body(CommonCodeJsonResponse.response(
+                .body(CommonCodeResponse.response(
                         ResponseCodeUtils.appendSystemId(systemId, CommonErrorCodeEum.TOO_MANY_REQUESTS)));
     }
 
@@ -180,7 +180,7 @@ public class CommonExceptionAdvice implements InitializingBean {
      * @throws IOException
      */
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<CommonCodeJsonResponse> handler(HttpServletRequest request, Exception e) throws IOException {
+    public ResponseEntity<CommonCodeResponse> handler(HttpServletRequest request, Exception e) throws IOException {
         HttpLogger.determineAndLogForJsonRequest(request);
 
         if (unknownExceptionHandler != null) {
@@ -188,7 +188,7 @@ public class CommonExceptionAdvice implements InitializingBean {
         }
         log.error("未知异常: ", e);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(CommonCodeJsonResponse.response(
+                .body(CommonCodeResponse.response(
                         ResponseCodeUtils.appendSystemId(systemId, CommonErrorCodeEum.UNKNOWN_EXCEPTION)));
     }
 

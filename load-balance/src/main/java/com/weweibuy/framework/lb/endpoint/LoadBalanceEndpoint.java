@@ -1,8 +1,8 @@
 package com.weweibuy.framework.lb.endpoint;
 
 import com.netflix.loadbalancer.Server;
-import com.weweibuy.framework.common.core.model.dto.CommonCodeJsonResponse;
-import com.weweibuy.framework.common.core.model.dto.CommonDataJsonResponse;
+import com.weweibuy.framework.common.core.model.dto.CommonCodeResponse;
+import com.weweibuy.framework.common.core.model.dto.CommonDataResponse;
 import com.weweibuy.framework.lb.support.LoadBalanceOperator;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,8 +32,8 @@ public class LoadBalanceEndpoint {
      * @return
      */
     @GetMapping("/_list")
-    public CommonDataJsonResponse<Map<String, List<Server>>> listLb() {
-        return CommonDataJsonResponse.success(loadBalanceOperator.allServerMap());
+    public CommonDataResponse<Map<String, List<Server>>> listLb() {
+        return CommonDataResponse.success(loadBalanceOperator.allServerMap());
 
     }
 
@@ -43,9 +43,9 @@ public class LoadBalanceEndpoint {
      * @return
      */
     @PostMapping("/_update/{name}")
-    public CommonCodeJsonResponse updateLb(@PathVariable String name) {
+    public CommonCodeResponse updateLb(@PathVariable String name) {
         loadBalanceOperator.update(name);
-        return CommonCodeJsonResponse.success();
+        return CommonCodeResponse.success();
 
     }
 
@@ -56,9 +56,9 @@ public class LoadBalanceEndpoint {
      * @return
      */
     @PostMapping("/_update")
-    public CommonCodeJsonResponse updateLb() {
+    public CommonCodeResponse updateLb() {
         loadBalanceOperator.update("");
-        return CommonCodeJsonResponse.success();
+        return CommonCodeResponse.success();
 
     }
 

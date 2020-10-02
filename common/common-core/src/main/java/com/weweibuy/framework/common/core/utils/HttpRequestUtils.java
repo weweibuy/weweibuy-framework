@@ -3,7 +3,7 @@ package com.weweibuy.framework.common.core.utils;
 import com.weweibuy.framework.common.core.exception.SystemException;
 import com.weweibuy.framework.common.core.model.ResponseCodeAndMsg;
 import com.weweibuy.framework.common.core.model.constant.CommonConstant;
-import com.weweibuy.framework.common.core.model.dto.CommonCodeJsonResponse;
+import com.weweibuy.framework.common.core.model.dto.CommonCodeResponse;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
@@ -133,7 +133,7 @@ public class HttpRequestUtils {
      * @return
      */
     public static ResponseCodeAndMsg convertJsonStrToCodeAndMsg(String msgJsonStr) {
-        return JackJsonUtils.readValue(msgJsonStr, CommonCodeJsonResponse.class);
+        return JackJsonUtils.readValue(msgJsonStr, CommonCodeResponse.class);
     }
 
 
