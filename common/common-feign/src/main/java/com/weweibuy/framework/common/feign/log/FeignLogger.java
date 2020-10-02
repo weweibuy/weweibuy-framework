@@ -50,8 +50,10 @@ public class FeignLogger extends Logger {
         /*
          * spring-boot 2.2.x 版本
          * String bodyStr = request.requestBody().asString();
+         *
          */
-        String bodyStr = request.requestBody().asString();
+        byte[] body = request.body();
+        String bodyStr = body != null ? new String(body) : StringUtils.EMPTY;
         log.info("Feign 请求地址: {}, Method: {}, Header: {}, Body: {}",
                 request.url(),
                 httpMethod,

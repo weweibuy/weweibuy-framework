@@ -11,13 +11,13 @@ spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     type: com.zaxxer.hikari.HikariDataSource
-    url: jdbc:mysql://106.12.208.53:3306/webuy_learning?useUnicode=true&characterEncoding=UTF-8&allowMutiQueries=true
+    url: jdbc:mysql://106.12.208.53:3306/webuy_learning?useUnicode=true&characterEncoding=UTF-8&allowMutiQueries=true&serverTimezone=Asia/Shanghai
     username: user01
     password: ak402507979
-    hikari:
-      register-mbeans: true
   jackson:
     property-naming-strategy: SNAKE_CASE
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
   redis:
     host: 122.51.171.126
     password: ak402507979
