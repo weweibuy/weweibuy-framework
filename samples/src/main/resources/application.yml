@@ -39,6 +39,7 @@ spring:
       password: ak402507979
 
 
+
 mybatis:
   mapper-locations: classpath*:config/mybatis/mapper/**/*.xml
 

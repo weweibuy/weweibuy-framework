@@ -5,6 +5,7 @@
  */
 package com.weweibuy.framework.samples.config;
 
+import com.weweibuy.framework.samples.es.SnackCaseEsEntityMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.elasticsearch.core.EntityMapper;

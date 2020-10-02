@@ -1,4 +1,4 @@
-package com.weweibuy.framework.samples.config;
+package com.weweibuy.framework.samples.es;
 
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.module.SimpleModule;
@@ -25,7 +25,7 @@ import java.util.Map;
  * @author durenhao
  * @date 2020/10/1 22:16
  **/
-public class SnackCaseEsEntityMapper  implements EntityMapper {
+public class SnackCaseEsEntityMapper implements EntityMapper {
 
 
     private ObjectMapper objectMapper;
