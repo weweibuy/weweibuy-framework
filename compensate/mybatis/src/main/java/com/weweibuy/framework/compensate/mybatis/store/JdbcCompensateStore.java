@@ -85,7 +85,7 @@ public class JdbcCompensateStore implements CompensateStore {
                 .andNextTriggerTimeLessThan(LocalDateTime.now())
                 .andCompensateStatusEqualTo(CompensateStatusConstant.COMPENSATING)
                 .example();
-        List<Compensate> compensates = compensateMapper.selectByExampleWithLimit(compensateExample, limit);
+             List<Compensate> compensates = compensateMapper.selectByExampleWithLimit(compensateExample, limit);
 
         Map<Boolean, List<Compensate>> listMap = compensates.stream()
                 .collect(Collectors.groupingBy(Compensate::getHasArgsExt));
