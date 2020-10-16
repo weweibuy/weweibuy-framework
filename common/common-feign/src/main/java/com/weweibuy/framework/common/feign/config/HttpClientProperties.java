@@ -7,7 +7,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * @author durenhao
  * @date 2019/10/29 10:59
  **/
-@ConfigurationProperties(prefix = "http.client")
+@ConfigurationProperties(prefix = "common.feign.http-client")
 @Data
 public class HttpClientProperties {
 
@@ -36,7 +36,7 @@ public class HttpClientProperties {
     /**
      * 读取超时
      */
-    private Integer socketTimeout = 5000;
+    private Integer socketTimeout = 3000;
 
     /**
      * 检查失效连接间隔  毫秒

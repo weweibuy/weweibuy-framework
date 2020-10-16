@@ -11,7 +11,7 @@ import org.springframework.http.HttpHeaders;
 
 import java.io.IOException;
 import java.util.Collection;
-import java.util.Map;
+import java.util.Optional;
 
 /**
  * @author durenhao
@@ -20,23 +20,13 @@ import java.util.Map;
 @Slf4j
 public class FeignLogger extends Logger {
 
-    private static final String EMPTY_BODY_STR = "Binary data";
+    private static final String BINARY_BODY_STR = "Binary data";
 
-    public static void logForRequest(String path, Map<String, Collection<String>> header, String body) {
-        log.info("Feign 请求地址: {}, 请求头: {}, 请求数据: {}",
-                path,
-                header,
-                body);
-    }
-
-    public static void logForResponse(Map<String, Collection<String>> header, String body, int status, long elapsedTime) {
-        log.info("Feign 响应status: {} , Header: {}, Body: {}, 耗时: {}",
+    public static void logForResponse(String body, int status, long elapsedTime) {
+        log.info("Feign 响应status: {} , Body: {}, 耗时: {}",
                 status,
-                header,
                 body,
                 elapsedTime);
-
-
     }
 
     @Override
@@ -46,19 +36,20 @@ public class FeignLogger extends Logger {
 
     @Override
     protected void logRequest(String configKey, Level logLevel, Request request) {
-        Request.HttpMethod httpMethod = request.httpMethod();
         /*
-         * spring-boot 2.2.x 版本
+         * spring-boot 2.2.2 版本
+         *
          * String bodyStr = request.requestBody().asString();
+         * String bodyStr = BINARY_BODY_STR.equals(bodyStr) ? StringUtils.EMPTY : bodyStr
          *
          */
-        byte[] body = request.body();
-        String bodyStr = body != null ? new String(body) : StringUtils.EMPTY;
-        log.info("Feign 请求地址: {}, Method: {}, Header: {}, Body: {}",
+        String bodyStr = Optional.ofNullable(request.body())
+                .map(String::new)
+                .orElse(StringUtils.EMPTY);
+        log.info("Feign 请求地址: {}, Method: {}, Body: {}",
                 request.url(),
-                httpMethod,
-                request.headers(),
-                EMPTY_BODY_STR.equals(bodyStr) ? StringUtils.EMPTY : bodyStr);
+                request.httpMethod(),
+                bodyStr);
     }
 
     @Override
@@ -86,14 +77,14 @@ public class FeignLogger extends Logger {
         if (CollectionUtils.isNotEmpty(collection)) {
             String next = collection.iterator().next();
             if (next.indexOf("stream") != -1) {
-                bodyStr = EMPTY_BODY_STR;
+                bodyStr = BINARY_BODY_STR;
             }
         } else if (response.body() != null && !(status == 204 || status == 205)) {
             byte[] bodyData = Util.toByteArray(response.body().asInputStream());
             bodyStr = new String(bodyData);
             response = response.toBuilder().body(bodyData).build();
         }
-        logForResponse(response.headers(), bodyStr, status, elapsedTime);
+        logForResponse(bodyStr, status, elapsedTime);
         return response;
     }
 
