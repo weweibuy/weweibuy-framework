@@ -5,11 +5,14 @@ import com.weweibuy.framework.common.feign.log.TraceContextFeignInterceptor;
 import com.weweibuy.framework.common.feign.support.CustomFeignErrorDecoder;
 import feign.Feign;
 import feign.Logger;
+import feign.Request;
 import feign.Retryer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
+
+import java.util.concurrent.TimeUnit;
 
 /**
  * feign配置
@@ -37,7 +40,9 @@ public class CommonFeignConfig {
                 .retryer(retryer)
                 .logLevel(Logger.Level.BASIC)
                 .requestInterceptor(traceContextFeignInterceptor())
-                .errorDecoder(new CustomFeignErrorDecoder());
+                .errorDecoder(new CustomFeignErrorDecoder())
+                .options(new Request.Options(1, TimeUnit.SECONDS,
+                        3, TimeUnit.SECONDS, false));
     }
 
     @Bean
