@@ -36,6 +36,10 @@ public class DistributeLockController {
 
 
 
+
+
+
+
     private boolean tryGetToken(String localKey) {
         String reqId = UUID.randomUUID().toString();
         //设置脚本
