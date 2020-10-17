@@ -13,7 +13,7 @@ import org.springframework.statemachine.config.builders.StateMachineTransitionCo
 @Configuration
 @EnableStateMachine
 public class StateConfig extends StateMachineConfigurerAdapter<String, String> {
-
+    //test push
     @Override
     public void configure(StateMachineStateConfigurer<String, String> states) throws Exception {
         states.withStates()
