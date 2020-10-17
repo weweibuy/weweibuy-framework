@@ -38,13 +38,13 @@ public class HttpLogger {
             return;
         }
         if (parameterMap != null && !parameterMap.isEmpty()) {
-            log.info("Http 请求路径: {}, Method: {}, 参数: {} , Body:{}",
+            log.info("Http 请求路径: {}, Method: {}, 参数: {} , Body: {}",
                     path,
                     method,
                     HttpRequestUtils.parameterMapToString(parameterMap),
                     body);
         } else {
-            log.info("Http 请求路径: {}, Method: {}, Body:  {}",
+            log.info("Http 请求路径: {}, Method: {}, Body: {}",
                     path,
                     method,
                     body);
