@@ -26,7 +26,7 @@ import java.util.Optional;
  * @date 2020/3/1 10:07
  **/
 @Slf4j
-@Order(500)
+@Order(-103)
 public class RequestLogContextFilter extends OncePerRequestFilter {
 
 

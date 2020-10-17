@@ -17,7 +17,7 @@ import java.io.IOException;
  * @author durenhao
  * @date 2020/3/14 15:46
  **/
-@Order(0)
+@Order(Integer.MIN_VALUE + 1000)
 public class TraceCodeFilter extends OncePerRequestFilter {
 
     private final LogTraceCodeGetter logTraceCodeGetter = new HttpSimpleLoggerCodeGetter();
