@@ -1,0 +1,6 @@
+org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.selfInitialize
+
+characterEncodingFilter urls=[/*] order=-2147483648
+formContentFilter urls=[/*] order=-9900
+requestContextFilter urls=[/*] order=-105
+springSecurityFilterChain urls=[/*] order=-100
