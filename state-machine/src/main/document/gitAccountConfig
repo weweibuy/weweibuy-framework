@@ -1,0 +1,5 @@
+对于有些同学遇到的本地有两个git账号无法向远端仓库push 的问题有最快的解决方式如下：
+1.到自己的项目的toot目录，找到.git 隐藏文件中的 config 文件
+2.修改方式 以本项目为例
+url = https://<你的git账户名>:<你的git密码>@github.com/weweibuy/weweibuy-framework.git
+前提要确认该repo你有develop权限
