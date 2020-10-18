@@ -24,11 +24,7 @@ public class CommonErrorAttributes extends DefaultErrorAttributes {
 
     private SystemIdGetter systemIdGetter;
 
-    private final Map<String, Object> notFoundAttributes = new LinkedHashMap<>(4);
-
     private final Map<String, Object> unKnownAttributes = new LinkedHashMap<>(4);
-
-    private final Map<String, Object> requestExceptionAttributes = new LinkedHashMap<>(4);
 
 
     public CommonErrorAttributes() {
@@ -36,17 +32,12 @@ public class CommonErrorAttributes extends DefaultErrorAttributes {
     }
 
     public CommonErrorAttributes(SystemIdGetter systemIdGetter) {
-        notFoundAttributes.put("code", Optional.ofNullable(systemIdGetter)
+        this.systemIdGetter = systemIdGetter;
+        unKnownAttributes.put(CommonConstant.HttpResponseConstant.RESPONSE_MESSAGE_FIELD_CODE, Optional.ofNullable(systemIdGetter)
                 .map(SystemIdGetter::getSystemId)
-                .map(id -> id + CommonErrorCodeEum.NOT_FOUND.getCode())
-                .orElse(CommonErrorCodeEum.NOT_FOUND.getCode()));
-        notFoundAttributes.put("msg", CommonErrorCodeEum.NOT_FOUND.getMsg());
-        unKnownAttributes.put("code", Optional.ofNullable(systemIdGetter)
-                .map(SystemIdGetter::getSystemId)
-                .map(id -> id + CommonErrorCodeEum.UNKNOWN_EXCEPTION.getCode())
-                .orElse(CommonErrorCodeEum.UNKNOWN_EXCEPTION.getCode()));
-        unKnownAttributes.put("msg", CommonErrorCodeEum.UNKNOWN_EXCEPTION.getMsg());
-        requestExceptionAttributes.put("msg", "请求参数错误");
+                .map(id -> id + CommonErrorCodeEum.UNKNOWN_SERVER_EXCEPTION.getCode())
+                .orElse(CommonErrorCodeEum.UNKNOWN_SERVER_EXCEPTION.getCode()));
+        unKnownAttributes.put(CommonConstant.HttpResponseConstant.RESPONSE_MESSAGE_FIELD_MSG, CommonErrorCodeEum.UNKNOWN_SERVER_EXCEPTION.getMsg());
     }
 
 
@@ -70,25 +61,69 @@ public class CommonErrorAttributes extends DefaultErrorAttributes {
         if (status == null) {
             return unKnownAttributes;
         }
+        return getErrorAttributes(status);
+    }
 
-        if (HttpStatus.NOT_FOUND.value() == status) {
-            return notFoundAttributes;
+
+    private Map<String, Object> getErrorAttributes(Integer status) {
+        String code = null;
+        String msg = null;
+        Map<String, Object> errorAttributeMap = new LinkedHashMap<>(4);
+        switch (status) {
+            case 400:
+                code = CommonErrorCodeEum.BAD_REQUEST_PARAM.getCode();
+                msg = CommonErrorCodeEum.BAD_REQUEST_PARAM.getMsg();
+                break;
+            case 401:
+                code = CommonErrorCodeEum.UNAUTHORIZED.getCode();
+                msg = CommonErrorCodeEum.UNAUTHORIZED.getMsg();
+                break;
+            case 403:
+                code = CommonErrorCodeEum.FORBIDDEN.getCode();
+                msg = CommonErrorCodeEum.FORBIDDEN.getMsg();
+                break;
+            case 404:
+                code = CommonErrorCodeEum.NOT_FOUND.getCode();
+                msg = CommonErrorCodeEum.NOT_FOUND.getMsg();
+                break;
+            case 415:
+                code = CommonErrorCodeEum.UNSUPPORTED_MEDIA_TYPE.getCode();
+                msg = CommonErrorCodeEum.UNSUPPORTED_MEDIA_TYPE.getMsg();
+                break;
+            case 429:
+                code = CommonErrorCodeEum.TOO_MANY_REQUESTS.getCode();
+                msg = CommonErrorCodeEum.TOO_MANY_REQUESTS.getMsg();
+                break;
+            case 500:
+                code = CommonErrorCodeEum.UNKNOWN_SERVER_EXCEPTION.getCode();
+                msg = CommonErrorCodeEum.UNKNOWN_SERVER_EXCEPTION.getMsg();
+                break;
+            default:
+
         }
-
-        if (HttpStatus.INTERNAL_SERVER_ERROR.value() <= status) {
-            return unKnownAttributes;
+        if (StringUtils.isNotBlank(code)) {
+            if (systemIdGetter != null) {
+                code = systemIdGetter.getSystemId() + code;
+            }
+            errorAttributeMap.put(CommonConstant.HttpResponseConstant.RESPONSE_MESSAGE_FIELD_CODE, code);
+            errorAttributeMap.put(CommonConstant.HttpResponseConstant.RESPONSE_MESSAGE_FIELD_MSG, msg);
+            return errorAttributeMap;
         }
 
         if (HttpStatus.BAD_REQUEST.value() <= status && status < HttpStatus.INTERNAL_SERVER_ERROR.value()) {
-            requestExceptionAttributes.put("code", Optional.ofNullable(systemIdGetter)
+            errorAttributeMap.put(CommonConstant.HttpResponseConstant.RESPONSE_MESSAGE_FIELD_CODE, Optional.ofNullable(systemIdGetter)
                     .map(SystemIdGetter::getSystemId)
                     .map(id -> id + status)
                     .orElse(status + ""));
-            unKnownAttributes.put("msg", CommonErrorCodeEum.UNKNOWN_EXCEPTION.getMsg());
-            return requestExceptionAttributes;
+            errorAttributeMap.put(CommonConstant.HttpResponseConstant.RESPONSE_MESSAGE_FIELD_MSG, CommonErrorCodeEum.REQUEST_EXCEPTION.getMsg());
+            return errorAttributeMap;
         }
-        return unKnownAttributes;
+        errorAttributeMap.put(CommonConstant.HttpResponseConstant.RESPONSE_MESSAGE_FIELD_CODE, Optional.ofNullable(systemIdGetter)
+                .map(SystemIdGetter::getSystemId)
+                .map(id -> id + status)
+                .orElse(status + ""));
+        errorAttributeMap.put(CommonConstant.HttpResponseConstant.RESPONSE_MESSAGE_FIELD_MSG, CommonErrorCodeEum.UNKNOWN_SERVER_EXCEPTION.getMsg());
+        return errorAttributeMap;
     }
-
 
 }
