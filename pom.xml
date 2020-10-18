@@ -296,6 +296,12 @@
                 <version>${state-machine}</version>
             </dependency>
 
+            <dependency>
+                <groupId>com.weweibuy.framework</groupId>
+                <artifactId>state-machine</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 
