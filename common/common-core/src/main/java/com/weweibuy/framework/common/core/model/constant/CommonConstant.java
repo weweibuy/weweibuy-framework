@@ -110,4 +110,18 @@ public interface CommonConstant {
     }
 
 
+    public interface HttpResponseConstant {
+
+        /**
+         * 响应报文 code字段
+         */
+        String RESPONSE_MESSAGE_FIELD_CODE = "code";
+
+        /**
+         * 响应报文 msg字段
+         */
+        String RESPONSE_MESSAGE_FIELD_MSG = "msg";
+    }
+
+
 }
