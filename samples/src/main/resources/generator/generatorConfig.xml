@@ -35,7 +35,7 @@
         </commentGenerator>
         <!--数据库连接的信息：驱动类、连接地址、用户名、密码 -->
         <jdbcConnection driverClass="com.mysql.jdbc.Driver"
-                        connectionURL="jdbc:mysql://106.12.208.53:3306/webuy_compensate?characterEncoding=UTF-8"
+                        connectionURL="jdbc:mysql://106.12.208.53:3306/webuy_learning?characterEncoding=UTF-8"
                         userId="user01"
                         password="ak402507979">
         </jdbcConnection>
@@ -72,15 +72,19 @@
 
 
 
-        <table tableName="route_filter_args" domainObjectName="RouteFilterArgs" >
+<!--        <table tableName="route_filter_args" domainObjectName="RouteFilterArgs" >-->
+<!--            <generatedKey identity="true" column="id" sqlStatement="SELECT LAST_INSERT_ID()"/>-->
+<!--            <columnOverride column="is_delete"  property="deleted"  javaType="Boolean"/>-->
+<!--        </table>-->
+
+<!--        <table tableName="db_encrypt" domainObjectName="DBEncrypt" >-->
+<!--            <columnOverride column="phone"  typeHandler="com.weweibuy.framework.common.db.type.EncryptTypeHandler"/>-->
+<!--            <columnOverride column="id_no"  typeHandler="com.weweibuy.framework.common.db.type.EncryptTypeHandler"/>-->
+<!--        </table>-->
+
+        <table tableName="cm_order" domainObjectName="CmOrder" >
             <generatedKey identity="true" column="id" sqlStatement="SELECT LAST_INSERT_ID()"/>
             <columnOverride column="is_delete"  property="deleted"  javaType="Boolean"/>
         </table>
-
-        <table tableName="db_encrypt" domainObjectName="DBEncrypt" >
-            <columnOverride column="phone"  typeHandler="com.weweibuy.framework.common.db.type.EncryptTypeHandler"/>
-            <columnOverride column="id_no"  typeHandler="com.weweibuy.framework.common.db.type.EncryptTypeHandler"/>
-        </table>
-
     </context>
 </generatorConfiguration>

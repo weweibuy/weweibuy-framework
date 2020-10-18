@@ -1,10 +1,12 @@
 package com.weweibuy.framework.samples.controller;
 
+import com.weweibuy.framerwork.statemachine.core.StateMachineService;
 import com.weweibuy.framework.samples.state.StateService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -13,14 +15,21 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/state")
+@RequiredArgsConstructor
 public class StateController {
 
-    @Autowired
-    private StateService stateService;
+    private final StateService stateService;
+    private final StateMachineService stateMachineService;
 
     @GetMapping("/list")
-    public ResponseEntity state(){
+    public ResponseEntity<String> state() {
         stateService.listState();
         return ResponseEntity.ok("teat ok");
+    }
+
+    @GetMapping("/machine")
+    public ResponseEntity<Object> orderMachine(@RequestParam String event, @RequestParam String state) {
+        Object change = stateMachineService.change(event, null, state);
+        return ResponseEntity.ok(change);
     }
 }
