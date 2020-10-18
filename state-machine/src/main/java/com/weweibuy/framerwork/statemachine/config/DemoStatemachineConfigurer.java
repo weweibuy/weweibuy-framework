@@ -18,7 +18,7 @@ import java.util.EnumSet;
  */
 @Configuration
 @EnableStateMachine
-public class StatemachineConfigurer extends StateMachineConfigurerAdapter<TurnstileStates, TurnstileEvents> {
+public class DemoStatemachineConfigurer extends StateMachineConfigurerAdapter<TurnstileStates, TurnstileEvents> {
 
     @Override
     public void configure(StateMachineStateConfigurer<TurnstileStates, TurnstileEvents> states)

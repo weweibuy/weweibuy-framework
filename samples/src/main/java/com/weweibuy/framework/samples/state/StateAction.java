@@ -1,4 +1,4 @@
-package com.weweibuy.framerwork.statemachine.provider;
+package com.weweibuy.framework.samples.state;
 
 import com.weweibuy.framerwork.statemachine.core.StateMachineService;
 import com.weweibuy.framerwork.statemachine.support.ResultHolder;
@@ -7,9 +7,9 @@ import org.springframework.statemachine.action.Action;
 
 /**
  * @author : Knight
- * @date : 2020/10/17 4:09 下午
+ * @date : 2020/10/18 3:04 下午
  */
-public abstract class StateAction implements Action<String, String> {
+public abstract class StateAction implements Action<String,String> {
 
     @Override
     public void execute(StateContext<String, String> stateContext) {
