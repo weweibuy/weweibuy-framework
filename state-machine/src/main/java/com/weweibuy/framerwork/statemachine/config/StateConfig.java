@@ -15,7 +15,7 @@ import org.springframework.statemachine.recipes.persist.PersistStateMachineHandl
 public class StateConfig {
 
     @Autowired(required = false)
-    private StateMachine stateMachine;
+    private StateMachine orderStateMachine;
 
     @Bean
     public StateMachineService stateMachineService() {
@@ -24,6 +24,6 @@ public class StateConfig {
 
     @Bean
     public PersistStateMachineHandler persistStateMachineHandler() {
-        return new PersistStateMachineHandler(stateMachine);
+        return new PersistStateMachineHandler(orderStateMachine);
     }
 }

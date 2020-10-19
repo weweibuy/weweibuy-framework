@@ -27,9 +27,8 @@ public class StateController {
         return ResponseEntity.ok("teat ok");
     }
 
-    @GetMapping("/machine")
+    @GetMapping("/machine/order")
     public ResponseEntity<Object> orderMachine(@RequestParam String event, @RequestParam String state) {
-        Object change = stateMachineService.change(event, null, state);
-        return ResponseEntity.ok(change);
+        return ResponseEntity.ok(stateMachineService.change(event, null, state));
     }
 }

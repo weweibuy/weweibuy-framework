@@ -16,8 +16,7 @@ public class OrderCreateAction extends StateAction {
     // 可在此处扩张自己的业务逻辑 在业务需要校验 持久层数据状态是否与入口一致
     @Override
     protected Object doAction(Object data, String event, String source, String target) {
-//        return orderService.createNumber();
-        return null;
+        return orderService.createNumber((String) data, target);
     }
 
 
