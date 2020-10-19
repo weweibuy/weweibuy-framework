@@ -7,6 +7,7 @@ import com.weweibuy.framework.common.core.model.dto.CommonDataResponse;
 import com.weweibuy.framework.samples.mybatis.plugin.mapper.CmOrderMapper;
 import com.weweibuy.framework.samples.mybatis.plugin.model.example.CmOrderExample;
 import com.weweibuy.framework.samples.mybatis.plugin.model.po.CmOrder;
+import com.weweibuy.framework.samples.state.biz.dto.OrderDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

@@ -1,4 +1,4 @@
-package com.weweibuy.framework.samples.state;
+package com.weweibuy.framework.samples.state.biz.dto;
 
 import lombok.Builder;
 import lombok.Getter;
