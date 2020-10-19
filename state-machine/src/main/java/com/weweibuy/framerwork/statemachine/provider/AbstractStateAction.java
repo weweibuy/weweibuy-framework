@@ -9,8 +9,7 @@ import org.springframework.statemachine.action.Action;
  * @author : Knight
  * @date : 2020/10/17 4:09 下午
  */
-public abstract class StateAction implements Action<String, String> {
-
+public abstract class AbstractStateAction implements Action<String, String> {
     @Override
     public void execute(StateContext<String, String> stateContext) {
         ResultHolder resultHolder = (ResultHolder) stateContext.getMessageHeader(StateMachineService.RESULT);

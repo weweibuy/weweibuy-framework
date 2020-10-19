@@ -11,7 +11,7 @@ import org.springframework.statemachine.recipes.persist.PersistStateMachineHandl
 public class StateMachineService {
     private final PersistStateMachineHandler handler;
 
-    public static String DATA = "data";
+    public static final String DATA = "data";
 
     public static final String RESULT = "result";
 

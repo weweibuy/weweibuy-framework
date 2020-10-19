@@ -4,7 +4,7 @@ import com.weweibuy.framerwork.statemachine.common.enums.OrderEvent;
 import com.weweibuy.framerwork.statemachine.common.enums.OrderState;
 import com.weweibuy.framework.samples.state.OrderCreateAction;
 import com.weweibuy.framework.samples.state.OrderDeliveryAction;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.statemachine.config.EnableStateMachine;
 import org.springframework.statemachine.config.StateMachineConfigurerAdapter;
@@ -19,14 +19,12 @@ import java.util.stream.Collectors;
  * @date : 2020/10/18 3:51 下午
  */
 @Configuration
+@RequiredArgsConstructor
 @EnableStateMachine(name = "orderStateMachine")
-public class StatemachineOrderConfigurer extends StateMachineConfigurerAdapter<String, String> {
+public class StateMachineOrderConfigurer extends StateMachineConfigurerAdapter<String, String> {
 
-    //状态机---action
-    @Autowired
-    private OrderCreateAction orderCreateAction;
-    @Autowired
-    private OrderDeliveryAction orderDeliveryAction;
+    private final OrderCreateAction orderCreateAction;
+    private final   OrderDeliveryAction orderDeliveryAction;
 
     @Override
     public void configure(StateMachineStateConfigurer<String, String> states) throws Exception {
@@ -44,7 +42,11 @@ public class StatemachineOrderConfigurer extends StateMachineConfigurerAdapter<S
     public void configure(StateMachineTransitionConfigurer<String, String> transitions) throws Exception {
         transitions.withExternal()
                 .source(OrderState.INITIALED.name()).target(OrderState.CREATED.name())
-                .event(OrderEvent.CREATED.name()).action(orderDeliveryAction);
+                .event(OrderEvent.CREATED.name()).action(orderCreateAction)
+                .and()
+                .withExternal()
+                .source(OrderState.CREATED.name()).target(OrderState.FINISHED.name())
+                .event(OrderEvent.FINISHED.name()).action(orderDeliveryAction);
     }
 
 }
