@@ -40,11 +40,8 @@ public class OrderService {
         //step1:校验当前order业务状态
         CmOrderExample example = new CmOrderExample();
         example.createCriteria().andOrderNoEqualTo(orderNo);
-        CmOrder cm = Optional.ofNullable(cmOrderMapper.selectOneByExample(example)).orElseThrow(
-                () -> {
-                    throw new BusinessException(CommonCodeResponse.unknownException());
-                }
-        );
+        CmOrder cm = Optional.ofNullable(cmOrderMapper.selectOneByExample(example))
+                .orElseThrow(() -> new BusinessException(CommonCodeResponse.unknownException()));
         cm.setOrderStatus(orderStatus);
         cmOrderMapper.updateByExample(cm, example);
         return CommonDataResponse.success(OrderDto.builder()
