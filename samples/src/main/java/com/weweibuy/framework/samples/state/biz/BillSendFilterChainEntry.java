@@ -1,9 +1,12 @@
 package com.weweibuy.framework.samples.state.biz;
 
+import com.weweibuy.framework.samples.model.dto.CommonCodeJsonResponse;
 import com.weweibuy.framework.samples.state.biz.dto.BillContext;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author zhang.suxing
@@ -13,10 +16,16 @@ public class BillSendFilterChainEntry implements BillSendFilterChain {
     @Autowired
     private List<DispatchBillFilter> dispatchBillFilters;
 
+    public BillSendFilterChainEntry(List<DispatchBillFilter> dispatchBillFilters) {
+        this.dispatchBillFilters = dispatchBillFilters.stream()
+                .sorted(Comparator.comparingInt(DispatchBillFilter::order))
+                .collect(Collectors.toList());
+    }
+
     @Override
     public Object doFilter(BillContext context) {
         for (DispatchBillFilter dispatchBillFilter : dispatchBillFilters) {
-            dispatchBillFilter.filter();
+            dispatchBillFilter.filter(context);
         }
         return doSendOrder(context);
     }
@@ -25,7 +34,7 @@ public class BillSendFilterChainEntry implements BillSendFilterChain {
      * chain 的终结点
      */
     private Object doSendOrder(BillContext billContext) {
-        return new Object();
+        return CommonCodeJsonResponse.success();
     }
 
 }

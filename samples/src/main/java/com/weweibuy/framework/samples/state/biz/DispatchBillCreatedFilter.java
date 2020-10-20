@@ -1,6 +1,6 @@
-package com.weweibuy.framework.samples.state.biz.dto;
+package com.weweibuy.framework.samples.state.biz;
 
-import com.weweibuy.framework.samples.state.biz.DispatchBillFilter;
+import com.weweibuy.framework.samples.state.biz.dto.BillContext;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -8,13 +8,18 @@ import org.springframework.stereotype.Component;
  * @author zhang.suxing
  * @date 2020/10/19 22:24
  **/
-@Component
 @Slf4j
+@Component
 public class DispatchBillCreatedFilter implements DispatchBillFilter {
 
     @Override
-    public Object filter() {
+    public int order() {
+        return 2;
+    }
+
+    @Override
+    public Object filter(BillContext context) {
         log.info("订单创建成功---返回上游单号");
-        return null;
+        return context;
     }
 }
