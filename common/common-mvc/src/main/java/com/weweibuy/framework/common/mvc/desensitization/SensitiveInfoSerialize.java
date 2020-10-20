@@ -48,19 +48,21 @@ public class SensitiveInfoSerialize extends JsonSerializer<String> implements Co
      */
     @Override
     public JsonSerializer<?> createContextual(SerializerProvider serializerProvider, BeanProperty beanProperty) throws JsonMappingException {
-        if (beanProperty != null) {
-            if (Objects.equals(beanProperty.getType().getRawClass(), String.class)) { // 非 String 类直接跳过
-                SensitiveData sensitiveInfo = beanProperty.getAnnotation(SensitiveData.class);
-                if (sensitiveInfo == null) {
-                    sensitiveInfo = beanProperty.getContextAnnotation(SensitiveData.class);
-                }
-                if (sensitiveInfo != null) { // 如果能得到注解，就将注解的 value 传入 SensitiveInfoSerialize
-                    return new SensitiveInfoSerialize(Pattern.compile(sensitiveInfo.patten()), sensitiveInfo.replace());
-                }
-            }
-            return serializerProvider.findValueSerializer(beanProperty.getType(), beanProperty);
+        if (beanProperty == null) {
+            return this;
         }
-        return serializerProvider.findNullValueSerializer(beanProperty);
+        if (Objects.equals(beanProperty.getType().getRawClass(), String.class)) {
+            // 非 String 类直接跳过
+            SensitiveData sensitiveInfo = beanProperty.getAnnotation(SensitiveData.class);
+            if (sensitiveInfo == null) {
+                sensitiveInfo = beanProperty.getContextAnnotation(SensitiveData.class);
+            }
+            // 如果能得到注解，就将注解的 value 传入 LongDateSerialize
+            if (sensitiveInfo != null) {
+                return new SensitiveInfoSerialize(Pattern.compile(sensitiveInfo.patten()), sensitiveInfo.replace());
+            }
+        }
+        return serializerProvider.findValueSerializer(beanProperty.getType(), beanProperty);
     }
 
     private String replaceStr(String str) {

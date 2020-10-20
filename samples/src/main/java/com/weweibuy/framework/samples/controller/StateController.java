@@ -1,13 +1,17 @@
 package com.weweibuy.framework.samples.controller;
 
 import com.weweibuy.framerwork.statemachine.core.StateMachineService;
+import com.weweibuy.framework.common.mvc.date.LongData;
 import com.weweibuy.framework.samples.model.dto.CommonCodeJsonResponse;
 import com.weweibuy.framework.samples.mybatis.plugin.model.po.CmOrder;
 import com.weweibuy.framework.samples.state.StateService;
 import com.weweibuy.framework.samples.state.biz.BillSendFilterChainEntry;
 import com.weweibuy.framework.samples.state.biz.DispatchBillFilter;
 import com.weweibuy.framework.samples.state.biz.dto.BillContext;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,8 +37,8 @@ public class StateController {
     }
 
     @GetMapping("/machine/order")
-    public ResponseEntity<Object> orderMachine(@RequestParam String event, @RequestParam String state, @RequestParam String orderNo) {
-        return ResponseEntity.ok(stateMachineService.change(event, orderNo, state));
+    public Demo orderMachine(@RequestParam String event, @RequestParam String state, @RequestParam String orderNo) {
+        return new Demo(System.currentTimeMillis());
     }
 
     @PostMapping("/bill")
@@ -45,5 +49,12 @@ public class StateController {
 
     }
 
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    public class Demo {
+        @LongData
+        private long time;
+    }
 
 }
