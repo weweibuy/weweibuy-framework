@@ -37,7 +37,7 @@ public class StateController {
     }
 
     @GetMapping("/machine/order")
-    public Demo orderMachine(@RequestParam String event, @RequestParam String state, @RequestParam String orderNo) {
+    public Demo orderMachine() {
         return new Demo(System.currentTimeMillis());
     }
 
