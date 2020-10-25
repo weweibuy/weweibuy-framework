@@ -183,7 +183,7 @@ public final class Jdk9Option<T> {
      * If a value is present, returns an {@code Optional} describing (as if by
      * {@link #ofNullable}) the result of applying the given mapping function to
      * the value, otherwise returns an empty {@code Optional}.
-     *
+     * <p>
      * <p>If the mapping function returns a {@code null} result then this method
      * returns an empty {@code Optional}.
      *
@@ -198,7 +198,7 @@ public final class Jdk9Option<T> {
      * following code traverses a stream of URIs, selects one that has not
      * yet been processed, and creates a path from that URI, returning
      * an {@code Optional<Path>}:
-     *
+     * <p>
      * <pre>{@code
      *     Optional<Path> p =
      *         uris.stream().filter(uri -> !isProcessedYet(uri))
@@ -219,11 +219,39 @@ public final class Jdk9Option<T> {
         }
     }
 
+
+    public Jdk9Option<T> peek(Consumer<? super T> action) {
+        Objects.requireNonNull(action);
+        if (!isPresent()) {
+            return empty();
+        } else {
+            action.accept(value);
+            return Jdk9Option.ofNullable(value);
+        }
+    }
+
+    public Jdk9Option<T> fromOptional(Optional<T> optional) {
+        Objects.requireNonNull(optional);
+        if (!optional.isPresent()) {
+            return empty();
+        } else {
+            return Jdk9Option.ofNullable(optional.get());
+        }
+    }
+
+    public Optional<T> toOptional() {
+        if (!isPresent()) {
+            return Optional.empty();
+        } else {
+            return Optional.ofNullable(this.value);
+        }
+    }
+
     /**
      * If a value is present, returns the result of applying the given
      * {@code Optional}-bearing mapping function to the value, otherwise returns
      * an empty {@code Optional}.
-     *
+     * <p>
      * <p>This method is similar to {@link #map(Function)}, but the mapping
      * function is one whose result is already an {@code Optional}, and if
      * invoked, {@code flatMap} does not wrap it within an additional
