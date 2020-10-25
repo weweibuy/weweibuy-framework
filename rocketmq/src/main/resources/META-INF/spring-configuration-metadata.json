@@ -13,6 +13,12 @@
       "sourceType": "com.weweibuy.framework.rocketmq.config.RocketMqProperties"
     },
     {
+      "name": "rocket-mq.log.enable",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.weweibuy.framework.rocketmq.config.RocketMqConfig.RocketMqMessageLogConfig",
+      "defaultValue": true
+    },
+    {
       "name": "rocket-mq.producer",
       "type": "com.weweibuy.framework.rocketmq.config.RocketMqProperties$Producer",
       "sourceType": "com.weweibuy.framework.rocketmq.config.RocketMqProperties$Producer"
