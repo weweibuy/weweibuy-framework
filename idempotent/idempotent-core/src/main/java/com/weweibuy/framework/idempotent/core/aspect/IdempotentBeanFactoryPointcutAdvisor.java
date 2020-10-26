@@ -18,6 +18,9 @@ public class IdempotentBeanFactoryPointcutAdvisor extends AbstractBeanFactoryPoi
         this.pc = pc;
     }
 
+    /**
+     * @return
+     */
     @Override
     public Pointcut getPointcut() {
         return pc;

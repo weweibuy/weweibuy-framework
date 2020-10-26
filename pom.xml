@@ -18,6 +18,7 @@
         <module>http-client</module>
         <module>load-balance</module>
         <module>state-machine</module>
+        <module>thread-origin</module>
     </modules>
 
     <properties>
