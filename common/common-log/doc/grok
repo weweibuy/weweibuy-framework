@@ -1,0 +1,7 @@
+日志正则:
+
+^%{MYTIMESTAMP:@timestamp}%{SPACE}\[%{NOTSPACE:thread}\] %{MYLOGLEVEL:level}%{SPACE}%{NOTSPACE:logger}%{SPACE}\[%{DATA:user}\ ,%{DATA:trace}\]%{SPACE}-%{SPACE}%{GREEDYDATA:message}$
+
+自定义:
+MYLOGLEVEL  (INFO|WARN|ERROR|DEBUG)
+MYTIMESTAMP ^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\.\d{3}

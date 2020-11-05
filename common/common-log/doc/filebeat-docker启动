@@ -1,0 +1,1 @@
+docker run -v /docker/filebeat/config/filebeat.yml:/usr/share/filebeat/filebeat.yml -v /docker/filebeat/logs/:/usr/share/filebeat/logs -v /opt/logs/:/opt/logs  -v /etc/localtime:/etc/localtime   --rm --name filebeat filebeat:7.5.0
