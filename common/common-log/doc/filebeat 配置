@@ -1,0 +1,34 @@
+filebeat.config:
+  modules:
+    path: ${path.config}/modules.d/*.yml
+    reload.enabled: false
+
+filebeat.inputs:
+- type: log
+  paths:
+    - /opt/logs/*.log
+  multiline.pattern: '^[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}\.[0-9]{3}'
+  multiline.negate: true
+  multiline.match: after 
+
+processors:
+  - rename:
+      fields:
+        - from: "host.name"
+          to: "instance"
+      ignore_missing: false
+      fail_on_error: true
+  - drop_fields:
+      fields: ["ecs","agent","input","log","host"]
+
+
+output.elasticsearch:
+  hosts: 106.12.208.53:9200
+  username: elastic
+  password: ak402507979
+  index: "samples-application-log-%{+yyyy.MM.dd}"
+  pipeline: application-log-pipeline
+setup.template.name: "application-log-template"
+setup.template.pattern: "*-application-log-*"
+setup.ilm.enabled: false
+logging.level: debug
