@@ -88,11 +88,6 @@
             <artifactId>idempotent-redis</artifactId>
         </dependency>
 
-
-        <dependency>
-            <groupId>com.weweibuy.framework</groupId>
-            <artifactId>state-machine</artifactId>
-        </dependency>
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
@@ -144,13 +139,6 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        <dependency>
-            <groupId>com.weweibuy.framework</groupId>
-            <artifactId>state-machine</artifactId>
-            <version>1.0-SNAPSHOT</version>
-            <scope>compile</scope>
-        </dependency>
-
 
     </dependencies>
 
@@ -214,6 +202,22 @@
             <properties>
                 <profileActive>rel</profileActive>
             </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.springframework.boot</groupId>
+                        <artifactId>spring-boot-maven-plugin</artifactId>
+                        <version>2.3.4.RELEASE</version>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>repackage</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
         </profile>
 
     </profiles>
