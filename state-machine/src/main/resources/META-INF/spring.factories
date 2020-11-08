@@ -1,3 +1,0 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-  com.weweibuy.framerwork.statemachine.config.DemoStatemachineConfigurer,\
-  com.weweibuy.framerwork.statemachine.config.StateConfig
