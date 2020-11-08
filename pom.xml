@@ -17,8 +17,6 @@
         <module>mybatis-plugin</module>
         <module>http-client</module>
         <module>load-balance</module>
-        <module>state-machine</module>
-        <module>thread-origin</module>
     </modules>
 
     <properties>
@@ -297,12 +295,6 @@
                 <version>${state-machine}</version>
             </dependency>
 
-            <dependency>
-                <groupId>com.weweibuy.framework</groupId>
-                <artifactId>state-machine</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-
         </dependencies>
     </dependencyManagement>
 
@@ -357,6 +349,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
+                <version>3.1.0</version>
                 <!-- 绑定source插件到Maven的生命周期,并在生命周期后执行绑定的source的goal -->
                 <executions>
                     <execution>
