@@ -154,6 +154,17 @@ public class DateTimeUtils {
         return localDateTime.toInstant(ZoneOffset.of(CommonConstant.DateConstant.TIME_OFFSET_ID)).toEpochMilli();
     }
 
+
+    /**
+     * LocalDateTime 转毫秒时间
+     *
+     * @param localDate
+     * @return
+     */
+    public static long localDateToTimestampMilli(LocalDate localDate) {
+        return localDate.atStartOfDay(ZoneOffset.ofHours(8)).toInstant().toEpochMilli();
+    }
+
     /**
      * LocalDateTime 转秒时间
      *
@@ -202,5 +213,24 @@ public class DateTimeUtils {
         return Duration.between(start, end).toMillis();
     }
 
+    /**
+     * 标准时间字符 yyyy-MM-dd HH:mm:ss 转毫秒
+     *
+     * @param date
+     * @return
+     */
+    public static long strDateTimeToMilli(String date) {
+        return localDateTimeToTimestampMilli(stringToLocalDateTime(date));
+    }
+
+    /**
+     * 标准时间字符 yyyy-MM-dd 转毫秒
+     *
+     * @param date
+     * @return
+     */
+    public static long strDateToMilli(String date) {
+        return localDateToTimestampMilli(stringToLocalDate(date));
+    }
 
 }
