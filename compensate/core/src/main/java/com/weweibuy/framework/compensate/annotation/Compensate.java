@@ -52,7 +52,6 @@ public @interface Compensate {
     Class<? extends Throwable>[] exclude() default {};
 
     /**
-     * TODO 是否需要
      * 标记恢复方法  恢复方法在补偿成功后调用
      *
      * @return
