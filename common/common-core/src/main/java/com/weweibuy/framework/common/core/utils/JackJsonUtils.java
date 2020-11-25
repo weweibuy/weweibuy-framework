@@ -38,14 +38,13 @@ public class JackJsonUtils {
         MVC_OBJECT_MAPPER = objectMapper;
         PropertyNamingStrategy propertyNamingStrategy = objectMapper.getPropertyNamingStrategy();
 
-        if (propertyNamingStrategy == null || PropertyNamingStrategy.LOWER_CAMEL_CASE.getClass().getSimpleName()
-                .equals(propertyNamingStrategy.getClass().getSimpleName())) {
+        if (propertyNamingStrategy == null ||
+                propertyNamingStrategy.getClass().isAssignableFrom(PropertyNamingStrategy.LOWER_CAMEL_CASE.getClass())) {
             CAMEL_CASE_MAPPER = objectMapper;
             SNAKE_CASE_MAPPER = objectMapperBuilder.createXmlMapper(false)
                     .propertyNamingStrategy(PropertyNamingStrategy.SNAKE_CASE)
                     .build();
-        } else if (PropertyNamingStrategy.SNAKE_CASE.getClass().getSimpleName()
-                .equals(propertyNamingStrategy.getClass().getSimpleName())) {
+        } else if (propertyNamingStrategy.getClass().isAssignableFrom(PropertyNamingStrategy.SNAKE_CASE.getClass())) {
             SNAKE_CASE_MAPPER = objectMapper;
             CAMEL_CASE_MAPPER = objectMapperBuilder.createXmlMapper(false)
                     .propertyNamingStrategy(PropertyNamingStrategy.LOWER_CAMEL_CASE)
