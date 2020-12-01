@@ -26,6 +26,15 @@ public class Exceptions {
         return new BusinessException(newResponseCodeAndMsg(code, msg));
     }
 
+    public static BusinessException formatBusiness(String code, String format, String... args) {
+        return new BusinessException(newResponseCodeAndMsg(code, String.format(format, args)));
+    }
+
+    public static BusinessException formatBusiness(String format, String... args) {
+        return new BusinessException(newResponseCodeAndMsg(CommonErrorCodeEum.BAD_REQUEST_PARAM.getCode(),
+                String.format(format, args)));
+    }
+
     public static BusinessException business(String msg) {
         return new BusinessException(newResponseCodeAndMsg(CommonErrorCodeEum.BAD_REQUEST_PARAM.getCode(), msg));
     }
@@ -39,12 +48,21 @@ public class Exceptions {
         return new SystemException(CommonErrorCodeEum.UNKNOWN_EXCEPTION.getCode(), msg);
     }
 
+    public static SystemException formatSystem(String format, String... args) {
+        return new SystemException(CommonErrorCodeEum.UNKNOWN_EXCEPTION.getCode(),
+                String.format(format, args));
+    }
+
     public static SystemException system(Throwable e) {
         return new SystemException(CommonErrorCodeEum.UNKNOWN_EXCEPTION.getCode(), e);
     }
 
     public static SystemException system(String msg, Throwable e) {
         return new SystemException(msg, e);
+    }
+
+    public static SystemException formatSystem(Throwable e, String format, String... args) {
+        return new SystemException(String.format(format, args), e);
     }
 
     public static SystemException system(ResponseCodeAndMsg responseCodeAndMsg, Throwable cause) {
@@ -54,6 +72,11 @@ public class Exceptions {
     public static SystemException system(String code, String msg) {
         return new SystemException(newResponseCodeAndMsg(code, msg));
     }
+
+    public static SystemException formatSystem(String code, String format, String... args) {
+        return new SystemException(newResponseCodeAndMsg(code, String.format(format, args)));
+    }
+
 
     public static SystemException unknown() {
         return new SystemException(CommonErrorCodeEum.UNKNOWN_EXCEPTION);
