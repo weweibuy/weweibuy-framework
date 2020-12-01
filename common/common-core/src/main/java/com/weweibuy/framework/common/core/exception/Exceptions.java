@@ -26,11 +26,11 @@ public class Exceptions {
         return new BusinessException(newResponseCodeAndMsg(code, msg));
     }
 
-    public static BusinessException formatBusinessWithCode(String code, String format, String... args) {
+    public static BusinessException formatBusinessWithCode(String code, String format, Object... args) {
         return new BusinessException(newResponseCodeAndMsg(code, String.format(format, args)));
     }
 
-    public static BusinessException formatBusiness(String format, String... args) {
+    public static BusinessException formatBusiness(String format, Object... args) {
         return new BusinessException(newResponseCodeAndMsg(CommonErrorCodeEum.BAD_REQUEST_PARAM.getCode(),
                 String.format(format, args)));
     }
@@ -48,7 +48,7 @@ public class Exceptions {
         return new SystemException(CommonErrorCodeEum.UNKNOWN_EXCEPTION.getCode(), msg);
     }
 
-    public static SystemException formatSystem(String format, String... args) {
+    public static SystemException formatSystem(String format, Object... args) {
         return new SystemException(CommonErrorCodeEum.UNKNOWN_EXCEPTION.getCode(),
                 String.format(format, args));
     }
@@ -61,7 +61,7 @@ public class Exceptions {
         return new SystemException(msg, e);
     }
 
-    public static SystemException formatSystem(Throwable e, String format, String... args) {
+    public static SystemException formatSystem(Throwable e, String format, Object... args) {
         return new SystemException(String.format(format, args), e);
     }
 
@@ -73,7 +73,7 @@ public class Exceptions {
         return new SystemException(newResponseCodeAndMsg(code, msg));
     }
 
-    public static SystemException formatSystem(String code, String format, String... args) {
+    public static SystemException formatSystem(String code, String format, Object... args) {
         return new SystemException(newResponseCodeAndMsg(code, String.format(format, args)));
     }
 
