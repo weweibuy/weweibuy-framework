@@ -26,7 +26,7 @@ public class Exceptions {
         return new BusinessException(newResponseCodeAndMsg(code, msg));
     }
 
-    public static BusinessException formatBusiness(String code, String format, String... args) {
+    public static BusinessException formatBusinessWithCode(String code, String format, String... args) {
         return new BusinessException(newResponseCodeAndMsg(code, String.format(format, args)));
     }
 
