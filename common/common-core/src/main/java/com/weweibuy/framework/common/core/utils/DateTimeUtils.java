@@ -8,6 +8,7 @@ import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
@@ -267,11 +268,36 @@ public class DateTimeUtils {
      * 当前时间 是否晚于 给定时间 localDateTime   interval 值
      *
      * @param localDateTime
-     * @param interval
+     * @param interval      毫秒
      * @return
      */
     public static boolean isCurrentTimeOverInterval(LocalDateTime localDateTime, long interval) {
-        return System.currentTimeMillis() - localDateTimeToTimestampMilli(localDateTime) > interval;
+        return Math.abs(System.currentTimeMillis() - localDateTimeToTimestampMilli(localDateTime)) > interval;
+    }
+
+    /**
+     * dateTime1 与 dateTime2 是否超过 interval
+     *
+     * @param dateTime1
+     * @param dateTime2
+     * @param interval  毫秒
+     * @return
+     */
+    public static boolean isOverInterval(LocalDateTime dateTime1, LocalDateTime dateTime2, long interval) {
+        return Math.abs(localDateTimeToTimestampMilli(dateTime1) - localDateTimeToTimestampMilli(dateTime2)) > interval;
+    }
+
+    /**
+     * dateTime1 与 dateTime2 是否超过 duration
+     *
+     * @param dateTime1
+     * @param dateTime2
+     * @param duration  时间值
+     * @param timeUnit  时间单位
+     * @return
+     */
+    public static boolean isOverInterval(LocalDateTime dateTime1, LocalDateTime dateTime2, Long duration, TimeUnit timeUnit) {
+        return Math.abs(localDateTimeToTimestampMilli(dateTime1) - localDateTimeToTimestampMilli(dateTime2)) > toMils(duration, timeUnit);
     }
 
     /**
@@ -294,6 +320,141 @@ public class DateTimeUtils {
      */
     public static long betweenMilli(LocalDateTime start, LocalDateTime end) {
         return Duration.between(start, end).toMillis();
+    }
+
+
+    /**
+     * dateTime1 是否比 dateTime2 晚
+     *
+     * @param dateTime1
+     * @param dateTime2
+     * @return
+     */
+    public static boolean isAfter(LocalDateTime dateTime1, LocalDateTime dateTime2) {
+        return dateTime1.compareTo(dateTime2) > 0;
+    }
+
+    /**
+     * dateTime1 是否比 dateTime2 早
+     *
+     * @param dateTime1
+     * @param dateTime2
+     * @return
+     */
+    public static boolean isBefore(LocalDateTime dateTime1, LocalDateTime dateTime2) {
+        return !isAfter(dateTime1, dateTime2);
+    }
+
+    /**
+     * 是否是相同的一天
+     *
+     * @param dateTime1
+     * @param dateTime2
+     * @return
+     */
+    public static boolean isSameDay(LocalDateTime dateTime1, LocalDateTime dateTime2) {
+        return isSameDay(dateTime1.toLocalDate(), dateTime2.toLocalDate());
+    }
+
+    /**
+     * 是否是相同的一天
+     *
+     * @param date1
+     * @param date2
+     * @return
+     */
+    public static boolean isSameDay(LocalDate date1, LocalDate date2) {
+        return date1.compareTo(date2) == 0;
+    }
+
+
+    /**
+     * 月份数字 是否相同
+     *
+     * @param date1
+     * @param date2
+     * @return
+     */
+    public static boolean isSameMouthNumber(LocalDateTime date1, LocalDateTime date2) {
+        return isSameMouthNumber(date1.toLocalDate(), date2.toLocalDate());
+    }
+
+    /**
+     * 月份数字 是否相同
+     *
+     * @param date1
+     * @param date2
+     * @return
+     */
+    public static boolean isSameMouthNumber(LocalDate date1, LocalDate date2) {
+        return date1.getMonth().compareTo(date2.getMonth()) == 0;
+    }
+
+    /**
+     * 是否同年 同月
+     *
+     * @param date1
+     * @param date2
+     * @return
+     */
+    public static boolean isSameMouth(LocalDate date1, LocalDate date2) {
+        return isSameYear(date1, date2) && date1.getMonth().equals(date2.getMonth());
+    }
+
+    /**
+     * 是否同年 同月
+     *
+     * @param date1
+     * @param date2
+     * @return
+     */
+    public static boolean isSameMouth(LocalDateTime date1, LocalDateTime date2) {
+        return isSameYear(date1, date2)
+                && date1.getMonth().equals(date2.getMonth());
+    }
+
+    /**
+     * 是否同年
+     *
+     * @param date1
+     * @param date2
+     * @return
+     */
+    public static boolean isSameYear(LocalDateTime date1, LocalDateTime date2) {
+        return Objects.equals(date1.getYear(), date2.getYear());
+    }
+
+    /**
+     * 是否同年
+     *
+     * @param date1
+     * @param date2
+     * @return
+     */
+    public static boolean isSameYear(LocalDate date1, LocalDate date2) {
+        return Objects.equals(date1.getYear(), date2.getYear());
+    }
+
+    /**
+     * 是否同一小时
+     *
+     * @param date1
+     * @param date2
+     * @return
+     */
+    public static boolean isSameHour(LocalDateTime date1, LocalDateTime date2) {
+        return isSameDay(date1, date2) && Objects.equals(date1.getHour(), date2.getHour());
+    }
+
+    /**
+     * 是否同一分钟
+     *
+     * @param date1
+     * @param date2
+     * @return
+     */
+    public static boolean isSameMinute(LocalDateTime date1, LocalDateTime date2) {
+        return isSameHour(date1, date2) && Objects.equals(date1.getMinute(), date2.getMinute());
     }
 
     /**
