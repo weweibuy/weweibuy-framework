@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -18,6 +20,13 @@ import java.util.concurrent.TimeUnit;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class DateTimeUtils {
 
+    private static final Map<String, DateTimeFormatter> DATE_TIME_FORMATTER_MAP
+            = new ConcurrentHashMap<>();
+
+    static {
+        DATE_TIME_FORMATTER_MAP.put(CommonConstant.DateConstant.STANDARD_DATE_TIME_FORMAT_STR, CommonConstant.DateConstant.STANDARD_DATE_TIME_FORMATTER);
+        DATE_TIME_FORMATTER_MAP.put(CommonConstant.DateConstant.STANDARD_DATE_FORMAT_STR, CommonConstant.DateConstant.STANDARD_DATE_FORMATTER);
+    }
 
     /**
      * 转为标准时间日期 String
@@ -32,6 +41,18 @@ public class DateTimeUtils {
 
 
     /**
+     * 根据格式转时间日期
+     *
+     * @param date
+     * @param pattern 时间格式
+     * @return
+     */
+    public static String toStringDate(Date date, String pattern) {
+        LocalDateTime localDateTime = dateToLocalDateTime(date);
+        return localDateTime.format(dateTimeFormatter(pattern));
+    }
+
+    /**
      * 转为标准时间日期 String
      *
      * @param date
@@ -39,6 +60,17 @@ public class DateTimeUtils {
      */
     public static String toStringDate(LocalDateTime date) {
         return date.format(CommonConstant.DateConstant.STANDARD_DATE_TIME_FORMATTER);
+    }
+
+    /**
+     * 根据格式时间
+     *
+     * @param date
+     * @param pattern 时间格式
+     * @return
+     */
+    public static String toStringDate(LocalDateTime date, String pattern) {
+        return date.format(dateTimeFormatter(pattern));
     }
 
     /**
@@ -52,6 +84,18 @@ public class DateTimeUtils {
     }
 
     /**
+     * 时间转 LocalDateTime
+     *
+     * @param str
+     * @param pattern 时间格式
+     * @return
+     */
+    public static LocalDateTime stringToLocalDateTime(String str, String pattern) {
+        return LocalDateTime.parse(str, dateTimeFormatter(pattern));
+    }
+
+
+    /**
      * 标准时间转 LocalDate
      *
      * @param str yyyy-MM-dd
@@ -59,6 +103,17 @@ public class DateTimeUtils {
      */
     public static LocalDate stringToLocalDate(String str) {
         return LocalDate.parse(str, CommonConstant.DateConstant.STANDARD_DATE_FORMATTER);
+    }
+
+    /**
+     * 时间转 LocalDate
+     *
+     * @param str
+     * @param pattern 时间格式
+     * @return
+     */
+    public static LocalDate stringToLocalDate(String str, String pattern) {
+        return LocalDate.parse(str, dateTimeFormatter(pattern));
     }
 
     /**
@@ -70,6 +125,18 @@ public class DateTimeUtils {
     public static String toStringDate(LocalDate date) {
         return date.format(CommonConstant.DateConstant.STANDARD_DATE_FORMATTER);
     }
+
+    /**
+     * 转为日期 String
+     *
+     * @param date
+     * @param pattern 日期格式
+     * @return
+     */
+    public static String toStringDate(LocalDate date, String pattern) {
+        return date.format(dateTimeFormatter(pattern));
+    }
+
 
     /**
      * 转为时间日期 String
@@ -111,6 +178,16 @@ public class DateTimeUtils {
      */
     public static Date localDateTimeToDate(LocalDateTime localDateTime) {
         return Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
+    }
+
+    /**
+     * string 转 date
+     *
+     * @param strDate yyyy-MM-dd HH:mm:ss
+     * @return
+     */
+    public static Date strToDate(String strDate) {
+        return localDateTimeToDate(stringToLocalDateTime(strDate));
     }
 
     /**
@@ -175,7 +252,13 @@ public class DateTimeUtils {
         return localDateTime.toEpochSecond(ZoneOffset.of(CommonConstant.DateConstant.TIME_OFFSET_ID));
     }
 
-
+    /**
+     * 时间单位转化
+     *
+     * @param duration
+     * @param timeUnit
+     * @return
+     */
     public static long toMils(Long duration, TimeUnit timeUnit) {
         return timeUnit.toMillis(duration);
     }
@@ -232,5 +315,29 @@ public class DateTimeUtils {
     public static long strDateToMilli(String date) {
         return localDateToTimestampMilli(stringToLocalDate(date));
     }
+
+    /**
+     * 时间字符  转毫秒
+     *
+     * @param date
+     * @param pattern 时间格式
+     * @return
+     */
+    public static long strDateToMilli(String date, String pattern) {
+        return localDateToTimestampMilli(stringToLocalDate(date, pattern));
+    }
+
+
+    /**
+     * 获取 DateTimeFormatter
+     *
+     * @param str
+     * @return
+     */
+    public static DateTimeFormatter dateTimeFormatter(String str) {
+        return DATE_TIME_FORMATTER_MAP.computeIfAbsent(str, key ->
+                DateTimeFormatter.ofPattern(key));
+    }
+
 
 }
