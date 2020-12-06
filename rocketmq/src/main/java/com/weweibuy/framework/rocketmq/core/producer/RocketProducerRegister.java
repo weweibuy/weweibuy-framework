@@ -31,10 +31,10 @@ import java.util.Set;
  **/
 public class RocketProducerRegister implements ImportBeanDefinitionRegistrar, ResourceLoaderAware, EnvironmentAware {
 
-    private BeanNameGenerator beanNameGenerator = new AnnotationBeanNameGenerator();
+//    private BeanNameGenerator beanNameGenerator = new AnnotationBeanNameGenerator();
 
-    // spring 5.2 之后
-    // private BeanNameGenerator beanNameGenerator = AnnotationBeanNameGenerator.INSTANCE;
+     // spring 5.2 之后
+     private BeanNameGenerator beanNameGenerator = AnnotationBeanNameGenerator.INSTANCE;
 
     private ResourceLoader resourceLoader;
 

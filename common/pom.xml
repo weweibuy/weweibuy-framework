@@ -20,6 +20,7 @@
         <module>common-swagger</module>
         <module>common-codec</module>
         <module>common-metric</module>
+        <module>common-local-cache</module>
     </modules>
 
 

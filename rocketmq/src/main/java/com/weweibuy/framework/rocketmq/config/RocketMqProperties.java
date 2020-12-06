@@ -18,8 +18,7 @@ import java.util.Map;
 public class RocketMqProperties {
 
     /**
-     *  nameServer 地址
-     *
+     * nameServer 地址
      */
     private String nameServer;
 
@@ -122,6 +121,11 @@ public class RocketMqProperties {
          * 消费组
          */
         private String group;
+
+        /**
+         * tag
+         */
+        private String tags;
 
         /**
          * 最大的消费超时时间 单位分钟, 如果消费超时，RocketMQ会等同于消费失败来处理

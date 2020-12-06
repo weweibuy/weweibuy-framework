@@ -1,6 +1,7 @@
 package com.weweibuy.framework.rocketmq.annotation;
 
 import com.weweibuy.framework.rocketmq.config.RocketMqProperties;
+import com.weweibuy.framework.rocketmq.core.consumer.RocketBeanPostProcessor;
 import org.apache.rocketmq.common.protocol.heartbeat.MessageModel;
 
 import java.lang.annotation.ElementType;
@@ -10,6 +11,7 @@ import java.lang.annotation.Target;
 
 /**
  * 标记类为rocketMQ的消费类, 配合 {@link RocketConsumerHandler} 一起使用消费MQ消息
+ * {@link RocketBeanPostProcessor }
  *
  * @author durenhao
  * @date 2020/1/4 17:13
