@@ -1,5 +1,6 @@
 package com.weweibuy.framework.common.lc.mq.message;
 
+import com.weweibuy.framework.common.lc.event.LocalCacheEvictedEvent;
 import lombok.Data;
 
 import java.util.Collection;
@@ -26,11 +27,18 @@ public class LocalCacheEvictMessage {
      */
     private Set<String> cacheKeyList;
 
+    private LocalCacheEvictedEvent callBackEvent;
+
     public static LocalCacheEvictMessage evict(String cacheName) {
-        return evict(cacheName, null);
+        return evict(cacheName, null, null);
     }
 
+
     public static LocalCacheEvictMessage evict(String cacheName, Collection<String> cacheKeyList) {
+        return evict(cacheName, cacheKeyList, null);
+    }
+
+    public static LocalCacheEvictMessage evict(String cacheName, Collection<String> cacheKeyList, LocalCacheEvictedEvent evictedEvent) {
         LocalCacheEvictMessage evictMessage = new LocalCacheEvictMessage();
         evictMessage.setCacheName(cacheName);
         if (cacheKeyList != null) {
@@ -38,6 +46,7 @@ public class LocalCacheEvictMessage {
         } else {
             evictMessage.setCacheKeyList(Collections.emptySet());
         }
+        evictMessage.setCallBackEvent(evictedEvent);
         return evictMessage;
     }
 
