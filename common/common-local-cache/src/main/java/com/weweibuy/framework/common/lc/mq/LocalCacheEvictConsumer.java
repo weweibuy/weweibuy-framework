@@ -8,7 +8,9 @@ import com.weweibuy.framework.rocketmq.annotation.RocketListener;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.common.protocol.heartbeat.MessageModel;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -26,12 +28,18 @@ public class LocalCacheEvictConsumer {
     @Autowired
     private LocalCacheService localCacheService;
 
+    @Autowired
+    private ApplicationContext applicationContext;
+
+
     @RocketConsumerHandler(tags = "${rocket-mq.local-cache-evict.tag}")
     public void onMessage(@Payload LocalCacheEvictMessage message) {
         String cacheName = message.getCacheName();
         Set<String> cacheKeyList = message.getCacheKeyList();
         localCacheService.evictCache(cacheName, cacheKeyList);
         log.warn("刷新缓存: cacheName: {}, cacheKey: {} 完成", cacheName, cacheKeyList);
+        Optional.ofNullable(message.getCallBackEvent())
+                .ifPresent(applicationContext::publishEvent);
     }
 
 
