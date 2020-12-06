@@ -78,12 +78,23 @@ public class RocketMqLogger {
      * @param originContext
      * @param result
      */
-    public static void logConsumerMessage(MessageExt messageExt, Object originContext, Object result) {
-        log.info("RocketMQ 消费消息: Topic:【{}】, Tag:【{}】, Key:【{}】, Body: {}, 消费结果: {}",
+    public static void logConsumerMessage(MessageExt messageExt, Object originContext, Object result, long elapsedTime) {
+        log.info("RocketMQ 消费消息: 消费结果: {}, 耗时: {}",
+                result, elapsedTime);
+    }
+
+
+    /**
+     * 收到MQ消息
+     *
+     * @param messageExt
+     * @param originContext
+     */
+    public static void logReceiveMessage(MessageExt messageExt, Object originContext) {
+        log.info("RocketMQ 收到消息: Topic:【{}】, Tag:【{}】, Key:【{}】, Body: {}",
                 messageExt.getTopic(),
                 messageExt.getTags(),
                 messageExt.getKeys(),
-                new String(messageExt.getBody()),
-                result);
+                new String(messageExt.getBody()));
     }
 }

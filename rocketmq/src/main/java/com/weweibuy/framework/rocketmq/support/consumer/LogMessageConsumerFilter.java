@@ -19,27 +19,45 @@ public class LogMessageConsumerFilter implements ConsumerFilter {
     @Override
     public Object filter(List<MessageExt> messageExtList, Object originContext, MessageConsumerFilterChain chain) {
         Object result = null;
+        long timeMillis = System.currentTimeMillis();
+        logReceive(messageExtList, originContext);
         try {
             result = chain.doFilter(messageExtList, originContext);
         } finally {
-            log(messageExtList, originContext, result);
+            timeMillis = System.currentTimeMillis() - timeMillis;
+            log(messageExtList, originContext, result, timeMillis);
         }
         return result;
 
     }
 
-    private void log(List<MessageExt> messageExtList, Object originContext, Object result) {
+
+    private void logReceive(List<MessageExt> messageExtList, Object originContext) {
         if (messageExtList.size() == 1) {
-            doLog(messageExtList.get(0), originContext, result);
+            doLogReceive(messageExtList.get(0), originContext);
         } else {
             messageExtList.stream()
-                    .forEach(m -> doLog(m, originContext, result));
+                    .forEach(m -> doLogReceive(m, originContext));
         }
 
     }
 
-    private void doLog(MessageExt messageExt, Object originContext, Object result) {
-        RocketMqLogger.logConsumerMessage(messageExt, originContext, result);
+    private void log(List<MessageExt> messageExtList, Object originContext, Object result, long timeMillis) {
+        if (messageExtList.size() == 1) {
+            doLog(messageExtList.get(0), originContext, result, timeMillis);
+        } else {
+            messageExtList.stream()
+                    .forEach(m -> doLog(m, originContext, result, timeMillis));
+        }
+
+    }
+
+    private void doLogReceive(MessageExt messageExt, Object originContext) {
+        RocketMqLogger.logReceiveMessage(messageExt, originContext);
+    }
+
+    private void doLog(MessageExt messageExt, Object originContext, Object result, long timeMillis) {
+        RocketMqLogger.logConsumerMessage(messageExt, originContext, result, timeMillis);
     }
 
 
