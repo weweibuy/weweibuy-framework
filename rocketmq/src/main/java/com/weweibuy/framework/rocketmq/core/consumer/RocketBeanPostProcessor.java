@@ -101,7 +101,6 @@ public class RocketBeanPostProcessor implements BeanPostProcessor, SmartInitiali
         listenerEndpoint.setBatchForEachConsumerFailPolicy(rocketListener.foreachFailPolicy());
 
         listenerEndpoint.setNameServer(rocketMqProperties.getNameServer());
-        listenerEndpoint.setTags(consumerHandler.tags());
         listenerEndpoint.setOrderly(rocketListener.orderly());
         listenerEndpoint.setMessageModel(rocketListener.messageModel());
 
@@ -145,9 +144,17 @@ public class RocketBeanPostProcessor implements BeanPostProcessor, SmartInitiali
                 listenerEndpoint.setThreadMin(rocketListener.threadMin());
             }
 
+            if (StringUtils.isBlank(consumer.getTags())) {
+                listenerEndpoint.setTags(consumer.getTags());
+            } else {
+                listenerEndpoint.setTags(SpringResourcesUtils.resolve(consumerHandler.tags(), resourceLoader));
+            }
+
         } else {
             listenerEndpoint.setTopic(SpringResourcesUtils.resolve(rocketListener.topic(), resourceLoader));
             listenerEndpoint.setGroup(SpringResourcesUtils.resolve(rocketListener.group(), resourceLoader));
+            listenerEndpoint.setTags(SpringResourcesUtils.resolve(consumerHandler.tags(), resourceLoader));
+
 
             listenerEndpoint.setThreadMin(rocketListener.threadMin());
             listenerEndpoint.setThreadMax(rocketListener.threadMax());

@@ -1,0 +1,27 @@
+{
+  "groups": [
+    {
+      "name": "rocket-mq.local-cache-evict.topic",
+      "type": "com.weweibuy.framework.common.lc.mq.LocalCacheEvictConsumer",
+      "sourceType": "com.weweibuy.framework.common.lc.mq.LocalCacheEvictConsumer"
+    }
+  ],
+  "properties": [
+    {
+      "name": "rocket-mq.local-cache-evict.topic",
+      "type": "java.lang.String",
+      "sourceType": "com.weweibuy.framework.common.lc.mq.LocalCacheEvictConsumer"
+    },
+    {
+      "name": "rocket-mq.local-cache-evict.consumer-group",
+      "type": "java.lang.String",
+      "sourceType": "com.weweibuy.framework.common.lc.mq.LocalCacheEvictConsumer"
+    },
+    {
+      "name": "rocket-mq.local-cache-evict.tag",
+      "type": "java.lang.String",
+      "sourceType": "com.weweibuy.framework.common.lc.mq.LocalCacheEvictConsumer"
+    }
+  ],
+  "hints": []
+}

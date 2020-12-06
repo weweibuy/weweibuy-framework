@@ -12,7 +12,7 @@ public interface MessageSendFilterChain {
      * 消息发送过滤器链
      *
      * @param context
-     * @param message
+     * @param message (Message or Collection<Message>)
      * @return
      * @throws Throwable
      */
