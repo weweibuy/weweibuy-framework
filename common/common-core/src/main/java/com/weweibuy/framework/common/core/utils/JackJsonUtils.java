@@ -62,6 +62,7 @@ public class JackJsonUtils {
         }
     }
 
+
     public static <T> T readSnakeCaseValue(String json, TypeReference<T> valueTypeRef) {
         try {
             return SNAKE_CASE_MAPPER.readValue(json, valueTypeRef);
@@ -73,6 +74,14 @@ public class JackJsonUtils {
     public static <T> T readSnakeCaseValue(String json, JavaType javaType) {
         try {
             return SNAKE_CASE_MAPPER.readValue(json, javaType);
+        } catch (IOException e) {
+            throw Exceptions.system(CommonErrorCodeEum.JSON_PARSE_EXCEPTION, e);
+        }
+    }
+
+    public static <T> T readSnakeCaseValue(String json, Class<? extends T> clazz, Class<?>... typeClasses) {
+        try {
+            return SNAKE_CASE_MAPPER.readValue(json, javaType(SNAKE_CASE_MAPPER, clazz, typeClasses));
         } catch (IOException e) {
             throw Exceptions.system(CommonErrorCodeEum.JSON_PARSE_EXCEPTION, e);
         }
@@ -98,6 +107,15 @@ public class JackJsonUtils {
     public static <T> T readSnakeCaseValue(byte[] json, JavaType javaType) {
         try {
             return SNAKE_CASE_MAPPER.readValue(json, javaType);
+        } catch (IOException e) {
+            throw Exceptions.system(CommonErrorCodeEum.JSON_PARSE_EXCEPTION, e);
+        }
+    }
+
+
+    public static <T> T readSnakeCaseValue(byte[] json, Class<? extends T> clazz, Class<?>... typeClasses) {
+        try {
+            return SNAKE_CASE_MAPPER.readValue(json, javaType(SNAKE_CASE_MAPPER, clazz, typeClasses));
         } catch (IOException e) {
             throw Exceptions.system(CommonErrorCodeEum.JSON_PARSE_EXCEPTION, e);
         }
@@ -136,6 +154,22 @@ public class JackJsonUtils {
         }
     }
 
+    public static <T> T readValue(String json, Class<? extends T> clazz, Class<?>... typeClasses) {
+        try {
+            return MVC_OBJECT_MAPPER.readValue(json, javaType(MVC_OBJECT_MAPPER, clazz, typeClasses));
+        } catch (IOException e) {
+            throw Exceptions.system(CommonErrorCodeEum.JSON_PARSE_EXCEPTION, e);
+        }
+    }
+
+    public static <T> T readValue(String json, TypeReference<T> typeReference) {
+        try {
+            return MVC_OBJECT_MAPPER.readValue(json, typeReference);
+        } catch (IOException e) {
+            throw Exceptions.system(CommonErrorCodeEum.JSON_PARSE_EXCEPTION, e);
+        }
+    }
+
     public static <T> T readValue(byte[] json, Class<? extends T> clazz) {
         try {
             return MVC_OBJECT_MAPPER.readValue(json, clazz);
@@ -147,6 +181,22 @@ public class JackJsonUtils {
     public static <T> T readValue(byte[] json, JavaType javaType) {
         try {
             return MVC_OBJECT_MAPPER.readValue(json, javaType);
+        } catch (IOException e) {
+            throw Exceptions.system(CommonErrorCodeEum.JSON_PARSE_EXCEPTION, e);
+        }
+    }
+
+    public static <T> T readValue(byte[] json, TypeReference<T> typeReference) {
+        try {
+            return MVC_OBJECT_MAPPER.readValue(json, typeReference);
+        } catch (IOException e) {
+            throw Exceptions.system(CommonErrorCodeEum.JSON_PARSE_EXCEPTION, e);
+        }
+    }
+
+    public static <T> T readValue(byte[] json, Class<? extends T> clazz, Class<?>... typeClasses) {
+        try {
+            return MVC_OBJECT_MAPPER.readValue(json, javaType(MVC_OBJECT_MAPPER, clazz, typeClasses));
         } catch (IOException e) {
             throw Exceptions.system(CommonErrorCodeEum.JSON_PARSE_EXCEPTION, e);
         }
@@ -186,6 +236,22 @@ public class JackJsonUtils {
         }
     }
 
+    public static <T> T readCamelCaseValue(String json, TypeReference<T> typeReference) {
+        try {
+            return CAMEL_CASE_MAPPER.readValue(json, typeReference);
+        } catch (IOException e) {
+            throw Exceptions.system(CommonErrorCodeEum.JSON_WRITE_EXCEPTION, e);
+        }
+    }
+
+    public static <T> T readCamelCaseValue(String json, Class<? extends T> clazz, Class<?>... typeClasses) {
+        try {
+            return CAMEL_CASE_MAPPER.readValue(json, javaType(CAMEL_CASE_MAPPER, clazz, typeClasses));
+        } catch (IOException e) {
+            throw Exceptions.system(CommonErrorCodeEum.JSON_WRITE_EXCEPTION, e);
+        }
+    }
+
     public static <T> T readCamelCaseValue(byte[] json, Class<? extends T> clazz) {
         try {
             return CAMEL_CASE_MAPPER.readValue(json, clazz);
@@ -202,6 +268,22 @@ public class JackJsonUtils {
         }
     }
 
+    public static <T> T readCamelCaseValue(byte[] json, TypeReference<T> typeReference) {
+        try {
+            return CAMEL_CASE_MAPPER.readValue(json, typeReference);
+        } catch (IOException e) {
+            throw Exceptions.system(CommonErrorCodeEum.JSON_WRITE_EXCEPTION, e);
+        }
+    }
+
+
+    public static <T> T readCamelCaseValue(byte[] json, Class<? extends T> clazz, Class<?>... typeClasses) {
+        try {
+            return CAMEL_CASE_MAPPER.readValue(json, javaType(CAMEL_CASE_MAPPER, clazz, typeClasses));
+        } catch (IOException e) {
+            throw Exceptions.system(CommonErrorCodeEum.JSON_WRITE_EXCEPTION, e);
+        }
+    }
 
     public static String writeCamelCase(Object object) {
         try {
@@ -231,4 +313,9 @@ public class JackJsonUtils {
     public static ObjectMapper getMvcObjectMapper() {
         return MVC_OBJECT_MAPPER;
     }
+
+    public static JavaType javaType(ObjectMapper objectMapper, Class<?> clazz, Class<?>[] typeClazz) {
+        return objectMapper.getTypeFactory().constructParametricType(clazz, typeClazz);
+    }
+
 }
