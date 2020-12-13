@@ -3,6 +3,8 @@ package com.weweibuy.framework.common.core.concurrent;
 import lombok.extern.slf4j.Slf4j;
 
 /**
+ * 输出线程为捕获异常处理
+ *
  * @author durenhao
  * @date 2020/9/12 21:38
  **/

@@ -121,6 +121,12 @@ public interface CommonConstant {
          * 响应报文 msg字段
          */
         String RESPONSE_MESSAGE_FIELD_MSG = "msg";
+
+        /**
+         *
+         */
+        String RESPONSE_HEADER_FIELD_SYSTEM_ID = "X-Sid";
+
     }
 
 

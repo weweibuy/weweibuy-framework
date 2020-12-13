@@ -16,14 +16,24 @@ public class MethodKeyFeignException extends FeignException {
      */
     private final String methodKey;
 
+    /**
+     * 系统 id
+     */
+    private final String systemId;
 
-    public MethodKeyFeignException(String methodKey, int status, String message, Request request, byte[] body) {
+
+    public MethodKeyFeignException(String methodKey, int status,
+                                   String message, Request request, byte[] body, String systemId) {
         super(status, message, request, body);
         this.methodKey = methodKey;
+        this.systemId = systemId;
     }
 
     public String getMethodKey() {
         return methodKey;
     }
 
+    public String getSystemId() {
+        return systemId;
+    }
 }
