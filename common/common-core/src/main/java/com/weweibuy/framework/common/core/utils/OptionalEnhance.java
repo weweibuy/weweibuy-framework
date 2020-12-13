@@ -1,5 +1,6 @@
 package com.weweibuy.framework.common.core.utils;
 
+
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
@@ -10,17 +11,17 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 /**
- * JDK9 Option
+ * Option 增强
  *
  * @author durenhao
  * @date 2020/6/25 10:39
  **/
-public final class Jdk9Option<T> {
+public final class OptionalEnhance<T> {
 
     /**
      * Common instance for {@code empty()}.
      */
-    private static final Jdk9Option<?> EMPTY = new Jdk9Option<>();
+    private static final OptionalEnhance<?> EMPTY = new OptionalEnhance<>();
 
     /**
      * If non-null, the value; if null, indicates no value is present
@@ -33,7 +34,7 @@ public final class Jdk9Option<T> {
      * @implNote Generally only one empty instance, {@link Optional#EMPTY},
      * should exist per VM.
      */
-    private Jdk9Option() {
+    private OptionalEnhance() {
         this.value = null;
     }
 
@@ -48,9 +49,9 @@ public final class Jdk9Option<T> {
      * {@code Optional.empty()}.  There is no guarantee that it is a singleton.
      * Instead, use {@link #isPresent()}.
      */
-    public static <T> Jdk9Option<T> empty() {
+    public static <T> OptionalEnhance<T> empty() {
         @SuppressWarnings("unchecked")
-        Jdk9Option<T> t = (Jdk9Option<T>) EMPTY;
+        OptionalEnhance<T> t = (OptionalEnhance<T>) EMPTY;
         return t;
     }
 
@@ -60,7 +61,7 @@ public final class Jdk9Option<T> {
      * @param value the non-{@code null} value to describe
      * @throws NullPointerException if value is {@code null}
      */
-    private Jdk9Option(T value) {
+    private OptionalEnhance(T value) {
         this.value = Objects.requireNonNull(value);
     }
 
@@ -73,8 +74,8 @@ public final class Jdk9Option<T> {
      * @return an {@code Optional} with the value present
      * @throws NullPointerException if value is {@code null}
      */
-    public static <T> Jdk9Option<T> of(T value) {
-        return new Jdk9Option<>(value);
+    public static <T> OptionalEnhance<T> of(T value) {
+        return new OptionalEnhance<>(value);
     }
 
     /**
@@ -86,7 +87,7 @@ public final class Jdk9Option<T> {
      * @return an {@code Optional} with a present value if the specified value
      * is non-{@code null}, otherwise an empty {@code Optional}
      */
-    public static <T> Jdk9Option<T> ofNullable(T value) {
+    public static <T> OptionalEnhance<T> ofNullable(T value) {
         return value == null ? empty() : of(value);
     }
 
@@ -170,7 +171,7 @@ public final class Jdk9Option<T> {
      * given predicate, otherwise an empty {@code Optional}
      * @throws NullPointerException if the predicate is {@code null}
      */
-    public Jdk9Option<T> filter(Predicate<? super T> predicate) {
+    public OptionalEnhance<T> filter(Predicate<? super T> predicate) {
         Objects.requireNonNull(predicate);
         if (!isPresent()) {
             return this;
@@ -210,35 +211,63 @@ public final class Jdk9Option<T> {
      * {@code map} returns an {@code Optional<Path>} for the desired
      * URI if one exists.
      */
-    public <U> Jdk9Option<U> map(Function<? super T, ? extends U> mapper) {
+    public <U> OptionalEnhance<U> map(Function<? super T, ? extends U> mapper) {
         Objects.requireNonNull(mapper);
         if (!isPresent()) {
             return empty();
         } else {
-            return Jdk9Option.ofNullable(mapper.apply(value));
+            return OptionalEnhance.ofNullable(mapper.apply(value));
+        }
+    }
+
+    /**
+     * map 并转为 Optional
+     *
+     * @param mapper
+     * @param <U>
+     * @return
+     */
+    public <U> Optional<U> mapToOptional(Function<? super T, ? extends U> mapper) {
+        Objects.requireNonNull(mapper);
+        if (!isPresent()) {
+            return Optional.empty();
+        } else {
+            return Optional.ofNullable(mapper.apply(value));
         }
     }
 
 
-    public Jdk9Option<T> peek(Consumer<? super T> action) {
+    public OptionalEnhance<T> peek(Consumer<? super T> action) {
         Objects.requireNonNull(action);
         if (!isPresent()) {
             return empty();
         } else {
             action.accept(value);
-            return Jdk9Option.ofNullable(value);
+            return OptionalEnhance.ofNullable(value);
         }
     }
 
-    public Jdk9Option<T> fromOptional(Optional<T> optional) {
+    /**
+     * JDK Optional 转 OptionalEnhance
+     *
+     * @param optional
+     * @param <T>
+     * @return
+     */
+    public static <T> OptionalEnhance<T> fromOptional(Optional<T> optional) {
         Objects.requireNonNull(optional);
         if (!optional.isPresent()) {
             return empty();
         } else {
-            return Jdk9Option.ofNullable(optional.get());
+            return OptionalEnhance.ofNullable(optional.get());
         }
     }
 
+    /**
+     * 转 JDK Optional
+     *
+     * @return
+     */
     public Optional<T> toOptional() {
         if (!isPresent()) {
             return Optional.empty();
@@ -266,16 +295,46 @@ public final class Jdk9Option<T> {
      * @throws NullPointerException if the mapping function is {@code null} or
      *                              returns a {@code null} result
      */
-    public <U> Jdk9Option<U> flatMap(Function<? super T, ? extends Jdk9Option<? extends U>> mapper) {
+    public <U> OptionalEnhance<U> flatMap(Function<? super T, ? extends OptionalEnhance<? extends U>> mapper) {
         Objects.requireNonNull(mapper);
         if (!isPresent()) {
             return empty();
         } else {
             @SuppressWarnings("unchecked")
-            Jdk9Option<U> r = (Jdk9Option<U>) mapper.apply(value);
+            OptionalEnhance<U> r = (OptionalEnhance<U>) mapper.apply(value);
             return Objects.requireNonNull(r);
         }
     }
+
+    /**
+     * flatMap 转为 Optional
+     *
+     * @param mapper
+     * @param <U>
+     * @return
+     */
+    public <U> Optional<U> flatMapToOptional(Function<? super T, ? extends OptionalEnhance<? extends U>> mapper) {
+        Objects.requireNonNull(mapper);
+        if (!isPresent()) {
+            return Optional.empty();
+        } else {
+            @SuppressWarnings("unchecked")
+            OptionalEnhance<U> r = (OptionalEnhance<U>) mapper.apply(value);
+            return Objects.requireNonNull(r.toOptional());
+        }
+    }
+
+    public <U> OptionalEnhance<U> flatMapOptional(Function<? super T, ? extends Optional<? extends U>> mapper) {
+        Objects.requireNonNull(mapper);
+        if (!isPresent()) {
+            return empty();
+        } else {
+            @SuppressWarnings("unchecked")
+            Optional<U> r = (Optional<U>) mapper.apply(value);
+            return Objects.requireNonNull(OptionalEnhance.fromOptional(r));
+        }
+    }
+
 
     /**
      * If a value is present, returns an {@code Optional} describing the value,
@@ -290,16 +349,28 @@ public final class Jdk9Option<T> {
      *                              produces a {@code null} result
      * @since 9
      */
-    public Jdk9Option<T> or(Supplier<? extends Jdk9Option<? extends T>> supplier) {
+    public OptionalEnhance<T> or(Supplier<? extends OptionalEnhance<? extends T>> supplier) {
         Objects.requireNonNull(supplier);
         if (isPresent()) {
             return this;
         } else {
             @SuppressWarnings("unchecked")
-            Jdk9Option<T> r = (Jdk9Option<T>) supplier.get();
+            OptionalEnhance<T> r = (OptionalEnhance<T>) supplier.get();
             return Objects.requireNonNull(r);
         }
     }
+
+    public Optional<T> orOptional(Supplier<? extends Optional<? extends T>> supplier) {
+        Objects.requireNonNull(supplier);
+        if (isPresent()) {
+            return this.toOptional();
+        } else {
+            @SuppressWarnings("unchecked")
+            Optional<T> r = (Optional<T>) supplier.get();
+            return Objects.requireNonNull(r);
+        }
+    }
+
 
     /**
      * If a value is present, returns a sequential {@link Stream} containing
@@ -387,6 +458,20 @@ public final class Jdk9Option<T> {
     }
 
     /**
+     * 如果空 抛异常
+     *
+     * @param exceptionSupplier
+     * @param <X>
+     * @throws X
+     */
+    public <X extends Throwable> void ifAbsentThrow(Supplier<? extends X> exceptionSupplier) throws X {
+        if (value == null) {
+            throw exceptionSupplier.get();
+        }
+    }
+
+
+    /**
      * Indicates whether some other object is "equal to" this {@code Optional}.
      * The other object is considered equal if:
      * <ul>
@@ -405,11 +490,11 @@ public final class Jdk9Option<T> {
             return true;
         }
 
-        if (!(obj instanceof Jdk9Option)) {
+        if (!(obj instanceof OptionalEnhance)) {
             return false;
         }
 
-        Jdk9Option<?> other = (Jdk9Option<?>) obj;
+        OptionalEnhance<?> other = (OptionalEnhance<?>) obj;
         return Objects.equals(value, other.value);
     }
 
@@ -438,8 +523,8 @@ public final class Jdk9Option<T> {
     @Override
     public String toString() {
         return value != null
-                ? String.format("Jdk9Option[%s]", value)
-                : "Optional.empty";
+                ? String.format("OptionalEnhance[%s]", value)
+                : "OptionalEnhance.empty";
     }
 
 

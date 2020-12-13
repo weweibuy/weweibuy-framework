@@ -1,7 +1,7 @@
 package com.weweibuy.framework.compensate.interceptor;
 
 
-import com.weweibuy.framework.common.core.utils.Jdk9Option;
+import com.weweibuy.framework.common.core.utils.OptionalEnhance;
 import com.weweibuy.framework.compensate.annotation.Compensate;
 import com.weweibuy.framework.compensate.annotation.Propagation;
 import com.weweibuy.framework.compensate.core.CompensateAlarmService;
@@ -67,7 +67,7 @@ public class CompensateInterceptor implements MethodInterceptor {
             Compensate annotation = methodInvocation.getMethod().getAnnotation(Compensate.class);
             Boolean bindCompensate = CompensateContext.getCompensate();
             if (bind || bindCompensate == null || annotation.propagation().equals(Propagation.REQUIRES_NEW)) {
-                Jdk9Option.ofNullable(executorService)
+                OptionalEnhance.ofNullable(executorService)
                         .ifPresentOrElse(es -> es.execute(() -> parseAndSaveCompensateInfo(methodInvocation, e)),
                                 () -> parseAndSaveCompensateInfo(methodInvocation, e));
             }
