@@ -1,7 +1,7 @@
 package com.weweibuy.framework.samples.controller;
 
+import com.weweibuy.framework.common.core.model.dto.CommonDataResponse;
 import com.weweibuy.framework.common.mvc.desensitization.SensitiveData;
-import com.weweibuy.framework.samples.model.dto.CommonDataJsonResponse;
 import lombok.Builder;
 import lombok.Data;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,7 +26,7 @@ public class SensitiveController {
                 .bankCard("622220185251513232233225")
                 .phone("13800000000")
                 .age(12).build();
-        return CommonDataJsonResponse.success(build);
+        return CommonDataResponse.success(build);
     }
 
     @Data

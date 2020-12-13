@@ -8,6 +8,7 @@ import com.weweibuy.framework.common.core.model.dto.CommonCodeResponse;
 import com.weweibuy.framework.common.core.model.eum.CommonErrorCodeEum;
 import com.weweibuy.framework.common.core.support.SystemIdGetter;
 import com.weweibuy.framework.common.log.logger.HttpLogger;
+import com.weweibuy.framework.common.log.support.LogTraceContext;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.InitializingBean;
@@ -40,7 +41,7 @@ public class CommonExceptionAdvice implements InitializingBean {
     @Autowired(required = false)
     private SystemIdGetter systemIdGetter;
 
-    private String systemId;
+    static String systemId;
 
     /**
      * 业务异常
@@ -55,8 +56,7 @@ public class CommonExceptionAdvice implements InitializingBean {
         HttpLogger.determineAndLogForJsonRequest(request);
 
         log.warn("业务异常: ", e);
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .header(CommonConstant.HttpResponseConstant.RESPONSE_HEADER_FIELD_SYSTEM_ID, systemId)
+        return builderCommonHeader(HttpStatus.BAD_REQUEST)
                 .body(CommonCodeResponse.response(e.getCodeAndMsg()));
     }
 
@@ -75,8 +75,7 @@ public class CommonExceptionAdvice implements InitializingBean {
 
         log.warn("输入参数错误: {}", e.getMessage());
         String defaultMessage = e.getBindingResult().getFieldError().getDefaultMessage();
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .header(CommonConstant.HttpResponseConstant.RESPONSE_HEADER_FIELD_SYSTEM_ID, systemId)
+        return builderCommonHeader(HttpStatus.BAD_REQUEST)
                 .body(CommonCodeResponse.response(CommonErrorCodeEum.BAD_REQUEST_PARAM.getCode(), defaultMessage));
 
     }
@@ -95,8 +94,7 @@ public class CommonExceptionAdvice implements InitializingBean {
 
         log.warn("输入参数错误: {}", e.getMessage());
         String defaultMessage = e.getFieldError().getDefaultMessage();
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .header(CommonConstant.HttpResponseConstant.RESPONSE_HEADER_FIELD_SYSTEM_ID, systemId)
+        return builderCommonHeader(HttpStatus.BAD_REQUEST)
                 .body(CommonCodeResponse.response(CommonErrorCodeEum.BAD_REQUEST_PARAM.getCode(), defaultMessage));
     }
 
@@ -113,8 +111,7 @@ public class CommonExceptionAdvice implements InitializingBean {
         HttpLogger.determineAndLogForJsonRequest(request);
 
         log.warn("输入参数格式错误: {}", e.getMessage());
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .header(CommonConstant.HttpResponseConstant.RESPONSE_HEADER_FIELD_SYSTEM_ID, systemId)
+        return builderCommonHeader(HttpStatus.BAD_REQUEST)
                 .body(CommonCodeResponse.response(CommonErrorCodeEum.BAD_REQUEST_PARAM.getCode(), "输入参数格式错误"));
     }
 
@@ -131,8 +128,7 @@ public class CommonExceptionAdvice implements InitializingBean {
         HttpLogger.determineAndLogForJsonRequest(request);
 
         log.error("系统异常: ", e);
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .header(CommonConstant.HttpResponseConstant.RESPONSE_HEADER_FIELD_SYSTEM_ID, systemId)
+        return builderCommonHeader(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(CommonCodeResponse.response(e.getCodeAndMsg()));
     }
 
@@ -149,8 +145,7 @@ public class CommonExceptionAdvice implements InitializingBean {
         HttpLogger.determineAndLogForJsonRequest(request);
 
         log.warn("请求 HttpMethod 错误: {}", e.getMessage());
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .header(CommonConstant.HttpResponseConstant.RESPONSE_HEADER_FIELD_SYSTEM_ID, systemId)
+        return builderCommonHeader(HttpStatus.BAD_REQUEST)
                 .body(CommonCodeResponse.response(CommonErrorCodeEum.BAD_REQUEST_PARAM.getCode(), "请求HttpMethod错误"));
     }
 
@@ -167,8 +162,7 @@ public class CommonExceptionAdvice implements InitializingBean {
         HttpLogger.determineAndLogForJsonRequest(request);
 
         log.warn("幂等异常: ", e.getMessage());
-        return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS)
-                .header(CommonConstant.HttpResponseConstant.RESPONSE_HEADER_FIELD_SYSTEM_ID, systemId)
+        return builderCommonHeader(HttpStatus.TOO_MANY_REQUESTS)
                 .body(CommonCodeResponse.response(CommonErrorCodeEum.TOO_MANY_REQUESTS));
     }
 
@@ -188,9 +182,25 @@ public class CommonExceptionAdvice implements InitializingBean {
             return unknownExceptionHandler.handlerException(request, e);
         }
         log.error("未知异常: ", e);
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .header(CommonConstant.HttpResponseConstant.RESPONSE_HEADER_FIELD_SYSTEM_ID, systemId)
+
+        return builderCommonHeader(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(CommonCodeResponse.response(CommonErrorCodeEum.UNKNOWN_EXCEPTION));
+    }
+
+    /**
+     * 构建通用的 响应Header
+     *
+     * @param httpStatus
+     * @return
+     */
+    static ResponseEntity.BodyBuilder builderCommonHeader(HttpStatus httpStatus) {
+        return builderCommonHeader(httpStatus.value());
+    }
+
+    static ResponseEntity.BodyBuilder builderCommonHeader(int status) {
+        return ResponseEntity.status(status)
+                .header(CommonConstant.HttpResponseConstant.RESPONSE_HEADER_FIELD_SYSTEM_ID, systemId)
+                .header(CommonConstant.LogTraceConstant.HTTP_TRACE_CODE_HEADER, LogTraceContext.getTraceCode().orElse(StringUtils.EMPTY));
     }
 
 

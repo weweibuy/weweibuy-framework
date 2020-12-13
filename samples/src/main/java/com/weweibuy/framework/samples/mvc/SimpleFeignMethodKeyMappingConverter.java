@@ -3,13 +3,12 @@ package com.weweibuy.framework.samples.mvc;
 import com.weweibuy.framework.common.core.model.dto.CommonCodeResponse;
 import com.weweibuy.framework.common.mvc.advice.FeignMethodKeyMappingConverter;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Component;
 
 /**
  * @author durenhao
  * @date 2020/7/6 21:30
  **/
-@Component
+//@Component
 public class SimpleFeignMethodKeyMappingConverter implements FeignMethodKeyMappingConverter {
 
     @Override

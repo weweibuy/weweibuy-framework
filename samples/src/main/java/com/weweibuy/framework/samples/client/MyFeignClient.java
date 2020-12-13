@@ -1,7 +1,7 @@
 package com.weweibuy.framework.samples.client;
 
+import com.weweibuy.framework.common.core.model.dto.CommonDataResponse;
 import com.weweibuy.framework.common.feign.support.SnakeCaseEncoderAndDecoder;
-import com.weweibuy.framework.samples.model.dto.CommonDataJsonResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,12 +16,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 public interface MyFeignClient {
 
     @PostMapping("/hello")
-    CommonDataJsonResponse<String> helloPost(CommonDataJsonResponse<String> commonJsonResponse,
-                                             @RequestHeader(value = "token") String token);
+    CommonDataResponse<String> helloPost(CommonDataResponse<String> commonJsonResponse,
+                                         @RequestHeader(value = "token") String token);
 
 
     @GetMapping("/hello")
-    CommonDataJsonResponse<String> helloGet(@RequestParam(value = "msg") String msg,
+    CommonDataResponse<String> helloGet(@RequestParam(value = "msg") String msg,
                                              @RequestHeader(value = "token") String token);
 
 }

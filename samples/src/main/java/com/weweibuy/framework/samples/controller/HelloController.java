@@ -1,9 +1,9 @@
 package com.weweibuy.framework.samples.controller;
 
+import com.weweibuy.framework.common.core.model.dto.CommonDataResponse;
 import com.weweibuy.framework.common.core.utils.IdWorker;
 import com.weweibuy.framework.samples.message.SampleDog;
 import com.weweibuy.framework.samples.message.SampleUser;
-import com.weweibuy.framework.samples.model.dto.CommonDataJsonResponse;
 import com.weweibuy.framework.samples.mq.provider.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.client.producer.SendCallback;
@@ -42,7 +42,7 @@ public class HelloController {
         SampleUser user = user(msg);
         user.setSampleDog(dog());
         SendResult send = sampleProvider.send(user, tag, key);
-        return CommonDataJsonResponse.success();
+        return CommonDataResponse.success();
     }
 
     @GetMapping("/hello-oneway")
@@ -50,7 +50,7 @@ public class HelloController {
         SampleUser user = user(msg);
         user.setSampleDog(dog());
         sampleProvider.sendOneWay(user);
-        return CommonDataJsonResponse.success();
+        return CommonDataResponse.success();
     }
 
     @GetMapping("/hello-orderly")
@@ -58,7 +58,7 @@ public class HelloController {
         SampleUser user = user(msg);
         user.setSampleDog(dog());
         sampleProvider.sendOrder(user, IdWorker.nextStringId());
-        return CommonDataJsonResponse.success();
+        return CommonDataResponse.success();
     }
 
     @GetMapping("/hello-header")
@@ -66,7 +66,7 @@ public class HelloController {
         SampleUser user = user(msg);
         user.setSampleDog(dog());
         SendResult send = sampleProvider.sendHeader(user, tag);
-        return CommonDataJsonResponse.success();
+        return CommonDataResponse.success();
     }
 
     @GetMapping("/hello-async")
