@@ -1,8 +1,8 @@
 package com.weweibuy.framework.samples.controller;
 
+import com.weweibuy.framework.common.core.model.dto.CommonDataResponse;
 import com.weweibuy.framework.samples.idempotent.IdempotentService;
 import com.weweibuy.framework.samples.model.User;
-import com.weweibuy.framework.samples.model.dto.CommonCodeJsonResponse;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,7 +28,7 @@ public class IdempotentController {
     @RequestMapping("/jdbc1")
     public Object jdbc() {
         idempotentService.doBiz();
-        return CommonCodeJsonResponse.success();
+        return CommonDataResponse.success();
     }
 
     @RequestMapping("/jdbc2")

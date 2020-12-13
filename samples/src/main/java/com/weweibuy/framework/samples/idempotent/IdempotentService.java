@@ -1,9 +1,9 @@
 package com.weweibuy.framework.samples.idempotent;
 
+import com.weweibuy.framework.common.core.model.dto.CommonDataResponse;
 import com.weweibuy.framework.compensate.annotation.Compensate;
 import com.weweibuy.framework.idempotent.core.annotation.Idempotent;
 import com.weweibuy.framework.samples.model.User;
-import com.weweibuy.framework.samples.model.dto.CommonCodeJsonResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,15 +32,15 @@ public class IdempotentService {
 
     @Transactional(rollbackFor = Exception.class)
 //    @Idempotent(key = "", sharding = "#user.name")
-    public CommonCodeJsonResponse doBiz3(User user){
+    public CommonDataResponse doBiz3(User user){
         log.info("Idempotent biz ......");
-        return CommonCodeJsonResponse.success();
+        return CommonDataResponse.success(null);
     }
 
     @Idempotent(key = "", sharding = "#user.name", idempotentManager = "redisIdempotentManager")
-    public CommonCodeJsonResponse doBiz4(User user) throws InterruptedException {
+    public CommonDataResponse doBiz4(User user) throws InterruptedException {
         log.info("Idempotent biz ......");
-        return CommonCodeJsonResponse.success();
+        return CommonDataResponse.success(null);
     }
 
 

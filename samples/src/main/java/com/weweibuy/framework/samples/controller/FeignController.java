@@ -1,10 +1,10 @@
 package com.weweibuy.framework.samples.controller;
 
+import com.weweibuy.framework.common.core.model.dto.CommonDataResponse;
 import com.weweibuy.framework.samples.client.FileClient;
 import com.weweibuy.framework.samples.client.MyFeignClient;
 import com.weweibuy.framework.samples.client.MyFeignClient2;
 import com.weweibuy.framework.samples.client.MyLbFeignClient;
-import com.weweibuy.framework.samples.model.dto.CommonDataJsonResponse;
 import feign.Response;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -43,8 +43,8 @@ public class FeignController {
 
     @GetMapping("/feign")
     public Object sendToFeign() {
-       return myLbFeignClient.helloPost(CommonDataJsonResponse.success(null), "token_123");
-//        return myFeignClient.helloPost(CommonDataResponse.success(null), "token_123");
+//       return myLbFeignClient.helloPost(CommonDataJsonResponse.success(null), "token_123");
+        return myFeignClient.helloPost(CommonDataResponse.success(""), "token_123");
     }
 
     @PostMapping("/upload")

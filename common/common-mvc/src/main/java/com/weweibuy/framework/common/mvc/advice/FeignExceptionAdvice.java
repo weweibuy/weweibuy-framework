@@ -5,12 +5,11 @@ import com.weweibuy.framework.common.core.model.ResponseCodeAndMsg;
 import com.weweibuy.framework.common.core.model.constant.CommonConstant;
 import com.weweibuy.framework.common.core.model.dto.CommonCodeResponse;
 import com.weweibuy.framework.common.core.model.eum.CommonErrorCodeEum;
-import com.weweibuy.framework.common.core.support.SystemIdGetter;
 import com.weweibuy.framework.common.log.logger.HttpLogger;
+import com.weweibuy.framework.common.log.support.LogTraceContext;
 import feign.FeignException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +18,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.util.Optional;
 
 /**
  * mvc 全局异常处理
@@ -29,15 +27,10 @@ import java.util.Optional;
  **/
 @RestControllerAdvice
 @Slf4j
-public class FeignExceptionAdvice implements InitializingBean {
+public class FeignExceptionAdvice {
 
     @Autowired(required = false)
     private FeignExceptionHandler exceptionHandler;
-
-    @Autowired(required = false)
-    private SystemIdGetter systemIdGetter;
-
-    private String systemId;
 
     /**
      * Feign 调用异常 处理
@@ -54,7 +47,9 @@ public class FeignExceptionAdvice implements InitializingBean {
         log.warn("调用接口异常: ", e);
         Throwable cause = e.getCause();
         if (cause instanceof IOException) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(CommonCodeResponse.response(CommonErrorCodeEum.NETWORK_EXCEPTION));
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .header(CommonConstant.LogTraceConstant.HTTP_TRACE_CODE_HEADER, LogTraceContext.getTraceCode().orElse(StringUtils.EMPTY))
+                    .body(CommonCodeResponse.response(CommonErrorCodeEum.NETWORK_EXCEPTION));
         }
         if (exceptionHandler != null && e instanceof MethodKeyFeignException) {
             return exceptionHandler.handlerException(request, (MethodKeyFeignException) e);
@@ -67,17 +62,9 @@ public class FeignExceptionAdvice implements InitializingBean {
             codeAndMsg = CommonErrorCodeEum.UNKNOWN_SERVER_EXCEPTION;
         }
 
-        return ResponseEntity.status(e.status())
-                .header(CommonConstant.HttpResponseConstant.RESPONSE_HEADER_FIELD_SYSTEM_ID, systemId)
+        return CommonExceptionAdvice.builderCommonHeader(e.status())
                 .body(CommonCodeResponse.response(codeAndMsg));
     }
 
-
-    @Override
-    public void afterPropertiesSet() throws Exception {
-        systemId = Optional.ofNullable(systemIdGetter)
-                .map(SystemIdGetter::getSystemId)
-                .orElse(StringUtils.EMPTY);
-    }
 
 }

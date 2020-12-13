@@ -19,7 +19,7 @@ public interface FeignMethodKeyMappingConverter {
      * @param content    feign响应报文
      * @return
      */
-    public ResponseEntity<CommonCodeResponse> convertResponse(Integer httpStatus, String content);
+    ResponseEntity<CommonCodeResponse> convertResponse(Integer httpStatus, String content);
 
 
     /**
@@ -29,6 +29,6 @@ public interface FeignMethodKeyMappingConverter {
      * @param methodKey
      * @return
      */
-    public boolean match(String methodKey);
+    boolean match(String methodKey);
 
 }
