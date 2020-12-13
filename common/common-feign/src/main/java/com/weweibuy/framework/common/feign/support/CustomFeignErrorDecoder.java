@@ -3,12 +3,16 @@ package com.weweibuy.framework.common.feign.support;
 import com.weweibuy.framework.common.core.exception.MethodKeyFeignClientException;
 import com.weweibuy.framework.common.core.exception.MethodKeyFeignException;
 import com.weweibuy.framework.common.core.exception.MethodKeyFeignServerException;
+import com.weweibuy.framework.common.core.model.constant.CommonConstant;
 import feign.FeignException;
 import feign.Response;
 import feign.Util;
 import feign.codec.ErrorDecoder;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
+import java.util.Collection;
+import java.util.Collections;
 
 import static java.lang.String.format;
 
@@ -36,13 +40,17 @@ public class CustomFeignErrorDecoder extends ErrorDecoder.Default {
         } catch (IOException ignored) { // NOPMD
         }
         int status = response.status();
+        Collection<String> systemIdCollection = response.headers().getOrDefault(CommonConstant.HttpResponseConstant.RESPONSE_HEADER_FIELD_SYSTEM_ID,
+                Collections.singletonList(StringUtils.EMPTY));
+        String systemId = systemIdCollection.iterator().next();
+
         if (status >= 400 && status < 500) {
-            return new MethodKeyFeignClientException(methodKey, status, message, response.request(), body);
+            return new MethodKeyFeignClientException(methodKey, status, message, response.request(), body, systemId);
         }
         if (status >= 500) {
-            return new MethodKeyFeignServerException(methodKey, status, message, response.request(), body);
+            return new MethodKeyFeignServerException(methodKey, status, message, response.request(), body, systemId);
         }
-        return new MethodKeyFeignException(methodKey, status, message, response.request(), body);
+        return new MethodKeyFeignException(methodKey, status, message, response.request(), body, systemId);
     }
 
 }

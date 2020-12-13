@@ -2,6 +2,7 @@ package com.weweibuy.framework.common.mvc.support;
 
 import com.weweibuy.framework.common.core.exception.MethodKeyFeignException;
 import com.weweibuy.framework.common.core.model.ResponseCodeAndMsg;
+import com.weweibuy.framework.common.core.model.constant.CommonConstant;
 import com.weweibuy.framework.common.core.model.dto.CommonCodeResponse;
 import com.weweibuy.framework.common.core.model.eum.CommonErrorCodeEum;
 import com.weweibuy.framework.common.core.utils.HttpRequestUtils;
@@ -36,6 +37,7 @@ public class DefaultFeignExceptionHandler implements FeignExceptionHandler {
         String methodKey = e.getMethodKey();
         int status = e.status();
         String content = e.contentUTF8();
+        String systemId = e.getSystemId();
 
         FeignMethodKeyMappingConverter feignMethodKeyMappingConverter = feignMethodKeyMappingConverterList.stream()
                 .filter(f -> f.match(methodKey))
@@ -45,10 +47,11 @@ public class DefaultFeignExceptionHandler implements FeignExceptionHandler {
             return feignMethodKeyMappingConverter.convertResponse(status, content);
         }
         try {
-            return ResponseEntity.status(status).body(
-                    CommonCodeResponse.response(HttpRequestUtils.convertJsonStrToCodeAndMsg(content)));
+            return ResponseEntity.status(status)
+                    .header(CommonConstant.HttpResponseConstant.RESPONSE_HEADER_FIELD_SYSTEM_ID, systemId)
+                    .body(CommonCodeResponse.response(HttpRequestUtils.convertJsonStrToCodeAndMsg(content)));
         } catch (Exception ex) {
-            log.warn("Feign异常报文: {}, 无法转为 code ,msg 形式", content);
+            log.warn("Feign 异常报文: {}, 无法转为 code ,msg 形式", content);
 
             ResponseCodeAndMsg codeAndMsg = null;
             if (e.status() < 500) {
@@ -57,8 +60,9 @@ public class DefaultFeignExceptionHandler implements FeignExceptionHandler {
                 codeAndMsg = CommonErrorCodeEum.UNKNOWN_SERVER_EXCEPTION;
             }
 
-            return ResponseEntity.status(status).body(CommonCodeResponse.response(codeAndMsg));
-
+            return ResponseEntity.status(status)
+                    .header(CommonConstant.HttpResponseConstant.RESPONSE_HEADER_FIELD_SYSTEM_ID, systemId)
+                    .body(CommonCodeResponse.response(codeAndMsg));
         }
 
     }

@@ -9,8 +9,9 @@ import feign.Request;
 public class MethodKeyFeignClientException extends MethodKeyFeignException {
 
 
-    public MethodKeyFeignClientException(String methodKey, int status, String message, Request request, byte[] body) {
-        super(methodKey, status, message, request, body);
+    public MethodKeyFeignClientException(String methodKey, int status, String message, Request request,
+                                         byte[] body, String systemId) {
+        super(methodKey, status, message, request, body, systemId);
     }
 
 

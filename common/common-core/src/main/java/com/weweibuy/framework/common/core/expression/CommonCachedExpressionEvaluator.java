@@ -20,17 +20,17 @@ import java.util.concurrent.ConcurrentHashMap;
  **/
 public abstract class CommonCachedExpressionEvaluator extends CachedExpressionEvaluator {
 
-    private static final Map<ExpressionKey, Expression> expressionCache = new ConcurrentHashMap<>();
+    private static final Map<ExpressionKey, Expression> EXPRESSION_CACHE = new ConcurrentHashMap<>();
 
 
     public String evaluatorExpressionStr(@NonNull String expressionStr, Object target, Class clazz, Method method, Object[] args) {
-        Expression expression = getExpression(expressionCache, new AnnotatedElementKey(method, target.getClass()), expressionStr);
+        Expression expression = getExpression(EXPRESSION_CACHE, new AnnotatedElementKey(method, target.getClass()), expressionStr);
         Object value = expression.getValue(createEvaluationContext(target, clazz, method, args));
         return value.toString();
     }
 
     public String evaluatorExpressionStr(@NonNull String expressionStr, Object target) {
-        Expression expression = getExpression(expressionCache, new AnnotatedElementKey(target.getClass(), target.getClass()), expressionStr);
+        Expression expression = getExpression(EXPRESSION_CACHE, new AnnotatedElementKey(target.getClass(), target.getClass()), expressionStr);
         Object value = expression.getValue(createEvaluationContext(target));
         return value.toString();
     }

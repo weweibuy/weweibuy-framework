@@ -7,12 +7,15 @@ import lombok.NoArgsConstructor;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * 分页响应
+ *
+ * @param <T>
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class CommonPageResult<T> {
-
-    private static final CommonPageResult EMPTY = new CommonPageResult(0L, Collections.emptyList());
 
     private Long total;
 
@@ -20,11 +23,16 @@ public class CommonPageResult<T> {
 
     @SuppressWarnings("unchecked")
     public static final <T> CommonPageResult<T> empty() {
-        return (CommonPageResult<T>) EMPTY;
+        return new CommonPageResult(0L, Collections.emptyList());
     }
 
     public static final <T> CommonPageResult<T> withTotalAndList(Long total, List<T> list) {
         return new CommonPageResult(total, list);
     }
+
+    public static final <T> CommonPageResult<T> withTotalAndEmpty(Long total) {
+        return new CommonPageResult(total, Collections.emptyList());
+    }
+
 
 }
