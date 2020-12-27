@@ -171,12 +171,6 @@
 
             <dependency>
                 <groupId>com.weweibuy.framework</groupId>
-                <artifactId>common-swagger</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.weweibuy.framework</groupId>
                 <artifactId>load-balance</artifactId>
                 <version>${project.version}</version>
             </dependency>
