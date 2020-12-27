@@ -72,7 +72,7 @@ public class SwaggerConfig {
         return new ResponseMessageBuilder()
                 .code(statusDescProperties.getStatus())
                 .message(statusDescProperties.getDesc())
-                .responseModel(new ModelRef("CommonCodeJsonResponse"))
+                .responseModel(new ModelRef("CommonCodeResponse"))
                 .build();
     }
 

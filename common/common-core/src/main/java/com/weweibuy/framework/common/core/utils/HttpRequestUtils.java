@@ -125,6 +125,19 @@ public class HttpRequestUtils {
         return ANT_PATH_MATCHER.match(pattern, path);
     }
 
+    /**
+     * 是否全相同(没有* 通配), 或匹配
+     *
+     * @param pattern
+     * @param path
+     * @return
+     */
+    public static boolean isEqualsOrMatchPath(String pattern, String path) {
+        return PredicateEnhance.of(pattern)
+                .withPredicate(p -> p.indexOf('*') != -1)
+                .map(p -> StringUtils.equals(p, path),
+                        p -> isMatchPath(p, path));
+    }
 
     /**
      * 转为 Json 格式的Code msg 为 ResponseCodeAndMsg
