@@ -39,6 +39,8 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 /**
+ * httpclient 配置
+ *
  * @author durenhao
  * @date 2019/10/29 10:51
  **/
@@ -114,6 +116,7 @@ public class HttpClientConfig {
 
     private PoolingHttpClientConnectionManager poolingHttpClientConnectionManager() {
         if (!httpClientProperties.getSwitchNodeWhenConnectionTimeout()) {
+            // 控制httpclient connection-timeout 时不切换节点重试
             return new PoolingHttpClientConnectionManager(
                     new NoSwitchHttpClientConnectionOperator(getDefaultRegistry(), null, null),
                     null,
