@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
  * @author durenhao
  * @date 2020/3/2 19:54
  **/
-@FeignClient(name = "myFeignClient", url = "http://localhost:9000", configuration = SnakeCaseEncoderAndDecoder.class)
+@FeignClient(name = "myFeignClient", url = "localhost:9000", configuration = SnakeCaseEncoderAndDecoder.class)
 public interface MyFeignClient {
 
     @PostMapping("/hello")
