@@ -1,8 +1,6 @@
 package com.weweibuy.framework.common.feign.mock;
 
-import feign.Client;
-import feign.Request;
-import feign.Response;
+import feign.*;
 
 import java.io.IOException;
 
@@ -22,9 +20,9 @@ public class MockClient implements Client {
 
     @Override
     public Response execute(Request request, Request.Options options) throws IOException {
-        return Response.builder()
-                .request(request)
-                .reason("")
-                .build();
+        String url = request.url();
+        Request.HttpMethod httpMethod = request.httpMethod();
+        // TODO 根据配置进行匹配, 如果匹配读取本地的Json文件进行响应
+        return delegate.execute(request, options);
     }
 }
