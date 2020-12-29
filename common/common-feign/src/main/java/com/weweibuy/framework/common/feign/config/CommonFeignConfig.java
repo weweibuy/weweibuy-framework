@@ -2,15 +2,11 @@ package com.weweibuy.framework.common.feign.config;
 
 import com.weweibuy.framework.common.feign.log.FeignLogger;
 import com.weweibuy.framework.common.feign.log.TraceContextFeignInterceptor;
+import com.weweibuy.framework.common.feign.mock.MockClient;
 import com.weweibuy.framework.common.feign.support.CustomFeignErrorDecoder;
-import feign.Feign;
-import feign.Logger;
-import feign.Request;
-import feign.Retryer;
+import feign.*;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.*;
 
 import java.util.concurrent.TimeUnit;
 
@@ -58,6 +54,13 @@ public class CommonFeignConfig {
     @Bean
     public Retryer feignRetryer() {
         return Retryer.NEVER_RETRY;
+    }
+
+    @Bean
+    @Profile(value = {"mock"})
+    @Primary
+    public Client mockClient(Client client) {
+        return new MockClient(client);
     }
 
 

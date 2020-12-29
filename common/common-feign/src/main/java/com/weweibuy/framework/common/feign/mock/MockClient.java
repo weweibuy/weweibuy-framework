@@ -14,9 +14,14 @@ import java.io.IOException;
  **/
 public class MockClient implements Client {
 
+    private final Client delegate;
+
+    public MockClient(Client delegate) {
+        this.delegate = delegate;
+    }
+
     @Override
     public Response execute(Request request, Request.Options options) throws IOException {
-
         return Response.builder()
                 .request(request)
                 .reason("")
