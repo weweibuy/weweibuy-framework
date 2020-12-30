@@ -314,7 +314,7 @@ public class JackJsonUtils {
         return MVC_OBJECT_MAPPER;
     }
 
-    public static JavaType javaType(ObjectMapper objectMapper, Class<?> clazz, Class<?>[] typeClazz) {
+    public static JavaType javaType(ObjectMapper objectMapper, Class<?> clazz, Class<?>... typeClazz) {
         return objectMapper.getTypeFactory().constructParametricType(clazz, typeClazz);
     }
 

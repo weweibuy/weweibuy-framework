@@ -1,5 +1,6 @@
 package com.weweibuy.framework.common.feign.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.weweibuy.framework.common.feign.log.FeignLogger;
 import com.weweibuy.framework.common.feign.log.TraceContextFeignInterceptor;
 import com.weweibuy.framework.common.feign.mock.MockClient;
@@ -59,8 +60,8 @@ public class CommonFeignConfig {
     @Bean
     @Profile(value = {"mock"})
     @Primary
-    public Client mockClient(Client client) {
-        return new MockClient(client);
+    public Client mockClient(Client client, ObjectMapper objectMapper) {
+        return new MockClient(client, objectMapper);
     }
 
 
