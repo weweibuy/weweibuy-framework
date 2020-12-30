@@ -33,7 +33,7 @@ public class CompensateMethodRegister {
         Assert.isNull(handlerMethod, "补偿Key " + key + " 必须唯一");
         String recoverBeanName = compensate.recover().beanName();
         String recoverMethodName = compensate.recover().method();
-
+        boolean async = compensate.recover().async();
         CompensateHandlerMethod.CompensateHandlerMethodBuilder handlerMethodBuilder = CompensateHandlerMethod.builder()
                 .bean(bean)
                 .method(method);
@@ -52,6 +52,7 @@ public class CompensateMethodRegister {
             }
             Assert.isTrue(hashMethod, bean.getClass().getCanonicalName() + method.getName() + " 补偿指定的 recoverMethod: " + recoverMethodName + " 不存在");
             handlerMethodBuilder.recoverBean(recoverBean);
+            handlerMethodBuilder.asyncRecover(async);
         }
         compensateHandlerMethodMap.put(key, handlerMethodBuilder.build());
     }

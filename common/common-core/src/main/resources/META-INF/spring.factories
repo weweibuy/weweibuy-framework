@@ -1,2 +1,3 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-  com.weweibuy.framework.common.core.config.JackJsonConfig
+  com.weweibuy.framework.common.core.config.JackJsonConfig,\
+  com.weweibuy.framework.common.core.config.CommonAlarmConfig

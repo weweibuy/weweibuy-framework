@@ -1,6 +1,7 @@
 package com.weweibuy.framework.compensate.core;
 
 import com.weweibuy.framework.common.core.exception.Exceptions;
+import com.weweibuy.framework.common.core.exception.SystemException;
 import com.weweibuy.framework.compensate.exception.CompensateException;
 import com.weweibuy.framework.compensate.model.CompensateInfoExt;
 import com.weweibuy.framework.compensate.model.CompensateResult;
@@ -9,7 +10,6 @@ import com.weweibuy.framework.compensate.model.CompensateStatus;
 import com.weweibuy.framework.compensate.support.CompensateContext;
 import com.weweibuy.framework.compensate.support.CompensateRecorder;
 import com.weweibuy.framework.compensate.support.CompensateTypeResolverComposite;
-import com.weweibuy.framework.compensate.support.LogCompensateAlarmService;
 import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.InvocationTargetException;
@@ -53,15 +53,6 @@ public class CompensateHandlerService {
         this.compensateRecorder = compensateRecorder;
     }
 
-    public CompensateHandlerService(ExecutorService executorService, CompensateMethodRegister compensateMethodRegister,
-                                    CompensateStore compensateStore, CompensateTypeResolverComposite composite, CompensateRecorder compensateRecorder) {
-        this.executorService = executorService;
-        this.compensateMethodRegister = compensateMethodRegister;
-        this.compensateStore = compensateStore;
-        this.composite = composite;
-        this.compensateRecorder = compensateRecorder;
-        compensateAlarmService = new LogCompensateAlarmService();
-    }
 
     /**
      * 进行补偿
@@ -138,11 +129,6 @@ public class CompensateHandlerService {
     }
 
     public CompensateResult compensate(CompensateInfoExt compensateInfo, Boolean force) {
-        log.info("发起补偿: 补偿id: {}, 补偿Key: {}, 业务Id: {}, 补偿方式: {}",
-                compensateInfo.getId(),
-                compensateInfo.getCompensateKey(),
-                compensateInfo.getBizId(),
-                compensateInfo.getCompensateType());
         // 补偿状态
         CompensateResult result = null;
         CompensateStatus compensateStatus = null;
@@ -195,6 +181,12 @@ public class CompensateHandlerService {
      * @return
      */
     private CompensateResult execCompensate(CompensateInfoExt compensateInfo, Boolean force) {
+        log.info("发起补偿: 补偿id: {}, 补偿Key: {}, 业务Id: {}, 补偿方式: {}",
+                compensateInfo.getId(),
+                compensateInfo.getCompensateKey(),
+                compensateInfo.getBizId(),
+                compensateInfo.getCompensateType());
+
         Object[] objects = composite.getArgumentResolver(compensateInfo.getCompensateType()).deResolver(compensateInfo);
         CompensateHandlerMethod compensateHandlerMethod = compensateMethodRegister.getCompensateHandlerMethod(compensateInfo.getCompensateKey());
         try {
@@ -203,6 +195,10 @@ public class CompensateHandlerService {
             return handlerCompensateException(compensateHandlerMethod, objects, compensateInfo, force, e);
         }
         compensateStore.deleteCompensateInfo(compensateInfo.getId(), true);
+        log.info("补偿成功: 补偿id: {}, 补偿Key: {}, 业务Id: {} ",
+                compensateInfo.getId(),
+                compensateInfo.getCompensateKey(),
+                compensateInfo.getBizId());
         return CompensateResult.fromCompensateInfoExt(compensateInfo, CompensateResultEum.RETRY_SUCCESS);
     }
 
@@ -225,7 +221,13 @@ public class CompensateHandlerService {
     private CompensateResult handlerCompensateException(CompensateHandlerMethod compensateHandlerMethod, Object[] objects,
                                                         CompensateInfoExt compensateInfo, Boolean force, Exception e) {
         Throwable throwable = e instanceof InvocationTargetException ? ((InvocationTargetException) e).getTargetException() : e;
-        log.warn("补偿: {} 时发生异常: ", compensateInfo, throwable);
+        log.warn("补偿时发生异常: 补偿id: {}, 业务id: {}, 补偿key: {}, 补偿类型: {}, 补偿参数:{}, 异常:",
+                compensateInfo.getId(),
+                compensateInfo.getBizId(),
+                compensateInfo.getCompensateKey(),
+                compensateInfo.getCompensateKey(),
+                compensateInfo.getMethodArgs(),
+                throwable);
         if (force) {
             // 强制触发 不计入重试次数
             return CompensateResult.fromCompensateInfoExt(compensateInfo, CompensateResultEum.RETRY_FAIL, throwable);
@@ -236,34 +238,62 @@ public class CompensateHandlerService {
                 CompensateStatus.ALARM_ABLE.equals(RuleParser.parserToStatus(compensateInfo))) {
             // 执行recover 方法
             try {
-                invokeRecover(compensateHandlerMethod, objects);
+                invokeRecover(compensateInfo, compensateHandlerMethod, objects);
             } catch (Exception e1) {
-                Throwable recoverThrowable = e1 instanceof InvocationTargetException ? ((InvocationTargetException) e1).getTargetException() : e1;
-                log.warn("补偿: {}, 调用恢复方法异常:", compensateInfo, recoverThrowable);
+                Throwable recoverThrowable = e1 instanceof SystemException ? ((SystemException) e1).getCause() : e1;
+                log.warn("执行恢复方法异常: 补偿id: {}, 业务号: {}, 补偿key:{}, 补偿方式: {}, 异常: ",
+                        compensateInfo.getId(),
+                        compensateInfo.getBizId(),
+                        compensateInfo.getCompensateKey(),
+                        compensateInfo.getCompensateType(),
+                        recoverThrowable);
                 return CompensateResult.fromCompensateInfoExt(compensateInfo, CompensateResultEum.RETRY_FAIL_RECOVER_FAIL, throwable);
             }
             compensateStore.deleteCompensateInfo(compensateInfo.getId(), false);
+            log.info("执行恢复方法成功: 补偿id: {}, 业务号: {}, 补偿key:{}, 补偿方式: {}",
+                    compensateInfo.getId(),
+                    compensateInfo.getBizId(),
+                    compensateInfo.getCompensateKey(),
+                    compensateInfo.getCompensateType());
             return CompensateResult.fromCompensateInfoExt(compensateInfo, CompensateResultEum.RETRY_FAIL_RECOVER_SUCCESS, throwable);
         }
         return CompensateResult.fromCompensateInfoExt(compensateInfo, CompensateResultEum.RETRY_FAIL, throwable);
     }
 
 
-    private void invokeRecover(CompensateHandlerMethod compensateHandlerMethod, Object[] args) {
-        if (executorService != null) {
+    private void invokeRecover(CompensateInfoExt compensateInfo, CompensateHandlerMethod compensateHandlerMethod, Object[] args) {
+        if (asyncRecover(compensateHandlerMethod)) {
             executorService.execute(() ->
-                    doInvokeRecover(compensateHandlerMethod, args));
+                    doInvokeRecover(compensateInfo, compensateHandlerMethod, args));
         } else {
-            doInvokeRecover(compensateHandlerMethod, args);
+            doInvokeRecover(compensateInfo, compensateHandlerMethod, args);
         }
     }
 
-    private void doInvokeRecover(CompensateHandlerMethod compensateHandlerMethod, Object[] objects) {
+    private void doInvokeRecover(CompensateInfoExt compensateInfo, CompensateHandlerMethod compensateHandlerMethod, Object[] objects) {
         try {
             compensateHandlerMethod.invokeRecover(objects);
         } catch (InvocationTargetException e) {
-            throw Exceptions.system("执行补偿Recover方法异常", e.getCause());
+            Throwable throwable = e instanceof InvocationTargetException ? ((InvocationTargetException) e).getTargetException() : e;
+            if (asyncRecover(compensateHandlerMethod)) {
+                logRecoverExcept(compensateInfo, throwable);
+            }
+            compensateAlarmService.sendRecoverAlarm(compensateInfo, throwable);
+            throw Exceptions.system("执行补偿Recover方法异常", throwable);
         }
+    }
+
+    private boolean asyncRecover(CompensateHandlerMethod compensateHandlerMethod) {
+        return executorService != null && compensateHandlerMethod.isAsyncRecover();
+    }
+
+    private void logRecoverExcept(CompensateInfoExt compensateInfo, Throwable throwable) {
+        log.warn("补偿id: {}, 业务号: {}, 补偿key:{}, 补偿方式: {}, 执行恢复方法异常: {} 调用恢复方法异常:",
+                compensateInfo.getId(),
+                compensateInfo.getBizId(),
+                compensateInfo.getCompensateKey(),
+                compensateInfo.getCompensateType(),
+                throwable);
     }
 
 }
