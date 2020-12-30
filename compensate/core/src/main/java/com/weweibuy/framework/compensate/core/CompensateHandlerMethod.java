@@ -23,6 +23,8 @@ public class CompensateHandlerMethod {
 
     private Method recoverMethod;
 
+    private boolean asyncRecover;
+
 
     public Object invoke(Object[] args) throws InvocationTargetException {
         ReflectionUtils.makeAccessible(method);
@@ -33,14 +35,15 @@ public class CompensateHandlerMethod {
         }
     }
 
-    public Object invokeRecover(Object[] args) throws InvocationTargetException {
+    public void invokeRecover(Object[] args) throws InvocationTargetException {
         ReflectionUtils.makeAccessible(recoverMethod);
         try {
-            return recoverMethod.invoke(recoverBean, args);
+            recoverMethod.invoke(recoverBean, args);
         } catch (IllegalAccessException e) {
             throw new IllegalStateException(e);
         }
     }
+
 
     public boolean hasRecoverMethod() {
         return recoverBean != null && recoverMethod != null;

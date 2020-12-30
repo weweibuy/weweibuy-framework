@@ -1,6 +1,7 @@
 package com.weweibuy.framework.compensate.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.weweibuy.framework.common.core.support.AlarmService;
 import com.weweibuy.framework.compensate.core.*;
 import com.weweibuy.framework.compensate.support.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -88,8 +89,8 @@ public class CompensateAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean(CompensateAlarmService.class)
-    public CompensateAlarmService compensateAlarmService() {
-        return new LogCompensateAlarmService();
+    public CompensateAlarmService compensateAlarmService(AlarmService alarmService) {
+        return new SimpleCompensateAlarmService(alarmService);
     }
 
 
@@ -106,7 +107,6 @@ public class CompensateAutoConfiguration {
         return new CompensateHandlerService(compensateMethodRegister, compensateStore, composite, alarmService,
                 executorService, compensateRecorder);
     }
-
 
 
     @Bean

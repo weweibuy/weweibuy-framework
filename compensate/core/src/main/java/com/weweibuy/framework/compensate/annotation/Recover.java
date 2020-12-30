@@ -1,5 +1,8 @@
 package com.weweibuy.framework.compensate.annotation;
 
+import com.weweibuy.framework.compensate.config.CompensateConfigurer;
+import com.weweibuy.framework.compensate.core.CompensateHandlerService;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -26,5 +29,14 @@ public @interface Recover {
      * @return
      */
     String method() default "";
+
+    /**
+     * 异步执行,Recover方法; 仅在 {@link CompensateHandlerService#executorService}
+     * 不为空的情况下生效
+     * {@link CompensateConfigurer#getCompensateExecutorService()}
+     *
+     * @return
+     */
+    boolean async() default false;
 
 }

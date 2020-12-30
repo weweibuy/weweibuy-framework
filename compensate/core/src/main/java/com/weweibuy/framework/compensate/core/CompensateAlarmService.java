@@ -27,5 +27,11 @@ public interface CompensateAlarmService {
      */
     void sendSaveCompensateAlarm(CompensateInfo compensateInfo, Exception e);
 
+    /**
+     * 执行恢复方法异常报警
+     *
+     * @param compensateInfoExt
+     */
+    void sendRecoverAlarm(CompensateInfoExt compensateInfoExt, Throwable e);
 
 }
