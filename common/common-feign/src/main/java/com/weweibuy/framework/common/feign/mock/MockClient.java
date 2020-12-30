@@ -1,7 +1,6 @@
 package com.weweibuy.framework.common.feign.mock;
 
 import com.fasterxml.jackson.databind.JavaType;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.weweibuy.framework.common.core.exception.Exceptions;
 import com.weweibuy.framework.common.core.utils.HttpRequestUtils;
 import com.weweibuy.framework.common.core.utils.JackJsonUtils;
@@ -11,6 +10,7 @@ import feign.Response;
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -28,11 +28,10 @@ import java.util.stream.Collectors;
  * @author durenhao
  * @date 2020/12/27 22:36
  **/
+@DependsOn("jackJsonUtils")
 public class MockClient implements Client, InitializingBean {
 
     private final Client delegate;
-
-    private final ObjectMapper objectMapper;
 
     private String configFile;
 
@@ -40,17 +39,16 @@ public class MockClient implements Client, InitializingBean {
 
     private JavaType configJavaType;
 
-    public MockClient(Client delegate, ObjectMapper objectMapper) {
+    public MockClient(Client delegate) {
         this.delegate = delegate;
-        this.objectMapper = objectMapper;
-        this.configJavaType = JackJsonUtils.javaType(objectMapper, List.class, MockConfig.class);
+        this.configJavaType = JackJsonUtils.javaType(List.class, MockConfig.class);
     }
 
     @Override
     public Response execute(Request request, Request.Options options) throws IOException {
         String url = request.url();
         Request.HttpMethod httpMethod = request.httpMethod();
-        List<MockConfig> configList = objectMapper.readValue(new File(configFile), configJavaType);
+        List<MockConfig> configList = JackJsonUtils.readValue(new File(configFile), configJavaType);
 
         Optional<MockConfig> mockDataOpt = configList.stream()
                 .filter(config -> StringUtils.equalsIgnoreCase(httpMethod.toString(), config.getMethod()))
@@ -62,7 +60,7 @@ public class MockClient implements Client, InitializingBean {
             // 读取mock数据
             String target = mockConfig.getTarget();
             String dataFile = mockDataDir + target;
-            MockData mockData = objectMapper.readValue(new File(dataFile), MockData.class);
+            MockData mockData = JackJsonUtils.readValue(new File(dataFile), MockData.class);
             Map<String, String> mcoKHeader = mockData.getHeader();
             Map<String, List<String>> header = Optional.ofNullable(mcoKHeader)
                     .map(h -> h.entrySet().stream()
