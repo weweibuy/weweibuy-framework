@@ -11,7 +11,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Jackson 响应报文脱敏
+ * 时间戳日期
  *
  * @author durenhao
  * @date 2019/9/13 15:55

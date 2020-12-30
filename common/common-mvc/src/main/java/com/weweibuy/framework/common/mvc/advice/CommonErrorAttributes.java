@@ -13,7 +13,6 @@ import org.springframework.web.context.request.WebRequest;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Optional;
 
 /**
  * @author durenhao
@@ -33,17 +32,15 @@ public class CommonErrorAttributes extends DefaultErrorAttributes {
 
     public CommonErrorAttributes(SystemIdGetter systemIdGetter) {
         this.systemIdGetter = systemIdGetter;
-        unKnownAttributes.put(CommonConstant.HttpResponseConstant.RESPONSE_MESSAGE_FIELD_CODE, Optional.ofNullable(systemIdGetter)
-                .map(SystemIdGetter::getSystemId)
-                .map(id -> id + CommonErrorCodeEum.UNKNOWN_SERVER_EXCEPTION.getCode())
-                .orElse(CommonErrorCodeEum.UNKNOWN_SERVER_EXCEPTION.getCode()));
-        unKnownAttributes.put(CommonConstant.HttpResponseConstant.RESPONSE_MESSAGE_FIELD_MSG, CommonErrorCodeEum.UNKNOWN_SERVER_EXCEPTION.getMsg());
+        unKnownAttributes.put(CommonConstant.HttpResponseConstant.RESPONSE_MESSAGE_FIELD_CODE,
+                CommonErrorCodeEum.UNKNOWN_SERVER_EXCEPTION.getCode());
+        unKnownAttributes.put(CommonConstant.HttpResponseConstant.RESPONSE_MESSAGE_FIELD_MSG,
+                CommonErrorCodeEum.UNKNOWN_SERVER_EXCEPTION.getMsg());
     }
 
 
     @Override
     public Map<String, Object> getErrorAttributes(WebRequest webRequest, boolean includeStackTrace) {
-
         String contentType = HttpRequestUtils.getRequestAttribute(webRequest, CommonConstant.HttpServletConstant.REQUEST_CONTENT_TYPE);
 
         Integer status = HttpRequestUtils.getRequestAttribute(webRequest, "javax.servlet.error.status_code");
@@ -99,29 +96,20 @@ public class CommonErrorAttributes extends DefaultErrorAttributes {
                 msg = CommonErrorCodeEum.UNKNOWN_SERVER_EXCEPTION.getMsg();
                 break;
             default:
-
         }
+
         if (StringUtils.isNotBlank(code)) {
-            if (systemIdGetter != null) {
-                code = systemIdGetter.getSystemId() + code;
-            }
             errorAttributeMap.put(CommonConstant.HttpResponseConstant.RESPONSE_MESSAGE_FIELD_CODE, code);
             errorAttributeMap.put(CommonConstant.HttpResponseConstant.RESPONSE_MESSAGE_FIELD_MSG, msg);
             return errorAttributeMap;
         }
 
         if (HttpStatus.BAD_REQUEST.value() <= status && status < HttpStatus.INTERNAL_SERVER_ERROR.value()) {
-            errorAttributeMap.put(CommonConstant.HttpResponseConstant.RESPONSE_MESSAGE_FIELD_CODE, Optional.ofNullable(systemIdGetter)
-                    .map(SystemIdGetter::getSystemId)
-                    .map(id -> id + status)
-                    .orElse(status + ""));
+            errorAttributeMap.put(CommonConstant.HttpResponseConstant.RESPONSE_MESSAGE_FIELD_CODE, status);
             errorAttributeMap.put(CommonConstant.HttpResponseConstant.RESPONSE_MESSAGE_FIELD_MSG, CommonErrorCodeEum.REQUEST_EXCEPTION.getMsg());
             return errorAttributeMap;
         }
-        errorAttributeMap.put(CommonConstant.HttpResponseConstant.RESPONSE_MESSAGE_FIELD_CODE, Optional.ofNullable(systemIdGetter)
-                .map(SystemIdGetter::getSystemId)
-                .map(id -> id + status)
-                .orElse(status + ""));
+        errorAttributeMap.put(CommonConstant.HttpResponseConstant.RESPONSE_MESSAGE_FIELD_CODE, status);
         errorAttributeMap.put(CommonConstant.HttpResponseConstant.RESPONSE_MESSAGE_FIELD_MSG, CommonErrorCodeEum.UNKNOWN_SERVER_EXCEPTION.getMsg());
         return errorAttributeMap;
     }

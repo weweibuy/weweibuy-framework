@@ -61,7 +61,7 @@ public class CommonFeignConfig {
     @Profile(value = {"mock"})
     @Primary
     public Client mockClient(Client client, ObjectMapper objectMapper) {
-        return new MockClient(client, objectMapper);
+        return new MockClient(client);
     }
 
 
