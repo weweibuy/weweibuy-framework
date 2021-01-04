@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit;
 public class SimpleTimerCompensateTrigger extends AbstractCompensateTrigger implements SmartInitializingSingleton {
 
     private static final ScheduledExecutorService SCHEDULE = new ScheduledThreadPoolExecutor(1,
-            new LogExceptionThreadFactory("compensate-schedule-"),
+            new LogExceptionThreadFactory("compensate-"),
             new ThreadPoolExecutor.DiscardPolicy());
 
     private void trigger0() {

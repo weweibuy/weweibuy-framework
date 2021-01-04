@@ -3,25 +3,17 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>weweibuy-framework</artifactId>
+        <artifactId>common</artifactId>
         <groupId>com.weweibuy.framework</groupId>
         <version>1.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>common</artifactId>
+    <artifactId>common-util</artifactId>
     <packaging>pom</packaging>
     <modules>
-        <module>common-log</module>
-        <module>common-feign</module>
-        <module>common-mvc</module>
-        <module>common-core</module>
-        <module>common-db</module>
-        <module>common-swagger</module>
-        <module>common-codec</module>
-        <module>common-metric</module>
-        <module>common-local-cache</module>
-        <module>common-util</module>
+        <module>common-util-excel</module>
+        <module>common-util-csv</module>
     </modules>
 
 
