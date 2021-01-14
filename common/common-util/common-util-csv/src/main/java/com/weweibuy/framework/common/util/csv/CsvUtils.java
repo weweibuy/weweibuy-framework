@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -22,6 +24,10 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class CsvUtils {
 
+
+    public static void main(String[] args) throws IOException {
+        export(new String[]{""}, Student.build(), new ReflectCsvContentConverter(), null, StandardCharsets.UTF_8);
+    }
 
     public static <T> void export(String[] header, List<T> body, CsvContentConverter<T> converter, OutputStream outputStream, Charset charset) throws IOException {
         Collection<String[]> collection = converter.convert(header, body);
