@@ -62,6 +62,9 @@ public interface CommonConstant {
 
         Charset UT8 = StandardCharsets.UTF_8;
 
+        Charset GBK = Charset.forName("GBK");
+
+
     }
 
     public interface SignConstant {

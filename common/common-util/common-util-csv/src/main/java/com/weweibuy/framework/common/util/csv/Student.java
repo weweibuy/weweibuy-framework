@@ -1,6 +1,6 @@
 package com.weweibuy.framework.common.util.csv;
 
-import com.weweibuy.framework.common.util.csv.annotation.CsvHead;
+import com.weweibuy.framework.common.util.csv.annotation.CsvProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,13 +14,13 @@ import lombok.NoArgsConstructor;
 @Data
 public class Student {
 
-    @CsvHead(name = "年龄")
+    @CsvProperty(name = "年龄")
     private Integer age;
 
-    @CsvHead(name = "姓名", index = 10)
+    @CsvProperty(name = "姓名", order = 10)
     private String name;
 
-    @CsvHead(name = "学校", index = 1)
+    @CsvProperty(name = "学校", order = 1)
     private String school;
 
 }

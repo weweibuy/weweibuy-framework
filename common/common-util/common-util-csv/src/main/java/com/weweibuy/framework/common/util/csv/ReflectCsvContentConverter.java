@@ -1,6 +1,6 @@
 package com.weweibuy.framework.common.util.csv;
 
-import com.weweibuy.framework.common.util.csv.annotation.CsvHead;
+import com.weweibuy.framework.common.util.csv.annotation.CsvProperty;
 import org.apache.commons.lang3.reflect.FieldUtils;
 
 import java.lang.reflect.Field;
@@ -30,7 +30,7 @@ public class ReflectCsvContentConverter<T> implements CsvContentConverter<T> {
 
     private void init() {
         // a 1;   b  0;  c  3  -->  b a c    0 b      1 a     2 c
-        Field[] fieldsWithAnnotation = FieldUtils.getFieldsWithAnnotation(type, CsvHead.class);
+        Field[] fieldsWithAnnotation = FieldUtils.getFieldsWithAnnotation(type, CsvProperty.class);
 
         AtomicInteger arrAtomicInteger = new AtomicInteger(0);
 
@@ -43,8 +43,8 @@ public class ReflectCsvContentConverter<T> implements CsvContentConverter<T> {
 
         // 排序后索引
         Map<Field, Integer> sortFieldIndexMap = Arrays.stream(fieldsWithAnnotation)
-                .sorted(Comparator.comparing(field -> field.getAnnotation(CsvHead.class).index()))
-                .peek(field -> header[sortAtomicInteger.get()] = field.getAnnotation(CsvHead.class).name())
+                .sorted(Comparator.comparing(field -> field.getAnnotation(CsvProperty.class).order()))
+                .peek(field -> header[sortAtomicInteger.get()] = field.getAnnotation(CsvProperty.class).name())
                 .collect(Collectors.toMap(Function.identity(), f -> sortAtomicInteger.getAndIncrement()));
 
         indexMap = arrFieldIndexMap.entrySet().stream()
@@ -63,7 +63,7 @@ public class ReflectCsvContentConverter<T> implements CsvContentConverter<T> {
 
 
     private String[] oneLine(T t) {
-        Field[] fieldsWithAnnotation = FieldUtils.getFieldsWithAnnotation(t.getClass(), CsvHead.class);
+        Field[] fieldsWithAnnotation = FieldUtils.getFieldsWithAnnotation(t.getClass(), CsvProperty.class);
         String[] strings = new String[header.length];
         for (int i = 0; i < header.length; i++) {
             Field field = fieldsWithAnnotation[indexMap.get(i)];
