@@ -1,11 +1,9 @@
 package com.weweibuy.framework.common.util.csv;
 
+import com.weweibuy.framework.common.util.csv.annotation.CsvHead;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.Collections;
-import java.util.List;
 
 /**
  * @author : Knight
@@ -15,9 +13,14 @@ import java.util.List;
 @AllArgsConstructor
 @Data
 public class Student {
+
+    @CsvHead(name = "年龄")
+    private Integer age;
+
+    @CsvHead(name = "姓名", index = 10)
     private String name;
 
-    public static List<Student> build() {
-        return Collections.singletonList(new Student("11"));
-    }
+    @CsvHead(name = "学校", index = 1)
+    private String school;
+
 }
