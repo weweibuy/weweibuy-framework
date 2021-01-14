@@ -12,12 +12,34 @@ import java.lang.annotation.*;
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
-public @interface CsvHead {
+public @interface CsvProperty {
 
+    /**
+     * 标题名称
+     *
+     * @return
+     */
     String name();
 
+    /**
+     * 读取索引
+     *
+     * @return
+     */
     int index() default Integer.MAX_VALUE;
 
+    /**
+     * 写出顺序
+     *
+     * @return
+     */
+    int order() default Integer.MAX_VALUE;
+
+    /**
+     * 类型转化
+     *
+     * @return
+     */
     Class<? extends CsvTypeConverter> converter() default SimpleCsvTypeConverter.class;
 
 }
