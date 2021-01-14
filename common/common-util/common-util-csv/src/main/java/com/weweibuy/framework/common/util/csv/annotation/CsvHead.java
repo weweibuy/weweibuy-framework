@@ -1,5 +1,8 @@
 package com.weweibuy.framework.common.util.csv.annotation;
 
+import com.weweibuy.framework.common.util.csv.CsvTypeConverter;
+import com.weweibuy.framework.common.util.csv.SimpleCsvTypeConverter;
+
 import java.lang.annotation.*;
 
 /**
@@ -13,5 +16,8 @@ public @interface CsvHead {
 
     String name();
 
-    int index();
+    int index() default Integer.MAX_VALUE;
+
+    Class<? extends CsvTypeConverter> converter() default SimpleCsvTypeConverter.class;
+
 }
