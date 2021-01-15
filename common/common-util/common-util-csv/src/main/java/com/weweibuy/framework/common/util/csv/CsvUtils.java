@@ -34,14 +34,14 @@ public class CsvUtils {
         export(header, body, converter, outputStream, CommonConstant.CharsetConstant.UT8);
     }
 
-    public static <T> void export(String[] header, List<T> body, Class<T> clazz, OutputStream outputStream) throws IOException {
+    public static <T> void export(List<T> body, Class<T> clazz, OutputStream outputStream) throws IOException {
         ReflectCsvContentConverter<T> converter = new ReflectCsvContentConverter<>(clazz);
-        export(header, body, converter, outputStream, CommonConstant.CharsetConstant.UT8);
+        export(null, body, converter, outputStream, CommonConstant.CharsetConstant.UT8);
     }
 
-    public static <T> void export(String[] header, List<T> body, Class<T> clazz, OutputStream outputStream, Charset charset) throws IOException {
+    public static <T> void export(List<T> body, Class<T> clazz, OutputStream outputStream, Charset charset) throws IOException {
         ReflectCsvContentConverter<T> converter = new ReflectCsvContentConverter<>(clazz);
-        export(header, body, converter, outputStream, charset);
+        export(null, body, converter, outputStream, charset);
     }
 
     public static <T> void export(String[] header, List<T> body, CsvContentConverter<T> converter, File file, Charset charset) throws IOException {
@@ -57,14 +57,14 @@ public class CsvUtils {
         export(header, body, converter, file, CommonConstant.CharsetConstant.UT8);
     }
 
-    public static <T> void export(String[] header, List<T> body, Class<T> clazz, File file) throws IOException {
+    public static <T> void export(List<T> body, Class<T> clazz, File file) throws IOException {
         ReflectCsvContentConverter<T> converter = new ReflectCsvContentConverter<>(clazz);
-        export(header, body, converter, file, CommonConstant.CharsetConstant.UT8);
+        export(null, body, converter, file, CommonConstant.CharsetConstant.UT8);
     }
 
-    public static <T> void export(String[] header, List<T> body, Class<T> clazz, File file, Charset charset) throws IOException {
+    public static <T> void export(List<T> body, Class<T> clazz, File file, Charset charset) throws IOException {
         ReflectCsvContentConverter<T> converter = new ReflectCsvContentConverter<>(clazz);
-        export(header, body, converter, file, charset);
+        export(null, body, converter, file, charset);
     }
 
 

@@ -17,8 +17,7 @@ public class ReflectCsvContentConverter<T> implements CsvContentConverter<T> {
 
     private final Class<? extends T> type;
 
-    // 数组中索引 与 排序后索引map
-    private Map<Integer, Integer> indexMap;
+    private Integer[] indexArr;
 
     private String[] header;
 
@@ -37,18 +36,18 @@ public class ReflectCsvContentConverter<T> implements CsvContentConverter<T> {
         AtomicInteger sortAtomicInteger = new AtomicInteger(0);
 
         header = new String[fieldsWithAnnotation.length];
+        indexArr = new Integer[fieldsWithAnnotation.length];
+
         // 数组中索引
         Map<Field, Integer> arrFieldIndexMap = Arrays.stream(fieldsWithAnnotation)
                 .collect(Collectors.toMap(Function.identity(), f -> arrAtomicInteger.getAndIncrement()));
 
-        // 排序后索引
-        Map<Field, Integer> sortFieldIndexMap = Arrays.stream(fieldsWithAnnotation)
+
+        Arrays.stream(fieldsWithAnnotation)
                 .sorted(Comparator.comparing(field -> field.getAnnotation(CsvProperty.class).order()))
                 .peek(field -> header[sortAtomicInteger.get()] = field.getAnnotation(CsvProperty.class).name())
-                .collect(Collectors.toMap(Function.identity(), f -> sortAtomicInteger.getAndIncrement()));
+                .forEach(field -> indexArr[sortAtomicInteger.getAndIncrement()] = arrFieldIndexMap.get(field));
 
-        indexMap = arrFieldIndexMap.entrySet().stream()
-                .collect(Collectors.toMap(e -> e.getValue(), e -> sortFieldIndexMap.get(e.getKey())));
     }
 
     @Override
@@ -66,7 +65,7 @@ public class ReflectCsvContentConverter<T> implements CsvContentConverter<T> {
         Field[] fieldsWithAnnotation = FieldUtils.getFieldsWithAnnotation(t.getClass(), CsvProperty.class);
         String[] strings = new String[header.length];
         for (int i = 0; i < header.length; i++) {
-            Field field = fieldsWithAnnotation[indexMap.get(i)];
+            Field field = fieldsWithAnnotation[indexArr[i]];
             strings[i] = fieldValue(field, t);
         }
         return strings;
