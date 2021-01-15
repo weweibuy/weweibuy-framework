@@ -16,7 +16,7 @@ public class CsvUtilsTest {
     public void export() throws Exception {
         ReflectCsvContentConverter<Student> converter = new ReflectCsvContentConverter<>(Student.class);
         Student student1 = new Student(1, "tom", "A", LocalDateTime.now());
-        Student student2 = new Student(2, "jack", "b", LocalDateTime.now());
+        Student student2 = new Student(2, "jack", null, LocalDateTime.now());
         List<Student> students = Arrays.asList(student1, student2);
         FileOutputStream fileOutputStream = new FileOutputStream("C:/Users/du/Desktop/temp/test.csv");
         CsvUtils.export(null, students, converter, fileOutputStream, Charset.forName("GBK"));

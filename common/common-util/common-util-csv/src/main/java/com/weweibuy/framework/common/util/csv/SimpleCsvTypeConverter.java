@@ -8,6 +8,9 @@ public class SimpleCsvTypeConverter implements CsvTypeConverter {
 
     @Override
     public String convert(Object o) {
-        return null;
+        if (o == null) {
+            return "";
+        }
+        return o.toString();
     }
 }
