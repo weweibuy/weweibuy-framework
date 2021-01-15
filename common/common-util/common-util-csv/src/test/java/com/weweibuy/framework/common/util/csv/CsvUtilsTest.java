@@ -10,8 +10,6 @@ import java.util.List;
 public class CsvUtilsTest {
 
 
-
-
     @Test
     public void export() throws Exception {
         ReflectCsvContentConverter<Student> converter = new ReflectCsvContentConverter<>(Student.class);
@@ -20,8 +18,8 @@ public class CsvUtilsTest {
         Student student3 = new Student(3, "luck", "c");
         Student student4 = new Student(4, "fuck", "d");
         List<Student> students = Arrays.asList(student1, student2, student3, student4);
-        FileOutputStream fileOutputStream = new FileOutputStream("C:\\Users\\jeres\\Desktop\\新建文件夹\\test.csv");
-        CsvUtils.export(null,students, converter, fileOutputStream, Charset.forName("GBK"));
+        FileOutputStream fileOutputStream = new FileOutputStream("C:/Users/du/Desktop/temp/test.csv");
+        CsvUtils.export(null, students, converter, fileOutputStream, Charset.forName("GBK"));
 
     }
 
