@@ -25,7 +25,7 @@ public class Student {
     @CsvProperty(name = "学校", order = 1)
     private String school;
 
-    @CsvProperty(name = "生日", order = 80)
+    @CsvProperty(name = "生日", order = 80, converter = LocalDateTimeCsvTypeConverter.class)
     private LocalDateTime birthday;
 
 }
