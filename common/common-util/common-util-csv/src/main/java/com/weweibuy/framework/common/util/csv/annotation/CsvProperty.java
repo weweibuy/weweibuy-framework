@@ -19,7 +19,7 @@ public @interface CsvProperty {
      *
      * @return
      */
-    String name();
+    String name() default "";
 
     /**
      * 读取索引

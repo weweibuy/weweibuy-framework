@@ -12,6 +12,8 @@ import java.io.*;
 import java.nio.charset.Charset;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 导出CSV 数据
@@ -21,6 +23,8 @@ import java.util.List;
  **/
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class CsvUtils {
+
+    private static final Map<Class, ReflectCsvContentConverter> CONVERTER_MAP = new ConcurrentHashMap<>();
 
 
     public static <T> void export(String[] header, List<T> body, CsvContentConverter<T> converter, OutputStream outputStream, Charset charset) throws IOException {
@@ -35,12 +39,12 @@ public class CsvUtils {
     }
 
     public static <T> void export(List<T> body, Class<T> clazz, OutputStream outputStream) throws IOException {
-        ReflectCsvContentConverter<T> converter = new ReflectCsvContentConverter<>(clazz);
+        ReflectCsvContentConverter<T> converter = csvContentConverter(clazz);
         export(null, body, converter, outputStream, CommonConstant.CharsetConstant.UT8);
     }
 
     public static <T> void export(List<T> body, Class<T> clazz, OutputStream outputStream, Charset charset) throws IOException {
-        ReflectCsvContentConverter<T> converter = new ReflectCsvContentConverter<>(clazz);
+        ReflectCsvContentConverter<T> converter = csvContentConverter(clazz);
         export(null, body, converter, outputStream, charset);
     }
 
@@ -58,13 +62,18 @@ public class CsvUtils {
     }
 
     public static <T> void export(List<T> body, Class<T> clazz, File file) throws IOException {
-        ReflectCsvContentConverter<T> converter = new ReflectCsvContentConverter<>(clazz);
+        ReflectCsvContentConverter<T> converter = csvContentConverter(clazz);
         export(null, body, converter, file, CommonConstant.CharsetConstant.UT8);
     }
 
     public static <T> void export(List<T> body, Class<T> clazz, File file, Charset charset) throws IOException {
-        ReflectCsvContentConverter<T> converter = new ReflectCsvContentConverter<>(clazz);
+        ReflectCsvContentConverter<T> converter = csvContentConverter(clazz);
         export(null, body, converter, file, charset);
+    }
+
+
+    public static <T> ReflectCsvContentConverter<T> csvContentConverter(Class<T> clazz) {
+        return CONVERTER_MAP.computeIfAbsent(clazz, key -> new ReflectCsvContentConverter(key));
     }
 
 
