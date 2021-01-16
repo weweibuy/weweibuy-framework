@@ -23,7 +23,15 @@ public interface CsvTypeConverter<T> {
      * @param fieldType
      * @return
      */
-    T convert(String value, Class<T> fieldType);
+    T convert(String value, Class<T> fieldType, int typeIndex);
+
+    /**
+     * converter 对应的类型索引; 如果不支持索引返回-1
+     *
+     * @param fieldType
+     * @return
+     */
+    int typeIndex(Class<T> fieldType);
 
 
 }

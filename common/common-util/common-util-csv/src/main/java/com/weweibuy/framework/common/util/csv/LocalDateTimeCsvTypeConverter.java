@@ -20,7 +20,13 @@ public class LocalDateTimeCsvTypeConverter implements CsvTypeConverter<LocalDate
     }
 
     @Override
-    public LocalDateTime convert(String value, Class<LocalDateTime> fieldType) {
+    public LocalDateTime convert(String value, Class<LocalDateTime> fieldType, int typeIndex) {
         return DateTimeUtils.stringToLocalDateTime(value);
     }
+
+    @Override
+    public int typeIndex(Class<LocalDateTime> fieldType) {
+        return -1;
+    }
+
 }

@@ -22,7 +22,7 @@ public @interface CsvProperty {
     String name() default "";
 
     /**
-     * 读取索引
+     * 读取索引, 从 0 开始
      *
      * @return
      */

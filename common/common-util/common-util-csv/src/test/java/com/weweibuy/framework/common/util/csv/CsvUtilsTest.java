@@ -32,7 +32,11 @@ public class CsvUtilsTest {
         List<Student> read =
                 CsvUtils.read(Student.class, fileOutputStream, CommonConstant.CharsetConstant.GBK);
         System.err.println(read);
+
     }
+
+
+
 
 
     @Test

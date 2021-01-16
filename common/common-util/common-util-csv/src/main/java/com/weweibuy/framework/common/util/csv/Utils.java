@@ -23,6 +23,11 @@ class Utils {
     }
 
     static CsvTypeConverter typeConverter(Class<? extends CsvTypeConverter> convertType, Class fieldType) {
+        boolean simpleCsvTypeConverter = SimpleCsvTypeConverter.isSimpleCsvTypeConverter(convertType);
+        if (simpleCsvTypeConverter) {
+            return SimpleCsvTypeConverter.INSTANCE;
+        }
+
         try {
             return convertType.newInstance();
         } catch (Exception e) {

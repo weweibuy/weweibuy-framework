@@ -1,8 +1,10 @@
 package com.weweibuy.framework.common.util.csv;
 
+import com.weweibuy.framework.common.core.utils.PredicateEnhance;
 import com.weweibuy.framework.common.util.csv.annotation.CsvProperty;
 import de.siegmar.fastcsv.reader.CsvRow;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.springframework.cglib.beans.BulkBean;
@@ -13,6 +15,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 /**
+ * CSV 数据转 Java bean  非线程安全
+ *
  * @author durenhao
  * @date 2021/1/5 22:22
  **/
@@ -26,6 +30,8 @@ public class ReflectCsvBeanConverter<T> implements CsvBeanConverter<T> {
 
     private CsvTypeConverter[] converters;
 
+    private Integer[] converterTypeIndex;
+
     private Class[] types;
 
     public ReflectCsvBeanConverter(Class<? extends T> type, Map<String, Integer> headIndexMap) {
@@ -35,59 +41,90 @@ public class ReflectCsvBeanConverter<T> implements CsvBeanConverter<T> {
 
     private void init(Map<String, Integer> headIndexMap) {
         Field[] fieldsWithAnnotation = FieldUtils.getFieldsWithAnnotation(type, CsvProperty.class);
+        validate(fieldsWithAnnotation);
 
-        // 校验
-        boolean match = Arrays.stream(fieldsWithAnnotation)
-                .map(field -> field.getAnnotation(CsvProperty.class))
-                .anyMatch(annotation -> annotation.index() != Integer.MAX_VALUE && StringUtils.isBlank(annotation.name()));
-        if (match) {
-            throw new IllegalArgumentException("读取Csv, @CsvProperty, index属性与name属性不能同时选择");
-        }
-        // TODO 长度问题
-        int length = fieldsWithAnnotation.length;
+        Map<Boolean, Set<Field>> fieldMap = Arrays.stream(fieldsWithAnnotation)
+                .collect(Collectors.groupingBy(f -> f.getAnnotation(CsvProperty.class).index() != Integer.MAX_VALUE,
+                        Collectors.toSet()));
+
+        Set<Field> userIndexList = fieldMap.get(true);
+        Set<Field> userNameList = fieldMap.get(false);
+
+        //  length = 使用index 属性  + 名称包含的属性 总个数
+        int length = usedFieldLength(fieldMap, headIndexMap);
+
         fieldIndex = new Integer[length];
         converters = new CsvTypeConverter[length];
-
         String[] getters = new String[length];
         String[] setters = new String[length];
         types = new Class[length];
+        converterTypeIndex = new Integer[length];
 
-        List<String> nameList = new ArrayList<>();
-
-        Map<Boolean, List<Field>> listMap = Arrays.stream(fieldsWithAnnotation)
-                .collect(Collectors.groupingBy(f ->
-                        f.getAnnotation(CsvProperty.class).index() != Integer.MAX_VALUE));
-
-        List<Field> userIndexList = listMap.get(true);
-        List<Field> userNameList = listMap.get(false);
         AtomicInteger indexAtomicInteger = new AtomicInteger(0);
-        if (CollectionUtils.isNotEmpty(userIndexList)) {
-            // 注解中直接指定index
-            userIndexList.stream()
-                    .peek(field -> setBulkBeanInfo(field, getters, setters, types, indexAtomicInteger))
-                    .map(field -> field.getAnnotation(CsvProperty.class))
-                    .forEach(annotation -> fieldIndex[indexAtomicInteger.getAndIncrement()] = annotation.index());
-        }
 
-        if (CollectionUtils.isNotEmpty(userNameList)) {
-            // 通过名称匹配index
-            userNameList.stream()
-                    .map(field -> {
-                        Integer index = headIndexMap.get(field.getAnnotation(CsvProperty.class).name());
-                        if (index != null) {
-                            setBulkBeanInfo(field, getters, setters, types, indexAtomicInteger);
-                        }
-                        return index;
-                    })
-                    .filter(Objects::nonNull)
-                    .forEach(index -> fieldIndex[indexAtomicInteger.getAndIncrement()] = index);
-        }
+        // 使用index的字段
+        PredicateEnhance.of(userIndexList)
+                .withPredicate(CollectionUtils::isNotEmpty)
+                .trueThenConsumer(list -> list.stream()
+                        .peek(field -> setBulkBeanInfo(field, getters, setters, types, converters, indexAtomicInteger))
+                        .map(field -> field.getAnnotation(CsvProperty.class))
+                        .forEach(annotation -> fieldIndex[indexAtomicInteger.getAndIncrement()] = annotation.index()));
+
+        PredicateEnhance.of(userNameList)
+                .withPredicate(CollectionUtils::isNotEmpty)
+                .trueThenConsumer(list -> list.stream()
+                        .map(field -> {
+                            Integer index = headIndexMap.get(field.getAnnotation(CsvProperty.class).name());
+                            if (index != null) {
+                                setBulkBeanInfo(field, getters, setters, types, converters, indexAtomicInteger);
+                            }
+                            return index;
+                        })
+                        .filter(Objects::nonNull)
+                        .forEach(index -> fieldIndex[indexAtomicInteger.getAndIncrement()] = index));
         bulkBean = BulkBean.create(type, getters, setters, types);
+    }
+
+
+    private void validate(Field[] fieldsWithAnnotation) {
+        if (ArrayUtils.isEmpty(fieldsWithAnnotation)) {
+            throw new IllegalArgumentException(type.getName() + "没有 @CsvProperty 标记的属性");
+        }
+        // 校验
+        boolean match = Arrays.stream(fieldsWithAnnotation)
+                .map(field -> field.getAnnotation(CsvProperty.class))
+                .anyMatch(annotation -> annotation.index() != Integer.MAX_VALUE && StringUtils.isNotBlank(annotation.name()));
+        if (match) {
+            throw new IllegalArgumentException("读取Csv, @CsvProperty, index属性与name属性不能同时选择");
+        }
+    }
+
+
+    private Integer usedFieldLength(Map<Boolean, Set<Field>> listMap, Map<String, Integer> headIndexMap) {
+        //  length = 使用index 属性的 + 名称包含的
+        Set<Field> userIndexList = listMap.get(true);
+        Set<Field> userNameList = listMap.get(false);
+        int length = 0;
+        if (CollectionUtils.isNotEmpty(userIndexList)) {
+            length += userIndexList.size();
+        }
+        if (CollectionUtils.isNotEmpty(userNameList)) {
+            length += userNameList.stream()
+                    .filter(field ->
+                            headIndexMap.get(field.getAnnotation(CsvProperty.class).name()) != null)
+                    .collect(Collectors.toList())
+                    .size();
+        }
+        return length;
     }
 
 
     @Override
     public T convert(Map<String, Integer> nameIndexMap, CsvRow csvRow) {
+        T instance = newInstance();
+        if (fieldIndex.length == 0) {
+            return instance;
+        }
         List<String> fieldList = csvRow.getFields();
         int size = fieldList.size();
         int length = fieldIndex.length;
@@ -97,11 +134,10 @@ public class ReflectCsvBeanConverter<T> implements CsvBeanConverter<T> {
         for (int i = 0; i < length; i++) {
             csvIndex = fieldIndex[i];
             if (csvIndex < size) {
-                value = converters[i].convert(fieldList.get(csvIndex), types[i]);
+                value = converters[i].convert(fieldList.get(csvIndex), types[i], converterTypeIndex[i]);
             }
             values[i] = value;
         }
-        T instance = newInstance();
         bulkBean.setPropertyValues(instance, values);
         return instance;
     }
@@ -115,12 +151,15 @@ public class ReflectCsvBeanConverter<T> implements CsvBeanConverter<T> {
         }
     }
 
-    private void setBulkBeanInfo(Field field, String[] getters, String[] setters, Class[] types,
+    private void setBulkBeanInfo(Field field, String[] getters, String[] setters, Class[] types, CsvTypeConverter[] converters,
                                  AtomicInteger indexAtomicInteger) {
         getters[indexAtomicInteger.get()] = Utils.fieldGetter(field);
         setters[indexAtomicInteger.get()] = Utils.fieldSetter(field);
         types[indexAtomicInteger.get()] = field.getType();
         converters[indexAtomicInteger.get()] = Utils.typeConverter(field.getAnnotation(CsvProperty.class).converter(), field.getType());
+        converterTypeIndex[indexAtomicInteger.get()] = converters[indexAtomicInteger.get()].typeIndex(field.getType());
+
     }
+
 
 }

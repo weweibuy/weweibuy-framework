@@ -22,10 +22,10 @@ public class Student {
     @CsvProperty(name = "姓名", order = 10)
     private String name;
 
-    @CsvProperty(name = "学校", order = 1)
+    @CsvProperty(index = 0)
     private String school;
 
-    @CsvProperty(name = "生日", order = 80, converter = LocalDateTimeCsvTypeConverter.class)
+    @CsvProperty(name = "生日a", order = 80, converter = LocalDateTimeCsvTypeConverter.class)
     private LocalDateTime birthday;
 
 }
