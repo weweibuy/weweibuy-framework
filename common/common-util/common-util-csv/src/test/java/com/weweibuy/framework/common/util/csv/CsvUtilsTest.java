@@ -30,7 +30,7 @@ public class CsvUtilsTest {
         FileInputStream fileOutputStream =
                 new FileInputStream("C:/Users/z/Desktop/tmp/test.csv");
         List<Student> read =
-                CsvUtils.read(Student.class, fileOutputStream, CommonConstant.CharsetConstant.GBK);
+                CsvUtils.read(Student.class, fileOutputStream, CommonConstant.CharsetConstant.GBK, false);
         System.err.println(read);
 
     }
