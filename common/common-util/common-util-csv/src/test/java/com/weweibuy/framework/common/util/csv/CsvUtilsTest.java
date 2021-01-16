@@ -1,8 +1,10 @@
 package com.weweibuy.framework.common.util.csv;
 
+import com.weweibuy.framework.common.core.model.constant.CommonConstant;
 import org.junit.Test;
 import org.springframework.cglib.beans.BeanMap;
 
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.nio.charset.Charset;
 import java.time.LocalDateTime;
@@ -18,9 +20,18 @@ public class CsvUtilsTest {
         Student student1 = new Student(1, "tom", "A", LocalDateTime.now());
         Student student2 = new Student(2, "jack", null, LocalDateTime.now());
         List<Student> students = Arrays.asList(student1, student2);
-        FileOutputStream fileOutputStream = new FileOutputStream("C:/Users/du/Desktop/temp/test.csv");
+        FileOutputStream fileOutputStream = new FileOutputStream("C:/Users/z/Desktop/tmp/test.csv");
         CsvUtils.export(null, students, converter, fileOutputStream, Charset.forName("GBK"));
 
+    }
+
+    @Test
+    public void read() throws Exception {
+        FileInputStream fileOutputStream =
+                new FileInputStream("C:/Users/z/Desktop/tmp/test.csv");
+        List<Student> read =
+                CsvUtils.read(Student.class, fileOutputStream, CommonConstant.CharsetConstant.GBK);
+        System.err.println(read);
     }
 
 
