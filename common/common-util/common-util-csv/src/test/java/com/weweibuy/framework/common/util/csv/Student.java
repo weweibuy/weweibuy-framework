@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 @Data
 public class Student {
 
-    @CsvProperty(name = "年龄")
+    @CsvProperty( index = 2)
     private Integer age;
 
     @CsvProperty(name = "姓名", order = 10)

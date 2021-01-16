@@ -81,59 +81,113 @@ public class CsvUtils {
 
 
     public static <T> List<T> read(CsvBeanConverter<T> csvBeanConverter, InputStream inputStream, Charset charset) throws IOException {
-        return read(csvBeanConverter, DEFAULT_FIELD_SEPARATOR, inputStream, true, charset);
-    }
-
-    public static <T> List<T> read(Class<T> clazz, InputStream inputStream, Charset charset) throws IOException {
-        return read(clazz, DEFAULT_FIELD_SEPARATOR, inputStream, true, charset);
+        return read(csvBeanConverter, inputStream, charset, DEFAULT_FIELD_SEPARATOR, true);
     }
 
 
-    public static <T> List<T> read(CsvBeanConverter<T> csvBeanConverter, InputStream inputStream) throws IOException {
-        return read(csvBeanConverter, DEFAULT_FIELD_SEPARATOR, inputStream, true, CommonConstant.CharsetConstant.UT8);
-    }
-
-    public static <T> List<T> read(CsvBeanConverter<T> csvBeanConverter, char fieldSeparator, InputStream inputStream, boolean containsHeader, Charset charset) throws IOException {
-        CsvReader csvReader = new CsvReader();
-        csvReader.setFieldSeparator(fieldSeparator);
-        csvReader.setContainsHeader(containsHeader);
-        InputStreamReader inputStreamReader = new InputStreamReader(inputStream, charset);
+    public static <T> List<T> read(CsvBeanConverter<T> csvBeanConverter, CsvReader csvReader, InputStreamReader inputStreamReader) throws IOException {
         CsvContainer csvContainer = csvReader.read(inputStreamReader);
         List<String> header = csvContainer.getHeader();
-        Map<String, Integer> headIndexMap = new HashMap<>();
-        for (int i = 0; i < header.size(); i++) {
-            headIndexMap.put(header.get(i), i);
-        }
 
         List<CsvRow> rowList = csvContainer.getRows();
         if (CollectionUtils.isEmpty(rowList)) {
             return Collections.emptyList();
         }
+
+        Map<String, Integer> headIndexMap = headIndexMap(header);
+
         return rowList.stream()
                 .map(row -> csvBeanConverter.convert(headIndexMap, row))
                 .collect(Collectors.toList());
     }
 
 
-    public static <T> List<T> read(Class<T> clazz, char fieldSeparator, InputStream inputStream, boolean containsHeader, Charset charset) throws IOException {
-        CsvReader csvReader = new CsvReader();
-        csvReader.setFieldSeparator(fieldSeparator);
-        csvReader.setContainsHeader(containsHeader);
+    public static <T> List<T> read(CsvBeanConverter<T> csvBeanConverter, InputStream inputStream, Charset charset, char fieldSeparator, boolean containsHeader) throws IOException {
+        CsvReader csvReader = csvReader(fieldSeparator, containsHeader, null, null, null);
         InputStreamReader inputStreamReader = new InputStreamReader(inputStream, charset);
+        return read(csvBeanConverter, csvReader, inputStreamReader);
+    }
+
+    public static <T> List<T> read(CsvBeanConverter<T> csvBeanConverter, InputStream inputStream) throws IOException {
+        CsvReader csvReader = csvReader(null, true, null, null, null);
+        InputStreamReader inputStreamReader = new InputStreamReader(inputStream, CommonConstant.CharsetConstant.UT8);
+        return read(csvBeanConverter, csvReader, inputStreamReader);
+    }
+
+
+    public static <T> List<T> read(Class<T> clazz, InputStream inputStream) throws IOException {
+        return read(clazz, inputStream, CommonConstant.CharsetConstant.UT8, DEFAULT_FIELD_SEPARATOR, true);
+    }
+
+    public static <T> List<T> read(Class<T> clazz, InputStream inputStream, Boolean containsHeader) throws IOException {
+        return read(clazz, inputStream, CommonConstant.CharsetConstant.UT8, DEFAULT_FIELD_SEPARATOR, containsHeader);
+    }
+
+    public static <T> List<T> read(Class<T> clazz, InputStream inputStream, Charset charset, Boolean containsHeader) throws IOException {
+        return read(clazz, inputStream, charset, DEFAULT_FIELD_SEPARATOR, containsHeader);
+    }
+
+    public static <T> List<T> read(Class<T> clazz, InputStream inputStream, Charset charset) throws IOException {
+        return read(clazz, inputStream, charset, DEFAULT_FIELD_SEPARATOR, true);
+    }
+
+
+    public static <T> List<T> read(Class<T> clazz, CsvReader csvReader, InputStreamReader inputStreamReader, CsvReadListener<T> csvReadListener) throws IOException {
         CsvContainer csvContainer = csvReader.read(inputStreamReader);
         List<String> header = csvContainer.getHeader();
-        Map<String, Integer> headIndexMap = new HashMap<>();
-        for (int i = 0; i < header.size(); i++) {
-            headIndexMap.put(header.get(i), i);
-        }
-        ReflectCsvBeanConverter<T> beanConverter = new ReflectCsvBeanConverter<>(clazz, headIndexMap);
         List<CsvRow> rowList = csvContainer.getRows();
         if (CollectionUtils.isEmpty(rowList)) {
             return Collections.emptyList();
         }
+
+        Map<String, Integer> headIndexMap = headIndexMap(header);
+
+        ReflectCsvBeanConverter<T> beanConverter = new ReflectCsvBeanConverter<>(clazz, csvReadListener, headIndexMap);
+
         return rowList.stream()
                 .map(row -> beanConverter.convert(headIndexMap, row))
                 .collect(Collectors.toList());
     }
+
+
+    public static <T> List<T> read(Class<T> clazz, InputStream inputStream, Charset charset, Character fieldSeparator, Boolean containsHeader) throws IOException {
+        CsvReader csvReader = csvReader(fieldSeparator, containsHeader, null, null, null);
+        InputStreamReader inputStreamReader = new InputStreamReader(inputStream, charset);
+        return read(clazz, csvReader, inputStreamReader, null);
+    }
+
+
+    private static Map<String, Integer> headIndexMap(List<String> header) {
+        Map<String, Integer> headIndexMap = new HashMap<>();
+        if (CollectionUtils.isEmpty(header)) {
+            return headIndexMap;
+        }
+        for (int i = 0; i < header.size(); i++) {
+            headIndexMap.put(header.get(i), i);
+        }
+        return headIndexMap;
+    }
+
+
+    public static CsvReader csvReader(Character fieldSeparator, Boolean containsHeader, Character textDelimiter, Boolean errorOnDifferentFieldCount, Boolean skipEmptyRows) {
+        CsvReader csvReader = new CsvReader();
+        Optional.ofNullable(fieldSeparator)
+                .ifPresent(csvReader::setFieldSeparator);
+
+        Optional.ofNullable(containsHeader)
+                .ifPresent(csvReader::setContainsHeader);
+
+        Optional.ofNullable(textDelimiter)
+                .ifPresent(csvReader::setTextDelimiter);
+
+        Optional.ofNullable(errorOnDifferentFieldCount)
+                .ifPresent(csvReader::setErrorOnDifferentFieldCount);
+
+        Optional.ofNullable(skipEmptyRows)
+                .ifPresent(csvReader::setSkipEmptyRows);
+
+        return csvReader;
+    }
+
 
 }

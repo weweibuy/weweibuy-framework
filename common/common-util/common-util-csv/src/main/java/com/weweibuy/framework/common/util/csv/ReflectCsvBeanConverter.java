@@ -24,6 +24,8 @@ public class ReflectCsvBeanConverter<T> implements CsvBeanConverter<T> {
 
     private final Class<? extends T> type;
 
+    private CsvReadListener<T> listener;
+
     private BulkBean bulkBean;
 
     private Integer[] fieldIndex;
@@ -35,7 +37,12 @@ public class ReflectCsvBeanConverter<T> implements CsvBeanConverter<T> {
     private Class[] types;
 
     public ReflectCsvBeanConverter(Class<? extends T> type, Map<String, Integer> headIndexMap) {
+        this(type, null, headIndexMap);
+    }
+
+    public ReflectCsvBeanConverter(Class<? extends T> type, CsvReadListener<T> listener, Map<String, Integer> headIndexMap) {
         this.type = type;
+        this.listener = listener;
         init(headIndexMap);
     }
 
@@ -139,6 +146,9 @@ public class ReflectCsvBeanConverter<T> implements CsvBeanConverter<T> {
             values[i] = value;
         }
         bulkBean.setPropertyValues(instance, values);
+        if (listener != null) {
+            listener.onOneLineRead(instance, csvRow);
+        }
         return instance;
     }
 
