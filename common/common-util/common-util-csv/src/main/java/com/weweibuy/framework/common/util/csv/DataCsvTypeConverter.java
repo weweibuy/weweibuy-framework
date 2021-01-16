@@ -20,7 +20,13 @@ public class DataCsvTypeConverter implements CsvTypeConverter<Date> {
     }
 
     @Override
-    public Date convert(String value, Class<Date> fieldType) {
+    public Date convert(String value, Class<Date> fieldType, int typeIndex) {
         return null;
     }
+
+    @Override
+    public int typeIndex(Class<Date> fieldType) {
+        return -1;
+    }
+
 }

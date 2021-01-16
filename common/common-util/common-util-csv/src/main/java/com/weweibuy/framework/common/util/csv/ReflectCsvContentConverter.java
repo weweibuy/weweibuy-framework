@@ -1,6 +1,7 @@
 package com.weweibuy.framework.common.util.csv;
 
 import com.weweibuy.framework.common.util.csv.annotation.CsvProperty;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.springframework.cglib.beans.BulkBean;
@@ -34,6 +35,10 @@ public class ReflectCsvContentConverter<T> implements CsvContentConverter<T> {
 
     private void init() {
         Field[] fieldsWithAnnotation = FieldUtils.getFieldsWithAnnotation(type, CsvProperty.class);
+
+        if (ArrayUtils.isEmpty(fieldsWithAnnotation)) {
+            throw new IllegalArgumentException(type.getName() + "没有 @CsvProperty 标记的属性");
+        }
 
         AtomicInteger sortAtomicInteger = new AtomicInteger(0);
         int length = fieldsWithAnnotation.length;
@@ -84,8 +89,6 @@ public class ReflectCsvContentConverter<T> implements CsvContentConverter<T> {
         }
         return strings;
     }
-
-
 
 
 }

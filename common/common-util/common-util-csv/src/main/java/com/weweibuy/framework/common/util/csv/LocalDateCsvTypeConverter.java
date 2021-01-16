@@ -21,7 +21,13 @@ public class LocalDateCsvTypeConverter implements CsvTypeConverter<LocalDate> {
     }
 
     @Override
-    public LocalDate convert(String value, Class<LocalDate> fieldType) {
-        return null;
+    public LocalDate convert(String value, Class<LocalDate> fieldType, int typeIndex) {
+        return DateTimeUtils.stringToLocalDate(value);
     }
+
+    @Override
+    public int typeIndex(Class<LocalDate> fieldType) {
+        return -1;
+    }
+
 }
