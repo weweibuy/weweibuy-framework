@@ -18,4 +18,9 @@ public class LocalDateTimeCsvTypeConverter implements CsvTypeConverter<LocalDate
                 .map(DateTimeUtils::toStringDate)
                 .orElse(StringUtils.EMPTY);
     }
+
+    @Override
+    public LocalDateTime convert(String value, Class<LocalDateTime> fieldType) {
+        return DateTimeUtils.stringToLocalDateTime(value);
+    }
 }

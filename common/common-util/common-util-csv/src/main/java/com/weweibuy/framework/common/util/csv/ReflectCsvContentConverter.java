@@ -56,9 +56,9 @@ public class ReflectCsvContentConverter<T> implements CsvContentConverter<T> {
                                 .filter(StringUtils::isNotBlank)
                                 .orElse(field.getName()))
                 .peek(field -> indexName[sortAtomicInteger.get()] = arrFieldIndexMap.get(field))
-                .peek(field -> getters[sortAtomicInteger.get()] = fieldGetter(field))
-                .peek(field -> setters[sortAtomicInteger.get()] = fieldSetter(field))
-                .peek(field -> converters[sortAtomicInteger.get()] = typeConverter(field.getAnnotation(CsvProperty.class).converter(), field.getType()))
+                .peek(field -> getters[sortAtomicInteger.get()] = Utils.fieldGetter(field))
+                .peek(field -> setters[sortAtomicInteger.get()] = Utils.fieldSetter(field))
+                .peek(field -> converters[sortAtomicInteger.get()] = Utils.typeConverter(field.getAnnotation(CsvProperty.class).converter(), field.getType()))
                 .forEach(field -> types[sortAtomicInteger.getAndIncrement()] = field.getType());
 
         bulkBean = BulkBean.create(type, getters, setters, types);
@@ -80,33 +80,12 @@ public class ReflectCsvContentConverter<T> implements CsvContentConverter<T> {
         Object[] propertyValues = bulkBean.getPropertyValues(t);
         String[] strings = new String[header.length];
         for (int i = 0; i < header.length; i++) {
-            Object o = propertyValues[i];
-            strings[i] = converters[i].convert(o);
+            strings[i] = converters[i].convert(propertyValues[i]);
         }
         return strings;
     }
 
 
-    private static String fieldGetter(Field field) {
-        return "get" + captureName(field.getName());
-    }
 
-    private static String fieldSetter(Field field) {
-        return "set" + captureName(field.getName());
-    }
-
-    private static String captureName(String str) {
-        char[] cs = str.toCharArray();
-        cs[0] -= 32;
-        return String.valueOf(cs);
-    }
-
-    private CsvTypeConverter typeConverter(Class<? extends CsvTypeConverter> convertType, Class fieldType) {
-        try {
-            return convertType.newInstance();
-        } catch (Exception e) {
-            throw new IllegalArgumentException("Can not instance custom converter:" + convertType.getName());
-        }
-    }
 
 }

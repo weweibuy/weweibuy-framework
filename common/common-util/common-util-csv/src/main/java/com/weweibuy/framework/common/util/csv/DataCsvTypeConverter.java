@@ -18,4 +18,9 @@ public class DataCsvTypeConverter implements CsvTypeConverter<Date> {
                 .map(DateTimeUtils::toStringDate)
                 .orElse(StringUtils.EMPTY);
     }
+
+    @Override
+    public Date convert(String value, Class<Date> fieldType) {
+        return null;
+    }
 }

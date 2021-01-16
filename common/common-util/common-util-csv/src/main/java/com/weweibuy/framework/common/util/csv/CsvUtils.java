@@ -7,13 +7,13 @@ import de.siegmar.fastcsv.reader.CsvRow;
 import de.siegmar.fastcsv.writer.CsvWriter;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import org.apache.commons.collections4.CollectionUtils;
 
 import java.io.*;
 import java.nio.charset.Charset;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 /**
  * 导出CSV 数据
@@ -24,12 +24,15 @@ import java.util.concurrent.ConcurrentHashMap;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class CsvUtils {
 
+    public static final char DEFAULT_FIELD_SEPARATOR = ',';
+
     private static final Map<Class, ReflectCsvContentConverter> CONVERTER_MAP = new ConcurrentHashMap<>();
 
 
     public static <T> void export(String[] header, List<T> body, CsvContentConverter<T> converter, OutputStream outputStream, Charset charset) throws IOException {
         Collection<String[]> collection = converter.convert(header, body);
         OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream, charset);
+
         CsvWriter csvWriter = new CsvWriter();
         csvWriter.write(outputStreamWriter, collection);
     }
@@ -77,17 +80,60 @@ public class CsvUtils {
     }
 
 
-    public static void read(char fieldSeparator, InputStream inputStream) throws IOException {
-        CsvReader csvReader = new CsvReader();
-        csvReader.setFieldSeparator(fieldSeparator);
-        csvReader.setContainsHeader(false);
-        try (InputStreamReader inputStreamReader = new InputStreamReader(inputStream)) {
-            CsvContainer read = csvReader.read(inputStreamReader);
-            List<CsvRow> rows = read.getRows();
-            CsvRow csvRow = rows.get(0);
-        }
-        ;
+    public static <T> List<T> read(CsvBeanConverter<T> csvBeanConverter, InputStream inputStream, Charset charset) throws IOException {
+        return read(csvBeanConverter, DEFAULT_FIELD_SEPARATOR, inputStream, true, charset);
     }
 
+    public static <T> List<T> read(Class<T> clazz, InputStream inputStream, Charset charset) throws IOException {
+        return read(clazz, DEFAULT_FIELD_SEPARATOR, inputStream, true, charset);
+    }
+
+
+    public static <T> List<T> read(CsvBeanConverter<T> csvBeanConverter, InputStream inputStream) throws IOException {
+        return read(csvBeanConverter, DEFAULT_FIELD_SEPARATOR, inputStream, true, CommonConstant.CharsetConstant.UT8);
+    }
+
+    public static <T> List<T> read(CsvBeanConverter<T> csvBeanConverter, char fieldSeparator, InputStream inputStream, boolean containsHeader, Charset charset) throws IOException {
+        CsvReader csvReader = new CsvReader();
+        csvReader.setFieldSeparator(fieldSeparator);
+        csvReader.setContainsHeader(containsHeader);
+        InputStreamReader inputStreamReader = new InputStreamReader(inputStream, charset);
+        CsvContainer csvContainer = csvReader.read(inputStreamReader);
+        List<String> header = csvContainer.getHeader();
+        Map<String, Integer> headIndexMap = new HashMap<>();
+        for (int i = 0; i < header.size(); i++) {
+            headIndexMap.put(header.get(i), i);
+        }
+
+        List<CsvRow> rowList = csvContainer.getRows();
+        if (CollectionUtils.isEmpty(rowList)) {
+            return Collections.emptyList();
+        }
+        return rowList.stream()
+                .map(row -> csvBeanConverter.convert(headIndexMap, row))
+                .collect(Collectors.toList());
+    }
+
+
+    public static <T> List<T> read(Class<T> clazz, char fieldSeparator, InputStream inputStream, boolean containsHeader, Charset charset) throws IOException {
+        CsvReader csvReader = new CsvReader();
+        csvReader.setFieldSeparator(fieldSeparator);
+        csvReader.setContainsHeader(containsHeader);
+        InputStreamReader inputStreamReader = new InputStreamReader(inputStream, charset);
+        CsvContainer csvContainer = csvReader.read(inputStreamReader);
+        List<String> header = csvContainer.getHeader();
+        Map<String, Integer> headIndexMap = new HashMap<>();
+        for (int i = 0; i < header.size(); i++) {
+            headIndexMap.put(header.get(i), i);
+        }
+        ReflectCsvBeanConverter<T> beanConverter = new ReflectCsvBeanConverter<>(clazz, headIndexMap);
+        List<CsvRow> rowList = csvContainer.getRows();
+        if (CollectionUtils.isEmpty(rowList)) {
+            return Collections.emptyList();
+        }
+        return rowList.stream()
+                .map(row -> beanConverter.convert(headIndexMap, row))
+                .collect(Collectors.toList());
+    }
 
 }
