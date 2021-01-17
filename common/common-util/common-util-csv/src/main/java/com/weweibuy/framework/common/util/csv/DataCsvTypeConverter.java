@@ -21,7 +21,10 @@ public class DataCsvTypeConverter implements CsvTypeConverter<Date> {
 
     @Override
     public Date convert(String value, Class<Date> fieldType, int typeIndex) {
-        return null;
+        if (StringUtils.EMPTY.equals(value)) {
+            return null;
+        }
+        return DateTimeUtils.strToDate(value);
     }
 
     @Override

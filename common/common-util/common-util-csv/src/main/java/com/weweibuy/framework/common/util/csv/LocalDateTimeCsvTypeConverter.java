@@ -21,6 +21,9 @@ public class LocalDateTimeCsvTypeConverter implements CsvTypeConverter<LocalDate
 
     @Override
     public LocalDateTime convert(String value, Class<LocalDateTime> fieldType, int typeIndex) {
+        if (StringUtils.EMPTY.equals(value)) {
+            return null;
+        }
         return DateTimeUtils.stringToLocalDateTime(value);
     }
 

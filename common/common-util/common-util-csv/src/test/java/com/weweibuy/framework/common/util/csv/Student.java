@@ -4,8 +4,7 @@ import com.weweibuy.framework.common.util.csv.annotation.CsvProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDateTime;
+import lombok.ToString;
 
 /**
  * @author : Knight
@@ -14,18 +13,14 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class Student {
+@ToString(callSuper = true)
+public class Student extends Person {
 
-    @CsvProperty( index = 2)
-    private Integer age;
+    @CsvProperty(name = "班级")
+    private String group;
 
-    @CsvProperty(name = "姓名", order = 10)
-    private String name;
-
-    @CsvProperty(index = 0)
+    @CsvProperty(name = "学校")
     private String school;
 
-    @CsvProperty(name = "生日a", order = 80, converter = LocalDateTimeCsvTypeConverter.class)
-    private LocalDateTime birthday;
 
 }

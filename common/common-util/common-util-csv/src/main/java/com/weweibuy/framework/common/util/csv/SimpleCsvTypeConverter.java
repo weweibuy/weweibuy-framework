@@ -1,6 +1,7 @@
 package com.weweibuy.framework.common.util.csv;
 
 import lombok.Getter;
+import org.apache.commons.lang3.StringUtils;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -24,13 +25,13 @@ public class SimpleCsvTypeConverter implements CsvTypeConverter {
     private static Map<String, Integer> typeIndexMap;
 
     static {
-        TypeFunctionEum[] functionEums = TypeFunctionEum.values();
-        typeFunction = new Function[functionEums.length];
-        typeIndexMap = Arrays.stream(functionEums)
+        TypeFunctionEum[] functionEnums = TypeFunctionEum.values();
+        typeFunction = new Function[functionEnums.length];
+        typeIndexMap = Arrays.stream(functionEnums)
                 .collect(Collectors.toMap(TypeFunctionEum::getName, TypeFunctionEum::getIndex));
 
-        for (int i = 0; i < functionEums.length; i++) {
-            typeFunction[i] = functionEums[i].getFunction();
+        for (int i = 0; i < functionEnums.length; i++) {
+            typeFunction[i] = functionEnums[i].getFunction();
         }
 
     }
@@ -38,7 +39,7 @@ public class SimpleCsvTypeConverter implements CsvTypeConverter {
     @Override
     public String convert(Object o) {
         if (o == null) {
-            return "";
+            return null;
         }
         return o.toString();
     }
@@ -61,46 +62,55 @@ public class SimpleCsvTypeConverter implements CsvTypeConverter {
     }
 
 
+    static Object emptyOrDefault(String value, Object defaultValue, Function<String, Object> function) {
+        if (StringUtils.EMPTY.equals(value)) {
+            return defaultValue;
+        }
+        return function.apply(value);
+    }
+
+
     @Getter
     static enum TypeFunctionEum {
 
-        INT(0, int.class.getName(), Integer::valueOf),
+        INT(0, int.class.getName(), s -> emptyOrDefault(s, 0, Integer::valueOf)),
 
-        BYTE(1, byte.class.getName(), Byte::valueOf),
+        BYTE(1, byte.class.getName(), s -> emptyOrDefault(s, (byte) 0, Byte::valueOf)),
 
-        LONG(2, long.class.getName(), Long::valueOf),
+        LONG(2, long.class.getName(), s -> emptyOrDefault(s, 0L, Long::valueOf)),
 
-        DOUBLE(3, double.class.getName(), Double::valueOf),
+        DOUBLE(3, double.class.getName(), s -> emptyOrDefault(s, 0.0d, Double::valueOf)),
 
-        FLOAT(4, float.class.getName(), Float::valueOf),
+        FLOAT(4, float.class.getName(), s -> emptyOrDefault(s, 0.0f, Float::valueOf)),
 
-        SHORT(5, short.class.getName(), Short::valueOf),
+        SHORT(5, short.class.getName(), s -> emptyOrDefault(s, (short) 0, Short::valueOf)),
 
-        CHAR(6, char.class.getName(), s -> s.toCharArray()[0]),
+        CHAR(6, char.class.getName(), s -> emptyOrDefault(s, '\u0000', s1 -> s1.toCharArray()[0])),
 
-        BOOLEAN(7, boolean.class.getName(), Boolean::valueOf),
+        BOOLEAN(7, boolean.class.getName(), s -> emptyOrDefault(s, false, Boolean::valueOf)),
 
-        INTEGER(8, Integer.class.getName(), Integer::valueOf),
+        INTEGER(8, Integer.class.getName(), s -> emptyOrDefault(s, null, Integer::valueOf)),
 
-        LONG_BOX(9, Long.class.getName(), Long::valueOf),
+        LONG_BOX(9, Long.class.getName(), s -> emptyOrDefault(s, null, Long::valueOf)),
 
-        BYTE_BOX(10, Byte.class.getName(), Byte::valueOf),
+        BYTE_BOX(10, Byte.class.getName(), s -> emptyOrDefault(s, null, Byte::valueOf)),
 
-        DOUBLE_BOX(11, Double.class.getName(), Double::valueOf),
+        DOUBLE_BOX(11, Double.class.getName(), s -> emptyOrDefault(s, null, Double::valueOf)),
 
-        FLOAT_BOX(12, Float.class.getName(), Float::valueOf),
+        FLOAT_BOX(12, Float.class.getName(), s -> emptyOrDefault(s, null, Float::valueOf)),
 
-        CHARACTER(13, Character.class.getName(), s -> s.toCharArray()[0]),
+        CHARACTER(13, Character.class.getName(), s -> emptyOrDefault(s, null, s1 -> s1.toCharArray()[0])),
 
-        SHORT_BOX(14, Short.class.getName(), Short::valueOf),
+        SHORT_BOX(14, Short.class.getName(), s -> emptyOrDefault(s, null, Short::valueOf)),
 
-        BOOLEAN_BOX(15, Boolean.class.getName(), Boolean::valueOf),
+        BOOLEAN_BOX(15, Boolean.class.getName(), s -> emptyOrDefault(s, null, Boolean::valueOf)),
 
         STRING(16, String.class.getName(), s -> s),
 
-        BIG_DECIMAL(17, BigDecimal.class.getName(), BigDecimal::new),
+        BIG_DECIMAL(17, BigDecimal.class.getName(), s -> emptyOrDefault(s, null, BigDecimal::new)),
 
         OBJECT(18, Object.class.getName(), s -> s),;
+
         private Integer index;
 
         private String name;

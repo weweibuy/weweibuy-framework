@@ -119,6 +119,12 @@ public class CsvUtils {
         return read(clazz, inputStream, CommonConstant.CharsetConstant.UT8, DEFAULT_FIELD_SEPARATOR, true);
     }
 
+    public static <T> List<T> read(Class<T> clazz, File file) throws IOException {
+        try (InputStream inputStream = new FileInputStream(file)) {
+            return read(clazz, inputStream, CommonConstant.CharsetConstant.UT8, DEFAULT_FIELD_SEPARATOR, true);
+        }
+    }
+
     public static <T> List<T> read(Class<T> clazz, InputStream inputStream, Boolean containsHeader) throws IOException {
         return read(clazz, inputStream, CommonConstant.CharsetConstant.UT8, DEFAULT_FIELD_SEPARATOR, containsHeader);
     }
