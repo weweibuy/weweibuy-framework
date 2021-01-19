@@ -5,6 +5,7 @@ import com.weweibuy.framework.compensate.model.CompensateInfoExt;
 import com.weweibuy.framework.compensate.model.CompensateStatus;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -52,7 +53,7 @@ public class RuleParser {
         }
         String unit = rule.substring(rule.length() - 1);
         String num = rule.substring(0, rule.length() - 1);
-        if (!isNumeric(num)) {
+        if (!StringUtils.isNumeric(num)) {
             return 0;
         }
         switch (unit) {
@@ -73,15 +74,6 @@ public class RuleParser {
         }
     }
 
-
-    private static boolean isNumeric(String str) {
-        for (int i = str.length(); --i >= 0; ) {
-            int chr = str.charAt(i);
-            if (chr < 48 || chr > 57)
-                return false;
-        }
-        return true;
-    }
 
     static CompensateStatus parserToStatus(CompensateInfoExt compensateInfo) {
         long retryTime = parser(compensateInfo.getRetryCount(), compensateInfo.getRetryRule());
