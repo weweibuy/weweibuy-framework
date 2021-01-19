@@ -14,7 +14,7 @@ import org.slf4j.TtlMDCAdapter;
  **/
 public class TtlMdcListener extends ContextAwareBase implements LoggerContextListener, LifeCycle {
 
-
+    @Override
     public void start() {
         // 替换MDC实现
         if (userTtl()) {
@@ -33,26 +33,33 @@ public class TtlMdcListener extends ContextAwareBase implements LoggerContextLis
         return Boolean.getBoolean("common.log.ttl.enable");
     }
 
+    @Override
     public void stop() {
     }
 
+    @Override
     public boolean isStarted() {
         return false;
     }
 
+    @Override
     public boolean isResetResistant() {
         return false;
     }
 
+    @Override
     public void onStart(LoggerContext loggerContext) {
     }
 
+    @Override
     public void onReset(LoggerContext loggerContext) {
     }
 
+    @Override
     public void onStop(LoggerContext loggerContext) {
     }
 
+    @Override
     public void onLevelChange(Logger logger, Level level) {
     }
 }
