@@ -5,8 +5,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
-import com.weweibuy.framework.common.core.exception.Exceptions;
-import com.weweibuy.framework.common.core.model.eum.CommonErrorCodeEum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.stereotype.Component;
@@ -14,6 +12,7 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.IOException;
+import java.io.UncheckedIOException;
 
 /**
  * @author durenhao
@@ -59,7 +58,7 @@ public class JackJsonUtils {
         try {
             return SNAKE_CASE_MAPPER.readValue(json, clazz);
         } catch (IOException e) {
-            throw Exceptions.system(CommonErrorCodeEum.JSON_PARSE_EXCEPTION, e);
+            throw new UncheckedIOException(e);
         }
     }
 
@@ -67,7 +66,7 @@ public class JackJsonUtils {
         try {
             return SNAKE_CASE_MAPPER.readValue(file, clazz);
         } catch (IOException e) {
-            throw Exceptions.system(CommonErrorCodeEum.JSON_PARSE_EXCEPTION, e);
+            throw new UncheckedIOException(e);
         }
     }
 
@@ -75,7 +74,7 @@ public class JackJsonUtils {
         try {
             return SNAKE_CASE_MAPPER.readValue(json, valueTypeRef);
         } catch (IOException e) {
-            throw Exceptions.system(CommonErrorCodeEum.JSON_PARSE_EXCEPTION, e);
+            throw new UncheckedIOException(e);
         }
     }
 
@@ -83,7 +82,7 @@ public class JackJsonUtils {
         try {
             return SNAKE_CASE_MAPPER.readValue(file, valueTypeRef);
         } catch (IOException e) {
-            throw Exceptions.system(CommonErrorCodeEum.JSON_PARSE_EXCEPTION, e);
+            throw new UncheckedIOException(e);
         }
     }
 
@@ -91,7 +90,7 @@ public class JackJsonUtils {
         try {
             return SNAKE_CASE_MAPPER.readValue(json, javaType);
         } catch (IOException e) {
-            throw Exceptions.system(CommonErrorCodeEum.JSON_PARSE_EXCEPTION, e);
+            throw new UncheckedIOException(e);
         }
     }
 
@@ -99,7 +98,7 @@ public class JackJsonUtils {
         try {
             return SNAKE_CASE_MAPPER.readValue(file, javaType);
         } catch (IOException e) {
-            throw Exceptions.system(CommonErrorCodeEum.JSON_PARSE_EXCEPTION, e);
+            throw new UncheckedIOException(e);
         }
     }
 
@@ -107,7 +106,7 @@ public class JackJsonUtils {
         try {
             return SNAKE_CASE_MAPPER.readValue(json, javaType(SNAKE_CASE_MAPPER, clazz, typeClasses));
         } catch (IOException e) {
-            throw Exceptions.system(CommonErrorCodeEum.JSON_PARSE_EXCEPTION, e);
+            throw new UncheckedIOException(e);
         }
     }
 
@@ -115,7 +114,7 @@ public class JackJsonUtils {
         try {
             return SNAKE_CASE_MAPPER.readValue(file, javaType(SNAKE_CASE_MAPPER, clazz, typeClasses));
         } catch (IOException e) {
-            throw Exceptions.system(CommonErrorCodeEum.JSON_PARSE_EXCEPTION, e);
+            throw new UncheckedIOException(e);
         }
     }
 
@@ -124,7 +123,7 @@ public class JackJsonUtils {
         try {
             return SNAKE_CASE_MAPPER.readValue(json, clazz);
         } catch (IOException e) {
-            throw Exceptions.system(CommonErrorCodeEum.JSON_PARSE_EXCEPTION, e);
+            throw new UncheckedIOException(e);
         }
     }
 
@@ -132,7 +131,7 @@ public class JackJsonUtils {
         try {
             return SNAKE_CASE_MAPPER.readValue(json, valueTypeRef);
         } catch (IOException e) {
-            throw Exceptions.system(CommonErrorCodeEum.JSON_PARSE_EXCEPTION, e);
+            throw new UncheckedIOException(e);
         }
     }
 
@@ -140,7 +139,7 @@ public class JackJsonUtils {
         try {
             return SNAKE_CASE_MAPPER.readValue(json, javaType);
         } catch (IOException e) {
-            throw Exceptions.system(CommonErrorCodeEum.JSON_PARSE_EXCEPTION, e);
+            throw new UncheckedIOException(e);
         }
     }
 
@@ -149,7 +148,7 @@ public class JackJsonUtils {
         try {
             return SNAKE_CASE_MAPPER.readValue(json, javaType(SNAKE_CASE_MAPPER, clazz, typeClasses));
         } catch (IOException e) {
-            throw Exceptions.system(CommonErrorCodeEum.JSON_PARSE_EXCEPTION, e);
+            throw new UncheckedIOException(e);
         }
     }
 
@@ -158,15 +157,15 @@ public class JackJsonUtils {
         try {
             return SNAKE_CASE_MAPPER.writeValueAsString(object);
         } catch (JsonProcessingException e) {
-            throw Exceptions.system(CommonErrorCodeEum.JSON_PARSE_EXCEPTION, e);
+            throw new UncheckedIOException(e);
         }
     }
 
     public static byte[] writeSnakeCaseAsByte(Object object) {
         try {
             return SNAKE_CASE_MAPPER.writeValueAsBytes(object);
-        } catch (JsonProcessingException e) {
-            throw Exceptions.system(CommonErrorCodeEum.JSON_PARSE_EXCEPTION, e);
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
         }
     }
 
@@ -174,7 +173,7 @@ public class JackJsonUtils {
         try {
             return MVC_OBJECT_MAPPER.readValue(file, clazz);
         } catch (IOException e) {
-            throw Exceptions.system(CommonErrorCodeEum.JSON_PARSE_EXCEPTION, e);
+            throw new UncheckedIOException(e);
         }
     }
 
@@ -182,7 +181,7 @@ public class JackJsonUtils {
         try {
             return MVC_OBJECT_MAPPER.readValue(json, clazz);
         } catch (IOException e) {
-            throw Exceptions.system(CommonErrorCodeEum.JSON_PARSE_EXCEPTION, e);
+            throw new UncheckedIOException(e);
         }
     }
 
@@ -190,7 +189,7 @@ public class JackJsonUtils {
         try {
             return MVC_OBJECT_MAPPER.readValue(json, javaType);
         } catch (IOException e) {
-            throw Exceptions.system(CommonErrorCodeEum.JSON_PARSE_EXCEPTION, e);
+            throw new UncheckedIOException(e);
         }
     }
 
@@ -198,7 +197,7 @@ public class JackJsonUtils {
         try {
             return MVC_OBJECT_MAPPER.readValue(file, javaType);
         } catch (IOException e) {
-            throw Exceptions.system(CommonErrorCodeEum.JSON_PARSE_EXCEPTION, e);
+            throw new UncheckedIOException(e);
         }
     }
 
@@ -206,7 +205,7 @@ public class JackJsonUtils {
         try {
             return MVC_OBJECT_MAPPER.readValue(json, javaType(MVC_OBJECT_MAPPER, clazz, typeClasses));
         } catch (IOException e) {
-            throw Exceptions.system(CommonErrorCodeEum.JSON_PARSE_EXCEPTION, e);
+            throw new UncheckedIOException(e);
         }
     }
 
@@ -214,7 +213,7 @@ public class JackJsonUtils {
         try {
             return MVC_OBJECT_MAPPER.readValue(file, javaType(MVC_OBJECT_MAPPER, clazz, typeClasses));
         } catch (IOException e) {
-            throw Exceptions.system(CommonErrorCodeEum.JSON_PARSE_EXCEPTION, e);
+            throw new UncheckedIOException(e);
         }
     }
 
@@ -222,7 +221,7 @@ public class JackJsonUtils {
         try {
             return MVC_OBJECT_MAPPER.readValue(json, typeReference);
         } catch (IOException e) {
-            throw Exceptions.system(CommonErrorCodeEum.JSON_PARSE_EXCEPTION, e);
+            throw new UncheckedIOException(e);
         }
     }
 
@@ -230,7 +229,7 @@ public class JackJsonUtils {
         try {
             return MVC_OBJECT_MAPPER.readValue(file, typeReference);
         } catch (IOException e) {
-            throw Exceptions.system(CommonErrorCodeEum.JSON_PARSE_EXCEPTION, e);
+            throw new UncheckedIOException(e);
         }
     }
 
@@ -238,7 +237,7 @@ public class JackJsonUtils {
         try {
             return MVC_OBJECT_MAPPER.readValue(json, clazz);
         } catch (IOException e) {
-            throw Exceptions.system(CommonErrorCodeEum.JSON_PARSE_EXCEPTION, e);
+            throw new UncheckedIOException(e);
         }
     }
 
@@ -246,7 +245,7 @@ public class JackJsonUtils {
         try {
             return MVC_OBJECT_MAPPER.readValue(json, javaType);
         } catch (IOException e) {
-            throw Exceptions.system(CommonErrorCodeEum.JSON_PARSE_EXCEPTION, e);
+            throw new UncheckedIOException(e);
         }
     }
 
@@ -254,7 +253,7 @@ public class JackJsonUtils {
         try {
             return MVC_OBJECT_MAPPER.readValue(json, typeReference);
         } catch (IOException e) {
-            throw Exceptions.system(CommonErrorCodeEum.JSON_PARSE_EXCEPTION, e);
+            throw new UncheckedIOException(e);
         }
     }
 
@@ -262,7 +261,7 @@ public class JackJsonUtils {
         try {
             return MVC_OBJECT_MAPPER.readValue(json, javaType(MVC_OBJECT_MAPPER, clazz, typeClasses));
         } catch (IOException e) {
-            throw Exceptions.system(CommonErrorCodeEum.JSON_PARSE_EXCEPTION, e);
+            throw new UncheckedIOException(e);
         }
     }
 
@@ -271,7 +270,7 @@ public class JackJsonUtils {
         try {
             return MVC_OBJECT_MAPPER.writeValueAsString(object);
         } catch (JsonProcessingException e) {
-            throw Exceptions.system(CommonErrorCodeEum.JSON_WRITE_EXCEPTION, e);
+            throw new UncheckedIOException(e);
         }
     }
 
@@ -279,7 +278,7 @@ public class JackJsonUtils {
         try {
             return MVC_OBJECT_MAPPER.writeValueAsBytes(object);
         } catch (JsonProcessingException e) {
-            throw Exceptions.system(CommonErrorCodeEum.JSON_WRITE_EXCEPTION, e);
+            throw new UncheckedIOException(e);
         }
     }
 
@@ -288,7 +287,7 @@ public class JackJsonUtils {
         try {
             return CAMEL_CASE_MAPPER.readValue(json, clazz);
         } catch (IOException e) {
-            throw Exceptions.system(CommonErrorCodeEum.JSON_WRITE_EXCEPTION, e);
+            throw new UncheckedIOException(e);
         }
     }
 
@@ -296,7 +295,7 @@ public class JackJsonUtils {
         try {
             return CAMEL_CASE_MAPPER.readValue(file, clazz);
         } catch (IOException e) {
-            throw Exceptions.system(CommonErrorCodeEum.JSON_WRITE_EXCEPTION, e);
+            throw new UncheckedIOException(e);
         }
     }
 
@@ -304,7 +303,7 @@ public class JackJsonUtils {
         try {
             return CAMEL_CASE_MAPPER.readValue(json, javaType);
         } catch (IOException e) {
-            throw Exceptions.system(CommonErrorCodeEum.JSON_WRITE_EXCEPTION, e);
+            throw new UncheckedIOException(e);
         }
     }
 
@@ -312,7 +311,7 @@ public class JackJsonUtils {
         try {
             return CAMEL_CASE_MAPPER.readValue(file, javaType);
         } catch (IOException e) {
-            throw Exceptions.system(CommonErrorCodeEum.JSON_WRITE_EXCEPTION, e);
+            throw new UncheckedIOException(e);
         }
     }
 
@@ -320,7 +319,7 @@ public class JackJsonUtils {
         try {
             return CAMEL_CASE_MAPPER.readValue(json, typeReference);
         } catch (IOException e) {
-            throw Exceptions.system(CommonErrorCodeEum.JSON_WRITE_EXCEPTION, e);
+            throw new UncheckedIOException(e);
         }
     }
 
@@ -328,7 +327,7 @@ public class JackJsonUtils {
         try {
             return CAMEL_CASE_MAPPER.readValue(file, typeReference);
         } catch (IOException e) {
-            throw Exceptions.system(CommonErrorCodeEum.JSON_WRITE_EXCEPTION, e);
+            throw new UncheckedIOException(e);
         }
     }
 
@@ -336,7 +335,7 @@ public class JackJsonUtils {
         try {
             return CAMEL_CASE_MAPPER.readValue(json, javaType(CAMEL_CASE_MAPPER, clazz, typeClasses));
         } catch (IOException e) {
-            throw Exceptions.system(CommonErrorCodeEum.JSON_WRITE_EXCEPTION, e);
+            throw new UncheckedIOException(e);
         }
     }
 
@@ -344,7 +343,7 @@ public class JackJsonUtils {
         try {
             return CAMEL_CASE_MAPPER.readValue(file, javaType(CAMEL_CASE_MAPPER, clazz, typeClasses));
         } catch (IOException e) {
-            throw Exceptions.system(CommonErrorCodeEum.JSON_WRITE_EXCEPTION, e);
+            throw new UncheckedIOException(e);
         }
     }
 
@@ -352,7 +351,7 @@ public class JackJsonUtils {
         try {
             return CAMEL_CASE_MAPPER.readValue(json, clazz);
         } catch (IOException e) {
-            throw Exceptions.system(CommonErrorCodeEum.JSON_WRITE_EXCEPTION, e);
+            throw new UncheckedIOException(e);
         }
     }
 
@@ -360,7 +359,7 @@ public class JackJsonUtils {
         try {
             return CAMEL_CASE_MAPPER.readValue(json, javaType);
         } catch (IOException e) {
-            throw Exceptions.system(CommonErrorCodeEum.JSON_WRITE_EXCEPTION, e);
+            throw new UncheckedIOException(e);
         }
     }
 
@@ -368,7 +367,7 @@ public class JackJsonUtils {
         try {
             return CAMEL_CASE_MAPPER.readValue(json, typeReference);
         } catch (IOException e) {
-            throw Exceptions.system(CommonErrorCodeEum.JSON_WRITE_EXCEPTION, e);
+            throw new UncheckedIOException(e);
         }
     }
 
@@ -377,7 +376,7 @@ public class JackJsonUtils {
         try {
             return CAMEL_CASE_MAPPER.readValue(json, javaType(CAMEL_CASE_MAPPER, clazz, typeClasses));
         } catch (IOException e) {
-            throw Exceptions.system(CommonErrorCodeEum.JSON_WRITE_EXCEPTION, e);
+            throw new UncheckedIOException(e);
         }
     }
 
@@ -385,7 +384,7 @@ public class JackJsonUtils {
         try {
             return CAMEL_CASE_MAPPER.writeValueAsString(object);
         } catch (JsonProcessingException e) {
-            throw Exceptions.system(CommonErrorCodeEum.JSON_WRITE_EXCEPTION, e);
+            throw new UncheckedIOException(e);
         }
     }
 
@@ -393,7 +392,7 @@ public class JackJsonUtils {
         try {
             return CAMEL_CASE_MAPPER.writeValueAsBytes(object);
         } catch (JsonProcessingException e) {
-            throw Exceptions.system(CommonErrorCodeEum.JSON_WRITE_EXCEPTION, e);
+            throw new UncheckedIOException(e);
         }
     }
 
