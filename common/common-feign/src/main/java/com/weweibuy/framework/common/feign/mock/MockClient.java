@@ -52,6 +52,7 @@ public class MockClient implements Client, InitializingBean {
 
         Optional<MockConfig> mockDataOpt = configList.stream()
                 .filter(config -> StringUtils.equalsIgnoreCase(httpMethod.toString(), config.getMethod()))
+                .filter(config -> !Objects.equals(config.enable, false))
                 .filter(config -> StringUtils.equalsIgnoreCase(getHost(url), getHost(config.getHost())))
                 .filter(config -> HttpRequestUtils.isEqualsOrMatchPath(config.getPath(), getPath(url)))
                 .findFirst();
@@ -139,6 +140,11 @@ public class MockClient implements Client, InitializingBean {
         private String method;
 
         private String target;
+
+        /**
+         * 是否使用, 默认: true
+         */
+        private Boolean enable;
 
     }
 

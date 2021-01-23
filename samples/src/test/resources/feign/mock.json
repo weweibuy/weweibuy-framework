@@ -1,8 +1,9 @@
 [
   {
-  "host": "http://localhost:9000",
-  "path": "/hello",
-  "method": "post",
-  "target": "hello.json"
-}
+    "host": "http://localhost:9000",
+    "path": "/hello",
+    "method": "post",
+    "target": "hello.json",
+    "enable": true
+  }
 ]
