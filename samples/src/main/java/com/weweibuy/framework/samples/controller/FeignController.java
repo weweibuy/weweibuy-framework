@@ -43,7 +43,7 @@ public class FeignController {
 
     @GetMapping("/feign")
     public Object sendToFeign() {
-//       return myLbFeignClient.helloPost(CommonDataResponse.success(null), "token_123");
+        myLbFeignClient.helloPost(CommonDataResponse.success(null), "token_123");
         return myFeignClient.helloPost(CommonDataResponse.success(""), "token_123");
     }
 
