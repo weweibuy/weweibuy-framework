@@ -15,7 +15,7 @@ public class KeyUtilsTest {
         SecretKey secretKey = KeyUtils.generalHS256Key("123456");
         HashMap<String, Object> map = new HashMap<>();
         map.put("name", "tom");
-        String encode = JwtUtils.encode(secretKey, map);
+        String encode = JwtUtils.encodeHS256(secretKey, map);
         System.err.println(encode);
 
         Jwt<Header, Object> parser = JwtUtils.parser(secretKey, encode);
