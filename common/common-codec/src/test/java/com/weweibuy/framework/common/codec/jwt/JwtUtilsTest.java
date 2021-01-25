@@ -36,7 +36,7 @@ public class JwtUtilsTest {
         claims.put("username", "tom");
         claims.put("usertype", "TEST");
 
-        String test_sub = JwtUtils.encode(keyPair.getPrivate(), claims, "TEST_SUB", System.currentTimeMillis() + 10000);
+        String test_sub = JwtUtils.encodeRS256(keyPair.getPrivate(), claims, "TEST_SUB", System.currentTimeMillis() + 10000);
         System.err.println(test_sub);
 
         Jwt parse = Jwts.parser()

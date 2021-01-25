@@ -18,22 +18,33 @@ import java.util.Map;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class JwtUtils {
 
-    public static String encode(SecretKey secretKey, Map<String, Object> claims, Map<String, Object> headers, String subject, Long expireAt) {
+    public static String encodeHS256(SecretKey secretKey, Map<String, Object> claims, Map<String, Object> headers, String subject, Long expireAt) {
         return encode(secretKey, SignatureAlgorithm.HS256, claims, headers, subject, expireAt);
     }
 
-    public static String encode(SecretKey secretKey, Map<String, Object> claims, String subject, Long expireAt) {
+    public static String encodeHS256(SecretKey secretKey, Map<String, Object> claims, String subject, Long expireAt) {
         return encode(secretKey, SignatureAlgorithm.HS256, claims, null, subject, expireAt);
     }
 
-    public static String encode(SecretKey secretKey, Map<String, Object> claims, Long expireAt) {
+    public static String encodeHS256(SecretKey secretKey, Map<String, Object> claims, Long expireAt) {
         return encode(secretKey, SignatureAlgorithm.HS256, claims, null, null, expireAt);
     }
 
-    public static String encode(SecretKey secretKey, Map<String, Object> claims) {
+    public static String encodeHS256(SecretKey secretKey, Map<String, Object> claims) {
         return encode(secretKey, SignatureAlgorithm.HS256, claims, null, null, null);
     }
 
+    public static String encode(Key key, SignatureAlgorithm signatureAlgorithm, Map<String, Object> claims, Map<String, Object> headers, Long expireAt) {
+        return encode(key, SignatureAlgorithm.HS256, claims, headers, null, expireAt);
+    }
+
+    public static String encode(Key key, SignatureAlgorithm signatureAlgorithm, Map<String, Object> claims, Long expireAt) {
+        return encode(key, SignatureAlgorithm.HS256, claims, null, null, expireAt);
+    }
+
+    public static String encode(Key key, SignatureAlgorithm signatureAlgorithm, Map<String, Object> claims) {
+        return encode(key, SignatureAlgorithm.HS256, claims, null, null, null);
+    }
 
     public static String encode(Key key, SignatureAlgorithm signatureAlgorithm, Map<String, Object> claims, Map<String, Object> headers, String subject, Long expireAt) {
         JwtBuilder builder = Jwts.builder().setClaims(claims)
@@ -52,23 +63,21 @@ public class JwtUtils {
     }
 
 
-    public static String encode(PrivateKey privateKey, Map<String, Object> claims, String subject, Long expireAt) {
+    public static String encodeRS256(PrivateKey privateKey, Map<String, Object> claims, String subject, Long expireAt) {
         return encode(privateKey, SignatureAlgorithm.RS256, claims, null, subject, expireAt);
     }
 
-    public static String encode(PrivateKey privateKey, Map<String, Object> claims, Long expireAt) {
+    public static String encodeRS256(PrivateKey privateKey, Map<String, Object> claims, Long expireAt) {
         return encode(privateKey, SignatureAlgorithm.RS256, claims, null, null, expireAt);
     }
 
-    public static String encode(PrivateKey privateKey, Map<String, Object> claims) {
+    public static String encodeRS256(PrivateKey privateKey, Map<String, Object> claims) {
         return encode(privateKey, SignatureAlgorithm.RS256, claims, null, null, null);
     }
 
     /**
-     * @param publicKey
+     * @param key
      * @param jwt
-     * @param <H>
-     * @param <T>
      * @return
      * @throws MalformedJwtException    if the specified JWT was incorrectly constructed (and therefore invalid).
      *                                  Invalid
