@@ -1,6 +1,5 @@
 package com.weweibuy.framework.common.core.utils;
 
-import com.weweibuy.framework.common.core.exception.SystemException;
 import com.weweibuy.framework.common.core.model.ResponseCodeAndMsg;
 import com.weweibuy.framework.common.core.model.constant.CommonConstant;
 import com.weweibuy.framework.common.core.model.dto.CommonCodeResponse;
@@ -15,6 +14,7 @@ import org.springframework.web.util.ContentCachingRequestWrapper;
 import javax.servlet.http.HttpServletRequest;
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 import java.util.Map;
@@ -78,7 +78,7 @@ public class HttpRequestUtils {
         try {
             return new String(requestWrapper.getContentAsByteArray(), charEncoding);
         } catch (UnsupportedEncodingException e) {
-            throw new SystemException(e);
+            throw new UncheckedIOException(e);
         }
     }
 
@@ -102,7 +102,7 @@ public class HttpRequestUtils {
                 stringBuilder.append(str).append(LINE_SEPARATOR);
             }
         } catch (IOException e) {
-            throw new SystemException(e);
+            throw new UncheckedIOException(e);
         }
         if (stringBuilder.length() > 0) {
             return stringBuilder.substring(0, stringBuilder.length() - LINE_SEPARATOR.length());
