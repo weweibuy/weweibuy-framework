@@ -111,7 +111,9 @@ public class HttpRequestUtils {
     }
 
     public static boolean isIncludePayload(HttpServletRequest request) {
-        return request.getContentLength() > 0;
+        int contentLength = request.getContentLength();
+        // TODO 是否正确?
+        return contentLength > 0 || contentLength == -1;
     }
 
     /**
