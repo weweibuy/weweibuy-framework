@@ -79,7 +79,8 @@ public class SensitizationMappingOperator {
 
         SensitizationMappingConfigurer.HttpSensitizationMapping mapping = null;
         // 精确匹配
-        if (!httpExactMappingMap.isEmpty() && (mapping = httpExactMappingMap.get(StringConnectUtils.connect(requestURI, method))) != null) {
+        if (!httpExactMappingMap.isEmpty() &&
+                (mapping = httpExactMappingMap.get(StringConnectUtils.connect(CommonConstant.UNDERLINE_STR, requestURI, method))) != null) {
             return Optional.ofNullable(mapping);
         }
         // 路径匹配
