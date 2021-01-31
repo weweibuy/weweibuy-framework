@@ -1,8 +1,8 @@
 package com.weweibuy.framework.common.db.type;
 
+import com.weweibuy.framework.common.codec.bcrypt.BCryptUtils;
 import org.apache.ibatis.type.BaseTypeHandler;
 import org.apache.ibatis.type.JdbcType;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.sql.CallableStatement;
 import java.sql.PreparedStatement;
@@ -17,13 +17,10 @@ import java.sql.SQLException;
  **/
 public class BCryptEncryptTypeHandler extends BaseTypeHandler<String> {
 
-    public static final BCryptPasswordEncoder ENCODER_INSTANCE =
-            new BCryptPasswordEncoder();
-
     @Override
     public void setNonNullParameter(PreparedStatement ps, int i, String parameter, JdbcType jdbcType)
             throws SQLException {
-        ps.setString(i, ENCODER_INSTANCE.encode(parameter));
+        ps.setString(i, BCryptUtils.encode(parameter));
     }
 
     @Override
@@ -41,9 +38,5 @@ public class BCryptEncryptTypeHandler extends BaseTypeHandler<String> {
         return cs.getString(columnIndex);
     }
 
-
-    public static boolean match(CharSequence rawPassword, String encodedPassword) {
-        return ENCODER_INSTANCE.matches(rawPassword, encodedPassword);
-    }
 
 }
