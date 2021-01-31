@@ -1,5 +1,6 @@
 package com.weweibuy.framework.common.core.utils;
 
+import com.weweibuy.framework.common.core.exception.Exceptions;
 import com.weweibuy.framework.common.core.model.ResponseCodeAndMsg;
 import com.weweibuy.framework.common.core.model.constant.CommonConstant;
 import com.weweibuy.framework.common.core.model.dto.CommonCodeResponse;
@@ -16,6 +17,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -112,8 +114,7 @@ public class HttpRequestUtils {
 
     public static boolean isIncludePayload(HttpServletRequest request) {
         int contentLength = request.getContentLength();
-        // TODO 是否正确?
-        return contentLength > 0 || contentLength == -1;
+        return contentLength != 0;
     }
 
     /**
@@ -171,5 +172,20 @@ public class HttpRequestUtils {
         return sanitized;
     }
 
+
+    /**
+     * URL 解码
+     *
+     * @param str
+     * @return
+     */
+    public static String urlDecode(String str) {
+        String decode = null;
+        try {
+            return URLDecoder.decode(str, CommonConstant.CharsetConstant.UTF8_STR);
+        } catch (UnsupportedEncodingException e) {
+            throw Exceptions.uncheckedIO(e);
+        }
+    }
 
 }

@@ -32,4 +32,8 @@ public class CommonDataResponse<T> extends CommonCodeResponse {
         return new CommonDataResponse(codeAndMsg, data);
     }
 
+    public static <T> CommonDataResponse<T> responseNoData(ResponseCodeAndMsg codeAndMsg) {
+        return new CommonDataResponse(codeAndMsg, null);
+    }
+
 }
