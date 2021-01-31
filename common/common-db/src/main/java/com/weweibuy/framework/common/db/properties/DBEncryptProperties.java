@@ -23,7 +23,12 @@ public class DBEncryptProperties {
     private String password;
 
     /**
-     * AES 加密密码文件  与 password 二选一
+     * AES 加密密码文件  与 password 二选一;
+     * <p>
+     * eg: classpath:db-encrypt.key  or
+     * E:\Project\Github\upms\upms-launcher\src\main\resources\db-encrypt.key
+     * or
+     * db-encrypt.key
      */
     private String passwordFile;
 

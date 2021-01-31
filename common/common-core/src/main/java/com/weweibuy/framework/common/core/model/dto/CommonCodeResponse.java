@@ -68,4 +68,8 @@ public class CommonCodeResponse implements ResponseCodeAndMsg {
         return new CommonCodeResponse(responseCodeAndMsg);
     }
 
+    public static CommonCodeResponse badSignature() {
+        return new CommonCodeResponse(CommonErrorCodeEum.BAD_SIGNATURE);
+    }
+
 }

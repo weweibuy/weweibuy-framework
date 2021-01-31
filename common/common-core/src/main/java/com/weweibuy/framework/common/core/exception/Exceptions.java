@@ -5,6 +5,9 @@ import com.weweibuy.framework.common.core.model.eum.CommonErrorCodeEum;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
+import java.io.IOException;
+import java.io.UncheckedIOException;
+
 import static com.weweibuy.framework.common.core.utils.ResponseCodeUtils.newResponseCodeAndMsg;
 
 /**
@@ -82,5 +85,12 @@ public class Exceptions {
         return new SystemException(CommonErrorCodeEum.UNKNOWN_EXCEPTION);
     }
 
+    public static UncheckedIOException uncheckedIO(IOException e) {
+        return new UncheckedIOException(e);
+    }
+
+    public static UncheckedIOException uncheckedIO(String msg, IOException e) {
+        return new UncheckedIOException(msg, e);
+    }
 
 }

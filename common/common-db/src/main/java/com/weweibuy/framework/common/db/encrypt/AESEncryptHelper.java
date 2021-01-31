@@ -37,7 +37,14 @@ public class AESEncryptHelper {
         if (StringUtils.isNotBlank(password)) {
             secretKey = AESUtils.createKey(password);
         } else {
-            secretKey = AESUtils.getSecretKey(new File(dbEncryptProperties.getPasswordFile()));
+            String passwordFile = dbEncryptProperties.getPasswordFile();
+            String cl = "classpath:";
+            if (passwordFile.startsWith(cl)) {
+                File classPathFile = new File(AESEncryptHelper.class.getResource("/").getPath());
+                String classPath = classPathFile.getCanonicalPath();
+                passwordFile = classPath + File.separator + passwordFile.substring(cl.length(), passwordFile.length());
+            }
+            secretKey = AESUtils.getSecretKey(new File(passwordFile));
         }
     }
 
