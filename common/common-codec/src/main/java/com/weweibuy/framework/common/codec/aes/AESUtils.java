@@ -103,17 +103,6 @@ public class AESUtils {
     }
 
     /**
-     * Gets a {@link SecretKey} from a {@link File}.
-     *
-     * @param file The file that is encoded as a key.
-     * @return The key.
-     * @throws IOException The exception thrown if the file could not be read as a {@link SecretKey}.
-     */
-    public static SecretKey getSecretKey(File file) throws IOException {
-        return new SecretKeySpec(Files.readAllBytes(file.toPath()), ALGORITHM);
-    }
-
-    /**
      * The method that will encrypt data.
      *
      * @param secretKey The key used to encrypt the data.
@@ -124,6 +113,17 @@ public class AESUtils {
         Cipher cipher = Cipher.getInstance(ALGORITHM);
         cipher.init(Cipher.ENCRYPT_MODE, secretKey);
         return cipher.doFinal(data);
+    }
+
+    /**
+     * Gets a {@link SecretKey} from a {@link File}.
+     *
+     * @param file The file that is encoded as a key.
+     * @return The key.
+     * @throws IOException The exception thrown if the file could not be read as a {@link SecretKey}.
+     */
+    public static SecretKey getSecretKey(File file) throws IOException {
+        return new SecretKeySpec(Files.readAllBytes(file.toPath()), ALGORITHM);
     }
 
     /**

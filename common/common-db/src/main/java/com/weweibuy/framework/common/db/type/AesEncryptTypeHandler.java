@@ -15,7 +15,7 @@ import java.sql.SQLException;
  * @author durenhao
  * @date 2020/9/5 11:59
  **/
-public class EncryptTypeHandler extends BaseTypeHandler<String> {
+public class AesEncryptTypeHandler extends BaseTypeHandler<String> {
 
     @Override
     public void setNonNullParameter(PreparedStatement ps, int i, String parameter, JdbcType jdbcType)

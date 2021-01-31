@@ -33,6 +33,11 @@
             <optional>true</optional>
         </dependency>
 
+        <dependency>
+            <artifactId>spring-security-crypto</artifactId>
+            <groupId>org.springframework.security</groupId>
+        </dependency>
+
     </dependencies>
 
 </project>

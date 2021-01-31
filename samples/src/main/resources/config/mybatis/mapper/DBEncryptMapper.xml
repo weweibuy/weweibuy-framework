@@ -3,8 +3,8 @@
 <mapper namespace="com.weweibuy.framework.samples.mybatis.plugin.mapper.DBEncryptMapper">
   <resultMap id="BaseResultMap" type="com.weweibuy.framework.samples.mybatis.plugin.model.po.DBEncrypt">
     <result column="id" jdbcType="BIGINT" property="id" />
-    <result column="phone" jdbcType="VARCHAR" property="phone" typeHandler="com.weweibuy.framework.common.db.type.EncryptTypeHandler" />
-    <result column="id_no" jdbcType="VARCHAR" property="idNo" typeHandler="com.weweibuy.framework.common.db.type.EncryptTypeHandler" />
+    <result column="phone" jdbcType="VARCHAR" property="phone" typeHandler="com.weweibuy.framework.common.db.type.AesEncryptTypeHandler" />
+    <result column="id_no" jdbcType="VARCHAR" property="idNo" typeHandler="com.weweibuy.framework.common.db.type.AesEncryptTypeHandler" />
     <result column="order_no" jdbcType="VARCHAR" property="orderNo" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />

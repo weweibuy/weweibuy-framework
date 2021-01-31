@@ -7,6 +7,8 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
+ * 加密配置, 注意默认秘钥长度只支持 128 bit位(16长度字符串)
+ *
  * @author durenhao
  * @date 2020/9/6 0:03
  **/
@@ -26,9 +28,10 @@ public class DBEncryptProperties {
      * AES 加密密码文件  与 password 二选一;
      * <p>
      * eg: classpath:db-encrypt.key  or
-     * E:\Project\Github\upms\upms-launcher\src\main\resources\db-encrypt.key
-     * or
+     * <p>
      * db-encrypt.key
+     * or
+     * AbsolutePath
      */
     private String passwordFile;
 
@@ -37,11 +40,11 @@ public class DBEncryptProperties {
         if (StringUtils.isBlank(password) && StringUtils.isBlank(passwordFile)) {
             throw Exceptions.system("数据库数据加密,密码或密码文件地址不能为空");
         }
-
         if (StringUtils.isNotBlank(password) && StringUtils.isNotBlank(passwordFile)) {
             throw Exceptions.system("数据库数据加密,密码或密码文件地址只能配置一个");
         }
 
     }
+
 
 }
