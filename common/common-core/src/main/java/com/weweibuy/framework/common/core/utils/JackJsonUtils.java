@@ -417,4 +417,8 @@ public class JackJsonUtils {
         return MVC_OBJECT_MAPPER.getTypeFactory().constructParametricType(clazz, typeClazz);
     }
 
+    public static JavaType javaType(TypeReference<?> typeReference) {
+        return MVC_OBJECT_MAPPER.getTypeFactory().constructType(typeReference);
+    }
+
 }
