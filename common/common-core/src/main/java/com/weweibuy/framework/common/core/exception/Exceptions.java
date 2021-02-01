@@ -21,6 +21,11 @@ public class Exceptions {
         return new BusinessException(responseCodeAndMsg);
     }
 
+    public static BusinessException business(ResponseCodeAndMsg responseCodeAndMsg, Throwable e) {
+        return new BusinessException(responseCodeAndMsg, e);
+    }
+
+
     public static BusinessException badRequestParam() {
         return new BusinessException(CommonErrorCodeEum.BAD_REQUEST_PARAM);
     }
@@ -29,8 +34,16 @@ public class Exceptions {
         return new BusinessException(newResponseCodeAndMsg(code, msg));
     }
 
+    public static BusinessException business(String code, String msg, Throwable e) {
+        return new BusinessException(newResponseCodeAndMsg(code, msg), e);
+    }
+
     public static BusinessException formatBusinessWithCode(String code, String format, Object... args) {
         return new BusinessException(newResponseCodeAndMsg(code, String.format(format, args)));
+    }
+
+    public static BusinessException formatBusinessWithCode(String code, String format, Throwable e, Object... args) {
+        return new BusinessException(newResponseCodeAndMsg(code, String.format(format, args)), e);
     }
 
     public static BusinessException formatBusiness(String format, Object... args) {
@@ -38,13 +51,35 @@ public class Exceptions {
                 String.format(format, args)));
     }
 
+    public static BusinessException formatBusiness(String format, Throwable e, Object... args) {
+        return new BusinessException(newResponseCodeAndMsg(CommonErrorCodeEum.BAD_REQUEST_PARAM.getCode(),
+                String.format(format, args)), e);
+    }
+
+    public static BusinessException business(ResponseCodeAndMsg codeAndMsg, String msg) {
+        return business(codeAndMsg.getCode(), msg);
+    }
+
+    public static BusinessException business(ResponseCodeAndMsg codeAndMsg, String msg, Throwable e) {
+        return business(codeAndMsg.getCode(), msg);
+    }
+
+
     public static BusinessException business(String msg) {
         return new BusinessException(newResponseCodeAndMsg(CommonErrorCodeEum.BAD_REQUEST_PARAM.getCode(), msg));
+    }
+
+    public static BusinessException business(String msg, Throwable e) {
+        return new BusinessException(newResponseCodeAndMsg(CommonErrorCodeEum.BAD_REQUEST_PARAM.getCode(), msg), e);
     }
 
 
     public static SystemException system(ResponseCodeAndMsg responseCodeAndMsg) {
         return new SystemException(responseCodeAndMsg);
+    }
+
+    public static SystemException system(ResponseCodeAndMsg responseCodeAndMsg, String msg) {
+        return new SystemException(responseCodeAndMsg.getCode(), msg);
     }
 
     public static SystemException system(String msg) {
