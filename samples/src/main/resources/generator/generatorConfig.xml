@@ -73,15 +73,11 @@
 
 
 
-<!--        <table tableName="route_filter_args" domainObjectName="RouteFilterArgs" >-->
-<!--            <generatedKey identity="true" column="id" sqlStatement="SELECT LAST_INSERT_ID()"/>-->
-<!--            <columnOverride column="is_delete"  property="deleted"  javaType="Boolean"/>-->
-<!--        </table>-->
 
-<!--        <table tableName="db_encrypt" domainObjectName="DBEncrypt" >-->
-<!--            <columnOverride column="phone"  typeHandler="com.weweibuy.framework.common.db.type.EncryptTypeHandler"/>-->
-<!--            <columnOverride column="id_no"  typeHandler="com.weweibuy.framework.common.db.type.EncryptTypeHandler"/>-->
-<!--        </table>-->
+        <table tableName="db_encrypt" domainObjectName="DBEncrypt" >
+            <columnOverride column="phone"  typeHandler="com.weweibuy.framework.common.db.type.AesEncryptTypeHandler"/>
+            <columnOverride column="id_no"  typeHandler="com.weweibuy.framework.common.db.type.AesEncryptTypeHandler"/>
+        </table>
 
         <table tableName="cm_order" domainObjectName="CmOrder" >
             <generatedKey identity="true" column="id" sqlStatement="SELECT LAST_INSERT_ID()"/>
