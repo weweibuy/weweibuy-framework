@@ -22,6 +22,8 @@ public interface CmOrderMapper {
 
     List<CmOrder> selectByExampleForUpdate(CmOrderExample example);
 
+    List<CmOrder> selectByExampleWithLimit(@Param("example") CmOrderExample example, @Param("limit") Integer limit);
+
     List<CmOrder> selectByExample(CmOrderExample example);
 
     int updateByExampleSelective(@Param("record") CmOrder record, @Param("example") CmOrderExample example);

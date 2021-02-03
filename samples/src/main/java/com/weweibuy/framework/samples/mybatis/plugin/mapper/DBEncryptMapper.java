@@ -22,6 +22,8 @@ public interface DBEncryptMapper {
 
     List<DBEncrypt> selectByExampleForUpdate(DBEncryptExample example);
 
+    List<DBEncrypt> selectByExampleWithLimit(@Param("example") DBEncryptExample example, @Param("limit") Integer limit);
+
     List<DBEncrypt> selectByExample(DBEncryptExample example);
 
     int updateByExampleSelective(@Param("record") DBEncrypt record, @Param("example") DBEncryptExample example);

@@ -39,15 +39,15 @@
                   and ${criterion.condition}
                 </when>
                 <when test="criterion.singleValue">
-                  and ${criterion.condition} #{criterion.value,typeHandler=com.weweibuy.framework.common.db.type.EncryptTypeHandler}
+                  and ${criterion.condition} #{criterion.value,typeHandler=com.weweibuy.framework.common.db.type.AesEncryptTypeHandler}
                 </when>
                 <when test="criterion.betweenValue">
-                  and ${criterion.condition} #{criterion.value,typeHandler=com.weweibuy.framework.common.db.type.EncryptTypeHandler} and #{criterion.secondValue,typeHandler=com.weweibuy.framework.common.db.type.EncryptTypeHandler}
+                  and ${criterion.condition} #{criterion.value,typeHandler=com.weweibuy.framework.common.db.type.AesEncryptTypeHandler} and #{criterion.secondValue,typeHandler=com.weweibuy.framework.common.db.type.AesEncryptTypeHandler}
                 </when>
                 <when test="criterion.listValue">
                   and ${criterion.condition}
                   <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
-                    #{listItem,typeHandler=com.weweibuy.framework.common.db.type.EncryptTypeHandler}
+                    #{listItem,typeHandler=com.weweibuy.framework.common.db.type.AesEncryptTypeHandler}
                   </foreach>
                 </when>
               </choose>
@@ -58,15 +58,15 @@
                   and ${criterion.condition}
                 </when>
                 <when test="criterion.singleValue">
-                  and ${criterion.condition} #{criterion.value,typeHandler=com.weweibuy.framework.common.db.type.EncryptTypeHandler}
+                  and ${criterion.condition} #{criterion.value,typeHandler=com.weweibuy.framework.common.db.type.AesEncryptTypeHandler}
                 </when>
                 <when test="criterion.betweenValue">
-                  and ${criterion.condition} #{criterion.value,typeHandler=com.weweibuy.framework.common.db.type.EncryptTypeHandler} and #{criterion.secondValue,typeHandler=com.weweibuy.framework.common.db.type.EncryptTypeHandler}
+                  and ${criterion.condition} #{criterion.value,typeHandler=com.weweibuy.framework.common.db.type.AesEncryptTypeHandler} and #{criterion.secondValue,typeHandler=com.weweibuy.framework.common.db.type.AesEncryptTypeHandler}
                 </when>
                 <when test="criterion.listValue">
                   and ${criterion.condition}
                   <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
-                    #{listItem,typeHandler=com.weweibuy.framework.common.db.type.EncryptTypeHandler}
+                    #{listItem,typeHandler=com.weweibuy.framework.common.db.type.AesEncryptTypeHandler}
                   </foreach>
                 </when>
               </choose>
@@ -106,15 +106,15 @@
                   and ${criterion.condition}
                 </when>
                 <when test="criterion.singleValue">
-                  and ${criterion.condition} #{criterion.value,typeHandler=com.weweibuy.framework.common.db.type.EncryptTypeHandler}
+                  and ${criterion.condition} #{criterion.value,typeHandler=com.weweibuy.framework.common.db.type.AesEncryptTypeHandler}
                 </when>
                 <when test="criterion.betweenValue">
-                  and ${criterion.condition} #{criterion.value,typeHandler=com.weweibuy.framework.common.db.type.EncryptTypeHandler} and #{criterion.secondValue,typeHandler=com.weweibuy.framework.common.db.type.EncryptTypeHandler}
+                  and ${criterion.condition} #{criterion.value,typeHandler=com.weweibuy.framework.common.db.type.AesEncryptTypeHandler} and #{criterion.secondValue,typeHandler=com.weweibuy.framework.common.db.type.AesEncryptTypeHandler}
                 </when>
                 <when test="criterion.listValue">
                   and ${criterion.condition}
                   <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
-                    #{listItem,typeHandler=com.weweibuy.framework.common.db.type.EncryptTypeHandler}
+                    #{listItem,typeHandler=com.weweibuy.framework.common.db.type.AesEncryptTypeHandler}
                   </foreach>
                 </when>
               </choose>
@@ -125,15 +125,15 @@
                   and ${criterion.condition}
                 </when>
                 <when test="criterion.singleValue">
-                  and ${criterion.condition} #{criterion.value,typeHandler=com.weweibuy.framework.common.db.type.EncryptTypeHandler}
+                  and ${criterion.condition} #{criterion.value,typeHandler=com.weweibuy.framework.common.db.type.AesEncryptTypeHandler}
                 </when>
                 <when test="criterion.betweenValue">
-                  and ${criterion.condition} #{criterion.value,typeHandler=com.weweibuy.framework.common.db.type.EncryptTypeHandler} and #{criterion.secondValue,typeHandler=com.weweibuy.framework.common.db.type.EncryptTypeHandler}
+                  and ${criterion.condition} #{criterion.value,typeHandler=com.weweibuy.framework.common.db.type.AesEncryptTypeHandler} and #{criterion.secondValue,typeHandler=com.weweibuy.framework.common.db.type.AesEncryptTypeHandler}
                 </when>
                 <when test="criterion.listValue">
                   and ${criterion.condition}
                   <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
-                    #{listItem,typeHandler=com.weweibuy.framework.common.db.type.EncryptTypeHandler}
+                    #{listItem,typeHandler=com.weweibuy.framework.common.db.type.AesEncryptTypeHandler}
                   </foreach>
                 </when>
               </choose>
@@ -158,6 +158,23 @@
     </if>
     <if test="orderByClause != null">
       order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByExampleWithLimit" parameterType="map" resultMap="BaseResultMap">
+    select
+    <if test="example.distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from db_encrypt
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+    <if test="example.orderByClause != null">
+      order by ${example.orderByClause}
+    </if>
+    <if test="limit != null">
+      limit #{limit}
     </if>
   </select>
   <select id="selectByExampleForUpdate" parameterType="com.weweibuy.framework.samples.mybatis.plugin.model.example.DBEncryptExample" resultMap="BaseResultMap">
@@ -186,8 +203,8 @@
       id_no, 
       order_no, create_time, update_time
       )
-    values (#{id,jdbcType=BIGINT}, #{phone,jdbcType=VARCHAR,typeHandler=com.weweibuy.framework.common.db.type.EncryptTypeHandler}, 
-      #{idNo,jdbcType=VARCHAR,typeHandler=com.weweibuy.framework.common.db.type.EncryptTypeHandler}, 
+    values (#{id,jdbcType=BIGINT}, #{phone,jdbcType=VARCHAR,typeHandler=com.weweibuy.framework.common.db.type.AesEncryptTypeHandler}, 
+      #{idNo,jdbcType=VARCHAR,typeHandler=com.weweibuy.framework.common.db.type.AesEncryptTypeHandler}, 
       #{orderNo,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}
       )
   </insert>
@@ -218,10 +235,10 @@
         #{id,jdbcType=BIGINT},
       </if>
       <if test="phone != null">
-        #{phone,jdbcType=VARCHAR,typeHandler=com.weweibuy.framework.common.db.type.EncryptTypeHandler},
+        #{phone,jdbcType=VARCHAR,typeHandler=com.weweibuy.framework.common.db.type.AesEncryptTypeHandler},
       </if>
       <if test="idNo != null">
-        #{idNo,jdbcType=VARCHAR,typeHandler=com.weweibuy.framework.common.db.type.EncryptTypeHandler},
+        #{idNo,jdbcType=VARCHAR,typeHandler=com.weweibuy.framework.common.db.type.AesEncryptTypeHandler},
       </if>
       <if test="orderNo != null">
         #{orderNo,jdbcType=VARCHAR},
@@ -247,10 +264,10 @@
         id = #{record.id,jdbcType=BIGINT},
       </if>
       <if test="record.phone != null">
-        phone = #{record.phone,jdbcType=VARCHAR,typeHandler=com.weweibuy.framework.common.db.type.EncryptTypeHandler},
+        phone = #{record.phone,jdbcType=VARCHAR,typeHandler=com.weweibuy.framework.common.db.type.AesEncryptTypeHandler},
       </if>
       <if test="record.idNo != null">
-        id_no = #{record.idNo,jdbcType=VARCHAR,typeHandler=com.weweibuy.framework.common.db.type.EncryptTypeHandler},
+        id_no = #{record.idNo,jdbcType=VARCHAR,typeHandler=com.weweibuy.framework.common.db.type.AesEncryptTypeHandler},
       </if>
       <if test="record.orderNo != null">
         order_no = #{record.orderNo,jdbcType=VARCHAR},
@@ -269,8 +286,8 @@
   <update id="updateByExample" parameterType="map">
     update db_encrypt
     set id = #{record.id,jdbcType=BIGINT},
-      phone = #{record.phone,jdbcType=VARCHAR,typeHandler=com.weweibuy.framework.common.db.type.EncryptTypeHandler},
-      id_no = #{record.idNo,jdbcType=VARCHAR,typeHandler=com.weweibuy.framework.common.db.type.EncryptTypeHandler},
+      phone = #{record.phone,jdbcType=VARCHAR,typeHandler=com.weweibuy.framework.common.db.type.AesEncryptTypeHandler},
+      id_no = #{record.idNo,jdbcType=VARCHAR,typeHandler=com.weweibuy.framework.common.db.type.AesEncryptTypeHandler},
       order_no = #{record.orderNo,jdbcType=VARCHAR},
       create_time = #{record.createTime,jdbcType=TIMESTAMP},
       update_time = #{record.updateTime,jdbcType=TIMESTAMP}

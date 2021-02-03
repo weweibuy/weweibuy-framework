@@ -39,11 +39,7 @@ public class JackJsonMethodConverter implements MethodArgsConverter {
             }
             Object[] objects = new Object[list.size()];
             for (int i = 0; i < list.size(); i++) {
-//                objects[i] = objectMapper.convertValue(list.get(i), methodArgsTypeHolder.getType(generateKey(compensateInfo.getCompensateKey(), i)));
-
-                String string = objectMapper.writeValueAsString(list.get(i));
-                Object value = objectMapper.readValue(string, methodArgsTypeHolder.getType(generateKey(compensateInfo.getCompensateKey(), i)));
-                objects[i] = value;
+                objects[i] = objectMapper.convertValue(list.get(i), methodArgsTypeHolder.getType(generateKey(compensateInfo.getCompensateKey(), i)));
             }
             return objects;
         } catch (JsonProcessingException e) {
