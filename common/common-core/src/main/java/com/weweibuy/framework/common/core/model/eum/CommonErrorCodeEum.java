@@ -37,6 +37,8 @@ public enum CommonErrorCodeEum implements ResponseCodeAndMsg {
 
     BAD_SYSTEM_REQUEST_PARAM("1000003", "系统级输入参数错误"),
 
+    TOKEN_INVALID("1000004", "token失效"),
+
     BAD_SIGNATURE("1000005", "请求签名错误"),
 
     UNKNOWN_EXCEPTION("9999999", "未知异常"),
