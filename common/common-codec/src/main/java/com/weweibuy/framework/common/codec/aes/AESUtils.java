@@ -115,6 +115,31 @@ public class AESUtils {
         return cipher.doFinal(data);
     }
 
+    public static byte[] encrypt(String secretKey, byte[] data) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
+        Cipher cipher = Cipher.getInstance(ALGORITHM);
+        cipher.init(Cipher.ENCRYPT_MODE, createKey(secretKey));
+        return cipher.doFinal(data);
+    }
+
+    public static byte[] encrypt(String secretKey, String data) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
+        Cipher cipher = Cipher.getInstance(ALGORITHM);
+        cipher.init(Cipher.ENCRYPT_MODE, createKey(secretKey));
+        return cipher.doFinal(data.getBytes());
+    }
+
+
+    public static String encryptToHex(String secretKey, byte[] data) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
+        Cipher cipher = Cipher.getInstance(ALGORITHM);
+        cipher.init(Cipher.ENCRYPT_MODE, createKey(secretKey));
+        return HexUtils.toHexString(cipher.doFinal(data));
+    }
+
+    public static String encryptToHex(String secretKey, String data) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
+        Cipher cipher = Cipher.getInstance(ALGORITHM);
+        cipher.init(Cipher.ENCRYPT_MODE, createKey(secretKey));
+        return HexUtils.toHexString(cipher.doFinal(data.getBytes()));
+    }
+
     /**
      * Gets a {@link SecretKey} from a {@link File}.
      *
@@ -133,23 +158,22 @@ public class AESUtils {
      * @param src
      * @return
      */
-    public static String encrypt(SecretKey secretKey, String src) throws IllegalBlockSizeException, InvalidKeyException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException {
+    public static String encryptToHex(SecretKey secretKey, String src) throws IllegalBlockSizeException, InvalidKeyException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException {
         return HexUtils.toHexString(encrypt(secretKey, src.getBytes()));
     }
 
     /**
      * The method that will decrypt a piece of encrypted data.
      *
-     * @param password  The password used to decrypt the data.
-     * @param encrypted The encrypted data.
+     * @param password The password used to decrypt the data.
+     * @param content  The encrypted data.
      * @return The decrypted data.
      */
-    public static byte[] decrypt(String password, byte[] encrypted) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
+    public static byte[] decrypt(String password, byte[] content) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
         Cipher cipher = Cipher.getInstance(ALGORITHM);
         cipher.init(Cipher.DECRYPT_MODE, AESUtils.createKey(password));
-        return cipher.doFinal(encrypted);
+        return cipher.doFinal(content);
     }
-
 
     /**
      * The method that will decrypt a piece of encrypted data.
@@ -176,11 +200,16 @@ public class AESUtils {
      * @throws BadPaddingException
      * @throws IllegalBlockSizeException
      */
-    public static String decrypt(SecretKey secretKey, String encrypt) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
+    public static String decryptHex(SecretKey secretKey, String hexContent) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
         Cipher cipher = Cipher.getInstance(ALGORITHM);
         cipher.init(Cipher.DECRYPT_MODE, secretKey);
-        return new String(cipher.doFinal(HexUtils.fromHexString(encrypt)));
+        return new String(cipher.doFinal(HexUtils.fromHexString(hexContent)));
     }
 
+    public static String decryptHex(String secretKey, String hexContent) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
+        Cipher cipher = Cipher.getInstance(ALGORITHM);
+        cipher.init(Cipher.DECRYPT_MODE, createKey(secretKey));
+        return new String(cipher.doFinal(HexUtils.fromHexString(hexContent)));
+    }
 
 }

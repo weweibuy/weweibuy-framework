@@ -22,6 +22,11 @@ public class CommonDataResponse<T> extends CommonCodeResponse {
         this.data = data;
     }
 
+    public CommonDataResponse(String code, String msg, T data) {
+        super(code, msg);
+        this.data = data;
+    }
+
 
     public static <T> CommonDataResponse<T> success(T data) {
         return new CommonDataResponse(CommonErrorCodeEum.SUCCESS, data);
@@ -30,6 +35,22 @@ public class CommonDataResponse<T> extends CommonCodeResponse {
 
     public static <T> CommonDataResponse<T> response(ResponseCodeAndMsg codeAndMsg, T data) {
         return new CommonDataResponse(codeAndMsg, data);
+    }
+
+    public static <T> CommonDataResponse<T> responseCoeMsg(String code, String msg) {
+        return new CommonDataResponse(code, msg, null);
+    }
+
+    public static <T> CommonDataResponse<T> responseCoeMsg(String code, String msg, T data) {
+        return new CommonDataResponse(code, msg, data);
+    }
+
+    public static <T> CommonDataResponse<T> responseCoeMsg(ResponseCodeAndMsg codeAndMsg, String msg) {
+        return new CommonDataResponse(codeAndMsg.getCode(), msg, null);
+    }
+
+    public static <T> CommonDataResponse<T> responseCoeMsg(ResponseCodeAndMsg codeAndMsg, String msg, T data) {
+        return new CommonDataResponse(codeAndMsg.getCode(), msg, data);
     }
 
     public static <T> CommonDataResponse<T> responseNoData(ResponseCodeAndMsg codeAndMsg) {

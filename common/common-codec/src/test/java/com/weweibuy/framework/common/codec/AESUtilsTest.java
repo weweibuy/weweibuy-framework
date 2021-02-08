@@ -31,13 +31,13 @@ public class AESUtilsTest {
     @Test
     public void encrypt() throws Exception {
         SecretKey key = AESUtils.createKey(pw);
-        String encrypt = AESUtils.encrypt(key, src1);
-        String decrypt = AESUtils.decrypt(key, encrypt);
+        String encrypt = AESUtils.encryptToHex(key, src1);
+        String decrypt = AESUtils.decryptHex(key, encrypt);
         Assert.assertTrue(decrypt.equals(src1));
         System.err.println(encrypt.length());
 
-        String encrypt2 = AESUtils.encrypt(key, src2);
-        String decrypt2 = AESUtils.decrypt(key, encrypt2);
+        String encrypt2 = AESUtils.encryptToHex(key, src2);
+        String decrypt2 = AESUtils.decryptHex(key, encrypt2);
         Assert.assertTrue(decrypt2.equals(src2));
         System.err.println(encrypt2.length());
 
@@ -73,8 +73,8 @@ public class AESUtilsTest {
 
     public void en(SecretKey key) throws InvalidKeyException, BadPaddingException, NoSuchAlgorithmException, IllegalBlockSizeException, NoSuchPaddingException {
         String stringId = "111";
-        String encrypt = AESUtils.encrypt(key, stringId);
-        String decrypt = AESUtils.decrypt(key, encrypt);
+        String encrypt = AESUtils.encryptToHex(key, stringId);
+        String decrypt = AESUtils.decryptHex(key, encrypt);
         Assert.assertTrue(stringId.equals(decrypt));
     }
 

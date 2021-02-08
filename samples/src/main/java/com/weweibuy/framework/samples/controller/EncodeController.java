@@ -40,13 +40,13 @@ public class EncodeController {
     @GetMapping("/encrypt")
     public String encode(String pw, String src) throws InvalidKeyException, BadPaddingException, NoSuchAlgorithmException, IllegalBlockSizeException, NoSuchPaddingException {
         SecretKey key = AESUtils.createKey(pw);
-        return AESUtils.encrypt(key, src);
+        return AESUtils.encryptToHex(key, src);
     }
 
     @GetMapping("/decrypt")
     public String decrypt(String pw, String src) throws InvalidKeyException, BadPaddingException, NoSuchAlgorithmException, IllegalBlockSizeException, NoSuchPaddingException {
         SecretKey key = AESUtils.createKey(pw);
-        return AESUtils.decrypt(key, src);
+        return AESUtils.decryptHex(key, src);
     }
 
     @GetMapping("/db/insert")

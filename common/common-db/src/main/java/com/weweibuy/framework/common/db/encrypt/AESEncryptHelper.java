@@ -51,7 +51,7 @@ public class AESEncryptHelper {
 
     public static String encrypt(String parameter) {
         try {
-            return AESUtils.encrypt(secretKey, parameter);
+            return AESUtils.encryptToHex(secretKey, parameter);
         } catch (Exception e) {
             throw Exceptions.system("数据库加密,异常", e);
         }
@@ -64,7 +64,7 @@ public class AESEncryptHelper {
 
     public static String decrypt(String r) {
         try {
-            return AESUtils.decrypt(secretKey, r);
+            return AESUtils.decryptHex(secretKey, r);
         } catch (Exception e) {
             throw Exceptions.system("数据库解密,异常", e);
         }
