@@ -4,6 +4,7 @@ import com.weweibuy.framework.common.core.model.ResponseCodeAndMsg;
 import com.weweibuy.framework.common.core.model.eum.CommonErrorCodeEum;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import org.springframework.http.HttpStatus;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -126,6 +127,14 @@ public class Exceptions {
 
     public static UncheckedIOException uncheckedIO(String msg, IOException e) {
         return new UncheckedIOException(msg, e);
+    }
+
+    public static CustomResponseStatusException responseStatusException(HttpStatus httpStatus, ResponseCodeAndMsg responseCodeAndMsg) {
+        return new CustomResponseStatusException(httpStatus, responseCodeAndMsg);
+    }
+
+    public static CustomResponseStatusException responseStatusException(HttpStatus httpStatus, ResponseCodeAndMsg responseCodeAndMsg, Throwable throwable) {
+        return new CustomResponseStatusException(throwable, httpStatus, responseCodeAndMsg);
     }
 
 }

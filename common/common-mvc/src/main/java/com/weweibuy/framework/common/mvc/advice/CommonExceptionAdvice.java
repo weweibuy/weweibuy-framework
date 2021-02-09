@@ -1,6 +1,7 @@
 package com.weweibuy.framework.common.mvc.advice;
 
 import com.weweibuy.framework.common.core.exception.BusinessException;
+import com.weweibuy.framework.common.core.exception.CustomResponseStatusException;
 import com.weweibuy.framework.common.core.exception.IdempotentNoLockException;
 import com.weweibuy.framework.common.core.exception.SystemException;
 import com.weweibuy.framework.common.core.model.constant.CommonConstant;
@@ -148,6 +149,24 @@ public class CommonExceptionAdvice implements InitializingBean {
         return builderCommonHeader(HttpStatus.BAD_REQUEST)
                 .body(CommonCodeResponse.response(CommonErrorCodeEum.BAD_REQUEST_PARAM.getCode(), "请求HttpMethod错误"));
     }
+
+    /**
+     * HTTP ResponseStatusException
+     *
+     * @param request
+     * @param e
+     * @return
+     * @throws IOException
+     */
+    @ExceptionHandler(CustomResponseStatusException.class)
+    public ResponseEntity<CommonCodeResponse> handler(HttpServletRequest request, CustomResponseStatusException e) throws IOException {
+        HttpLogger.determineAndLogForJsonRequest(request);
+
+        log.warn("请求异常: {}", e.getMessage());
+        return builderCommonHeader(e.getStatus())
+                .body(CommonCodeResponse.response(e.getCodeAndMsg()));
+    }
+
 
     /**
      * 幂等异常
