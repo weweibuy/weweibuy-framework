@@ -19,6 +19,8 @@ import java.util.regex.Pattern;
  **/
 public class DesensitizationLogMessageConverter extends ClassicConverter {
 
+    private static final Integer MAX_MESSAGE_LENGTH = 10000;
+
     private static final ServiceLoader<PatternReplaceConfig> LOADER = ServiceLoader.load(PatternReplaceConfig.class);
 
     private static final Map<String, PatternReplace> FILED_PATTERN_MAP = new HashMap<>();
@@ -48,6 +50,9 @@ public class DesensitizationLogMessageConverter extends ClassicConverter {
 
 
     private String doDesensitization(String message, Set<String> sensitizationFieldSet) {
+        if (message.length() > MAX_MESSAGE_LENGTH) {
+            message = message.substring(0, MAX_MESSAGE_LENGTH);
+        }
         for (String filed : sensitizationFieldSet) {
             PatternReplace patternReplace = FILED_PATTERN_MAP.get(filed);
             if (patternReplace == null) {
