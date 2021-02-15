@@ -22,6 +22,7 @@ public class CommonLogProperties {
     public static class CommonLogHttpProperties {
 
         /**
+         * TODO 实现功能
          * 配置形式:  RES_/**; RESP_/**; /**
          */
         private Set<String> disablePath = new HashSet<>();
