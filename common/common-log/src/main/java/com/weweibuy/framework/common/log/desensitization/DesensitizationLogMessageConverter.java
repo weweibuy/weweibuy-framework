@@ -75,10 +75,12 @@ public class DesensitizationLogMessageConverter extends ClassicConverter {
         FILED_PATTERN_MAP.put("phone", phonePatternReplace);
         FILED_PATTERN_MAP.put("phoneNo", phonePatternReplace);
 
-        Pattern certIdPattern = Pattern.compile("(certId|idCard)(\"\\s*:\\s*\"|=)(\\d{6})\\d{8,11}(\\w{1})");
+        Pattern certIdPattern = Pattern.compile("(certId|idCard|idNo)(\"\\s*:\\s*\"|=)(\\d{6})\\d{8,11}(\\w{1})");
         PatternReplace certIdPatternReplace = new PatternReplace(certIdPattern, "$1$2$3**************$4");
         FILED_PATTERN_MAP.put("certId", certIdPatternReplace);
         FILED_PATTERN_MAP.put("idCard", certIdPatternReplace);
+        FILED_PATTERN_MAP.put("idNo", certIdPatternReplace);
+
 
         Pattern pwd = Pattern.compile("(password|pwd|appSecret)(\"\\s*:\\s*\"|=).*?(?=(\"|,|&))");
         PatternReplace pwdPatternReplace = new PatternReplace(pwd, "$1$2******");

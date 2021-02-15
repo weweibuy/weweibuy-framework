@@ -25,6 +25,8 @@ public class DBEncryptProperties {
     private String password;
 
     /**
+     * TODO 文件内容是否需要Base64?
+     * <p>
      * AES 加密密码文件  与 password 二选一;
      * <p>
      * eg: classpath:db-encrypt.key  or
