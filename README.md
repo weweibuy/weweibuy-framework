@@ -3,7 +3,7 @@
 weweibuy-framework 
 --------
 
-##### weweibuy-framework 提供一些基于SpringBoot 2X 封装的组件,可作为企业级SpringBoot技术栈的基础依赖; 其中用合理的方式将日志,脱敏,http调用,幂等,补偿,MQ等需求融入SpringBoot中,可以极大的简化日常开发
+### weweibuy-framework 提供一些基于SpringBoot 2X 封装的组件,可作为企业级SpringBoot技术栈的基础依赖;  其中用合理的方式将日志,脱敏,http调用,幂等,补偿,MQ等功能融入SpringBoot中,可以极大的简化日常开发
 
 
 ### 1. 核心 common-core
@@ -31,7 +31,7 @@ weweibuy-framework
 ### 5. mvc扩展 common-mvc
   封装了报文脱敏,下滑线风格URL传参,统一异常处理  
   适用场景: 
-   1. 下滑线风格的url请求参数,将其绑定到小驼峰的Java对象属性上
+   1. 下滑线风格的url请求参数,将其绑定到小驼峰的Java对象属性上  
       eg: localhost/oauth/token?client_id=demoClientId 将client_id映射成clientId
    2. Http响应报文部分字段脱敏(如:手机号)
    3. 统一异常处理,上抛Feign调用异常
@@ -39,7 +39,7 @@ weweibuy-framework
 
 ### 6. feign调用 common-feign
   该组件是在SpringCloudFeign提供的功能扩展点上进行扩展,所有的设计思想继承了SpringCloudFeign. 在此基础上  
-  实现了调用mock,无侵入日志输出,报文风格转换,跨应用异常上抛,调用APM等功能
+  实现了调用mock,无侵入日志输出,报文风格转换,跨应用异常上抛,调用APM等功能  
   适用场景:
    1. 希望输出feign请求,响应日志  
    2. 对接不同的系统,其接口报文风格为下划线风格,希望无侵入的互相映射
