@@ -3,7 +3,7 @@
 weweibuy-framework 
 --------
 
-### weweibuy-framework 提供一些基于SpringBoot 2X 封装的组件,可作为企业级SpringBoot技术栈的基础依赖;  其中用合理的方式将日志,脱敏,http调用,幂等,补偿,MQ等功能融入SpringBoot中,可以极大的简化日常开发
+### weweibuy-framework 提供一些基于SpringBoot 2X 封装的基础组件, 包括日志,脱敏,http调用,幂等,补偿,MQ,加解密,Excel,CSV等功能,涵盖了日常开发中基础框架所应对的大部分场景;
 
 
 ### 1. 核心 common-core
@@ -44,24 +44,33 @@ weweibuy-framework
    1. 希望输出feign请求,响应日志  
    2. 对接不同的系统,其接口报文风格为下划线风格,希望无侵入的互相映射
    3. 对接方接口还没好,我们可以无侵入的Mock接口数据,先跑通自己这边逻辑
-   4. 做到调用APM,异常信息跨应用上抛
+   4. APM,异常信息跨应用上抛
 - [common-feign](./common/common-feign/README.md)：介绍common-feign。
 
 
-### 4. 补偿机制 compensate
+### 7. common-util 通用工具
+#### 7.1 common-util-csv CSV工具
+  面向对象,基于注解,简单高效的CSV导入导出工具
+- [compensate](./common/common-util/README.md) ：介绍compensate  
+
+### 8. 补偿机制 compensate
   基于注解的适用于异步场景的失败自动补偿组件  
+   适用场景: 
+   1. 如A服务调用B服务,B服务在做完主业务流程后,在B服务内部需要异步执行B-1任务,若B-1任务失败希望有机制可以重试  
+   2. 重试机制可以灵活配置 
 - [compensate](./compensate/README.md) ：介绍compensate
 
-### 5. 幂等
-  基于注解的,对代码几乎无侵入的幂等组件  
+### 9. 幂等
+  基于注解的,对代码几乎无侵入的幂等组件,开箱即用,简单易用,同时支持数据库与Redis做幂等的场景  
 - [idempotent](./idempotent/README.md) ：介绍idempotent
 
-### 6. rocketMQ 客户端 
-  基于注解形式的RocketMq客户端封装组件,极大简化消息发送/接受  
+### 10. rocketMQ 客户端 
+  基于注解形式的RocketMq客户端封装组件,支持同步发送,异步发送,one-way发送,发送顺序消息,批量发送,并发消费(广播/集群),顺序消费,TAG过滤,批量消费.内置发送/消费日志,可自行扩展或添加功能     
+  开箱即用,简单易用,符合正常开发习惯,可以极大简化消息发送/接受  
 - [rocketMQ](./rocketmq/README.md) ：介绍rocketMQ客户端
 
 
-
+ 
 
 
 
