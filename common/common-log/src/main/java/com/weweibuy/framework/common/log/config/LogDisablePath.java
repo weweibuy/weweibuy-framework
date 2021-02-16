@@ -5,6 +5,9 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Arrays;
+import java.util.Optional;
+
 /**
  * @author durenhao
  * @date 2020/7/25 23:37
@@ -28,6 +31,13 @@ public class LogDisablePath {
 
         ALL,
         ;
+
+    }
+
+    public static Optional<Type> parseType(String type) {
+        return Arrays.stream(Type.values())
+                .filter(t -> t.toString().equals(type))
+                .findFirst();
 
     }
 
