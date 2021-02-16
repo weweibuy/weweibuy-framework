@@ -65,17 +65,17 @@ weweibuy-framework
 - [idempotent](./idempotent/README.md) ：介绍idempotent
 
 ### 10. rocketMQ 客户端 
-  基于注解形式的RocketMq客户端封装组件,开箱即用,简单易用,符合正常开发习惯,可以极大简化消息发送/接收,支持: 
-  同步发送  
-  异步发送  
-  one-way发送   
-  发送顺序消息   
-  批量发送  
-  批量消费  
-  并发消费(广播/集群)  
-  顺序消费  
-  TAG过滤   
-  内置发送/消费日志,并且可以可自行扩展或添加功能     
+  基于注解形式的RocketMq客户端封装组件,开箱即用,简单易用,符合正常开发习惯,可以极大简化消息发送/接收,支持:   
+  &ensp;&ensp;同步发送  
+  &ensp;&ensp;异步发送  
+  &ensp;&ensp;one-way发送   
+  &ensp;&ensp;发送顺序消息   
+  &ensp;&ensp;批量发送  
+  &ensp;&ensp;批量消费  
+  &ensp;&ensp;并发消费(广播/集群)  
+  &ensp;&ensp;顺序消费  
+  &ensp;&ensp;TAG过滤   
+  &ensp;&ensp;内置发送/消费日志,并且可以可自行扩展或添加功能     
 - [rocketMQ](./rocketmq/README.md) ：介绍rocketMQ客户端
 
 
