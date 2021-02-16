@@ -407,6 +407,122 @@ public class JackJsonUtils {
     }
 
 
+
+    public static <T> T read(String json, Class<? extends T> clazz) {
+        try {
+            return CAMEL_CASE_MAPPER.readValue(json, clazz);
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
+
+    public static <T> T read(File file, Class<? extends T> clazz) {
+        try {
+            return CAMEL_CASE_MAPPER.readValue(file, clazz);
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
+
+    public static <T> T read(String json, JavaType javaType) {
+        try {
+            return CAMEL_CASE_MAPPER.readValue(json, javaType);
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
+
+    public static <T> T read(File file, JavaType javaType) {
+        try {
+            return CAMEL_CASE_MAPPER.readValue(file, javaType);
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
+
+    public static <T> T read(String json, TypeReference<T> typeReference) {
+        try {
+            return CAMEL_CASE_MAPPER.readValue(json, typeReference);
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
+
+    public static <T> T read(File file, TypeReference<T> typeReference) {
+        try {
+            return CAMEL_CASE_MAPPER.readValue(file, typeReference);
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
+
+    public static <T> T read(String json, Class<? extends T> clazz, Class<?>... typeClasses) {
+        try {
+            return CAMEL_CASE_MAPPER.readValue(json, javaType(CAMEL_CASE_MAPPER, clazz, typeClasses));
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
+
+    public static <T> T read(File file, Class<? extends T> clazz, Class<?>... typeClasses) {
+        try {
+            return CAMEL_CASE_MAPPER.readValue(file, javaType(CAMEL_CASE_MAPPER, clazz, typeClasses));
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
+
+    public static <T> T read(byte[] json, Class<? extends T> clazz) {
+        try {
+            return CAMEL_CASE_MAPPER.readValue(json, clazz);
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
+
+    public static <T> T read(byte[] json, JavaType javaType) {
+        try {
+            return CAMEL_CASE_MAPPER.readValue(json, javaType);
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
+
+    public static <T> T read(byte[] json, TypeReference<T> typeReference) {
+        try {
+            return CAMEL_CASE_MAPPER.readValue(json, typeReference);
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
+
+
+    public static <T> T read(byte[] json, Class<? extends T> clazz, Class<?>... typeClasses) {
+        try {
+            return CAMEL_CASE_MAPPER.readValue(json, javaType(CAMEL_CASE_MAPPER, clazz, typeClasses));
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
+
+    public static String write(Object object) {
+        try {
+            return CAMEL_CASE_MAPPER.writeValueAsString(object);
+        } catch (JsonProcessingException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
+
+    public static byte[] writeAsByte(Object object) {
+        try {
+            return CAMEL_CASE_MAPPER.writeValueAsBytes(object);
+        } catch (JsonProcessingException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
+
+
+
     public static ObjectMapper getCamelCaseMapper() {
         return CAMEL_CASE_MAPPER;
     }
