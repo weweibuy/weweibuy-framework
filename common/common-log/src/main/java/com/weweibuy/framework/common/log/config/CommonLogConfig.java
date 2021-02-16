@@ -63,11 +63,7 @@ public class CommonLogConfig implements WebMvcConfigurer, InitializingBean {
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        Set<String> disablePath = commonLogProperties.getHttp().getDisablePath();
-        List<LogDisablePath> propertiesConfigurerDisablePathList = disablePath.stream()
-                .map(s -> LogDisablePath.builder().path(s).type(LogDisablePath.Type.ALL).build())
-                .collect(Collectors.toList());
-
+        List<LogDisablePath> propertiesConfigurerDisablePathList = commonLogProperties.getHttp().toLogDisablePath();
 
         List<LogDisablePath> codeConfigurerDisablePathList = new ArrayList<>();
 

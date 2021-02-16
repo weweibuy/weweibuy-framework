@@ -112,7 +112,7 @@ common:
       database: java_metric
   log:
     http:
-      disablePath: /hello1/**
+      disablePath: REQ_/hello1/**
   db:
     encrypt:
       enable: true
@@ -130,5 +130,6 @@ common:
     server-change-listener:
       topic: COMMON_SERVER_UPDATE_TOPIC
       group: COMMON_SERVER_UPDATE_C_GROUP
+
 
 
