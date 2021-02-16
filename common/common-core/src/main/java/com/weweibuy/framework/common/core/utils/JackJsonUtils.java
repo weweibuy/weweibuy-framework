@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.weweibuy.framework.common.core.support.JacksonBuilderHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.stereotype.Component;
@@ -19,6 +20,7 @@ import java.io.UncheckedIOException;
  * @date 2020/2/26 20:38
  **/
 @Component
+@SuppressWarnings("unchecked")
 public class JackJsonUtils {
 
     private static ObjectMapper CAMEL_CASE_MAPPER;
@@ -27,31 +29,39 @@ public class JackJsonUtils {
 
     private static ObjectMapper MVC_OBJECT_MAPPER;
 
+    /***
+     * MVC 使用的名称风格
+     */
+    private static String mvcNamingStrategy;
+
     @Autowired
     private ObjectMapper objectMapper;
 
-    @Autowired
-    private Jackson2ObjectMapperBuilder objectMapperBuilder;
+    static {
+        Jackson2ObjectMapperBuilder objectMapperBuilder = JacksonBuilderHelper.objectMapperBuilder();
+        init(objectMapperBuilder);
+    }
 
     @PostConstruct
-    public void init() {
+    public void initMvc() {
         MVC_OBJECT_MAPPER = objectMapper;
         PropertyNamingStrategy propertyNamingStrategy = objectMapper.getPropertyNamingStrategy();
-
         if (propertyNamingStrategy == null ||
                 propertyNamingStrategy.getClass().isAssignableFrom(PropertyNamingStrategy.LOWER_CAMEL_CASE.getClass())) {
-            CAMEL_CASE_MAPPER = objectMapper;
-            SNAKE_CASE_MAPPER = objectMapperBuilder.createXmlMapper(false)
-                    .propertyNamingStrategy(PropertyNamingStrategy.SNAKE_CASE)
-                    .build();
+            mvcNamingStrategy = "LOWER_CAMEL_CASE";
         } else if (propertyNamingStrategy.getClass().isAssignableFrom(PropertyNamingStrategy.SNAKE_CASE.getClass())) {
-            SNAKE_CASE_MAPPER = objectMapper;
-            CAMEL_CASE_MAPPER = objectMapperBuilder.createXmlMapper(false)
-                    .propertyNamingStrategy(PropertyNamingStrategy.LOWER_CAMEL_CASE)
-                    .build();
-        } else {
-            throw new IllegalStateException("Jackson objectMapper NamingStrategy 为: " + propertyNamingStrategy.getClass().getSimpleName() + "目前不支持");
+            mvcNamingStrategy = "SNAKE_CASE";
         }
+    }
+
+    private static void init(Jackson2ObjectMapperBuilder objectMapperBuilder) {
+
+        CAMEL_CASE_MAPPER = objectMapperBuilder.createXmlMapper(false)
+                .build();
+
+        SNAKE_CASE_MAPPER = objectMapperBuilder.createXmlMapper(false)
+                .propertyNamingStrategy(PropertyNamingStrategy.SNAKE_CASE)
+                .build();
     }
 
     public static <T> T readSnakeCaseValue(String json, Class<? extends T> clazz) {
@@ -169,7 +179,7 @@ public class JackJsonUtils {
         }
     }
 
-    public static <T> T readValue(File file, Class<? extends T> clazz) {
+    public static <T> T readValueWithMvc(File file, Class<? extends T> clazz) {
         try {
             return MVC_OBJECT_MAPPER.readValue(file, clazz);
         } catch (IOException e) {
@@ -177,7 +187,7 @@ public class JackJsonUtils {
         }
     }
 
-    public static <T> T readValue(String json, Class<? extends T> clazz) {
+    public static <T> T readValueWithMvc(String json, Class<? extends T> clazz) {
         try {
             return MVC_OBJECT_MAPPER.readValue(json, clazz);
         } catch (IOException e) {
@@ -185,7 +195,7 @@ public class JackJsonUtils {
         }
     }
 
-    public static <T> T readValue(String json, JavaType javaType) {
+    public static <T> T readValueWithMvc(String json, JavaType javaType) {
         try {
             return MVC_OBJECT_MAPPER.readValue(json, javaType);
         } catch (IOException e) {
@@ -193,7 +203,7 @@ public class JackJsonUtils {
         }
     }
 
-    public static <T> T readValue(File file, JavaType javaType) {
+    public static <T> T readValueWithMvc(File file, JavaType javaType) {
         try {
             return MVC_OBJECT_MAPPER.readValue(file, javaType);
         } catch (IOException e) {
@@ -201,7 +211,7 @@ public class JackJsonUtils {
         }
     }
 
-    public static <T> T readValue(String json, Class<? extends T> clazz, Class<?>... typeClasses) {
+    public static <T> T readValueWithMvc(String json, Class<? extends T> clazz, Class<?>... typeClasses) {
         try {
             return MVC_OBJECT_MAPPER.readValue(json, javaType(MVC_OBJECT_MAPPER, clazz, typeClasses));
         } catch (IOException e) {
@@ -209,7 +219,7 @@ public class JackJsonUtils {
         }
     }
 
-    public static <T> T readValue(File file, Class<? extends T> clazz, Class<?>... typeClasses) {
+    public static <T> T readValueWithMvc(File file, Class<? extends T> clazz, Class<?>... typeClasses) {
         try {
             return MVC_OBJECT_MAPPER.readValue(file, javaType(MVC_OBJECT_MAPPER, clazz, typeClasses));
         } catch (IOException e) {
@@ -217,7 +227,7 @@ public class JackJsonUtils {
         }
     }
 
-    public static <T> T readValue(String json, TypeReference<T> typeReference) {
+    public static <T> T readValueWithMvc(String json, TypeReference<T> typeReference) {
         try {
             return MVC_OBJECT_MAPPER.readValue(json, typeReference);
         } catch (IOException e) {
@@ -225,7 +235,7 @@ public class JackJsonUtils {
         }
     }
 
-    public static <T> T readValue(File file, TypeReference<T> typeReference) {
+    public static <T> T readValueWithMvc(File file, TypeReference<T> typeReference) {
         try {
             return MVC_OBJECT_MAPPER.readValue(file, typeReference);
         } catch (IOException e) {
@@ -233,7 +243,7 @@ public class JackJsonUtils {
         }
     }
 
-    public static <T> T readValue(byte[] json, Class<? extends T> clazz) {
+    public static <T> T readValueWithMvc(byte[] json, Class<? extends T> clazz) {
         try {
             return MVC_OBJECT_MAPPER.readValue(json, clazz);
         } catch (IOException e) {
@@ -241,7 +251,7 @@ public class JackJsonUtils {
         }
     }
 
-    public static <T> T readValue(byte[] json, JavaType javaType) {
+    public static <T> T readValueWithMvc(byte[] json, JavaType javaType) {
         try {
             return MVC_OBJECT_MAPPER.readValue(json, javaType);
         } catch (IOException e) {
@@ -249,7 +259,7 @@ public class JackJsonUtils {
         }
     }
 
-    public static <T> T readValue(byte[] json, TypeReference<T> typeReference) {
+    public static <T> T readValueWithMvc(byte[] json, TypeReference<T> typeReference) {
         try {
             return MVC_OBJECT_MAPPER.readValue(json, typeReference);
         } catch (IOException e) {
@@ -257,7 +267,7 @@ public class JackJsonUtils {
         }
     }
 
-    public static <T> T readValue(byte[] json, Class<? extends T> clazz, Class<?>... typeClasses) {
+    public static <T> T readValueWithMvc(byte[] json, Class<? extends T> clazz, Class<?>... typeClasses) {
         try {
             return MVC_OBJECT_MAPPER.readValue(json, javaType(MVC_OBJECT_MAPPER, clazz, typeClasses));
         } catch (IOException e) {
@@ -266,7 +276,7 @@ public class JackJsonUtils {
     }
 
 
-    public static String write(Object object) {
+    public static String writeWithMvc(Object object) {
         try {
             return MVC_OBJECT_MAPPER.writeValueAsString(object);
         } catch (JsonProcessingException e) {
@@ -274,7 +284,7 @@ public class JackJsonUtils {
         }
     }
 
-    public static byte[] writeAsByte(Object object) {
+    public static byte[] writeAsByteWithMvc(Object object) {
         try {
             return MVC_OBJECT_MAPPER.writeValueAsBytes(object);
         } catch (JsonProcessingException e) {
@@ -414,11 +424,11 @@ public class JackJsonUtils {
     }
 
     public static JavaType javaType(Class<?> clazz, Class<?>... typeClazz) {
-        return MVC_OBJECT_MAPPER.getTypeFactory().constructParametricType(clazz, typeClazz);
+        return CAMEL_CASE_MAPPER.getTypeFactory().constructParametricType(clazz, typeClazz);
     }
 
     public static JavaType javaType(TypeReference<?> typeReference) {
-        return MVC_OBJECT_MAPPER.getTypeFactory().constructType(typeReference);
+        return CAMEL_CASE_MAPPER.getTypeFactory().constructType(typeReference);
     }
 
 }

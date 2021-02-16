@@ -70,7 +70,7 @@ public class HttpLogger {
         }
         Long timestamp = HttpRequestUtils.getRequestAttribute(RequestContextHolder.getRequestAttributes(), CommonConstant.HttpServletConstant.REQUEST_TIMESTAMP);
         log.info("Http 响应数据: {}, 请求耗时: {}",
-                JackJsonUtils.write(body),
+                JackJsonUtils.writeWithMvc(body),
                 System.currentTimeMillis() - timestamp);
     }
 
@@ -109,7 +109,7 @@ public class HttpLogger {
             }
         }
         return Optional.ofNullable(body)
-                .map(JackJsonUtils::write)
+                .map(JackJsonUtils::writeWithMvc)
                 .orElse(StringUtils.EMPTY);
     }
 

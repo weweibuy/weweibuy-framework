@@ -48,7 +48,7 @@ public class MockClient implements Client, InitializingBean {
     public Response execute(Request request, Request.Options options) throws IOException {
         String url = request.url();
         Request.HttpMethod httpMethod = request.httpMethod();
-        List<MockConfig> configList = JackJsonUtils.readValue(new File(configFile), configJavaType);
+        List<MockConfig> configList = JackJsonUtils.readValueWithMvc(new File(configFile), configJavaType);
 
         Optional<MockConfig> mockDataOpt = configList.stream()
                 .filter(config -> StringUtils.equalsIgnoreCase(httpMethod.toString(), config.getMethod()))
@@ -61,7 +61,7 @@ public class MockClient implements Client, InitializingBean {
             // 读取mock数据
             String target = mockConfig.getTarget();
             String dataFile = mockDataDir + target;
-            MockData mockData = JackJsonUtils.readValue(new File(dataFile), MockData.class);
+            MockData mockData = JackJsonUtils.readValueWithMvc(new File(dataFile), MockData.class);
             Map<String, String> mcoKHeader = mockData.getHeader();
             Map<String, List<String>> header = Optional.ofNullable(mcoKHeader)
                     .map(h -> h.entrySet().stream()
@@ -75,7 +75,7 @@ public class MockClient implements Client, InitializingBean {
             }
 
             byte[] body = Optional.ofNullable(mockData.getBody())
-                    .map(o -> JackJsonUtils.writeAsByte(o))
+                    .map(o -> JackJsonUtils.writeAsByteWithMvc(o))
                     .orElse("".getBytes());
 
             Integer status = Optional.ofNullable(mockData.getStatus())
