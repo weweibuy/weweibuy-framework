@@ -1,9 +1,9 @@
 # common-mvc
   场景: 
-   1. 下滑线风格的url请求参数,将其绑定到小驼峰的Java对象属性上
+   - 下滑线风格的url请求参数,将其绑定到小驼峰的Java对象属性上
     eg: localhost/oauth/token?client_id=demoClientId 将client_id映射成clientId
-   2. Http响应报文部分字段脱敏(如:手机号)
-   3. 统一异常处理,上抛Feign调用异常
+   - Http响应报文部分字段脱敏(如:手机号)
+   - 统一异常处理,上抛Feign调用异常
   适用于 Springboot + SpringMVC5x + Jackson
   
 ### 1 加入依赖：
