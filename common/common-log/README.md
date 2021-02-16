@@ -74,8 +74,7 @@ common.log.trace.enable = false
   [使用Java Agent来修饰JDK线程池实现类](https://github.com/alibaba/transmittable-thread-local#23-%E4%BD%BF%E7%94%A8java-agent%E6%9D%A5%E4%BF%AE%E9%A5%B0jdk%E7%BA%BF%E7%A8%8B%E6%B1%A0%E5%AE%9E%E7%8E%B0%E7%B1%BB)  
 
 ### 4 日志策略分环境
-  common-log 模块配置了logback-spring.xml, 只有在spring激活dev环境的情况下才输出控制台日志    
-  [logback-spring.xml](src/main/resources/logback-spring.xml)
+  common-log 模块配置了[logback-spring.xml](src/main/resources/logback-spring.xml), 只有在spring激活dev环境的情况下才输出控制台日志    
   非dev环境输入文件日志,默认输出路径为:  /logs/${app_name} 文件名: application.log  
-  可以通过环境变量 log.path 指定日志文件输出路径
+  同时也支持通过环境变量 log.path 指定日志文件输出路径  
   

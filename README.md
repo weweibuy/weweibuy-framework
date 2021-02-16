@@ -51,7 +51,7 @@ weweibuy-framework
 ### 7. common-util 通用工具
 #### 7.1 common-util-csv CSV工具
   面向对象,基于注解,简单高效的CSV导入导出工具
-- [compensate](./common/common-util/README.md) ：介绍compensate  
+- [common-uti](./common/common-util/README.md) ：介绍compensate  
 
 ### 8. 补偿机制 compensate
   基于注解的适用于异步场景的失败自动补偿组件  
@@ -65,8 +65,17 @@ weweibuy-framework
 - [idempotent](./idempotent/README.md) ：介绍idempotent
 
 ### 10. rocketMQ 客户端 
-  基于注解形式的RocketMq客户端封装组件,支持同步发送,异步发送,one-way发送,发送顺序消息,批量发送,并发消费(广播/集群),顺序消费,TAG过滤,批量消费.内置发送/消费日志,可自行扩展或添加功能     
-  开箱即用,简单易用,符合正常开发习惯,可以极大简化消息发送/接受  
+  基于注解形式的RocketMq客户端封装组件,开箱即用,简单易用,符合正常开发习惯,可以极大简化消息发送/接收,支持: 
+  同步发送  
+  异步发送  
+  one-way发送   
+  发送顺序消息   
+  批量发送  
+  批量消费  
+  并发消费(广播/集群)  
+  顺序消费  
+  TAG过滤   
+  内置发送/消费日志,并且可以可自行扩展或添加功能     
 - [rocketMQ](./rocketmq/README.md) ：介绍rocketMQ客户端
 
 

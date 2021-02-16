@@ -93,7 +93,7 @@ spring.profiles.active = mock
   示例说明: 
     通过feign请求: POST http://localhost:9000/hello, 将读取 mock/hello.json 中的内容作为响应
 ```txt
-  提示: 更改 mock.json 与 mock文件夹的文件都是实时生效的无序重启
+  提示: 更改 mock.json 与 mock文件夹的文件都是实时生效的无需重启
 ```
 
 ### 1.4 APM:
