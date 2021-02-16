@@ -22,39 +22,48 @@ public class JackJsonConfig {
 
 
     @Bean
-    public JackJsonUtils jackJsonUtils(){
+    public JackJsonUtils jackJsonUtils() {
         return new JackJsonUtils();
     }
 
     @Bean
     public Jackson2ObjectMapperBuilderCustomizer localDateTimeJackson2ObjectMapperBuilderCustomizer() {
-        return builder ->
-                builder.serializerByType(LocalDateTime.class, localDateTimeSerializer())
-                        .deserializerByType(LocalDateTime.class, localDateTimeDeserializer());
+        return localDateTimeCustomizer();
 
     }
 
     @Bean
     public Jackson2ObjectMapperBuilderCustomizer localDateJackson2ObjectMapperBuilderCustomizer() {
+        return localDateCustomizer();
+    }
+
+
+    public static Jackson2ObjectMapperBuilderCustomizer localDateTimeCustomizer() {
+        return builder ->
+                builder.serializerByType(LocalDateTime.class, localDateTimeSerializer())
+                        .deserializerByType(LocalDateTime.class, localDateTimeDeserializer());
+    }
+
+
+    public static Jackson2ObjectMapperBuilderCustomizer localDateCustomizer() {
         return builder ->
                 builder.serializerByType(LocalDate.class, localDateSerializer())
                         .deserializerByType(LocalDate.class, localDateDeserializer());
     }
 
-
-    public LocalDateTimeSerializer localDateTimeSerializer() {
+    private static LocalDateTimeSerializer localDateTimeSerializer() {
         return new LocalDateTimeSerializer(CommonConstant.DateConstant.STANDARD_DATE_TIME_FORMATTER);
     }
 
-    public LocalDateTimeDeserializer localDateTimeDeserializer() {
+    private static LocalDateTimeDeserializer localDateTimeDeserializer() {
         return new LocalDateTimeDeserializer(CommonConstant.DateConstant.STANDARD_DATE_TIME_FORMATTER);
     }
 
-    public LocalDateSerializer localDateSerializer() {
+    private static LocalDateSerializer localDateSerializer() {
         return new LocalDateSerializer(CommonConstant.DateConstant.STANDARD_DATE_FORMATTER);
     }
 
-    public LocalDateDeserializer localDateDeserializer() {
+    private static LocalDateDeserializer localDateDeserializer() {
         return new LocalDateDeserializer(CommonConstant.DateConstant.STANDARD_DATE_FORMATTER);
     }
 

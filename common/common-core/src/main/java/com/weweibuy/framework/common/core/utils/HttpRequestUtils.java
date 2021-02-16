@@ -149,7 +149,7 @@ public class HttpRequestUtils {
      * @return
      */
     public static ResponseCodeAndMsg convertJsonStrToCodeAndMsg(String msgJsonStr) {
-        return JackJsonUtils.readValue(msgJsonStr, CommonCodeResponse.class);
+        return JackJsonUtils.readValueWithMvc(msgJsonStr, CommonCodeResponse.class);
     }
 
 
