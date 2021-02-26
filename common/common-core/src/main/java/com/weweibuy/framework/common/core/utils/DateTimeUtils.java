@@ -212,6 +212,18 @@ public class DateTimeUtils {
         return LocalDateTime.ofInstant(Instant.ofEpochMilli(timestampMilli), ZoneId.systemDefault());
     }
 
+
+    /**
+     * 毫秒时间戳转 LocalDate
+     *
+     * @param timestampMilli
+     * @return
+     */
+    public static LocalDate timestampMilliToLocalDate(long timestampMilli) {
+        return Instant.ofEpochMilli(timestampMilli).atZone(ZoneId.systemDefault()).toLocalDate();
+    }
+
+
     /**
      * 秒时间转 LocalDateTime
      *
@@ -221,6 +233,17 @@ public class DateTimeUtils {
     public static LocalDateTime timestampSecondToLocalDateTime(long timestampSecond) {
         return LocalDateTime.ofInstant(Instant.ofEpochSecond(timestampSecond), ZoneId.systemDefault());
     }
+
+    /**
+     * 秒时间转 LocalDate
+     *
+     * @param timestampSecond
+     * @return
+     */
+    public static LocalDate timestampSecondToLocalDate(long timestampSecond) {
+        return Instant.ofEpochSecond(timestampSecond).atZone(ZoneId.systemDefault()).toLocalDate();
+    }
+
 
     /**
      * LocalDateTime 转毫秒时间
