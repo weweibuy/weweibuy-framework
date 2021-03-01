@@ -1,13 +1,8 @@
 package com.weweibuy.framework.lb.endpoint;
 
-import com.netflix.loadbalancer.Server;
-import com.weweibuy.framework.common.core.model.dto.CommonCodeResponse;
-import com.weweibuy.framework.common.core.model.dto.CommonDataResponse;
 import com.weweibuy.framework.lb.support.LoadBalanceOperator;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.Map;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * lb 端点
@@ -26,40 +21,40 @@ public class LoadBalanceEndpoint {
     }
 
 
-    /**
-     * 列表
-     *
-     * @return
-     */
-    @GetMapping("/_list")
-    public CommonDataResponse<Map<String, List<Server>>> listLb() {
-        return CommonDataResponse.success(loadBalanceOperator.allServerMap());
+//    /**
+//     * 列表
+//     *
+//     * @return
+//     */
+//    @GetMapping("/_list")
+//    public CommonDataResponse<Map<String, List<Server>>> listLb() {
+//        return CommonDataResponse.success(loadBalanceOperator.allServerMap());
+//
+//    }
 
-    }
-
-    /**
-     * 更新
-     *
-     * @return
-     */
-    @PostMapping("/_update/{name}")
-    public CommonCodeResponse updateLb(@PathVariable String name) {
-        loadBalanceOperator.update(name);
-        return CommonCodeResponse.success();
-
-    }
+//    /**
+//     * 更新
+//     *
+//     * @return
+//     */
+//    @PostMapping("/_update/{name}")
+//    public CommonCodeResponse updateLb(@PathVariable String name) {
+//        loadBalanceOperator.update(name);
+//        return CommonCodeResponse.success();
+//
+//    }
 
 
-    /**
-     * 更新全部
-     *
-     * @return
-     */
-    @PostMapping("/_update")
-    public CommonCodeResponse updateLb() {
-        loadBalanceOperator.update("");
-        return CommonCodeResponse.success();
-
-    }
+//    /**
+//     * 更新全部
+//     *
+//     * @return
+//     */
+//    @PostMapping("/_update")
+//    public CommonCodeResponse updateLb() {
+//        loadBalanceOperator.update("");
+//        return CommonCodeResponse.success();
+//
+//    }
 
 }
