@@ -1,9 +1,6 @@
 package com.weweibuy.framework.lb.mq;
 
-import com.weweibuy.framework.lb.mq.message.ServerChangeMessage;
 import com.weweibuy.framework.lb.support.LoadBalanceOperator;
-import com.weweibuy.framework.rocketmq.annotation.Payload;
-import com.weweibuy.framework.rocketmq.annotation.RocketConsumerHandler;
 import com.weweibuy.framework.rocketmq.annotation.RocketListener;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.common.protocol.heartbeat.MessageModel;
@@ -26,9 +23,9 @@ public class RocketServerChangeListener {
     }
 
 
-    @RocketConsumerHandler
-    public void update(@Payload ServerChangeMessage changeMessage) {
-        loadBalanceOperator.update(changeMessage.getName());
-    }
+//    @RocketConsumerHandler
+//    public void update(@Payload ServerChangeMessage changeMessage) {
+//        loadBalanceOperator.update(changeMessage.getName());
+//    }
 
 }
