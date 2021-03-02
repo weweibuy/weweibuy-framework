@@ -22,6 +22,7 @@
         <module>common-metric</module>
         <module>common-local-cache</module>
         <module>common-util</module>
+        <module>common-es</module>
     </modules>
 
 
