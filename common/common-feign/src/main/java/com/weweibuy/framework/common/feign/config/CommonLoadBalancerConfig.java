@@ -17,23 +17,20 @@ import org.springframework.context.annotation.Configuration;
  * @date 2020/9/9 17:43
  **/
 @Configuration
-@ConditionalOnClass(name = {"org.springframework.cloud.client.loadbalancer.LoadBalancerClient",
-        "org.springframework.cloud.client.loadbalancer.LoadBalancerProperties",
-        "org.springframework.cloud.loadbalancer.support.LoadBalancerClientFactory"})
 public class CommonLoadBalancerConfig {
 
 
     @Bean
     @ConditionalOnMissingBean
-    @ConditionalOnClass(name = {"org.springframework.cloud.client.loadbalancer.LoadBalancerClient",
-            "org.springframework.cloud.client.loadbalancer.LoadBalancerProperties",
-            "org.springframework.cloud.loadbalancer.support.LoadBalancerClientFactory"})
-    public Client feignClient(LoadBalancerClient loadBalancerClient, HttpClient httpClient,
-                              LoadBalancerProperties properties, LoadBalancerClientFactory loadBalancerClientFactory) {
+    @ConditionalOnClass(name = {"org.springframework.cloud.loadbalancer.support.LoadBalancerClientFactory",
+            "org.springframework.cloud.openfeign.loadbalancer.FeignBlockingLoadBalancerClient"})
+    public Client feignClient(LoadBalancerClient loadBalancerClient,
+                              HttpClient httpClient,
+                              LoadBalancerProperties properties,
+                              LoadBalancerClientFactory loadBalancerClientFactory) {
         ApacheHttpClient delegate = new ApacheHttpClient(httpClient);
         return new FeignBlockingLoadBalancerClient(delegate, loadBalancerClient, properties, loadBalancerClientFactory);
     }
-
 
 
 }
