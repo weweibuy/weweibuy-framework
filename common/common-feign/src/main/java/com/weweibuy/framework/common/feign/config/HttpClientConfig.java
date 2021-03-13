@@ -19,13 +19,11 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.DefaultHttpClientConnectionOperator;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.AnyNestedCondition;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingClass;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.ExtractingResponseErrorHandler;
@@ -63,14 +61,13 @@ public class HttpClientConfig {
      * @return
      */
     @Bean
-    @Conditional(OnHttpClientNoLB.class)
+    @ConditionalOnMissingClass(value = {"org.springframework.cloud.openfeign.loadbalancer.FeignBlockingLoadBalancerClient"})
     public Client feignClient(HttpClient httpClient) {
         return new ApacheHttpClient(httpClient);
     }
 
 
     @Bean
-    @ConditionalOnClass(name = {"org.apache.http.impl.client.CloseableHttpClient"})
     public CloseableHttpClient httpClient() throws KeyStoreException, NoSuchAlgorithmException, KeyManagementException {
 
         HttpClientBuilder httpClientBuilder = HttpClients.custom()
@@ -153,24 +150,6 @@ public class HttpClientConfig {
         return restTemplateBuilder.errorHandler(errorHandler)
                 .requestFactory(() -> requestFactory)
                 .build();
-
-    }
-
-    static final class OnHttpClientNoLB extends AnyNestedCondition {
-
-        private OnHttpClientNoLB() {
-            super(ConfigurationPhase.REGISTER_BEAN);
-        }
-
-        @ConditionalOnClass(name = {"org.apache.http.impl.client.CloseableHttpClient"})
-        static class ReactiveLoadBalancerFactoryPresent {
-
-        }
-
-        @ConditionalOnMissingClass(value = {"org.springframework.cloud.openfeign.loadbalancer.FeignBlockingLoadBalancerClient"})
-        static class LoadBalancerClientPresent {
-
-        }
 
     }
 

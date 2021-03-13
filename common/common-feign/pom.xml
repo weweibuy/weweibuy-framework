@@ -61,25 +61,6 @@
             <artifactId>spring-cloud-starter-openfeign</artifactId>
         </dependency>
 
-        <!--<dependency>-->
-            <!--<groupId>org.springframework.cloud</groupId>-->
-            <!--<artifactId>spring-cloud-openfeign-core</artifactId>-->
-            <!--<exclusions>-->
-                <!--<exclusion>-->
-                    <!--<artifactId>spring-boot-starter-logging</artifactId>-->
-                    <!--<groupId>org.springframework.boot</groupId>-->
-                <!--</exclusion>-->
-                <!--<exclusion>-->
-                    <!--<artifactId>spring-cloud-netflix-ribbon</artifactId>-->
-                    <!--<groupId>org.springframework.cloud</groupId>-->
-                <!--</exclusion>-->
-                <!--<exclusion>-->
-                    <!--<artifactId>slf4j-api</artifactId>-->
-                    <!--<groupId>org.slf4j</groupId>-->
-                <!--</exclusion>-->
-            <!--</exclusions>-->
-        <!--</dependency>-->
-
         <dependency>
             <groupId>io.github.openfeign</groupId>
             <artifactId>feign-core</artifactId>
