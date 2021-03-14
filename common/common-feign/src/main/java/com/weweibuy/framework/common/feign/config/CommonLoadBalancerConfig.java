@@ -4,9 +4,11 @@ import feign.Client;
 import feign.httpclient.ApacheHttpClient;
 import org.apache.http.client.HttpClient;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
-import org.springframework.cloud.netflix.ribbon.SpringClientFactory;
-import org.springframework.cloud.openfeign.ribbon.CachingSpringLoadBalancerFactory;
-import org.springframework.cloud.openfeign.ribbon.LoadBalancerFeignClient;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.cloud.client.loadbalancer.LoadBalancerClient;
+import org.springframework.cloud.client.loadbalancer.LoadBalancerProperties;
+import org.springframework.cloud.loadbalancer.support.LoadBalancerClientFactory;
+import org.springframework.cloud.openfeign.loadbalancer.FeignBlockingLoadBalancerClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -15,17 +17,19 @@ import org.springframework.context.annotation.Configuration;
  * @date 2020/9/9 17:43
  **/
 @Configuration
-@ConditionalOnClass(name = {"org.springframework.cloud.openfeign.ribbon.LoadBalancerFeignClient",
-        "org.springframework.cloud.netflix.ribbon.SpringClientFactory"})
+@ConditionalOnClass(name = {"org.springframework.cloud.loadbalancer.support.LoadBalancerClientFactory"})
 public class CommonLoadBalancerConfig {
 
+
     @Bean
-    @ConditionalOnClass(name = {"org.springframework.cloud.openfeign.ribbon.LoadBalancerFeignClient",
-            "org.springframework.cloud.netflix.ribbon.SpringClientFactory"})
-    public Client loadBalancerFeignClient(CachingSpringLoadBalancerFactory cachingFactory,
-                                          SpringClientFactory clientFactory, HttpClient httpClient) {
-        ApacheHttpClient apacheHttpClient = new ApacheHttpClient(httpClient);
-        return new LoadBalancerFeignClient(apacheHttpClient, cachingFactory, clientFactory);
+    @ConditionalOnMissingBean(value = {LoadBalancerClient.class, HttpClient.class,
+            LoadBalancerProperties.class, LoadBalancerClientFactory.class})
+    public Client feignClient(LoadBalancerClient loadBalancerClient,
+                              HttpClient httpClient,
+                              LoadBalancerProperties properties,
+                              LoadBalancerClientFactory loadBalancerClientFactory) {
+        ApacheHttpClient delegate = new ApacheHttpClient(httpClient);
+        return new FeignBlockingLoadBalancerClient(delegate, loadBalancerClient, properties, loadBalancerClientFactory);
     }
 
 

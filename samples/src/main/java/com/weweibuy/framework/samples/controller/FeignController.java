@@ -1,11 +1,9 @@
 package com.weweibuy.framework.samples.controller;
 
 import com.weweibuy.framework.common.core.model.dto.CommonDataResponse;
-import com.weweibuy.framework.samples.client.FileClient;
-import com.weweibuy.framework.samples.client.MyFeignClient;
-import com.weweibuy.framework.samples.client.MyFeignClient2;
-import com.weweibuy.framework.samples.client.MyLbFeignClient;
+import com.weweibuy.framework.samples.client.*;
 import feign.Response;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -24,6 +22,7 @@ import java.io.InputStream;
  * @date 2020/3/2 20:01
  **/
 @RestController
+@RequiredArgsConstructor
 public class FeignController {
 
     private final MyFeignClient myFeignClient;
@@ -34,17 +33,15 @@ public class FeignController {
 
     private final MyLbFeignClient myLbFeignClient;
 
-    public FeignController(MyFeignClient myFeignClient, MyFeignClient2 myFeignClient2, FileClient fileClient, MyLbFeignClient myLbFeignClient) {
-        this.myFeignClient = myFeignClient;
-        this.myFeignClient2 = myFeignClient2;
-        this.fileClient = fileClient;
-        this.myLbFeignClient = myLbFeignClient;
-    }
+    private final MyLbFeignClient2 myLbFeignClient2;
+
+
 
     @GetMapping("/feign")
     public Object sendToFeign() {
-        myLbFeignClient.helloPost(CommonDataResponse.success(null), "token_123");
-        return myFeignClient.helloPost(CommonDataResponse.success(""), "token_123");
+        CommonDataResponse<String> token_123 = myFeignClient.helloPost(CommonDataResponse.success(""), "token_123");
+        myLbFeignClient2.helloGet();
+        return myLbFeignClient.helloPost(CommonDataResponse.success(null), "token_123");
     }
 
     @PostMapping("/upload")

@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Data
-@Document(indexName = "learning_item", type = "_doc", createIndex = false)
+@Document(indexName = "learning_item", createIndex = false)
 public class Item {
 
     @JsonProperty("_id")
