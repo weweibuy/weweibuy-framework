@@ -1,2 +1,3 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-  com.weweibuy.framework.lb.config.CustomLoadBalancerConfig
+  com.weweibuy.framework.lb.config.CustomLoadBalancerConfig,\
+  com.weweibuy.framework.lb.config.MqLoadBalancerListenerConfig
