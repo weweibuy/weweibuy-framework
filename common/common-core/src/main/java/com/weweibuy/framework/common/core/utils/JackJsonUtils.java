@@ -406,7 +406,7 @@ public class JackJsonUtils {
 
 
 
-    public static <T> T read(String json, Class<? extends T> clazz) {
+    public static <T> T readValue(String json, Class<? extends T> clazz) {
         try {
             return CAMEL_CASE_MAPPER.readValue(json, clazz);
         } catch (IOException e) {
@@ -414,7 +414,7 @@ public class JackJsonUtils {
         }
     }
 
-    public static <T> T read(File file, Class<? extends T> clazz) {
+    public static <T> T readValue(File file, Class<? extends T> clazz) {
         try {
             return CAMEL_CASE_MAPPER.readValue(file, clazz);
         } catch (IOException e) {
@@ -422,7 +422,7 @@ public class JackJsonUtils {
         }
     }
 
-    public static <T> T read(String json, JavaType javaType) {
+    public static <T> T readValue(String json, JavaType javaType) {
         try {
             return CAMEL_CASE_MAPPER.readValue(json, javaType);
         } catch (IOException e) {
@@ -430,7 +430,7 @@ public class JackJsonUtils {
         }
     }
 
-    public static <T> T read(File file, JavaType javaType) {
+    public static <T> T readValue(File file, JavaType javaType) {
         try {
             return CAMEL_CASE_MAPPER.readValue(file, javaType);
         } catch (IOException e) {
@@ -438,7 +438,7 @@ public class JackJsonUtils {
         }
     }
 
-    public static <T> T read(String json, TypeReference<T> typeReference) {
+    public static <T> T readValue(String json, TypeReference<T> typeReference) {
         try {
             return CAMEL_CASE_MAPPER.readValue(json, typeReference);
         } catch (IOException e) {
@@ -446,7 +446,7 @@ public class JackJsonUtils {
         }
     }
 
-    public static <T> T read(File file, TypeReference<T> typeReference) {
+    public static <T> T readValue(File file, TypeReference<T> typeReference) {
         try {
             return CAMEL_CASE_MAPPER.readValue(file, typeReference);
         } catch (IOException e) {
@@ -454,7 +454,7 @@ public class JackJsonUtils {
         }
     }
 
-    public static <T> T read(String json, Class<? extends T> clazz, Class<?>... typeClasses) {
+    public static <T> T readValue(String json, Class<? extends T> clazz, Class<?>... typeClasses) {
         try {
             return CAMEL_CASE_MAPPER.readValue(json, javaType(CAMEL_CASE_MAPPER, clazz, typeClasses));
         } catch (IOException e) {
@@ -462,7 +462,7 @@ public class JackJsonUtils {
         }
     }
 
-    public static <T> T read(File file, Class<? extends T> clazz, Class<?>... typeClasses) {
+    public static <T> T readValue(File file, Class<? extends T> clazz, Class<?>... typeClasses) {
         try {
             return CAMEL_CASE_MAPPER.readValue(file, javaType(CAMEL_CASE_MAPPER, clazz, typeClasses));
         } catch (IOException e) {
@@ -470,7 +470,7 @@ public class JackJsonUtils {
         }
     }
 
-    public static <T> T read(byte[] json, Class<? extends T> clazz) {
+    public static <T> T readValue(byte[] json, Class<? extends T> clazz) {
         try {
             return CAMEL_CASE_MAPPER.readValue(json, clazz);
         } catch (IOException e) {
@@ -478,7 +478,7 @@ public class JackJsonUtils {
         }
     }
 
-    public static <T> T read(byte[] json, JavaType javaType) {
+    public static <T> T readValue(byte[] json, JavaType javaType) {
         try {
             return CAMEL_CASE_MAPPER.readValue(json, javaType);
         } catch (IOException e) {
@@ -486,7 +486,7 @@ public class JackJsonUtils {
         }
     }
 
-    public static <T> T read(byte[] json, TypeReference<T> typeReference) {
+    public static <T> T readValue(byte[] json, TypeReference<T> typeReference) {
         try {
             return CAMEL_CASE_MAPPER.readValue(json, typeReference);
         } catch (IOException e) {
@@ -495,7 +495,7 @@ public class JackJsonUtils {
     }
 
 
-    public static <T> T read(byte[] json, Class<? extends T> clazz, Class<?>... typeClasses) {
+    public static <T> T readValue(byte[] json, Class<? extends T> clazz, Class<?>... typeClasses) {
         try {
             return CAMEL_CASE_MAPPER.readValue(json, javaType(CAMEL_CASE_MAPPER, clazz, typeClasses));
         } catch (IOException e) {
@@ -503,7 +503,7 @@ public class JackJsonUtils {
         }
     }
 
-    public static String write(Object object) {
+    public static String writeValue(Object object) {
         try {
             return CAMEL_CASE_MAPPER.writeValueAsString(object);
         } catch (JsonProcessingException e) {
