@@ -4,6 +4,6 @@
     "path": "/hello",
     "method": "post",
     "target": "hello.json",
-    "enable": true
+    "enable": false
   }
 ]

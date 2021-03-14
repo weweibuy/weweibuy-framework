@@ -17,13 +17,13 @@ import org.springframework.context.annotation.Configuration;
  * @date 2020/9/9 17:43
  **/
 @Configuration
+@ConditionalOnClass(name = {"org.springframework.cloud.loadbalancer.support.LoadBalancerClientFactory"})
 public class CommonLoadBalancerConfig {
 
 
     @Bean
-    @ConditionalOnMissingBean
-    @ConditionalOnClass(name = {"org.springframework.cloud.loadbalancer.support.LoadBalancerClientFactory",
-            "org.springframework.cloud.openfeign.loadbalancer.FeignBlockingLoadBalancerClient"})
+    @ConditionalOnMissingBean(value = {LoadBalancerClient.class, HttpClient.class,
+            LoadBalancerProperties.class, LoadBalancerClientFactory.class})
     public Client feignClient(LoadBalancerClient loadBalancerClient,
                               HttpClient httpClient,
                               LoadBalancerProperties properties,
