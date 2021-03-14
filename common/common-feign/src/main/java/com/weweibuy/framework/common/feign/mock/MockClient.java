@@ -4,12 +4,12 @@ import com.fasterxml.jackson.databind.JavaType;
 import com.weweibuy.framework.common.core.exception.Exceptions;
 import com.weweibuy.framework.common.core.utils.HttpRequestUtils;
 import com.weweibuy.framework.common.core.utils.JackJsonUtils;
-import feign.Client;
-import feign.Request;
-import feign.Response;
+import feign.*;
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.cloud.openfeign.loadbalancer.FeignBlockingLoadBalancerClient;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -89,7 +89,27 @@ public class MockClient implements Client, InitializingBean {
                     .build();
         }
 
-        return delegate.execute(request, options);
+
+        return getClient(request).execute(request, options);
+    }
+
+
+    private Client getClient(Request request) {
+        RequestTemplate target = request.requestTemplate().target(null);
+        Target<?> feignTarget = target.feignTarget();
+        FeignClient annotation = feignTarget.type().getAnnotation(FeignClient.class);
+        String url = annotation.url();
+        if (StringUtils.isBlank(url)) {
+            // LB 的形式
+            return this.delegate;
+        }
+
+        if (this.delegate instanceof FeignBlockingLoadBalancerClient) {
+            // not load balancing because we have a url,
+            // but Spring Cloud LoadBalancer is on the classpath, so unwrap
+            return ((FeignBlockingLoadBalancerClient) this.delegate).getDelegate();
+        }
+        return this.delegate;
     }
 
 
