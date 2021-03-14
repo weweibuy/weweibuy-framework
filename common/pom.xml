@@ -5,7 +5,7 @@
     <parent>
         <artifactId>weweibuy-framework</artifactId>
         <groupId>com.weweibuy.framework</groupId>
-        <version>1.0-SNAPSHOT</version>
+        <version>1.1-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -22,6 +22,7 @@
         <module>common-metric</module>
         <module>common-local-cache</module>
         <module>common-util</module>
+        <module>common-es</module>
     </modules>
 
 

@@ -21,17 +21,16 @@ public class CommonPageResult<T> {
 
     private List<T> list;
 
-    @SuppressWarnings("unchecked")
     public static final <T> CommonPageResult<T> empty() {
-        return new CommonPageResult(0L, Collections.emptyList());
+        return new CommonPageResult<>(0L, Collections.emptyList());
     }
 
     public static final <T> CommonPageResult<T> withTotalAndList(Long total, List<T> list) {
-        return new CommonPageResult(total, list);
+        return new CommonPageResult<>(total, list);
     }
 
     public static final <T> CommonPageResult<T> withTotalAndEmpty(Long total) {
-        return new CommonPageResult(total, Collections.emptyList());
+        return new CommonPageResult<>(total, Collections.emptyList());
     }
 
 

@@ -19,6 +19,7 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.DefaultHttpClientConnectionOperator;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingClass;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -60,7 +61,7 @@ public class HttpClientConfig {
      * @return
      */
     @Bean
-    @ConditionalOnMissingClass(value = {"org.springframework.cloud.netflix.ribbon.SpringClientFactory"})
+    @ConditionalOnMissingClass(value = {"org.springframework.cloud.loadbalancer.support.LoadBalancerClientFactory"})
     public Client feignClient(HttpClient httpClient) {
         return new ApacheHttpClient(httpClient);
     }
@@ -139,6 +140,7 @@ public class HttpClientConfig {
 
 
     @Bean
+    @ConditionalOnClass(name = {"org.apache.http.impl.client.CloseableHttpClient"})
     public RestTemplate restTemplate(RestTemplateBuilder restTemplateBuilder) throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
         ExtractingResponseErrorHandler errorHandler = new ExtractingResponseErrorHandler();
 

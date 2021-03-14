@@ -8,7 +8,6 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.weweibuy.framework.common.core.support.JacksonBuilderHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
-import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.io.File;
@@ -19,7 +18,6 @@ import java.io.UncheckedIOException;
  * @author durenhao
  * @date 2020/2/26 20:38
  **/
-@Component
 @SuppressWarnings("unchecked")
 public class JackJsonUtils {
 

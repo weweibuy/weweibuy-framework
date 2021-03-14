@@ -10,7 +10,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.cloud.openfeign.loadbalancer.FeignBlockingLoadBalancerClient;
-import org.springframework.cloud.openfeign.ribbon.LoadBalancerFeignClient;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -105,11 +104,6 @@ public class MockClient implements Client, InitializingBean {
             return this.delegate;
         }
 
-        if (this.delegate instanceof LoadBalancerFeignClient) {
-            // not load balancing because we have a url,
-            // but ribbon is on the classpath, so unwrap
-            return ((LoadBalancerFeignClient) this.delegate).getDelegate();
-        }
         if (this.delegate instanceof FeignBlockingLoadBalancerClient) {
             // not load balancing because we have a url,
             // but Spring Cloud LoadBalancer is on the classpath, so unwrap
