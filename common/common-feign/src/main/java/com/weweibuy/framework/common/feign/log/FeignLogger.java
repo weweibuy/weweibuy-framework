@@ -76,12 +76,11 @@ public class FeignLogger extends Logger {
         String bodyStr = "";
 
         Collection<String> collection = response.headers().get(HttpHeaders.CONTENT_TYPE);
-        if (CollectionUtils.isNotEmpty(collection)) {
-            String next = collection.iterator().next();
-            if (next.indexOf("stream") != -1) {
-                bodyStr = BINARY_BODY_STR;
-            }
-        } else if (response.body() != null && !(status == 204 || status == 205)) {
+        if (CollectionUtils.isNotEmpty(collection) && collection.iterator().next().indexOf("stream") != -1) {
+            logForResponse(BINARY_BODY_STR, status, elapsedTime);
+            return response;
+        }
+        if (response.body() != null && !(status == 204 || status == 205)) {
             byte[] bodyData = Util.toByteArray(response.body().asInputStream());
             bodyStr = new String(bodyData);
             response = response.toBuilder().body(bodyData).build();
