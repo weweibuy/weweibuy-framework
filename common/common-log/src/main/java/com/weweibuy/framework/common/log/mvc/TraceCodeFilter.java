@@ -20,7 +20,7 @@ import java.io.IOException;
 @Order(Integer.MIN_VALUE + 1000)
 public class TraceCodeFilter extends OncePerRequestFilter {
 
-    private final LogTraceCodeGetter logTraceCodeGetter = new HttpSimpleLoggerCodeGetter();
+    private final LogTraceCodeGetter<HttpServletRequest> logTraceCodeGetter = new HttpSimpleLoggerCodeGetter();
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {

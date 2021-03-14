@@ -2,9 +2,7 @@ package com.weweibuy.framework.common.mvc.resolver;
 
 import com.weweibuy.framework.common.mvc.resolver.annotation.SnakeCaseRequestParamBody;
 import org.springframework.beans.BeanUtils;
-import org.springframework.core.DefaultParameterNameDiscoverer;
 import org.springframework.core.MethodParameter;
-import org.springframework.core.ParameterNameDiscoverer;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.core.convert.TypeDescriptor;
@@ -31,8 +29,9 @@ import org.springframework.web.servlet.HandlerMapping;
 import javax.servlet.ServletRequest;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.util.*;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * @author durenhao
@@ -40,10 +39,7 @@ import java.util.*;
  **/
 public class SnakeCaseRequestParamResolver implements HandlerMethodArgumentResolver {
 
-    private static final ParameterNameDiscoverer parameterNameDiscoverer = new DefaultParameterNameDiscoverer();
-
     private WebBindingInitializer webBindingInitializer;
-
 
     public SnakeCaseRequestParamResolver() {
     }
