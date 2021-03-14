@@ -7,7 +7,6 @@ import feign.Feign;
 import feign.Logger;
 import feign.Request;
 import feign.Retryer;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
@@ -21,7 +20,6 @@ import java.util.concurrent.TimeUnit;
  * @date 2020/3/2 19:39
  **/
 @Configuration
-@Slf4j
 public class CommonFeignConfig {
 
     /**

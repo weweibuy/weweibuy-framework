@@ -61,7 +61,7 @@ public class HttpClientConfig {
      * @return
      */
     @Bean
-    @ConditionalOnMissingClass(value = {"org.springframework.cloud.openfeign.loadbalancer.FeignBlockingLoadBalancerClient"})
+    @ConditionalOnMissingClass(value = {"org.springframework.cloud.loadbalancer.support.LoadBalancerClientFactory"})
     public Client feignClient(HttpClient httpClient) {
         return new ApacheHttpClient(httpClient);
     }

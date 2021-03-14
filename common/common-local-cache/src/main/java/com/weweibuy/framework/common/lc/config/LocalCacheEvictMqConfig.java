@@ -4,6 +4,7 @@ import com.weweibuy.framework.common.lc.mq.LocalCacheEvictConsumer;
 import com.weweibuy.framework.rocketmq.config.ConsumerConfig;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.caffeine.CaffeineCacheManager;
 import org.springframework.context.annotation.Bean;
@@ -17,10 +18,11 @@ import org.springframework.context.annotation.Configuration;
  **/
 @Configuration
 @AutoConfigureAfter(CaffeineCacheManager.class)
+@ConditionalOnClass(name = "com.weweibuy.framework.rocketmq.config.ConsumerConfig")
 public class LocalCacheEvictMqConfig {
 
     @Bean
-    @ConditionalOnBean({CacheManager.class, ConsumerConfig.class})
+    @ConditionalOnBean(value = {CacheManager.class, ConsumerConfig.class})
     public LocalCacheEvictConsumer localCacheEvictConsumer() {
         return new LocalCacheEvictConsumer();
     }
