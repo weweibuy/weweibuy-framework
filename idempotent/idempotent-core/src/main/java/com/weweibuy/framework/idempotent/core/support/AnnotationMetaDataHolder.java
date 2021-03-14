@@ -19,7 +19,7 @@ import java.util.Map;
  **/
 public class AnnotationMetaDataHolder {
 
-    private Map<Method, IdempotentAnnotationMeta> hashMap = new HashMap();
+    private Map<Method, IdempotentAnnotationMeta> hashMap = new HashMap<>();
 
     public synchronized void putMetaData(Method method, Idempotent idempotent) {
         MethodParameter methodParameter = new MethodParameter(method, -1);

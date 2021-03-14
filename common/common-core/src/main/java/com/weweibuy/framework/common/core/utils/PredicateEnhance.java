@@ -35,7 +35,7 @@ public class PredicateEnhance<T> {
 
         public PredicateEnhance<T> withPredicate(Predicate<T> predicate) {
             this.predicate = predicate;
-            return new PredicateEnhance(value, predicate);
+            return new PredicateEnhance<>(value, predicate);
         }
 
     }
