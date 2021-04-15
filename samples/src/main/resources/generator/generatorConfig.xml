@@ -8,26 +8,22 @@
         <plugin type="com.itfsw.mybatis.generator.plugins.SelectOneByExamplePlugin"/>
         <plugin type="com.itfsw.mybatis.generator.plugins.LombokPlugin"/>
         <!--<plugin type="com.itfsw.mybatis.generator.plugins.BatchInsertPlugin">-->
-            <!--<property name="allowMultiQueries" value="true"/>-->
+        <!--<property name="allowMultiQueries" value="true"/>-->
         <!--</plugin>-->
         <plugin type="com.itfsw.mybatis.generator.plugins.ExampleEnhancedPlugin"/>
         <!--<plugin type="com.itfsw.mybatis.generator.plugins.ModelColumnPlugin"/>-->
         <plugin type="com.itfsw.mybatis.generator.plugins.ExampleTargetPlugin">
             <property name="targetPackage" value="com.weweibuy.framework.samples.mybatis.plugin.model.example"/>
         </plugin>
-        <plugin type="com.weweibuy.framework.mybatis.plugin.SelectOneByExampleForUpdatePlugin"/>
         <plugin type="com.weweibuy.framework.mybatis.plugin.OverwrittenMapperXmlPlugin"/>
-        <plugin type="com.weweibuy.framework.mybatis.plugin.SelectByExampleForUpdatePlugin"/>
         <plugin type="com.weweibuy.framework.mybatis.plugin.SelectByExampleWithLimitPlugin"/>
         <plugin type="com.itfsw.mybatis.generator.plugins.CommentPlugin">
             <!-- 自定义模板路径 -->
-            <property name="template" value="src/main/resources/generator/mybatis-generator-comment.ftl" />
+            <property name="template" value="src/main/resources/generator/mybatis-generator-comment.ftl"/>
         </plugin>
-
+        <plugin type="com.weweibuy.framework.mybatis.plugin.SelectForUpdatePlugin"/>
         <!-- Mapper注解插件 -->
         <plugin type="org.mybatis.generator.plugins.MapperAnnotationPlugin"/>
-
-
 
 
         <commentGenerator>
@@ -39,6 +35,7 @@
                         connectionURL="jdbc:mysql://106.12.208.53:3306/webuy_learning?characterEncoding=UTF-8"
                         userId="user01"
                         password="ak402507979">
+            <property name="useInformationSchema" value="true"/>
         </jdbcConnection>
 
         <!-- 默认false，把JDBC DECIMAL 和 NUMERIC 类型解析为 Integer，为 true时把JDBC DECIMAL 和
@@ -72,16 +69,14 @@
         </javaClientGenerator>
 
 
-
-
-        <table tableName="db_encrypt" domainObjectName="DBEncrypt" >
-            <columnOverride column="phone"  typeHandler="com.weweibuy.framework.common.db.type.AesEncryptTypeHandler"/>
-            <columnOverride column="id_no"  typeHandler="com.weweibuy.framework.common.db.type.AesEncryptTypeHandler"/>
+        <table tableName="db_encrypt" domainObjectName="DBEncrypt">
+            <columnOverride column="phone" typeHandler="com.weweibuy.framework.common.db.type.AesEncryptTypeHandler"/>
+            <columnOverride column="id_no" typeHandler="com.weweibuy.framework.common.db.type.AesEncryptTypeHandler"/>
         </table>
 
-        <table tableName="cm_order" domainObjectName="CmOrder" >
+        <table tableName="cm_order" domainObjectName="CmOrder">
             <generatedKey identity="true" column="id" sqlStatement="SELECT LAST_INSERT_ID()"/>
-            <columnOverride column="is_delete"  property="deleted"  javaType="Boolean"/>
+            <columnOverride column="is_delete" property="deleted" javaType="Boolean"/>
         </table>
     </context>
 </generatorConfiguration>

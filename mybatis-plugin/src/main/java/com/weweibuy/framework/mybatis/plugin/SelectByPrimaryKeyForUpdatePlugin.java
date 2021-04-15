@@ -1,10 +1,8 @@
 
 package com.weweibuy.framework.mybatis.plugin;
 
-import com.itfsw.mybatis.generator.plugins.utils.BasePlugin;
-import com.itfsw.mybatis.generator.plugins.utils.FormatTools;
-import com.itfsw.mybatis.generator.plugins.utils.JavaElementGeneratorTools;
-import com.itfsw.mybatis.generator.plugins.utils.XmlElementGeneratorTools;
+import com.itfsw.mybatis.generator.plugins.utils.*;
+import com.itfsw.mybatis.generator.plugins.utils.hook.ISelectOneByExamplePluginHook;
 import org.mybatis.generator.api.IntrospectedTable;
 import org.mybatis.generator.api.dom.java.*;
 import org.mybatis.generator.api.dom.xml.Attribute;
@@ -17,18 +15,18 @@ import static org.mybatis.generator.internal.util.StringUtility.stringHasValue;
 /**
  * for update 插件
  */
-public class SelectByExampleWithLimitPlugin extends BasePlugin {
-    public static final String METHOD_SELECT_LIMIT_BY_EXAMPLE = "selectByExampleWithLimit";  // 方法名
-    public static final String METHOD_SELECT_LIMIT_BY_EXAMPLE_WITH_BLOBS = "selectByExampleWithBLOBsWithLimit";  // 方法名
-    private XmlElement selectOneByExampleWithLimitEle;
-    private XmlElement selectOneByExampleWithBLOBsWithLimitEle;
+public class SelectByPrimaryKeyForUpdatePlugin extends BasePlugin {
+    public static final String METHOD_SELECT_PRIMARY_KEY_FOR_UPDATE = "selectByPrimaryKeyForUpdate";  // 方法名
+    public static final String METHOD_SELECT_BY_PRIMARY_KEY_WITHBLOBS_FOR_UPDATE = "selectByPrimaryKeyWithBLOBsForUpdate";  // 方法名
+    private XmlElement selectByPrimaryKeyForUpdateEle;
+    private XmlElement selectByPrimaryKeyWithBLOBsForUpdateEle;
 
     @Override
     public void initialized(IntrospectedTable introspectedTable) {
         super.initialized(introspectedTable);
         // bug:26,27
-        this.selectOneByExampleWithBLOBsWithLimitEle = null;
-        this.selectOneByExampleWithLimitEle = null;
+        this.selectByPrimaryKeyForUpdateEle = null;
+        this.selectByPrimaryKeyWithBLOBsForUpdateEle = null;
     }
 
 
@@ -46,19 +44,21 @@ public class SelectByExampleWithLimitPlugin extends BasePlugin {
         FullyQualifiedJavaType baseRecordType = new FullyQualifiedJavaType(introspectedTable.getBaseRecordType());
         FullyQualifiedJavaType listType = new FullyQualifiedJavaType("java.util.List");
         listType.addTypeArgument(baseRecordType);
-        FullyQualifiedJavaType integer = new FullyQualifiedJavaType("java.lang.Integer");
 
         Method selectMethod = JavaElementGeneratorTools.generateMethod(
-                METHOD_SELECT_LIMIT_BY_EXAMPLE_WITH_BLOBS,
+                METHOD_SELECT_BY_PRIMARY_KEY_WITHBLOBS_FOR_UPDATE,
                 JavaVisibility.DEFAULT,
                 listType,
-                new Parameter(new FullyQualifiedJavaType(introspectedTable.getExampleType()), "example", "@Param(\"example\")"),
-                new Parameter(integer, "limit", "@Param(\"limit\")")
+                new Parameter(new FullyQualifiedJavaType(introspectedTable.getPrimaryKeyType()), "id")
         );
         commentGenerator.addGeneralMethodComment(selectMethod, introspectedTable);
 
-        // interface 增加方法
-        FormatTools.addMethodWithBestPosition(interfaze, selectMethod);
+        // hook
+        if (PluginTools.getHook(ISelectOneByExamplePluginHook.class).clientSelectOneByExampleWithBLOBsMethodGenerated(selectMethod, interfaze, introspectedTable)) {
+            // interface 增加方法
+            FormatTools.addMethodWithBestPosition(interfaze, selectMethod);
+            logger.debug("itfsw(SelectByPrimaryKeyForUpdate插件):" + interfaze.getType().getShortName() + "增加selectByPrimaryKeyWithBLOBsForUpdate方法。");
+        }
         return super.clientSelectByExampleWithBLOBsMethodGenerated(method, interfaze, introspectedTable);
     }
 
@@ -76,22 +76,22 @@ public class SelectByExampleWithLimitPlugin extends BasePlugin {
 
         FullyQualifiedJavaType baseRecordType = new FullyQualifiedJavaType(introspectedTable.getBaseRecordType());
         FullyQualifiedJavaType listType = new FullyQualifiedJavaType("java.util.List");
-        FullyQualifiedJavaType integer = new FullyQualifiedJavaType("java.lang.Integer");
-
         listType.addTypeArgument(baseRecordType);
 
-
         Method selectMethod = JavaElementGeneratorTools.generateMethod(
-                METHOD_SELECT_LIMIT_BY_EXAMPLE,
+                METHOD_SELECT_PRIMARY_KEY_FOR_UPDATE,
                 JavaVisibility.DEFAULT,
                 listType,
-                new Parameter(new FullyQualifiedJavaType(introspectedTable.getExampleType()), "example", "@Param(\"example\")"),
-                new Parameter(integer, "limit", "@Param(\"limit\")")
+                new Parameter(new FullyQualifiedJavaType(introspectedTable.getPrimaryKeyType()), "id")
         );
         commentGenerator.addGeneralMethodComment(selectMethod, introspectedTable);
 
-        // interface 增加方法
-        FormatTools.addMethodWithBestPosition(interfaze, selectMethod);
+        // hook
+        if (PluginTools.getHook(ISelectOneByExamplePluginHook.class).clientSelectOneByExampleWithoutBLOBsMethodGenerated(selectMethod, interfaze, introspectedTable)) {
+            // interface 增加方法
+            FormatTools.addMethodWithBestPosition(interfaze, selectMethod);
+            logger.debug("itfsw(SelectByPrimaryKeyForUpdate插件):" + interfaze.getType().getShortName() + "增加selectByPrimaryKeyForUpdate方法。");
+        }
         return super.clientSelectByExampleWithoutBLOBsMethodGenerated(selectMethod, interfaze, introspectedTable);
     }
 
@@ -111,15 +111,15 @@ public class SelectByExampleWithLimitPlugin extends BasePlugin {
         commentGenerator.addComment(selectOneElement);
 
         // 添加ID
-        selectOneElement.addAttribute(new Attribute("id", METHOD_SELECT_LIMIT_BY_EXAMPLE));
+        selectOneElement.addAttribute(new Attribute("id", METHOD_SELECT_BY_PRIMARY_KEY_WITHBLOBS_FOR_UPDATE));
         // 添加返回类型
         selectOneElement.addAttribute(new Attribute("resultMap", introspectedTable.getBaseResultMapId()));
         // 添加参数类型
-        selectOneElement.addAttribute(new Attribute("parameterType", "map"));
+        selectOneElement.addAttribute(new Attribute("parameterType", introspectedTable.getPrimaryKeyType()));
         selectOneElement.addElement(new TextElement("select"));
 
         XmlElement ifDistinctElement = new XmlElement("if");
-        ifDistinctElement.addAttribute(new Attribute("test", "example.distinct"));
+        ifDistinctElement.addAttribute(new Attribute("test", "distinct"));
         ifDistinctElement.addElement(new TextElement("distinct"));
         selectOneElement.addElement(ifDistinctElement);
 
@@ -136,19 +136,17 @@ public class SelectByExampleWithLimitPlugin extends BasePlugin {
         sb.append("from ");
         sb.append(introspectedTable.getAliasedFullyQualifiedTableNameAtRuntime());
         selectOneElement.addElement(new TextElement(sb.toString()));
-        selectOneElement.addElement(XmlElementGeneratorTools.getUpdateByExampleIncludeElement(introspectedTable));
+        selectOneElement.addElement(XmlElementGeneratorTools.getExampleIncludeElement(introspectedTable));
 
         XmlElement ifElement = new XmlElement("if");
-        ifElement.addAttribute(new Attribute("test", "example.orderByClause != null"));  //$NON-NLS-2$
-        ifElement.addElement(new TextElement("order by ${example.orderByClause}"));
+        ifElement.addAttribute(new Attribute("test", "orderByClause != null"));  //$NON-NLS-2$
+        ifElement.addElement(new TextElement("order by ${orderByClause}"));
         selectOneElement.addElement(ifElement);
 
-        XmlElement ifLimitElement = new XmlElement("if");
-        ifLimitElement.addAttribute(new Attribute("test", "limit != null"));  //$NON-NLS-2$
-        ifLimitElement.addElement(new TextElement("limit #{limit}"));
-        selectOneElement.addElement(ifLimitElement);
+        // 只查询一条
+        selectOneElement.addElement(new TextElement("for update"));
 
-        this.selectOneByExampleWithLimitEle = selectOneElement;
+        this.selectByPrimaryKeyForUpdateEle = selectOneElement;
         return super.sqlMapSelectByExampleWithoutBLOBsElementGenerated(element, introspectedTable);
     }
 
@@ -167,16 +165,16 @@ public class SelectByExampleWithLimitPlugin extends BasePlugin {
         commentGenerator.addComment(selectOneWithBLOBsElement);
 
         // 添加ID
-        selectOneWithBLOBsElement.addAttribute(new Attribute("id", METHOD_SELECT_LIMIT_BY_EXAMPLE_WITH_BLOBS));
+        selectOneWithBLOBsElement.addAttribute(new Attribute("id", METHOD_SELECT_PRIMARY_KEY_FOR_UPDATE));
         // 添加返回类型
         selectOneWithBLOBsElement.addAttribute(new Attribute("resultMap", introspectedTable.getResultMapWithBLOBsId()));
         // 添加参数类型
-        selectOneWithBLOBsElement.addAttribute(new Attribute("parameterType", introspectedTable.getExampleType()));
+        selectOneWithBLOBsElement.addAttribute(new Attribute("parameterType", introspectedTable.getPrimaryKeyType()));
         // 添加查询SQL
         selectOneWithBLOBsElement.addElement(new TextElement("select"));
 
         XmlElement ifDistinctElement = new XmlElement("if");
-        ifDistinctElement.addAttribute(new Attribute("test", "example.distinct"));
+        ifDistinctElement.addAttribute(new Attribute("test", "distinct"));
         ifDistinctElement.addElement(new TextElement("distinct"));
         selectOneWithBLOBsElement.addElement(ifDistinctElement);
 
@@ -196,36 +194,52 @@ public class SelectByExampleWithLimitPlugin extends BasePlugin {
         sb.append("from ");
         sb.append(introspectedTable.getAliasedFullyQualifiedTableNameAtRuntime());
         selectOneWithBLOBsElement.addElement(new TextElement(sb.toString()));
-        selectOneWithBLOBsElement.addElement(XmlElementGeneratorTools.getUpdateByExampleIncludeElement(introspectedTable));
+        selectOneWithBLOBsElement.addElement(XmlElementGeneratorTools.getExampleIncludeElement(introspectedTable));
 
         XmlElement ifElement1 = new XmlElement("if");
-        ifElement1.addAttribute(new Attribute("test", "example.orderByClause != null"));  //$NON-NLS-2$
-        ifElement1.addElement(new TextElement("order by ${example.orderByClause}"));
+        ifElement1.addAttribute(new Attribute("test", "orderByClause != null"));  //$NON-NLS-2$
+        ifElement1.addElement(new TextElement("order by ${orderByClause}"));
         selectOneWithBLOBsElement.addElement(ifElement1);
 
-        XmlElement ifLimitElement = new XmlElement("if");
-        ifLimitElement.addAttribute(new Attribute("test", "limit != null"));  //$NON-NLS-2$
-        ifLimitElement.addElement(new TextElement("limit #{limit}"));
-        selectOneWithBLOBsElement.addElement(ifLimitElement);
+        // 只查询一条
+        selectOneWithBLOBsElement.addElement(new TextElement(" for update"));
 
 
-        this.selectOneByExampleWithBLOBsWithLimitEle = selectOneWithBLOBsElement;
+        this.selectByPrimaryKeyWithBLOBsForUpdateEle = selectOneWithBLOBsElement;
         return super.sqlMapSelectByExampleWithBLOBsElementGenerated(element, introspectedTable);
     }
 
     @Override
     public boolean sqlMapDocumentGenerated(Document document, IntrospectedTable introspectedTable) {
-        if (selectOneByExampleWithLimitEle != null) {
-            // 添加到根节点
-            FormatTools.addElementWithBestPosition(document.getRootElement(), selectOneByExampleWithLimitEle);
+        if (selectByPrimaryKeyForUpdateEle != null) {
+            // hook
+            if (PluginTools.getHook(ISelectOneByExamplePluginHook.class).sqlMapSelectOneByExampleWithoutBLOBsElementGenerated(document, selectByPrimaryKeyForUpdateEle, introspectedTable)) {
+                // 添加到根节点
+                FormatTools.addElementWithBestPosition(document.getRootElement(), selectByPrimaryKeyForUpdateEle);
+                logger.debug("itfsw(SelectByPrimaryKeyForUpdate插件):" + introspectedTable.getMyBatis3XmlMapperFileName() + "增加sselectByPrimaryKeyForUpdate方法。");
+            }
         }
 
-        if (selectOneByExampleWithBLOBsWithLimitEle != null) {
-            // 添加到根节点
-            FormatTools.addElementWithBestPosition(document.getRootElement(), selectOneByExampleWithBLOBsWithLimitEle);
+        if (selectByPrimaryKeyWithBLOBsForUpdateEle != null) {
+            // hook
+            if (PluginTools.getHook(ISelectOneByExamplePluginHook.class).sqlMapSelectOneByExampleWithBLOBsElementGenerated(document, selectByPrimaryKeyWithBLOBsForUpdateEle, introspectedTable)) {
+                // 添加到根节点
+                FormatTools.addElementWithBestPosition(document.getRootElement(), selectByPrimaryKeyWithBLOBsForUpdateEle);
+                logger.debug("itfsw(SelectByPrimaryKeyForUpdate插件):" + introspectedTable.getMyBatis3XmlMapperFileName() + "增加selectByPrimaryKeyWithBLOBsForUpdate方法。");
+            }
         }
 
         return true;
     }
 
+
+    @Override
+    public boolean clientSelectByPrimaryKeyMethodGenerated(Method method, Interface interfaze, IntrospectedTable introspectedTable) {
+        return super.clientSelectByPrimaryKeyMethodGenerated(method, interfaze, introspectedTable);
+    }
+
+    @Override
+    public boolean clientSelectByPrimaryKeyMethodGenerated(Method method, TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
+        return super.clientSelectByPrimaryKeyMethodGenerated(method, topLevelClass, introspectedTable);
+    }
 }

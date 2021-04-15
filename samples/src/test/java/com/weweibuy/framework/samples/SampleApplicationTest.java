@@ -37,4 +37,12 @@ public class SampleApplicationTest {
 
     }
 
+
+
+    public class Order {
+
+        private Long customerId;
+
+        private String orderNo;
+    }
 }
