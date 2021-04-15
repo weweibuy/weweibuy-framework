@@ -12,6 +12,8 @@ public interface CmOrderMapper {
 
     int deleteByExample(CmOrderExample example);
 
+    int deleteByPrimaryKey(Long id);
+
     int insert(CmOrder record);
 
     int insertSelective(CmOrder record);
@@ -20,13 +22,21 @@ public interface CmOrderMapper {
 
     CmOrder selectOneByExampleForUpdate(CmOrderExample example);
 
-    List<CmOrder> selectByExampleForUpdate(CmOrderExample example);
-
     List<CmOrder> selectByExampleWithLimit(@Param("example") CmOrderExample example, @Param("limit") Integer limit);
 
+    List<CmOrder> selectByExampleForUpdate(CmOrderExample example);
+
     List<CmOrder> selectByExample(CmOrderExample example);
+
+    CmOrder selectByPrimaryKeyForUpdate(Long id);
+
+    CmOrder selectByPrimaryKey(Long id);
 
     int updateByExampleSelective(@Param("record") CmOrder record, @Param("example") CmOrderExample example);
 
     int updateByExample(@Param("record") CmOrder record, @Param("example") CmOrderExample example);
+
+    int updateByPrimaryKeySelective(CmOrder record);
+
+    int updateByPrimaryKey(CmOrder record);
 }
