@@ -2,10 +2,9 @@ package com.weweibuy.framework.samples.mybatis.plugin.mapper;
 
 import com.weweibuy.framework.samples.mybatis.plugin.model.example.DBEncryptExample;
 import com.weweibuy.framework.samples.mybatis.plugin.model.po.DBEncrypt;
+import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
-
-import java.util.List;
 
 @Mapper
 public interface DBEncryptMapper {

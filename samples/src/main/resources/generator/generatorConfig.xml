@@ -7,11 +7,7 @@
     <context id="testTables" targetRuntime="MyBatis3">
         <plugin type="com.itfsw.mybatis.generator.plugins.SelectOneByExamplePlugin"/>
         <plugin type="com.itfsw.mybatis.generator.plugins.LombokPlugin"/>
-        <!--<plugin type="com.itfsw.mybatis.generator.plugins.BatchInsertPlugin">-->
-        <!--<property name="allowMultiQueries" value="true"/>-->
-        <!--</plugin>-->
         <plugin type="com.itfsw.mybatis.generator.plugins.ExampleEnhancedPlugin"/>
-        <!--<plugin type="com.itfsw.mybatis.generator.plugins.ModelColumnPlugin"/>-->
         <plugin type="com.itfsw.mybatis.generator.plugins.ExampleTargetPlugin">
             <property name="targetPackage" value="com.weweibuy.framework.samples.mybatis.plugin.model.example"/>
         </plugin>
@@ -21,9 +17,14 @@
             <!-- 自定义模板路径 -->
             <property name="template" value="src/main/resources/generator/mybatis-generator-comment.ftl"/>
         </plugin>
-        <plugin type="com.weweibuy.framework.mybatis.plugin.SelectForUpdatePlugin"/>
         <!-- Mapper注解插件 -->
         <plugin type="org.mybatis.generator.plugins.MapperAnnotationPlugin"/>
+        <plugin type="com.itfsw.mybatis.generator.plugins.LimitPlugin">
+            <!-- 通过配置startPage影响Example中的page方法开始分页的页码，默认分页从0开始 -->
+            <property name="startPage" value="0"/>
+        </plugin>
+        <plugin type="com.weweibuy.framework.mybatis.plugin.SelectForUpdatePlugin"/>
+        <plugin type="com.weweibuy.framework.mybatis.plugin.SerializablePlugin"/>
 
 
         <commentGenerator>

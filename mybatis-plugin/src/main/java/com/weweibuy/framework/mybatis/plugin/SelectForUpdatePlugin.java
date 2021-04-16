@@ -1,6 +1,9 @@
 package com.weweibuy.framework.mybatis.plugin;
 
-import com.itfsw.mybatis.generator.plugins.utils.*;
+import com.itfsw.mybatis.generator.plugins.utils.BasePlugin;
+import com.itfsw.mybatis.generator.plugins.utils.FormatTools;
+import com.itfsw.mybatis.generator.plugins.utils.JavaElementGeneratorTools;
+import com.itfsw.mybatis.generator.plugins.utils.XmlElementTools;
 import com.itfsw.mybatis.generator.plugins.utils.hook.ISelectOneByExamplePluginHook;
 import org.mybatis.generator.api.IntrospectedColumn;
 import org.mybatis.generator.api.IntrospectedTable;
@@ -162,7 +165,7 @@ public class SelectForUpdatePlugin extends BasePlugin implements ISelectOneByExa
         xmlElement.addAttribute(new Attribute("id", METHOD_SELECT_PRIMARY_KEY_FOR_UPDATE));
         commentGenerator.addComment(xmlElement);
         this.selectByPrimaryKeyForUpdateEle = xmlElement;
-        return super.sqlMapSelectByExampleWithoutBLOBsElementGenerated(element, introspectedTable);
+        return super.sqlMapSelectByPrimaryKeyElementGenerated(element, introspectedTable);
     }
 
     /**
@@ -187,7 +190,7 @@ public class SelectForUpdatePlugin extends BasePlugin implements ISelectOneByExa
         xmlElement.addAttribute(new Attribute("id", METHOD_SELECT_BY_EXAMPLE_WITH_BLOBS_FOR_UPDATE));
         commentGenerator.addComment(xmlElement);
         this.selectByExampleWithBLOBsForUpdateEle = xmlElement;
-        return super.sqlMapSelectByExampleWithoutBLOBsElementGenerated(element, introspectedTable);
+        return super.sqlMapSelectByExampleWithBLOBsElementGenerated(element, introspectedTable);
     }
 
 
@@ -212,7 +215,7 @@ public class SelectForUpdatePlugin extends BasePlugin implements ISelectOneByExa
 
     private XmlElement cloneAndAddForUpdateElement(XmlElement element) {
         XmlElement clone = XmlElementTools.clone(element);
-        clone.getAttributes().removeIf(a -> a.getName().equals("id"));
+        clone.getAttributes().removeIf(a -> "id".equals(a.getName()));
         clone.addElement(new TextElement("for update"));
         return clone;
     }
@@ -224,7 +227,7 @@ public class SelectForUpdatePlugin extends BasePlugin implements ISelectOneByExa
         if (selectByPrimaryKeyForUpdateEle != null) {
             // 添加到根节点
             FormatTools.addElementWithBestPosition(document.getRootElement(), selectByPrimaryKeyForUpdateEle);
-            logger.debug("itfsw(查询单条数据插件):" + introspectedTable.getMyBatis3XmlMapperFileName() + "增加selectByPrimaryKeyForUpdate方法。");
+            logger.debug("itfsw(forUpdate插件):" + introspectedTable.getMyBatis3XmlMapperFileName() + "增加selectByPrimaryKeyForUpdate方法。");
         }
         if (selectByExampleForUpdateEle != null) {
             // 添加到根节点
