@@ -82,6 +82,14 @@
     <if test="orderByClause != null">
       order by ${orderByClause}
     </if>
+    <if test="rows != null">
+      <if test="offset != null">
+        limit ${offset}, ${rows}
+      </if>
+      <if test="offset == null">
+        limit ${rows}
+      </if>
+    </if>
   </select>
   <select id="selectByExampleForUpdate" parameterType="com.weweibuy.framework.samples.mybatis.plugin.model.example.CmOrderExample" resultMap="BaseResultMap">
     select
@@ -95,6 +103,14 @@
     </if>
     <if test="orderByClause != null">
       order by ${orderByClause}
+    </if>
+    <if test="rows != null">
+      <if test="offset != null">
+        limit ${offset}, ${rows}
+      </if>
+      <if test="offset == null">
+        limit ${rows}
+      </if>
     </if>
     for update
   </select>

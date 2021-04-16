@@ -1,10 +1,12 @@
 package com.weweibuy.framework.samples.mybatis.plugin.model.po;
 
-import java.time.LocalDateTime;
 import lombok.Data;
 
+import java.io.Serializable;
+import java.time.LocalDateTime;
+
 @Data
-public class CmOrder {
+public class CmOrder implements Serializable {
     /**
      * id
      */
