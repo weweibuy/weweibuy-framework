@@ -126,7 +126,7 @@ public interface CommonConstant {
         String RESPONSE_MESSAGE_FIELD_MSG = "msg";
 
         /**
-         *
+         * 响应 系统id
          */
         String RESPONSE_HEADER_FIELD_SYSTEM_ID = "X-Sid";
 

@@ -15,7 +15,12 @@ import java.util.stream.Collectors;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ExceptionUtils {
 
-
+    /**
+     * 拼接全部异常信息
+     *
+     * @param throwable
+     * @return
+     */
     public static String exceptionMsg(Throwable throwable) {
         List<Throwable> throwableList = org.apache.commons.lang3.exception.ExceptionUtils.getThrowableList(throwable);
         return throwableList.stream()

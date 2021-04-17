@@ -180,7 +180,6 @@ public class HttpRequestUtils {
      * @return
      */
     public static String urlDecode(String str) {
-        String decode = null;
         try {
             return URLDecoder.decode(str, CommonConstant.CharsetConstant.UTF8_STR);
         } catch (UnsupportedEncodingException e) {

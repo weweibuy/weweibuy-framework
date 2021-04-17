@@ -7,6 +7,7 @@ import feign.RequestInterceptor;
 import feign.RequestTemplate;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.core.annotation.Order;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -18,6 +19,7 @@ import java.net.UnknownHostException;
  * @date 2020/7/11 11:41
  **/
 @Slf4j
+@Order(Integer.MIN_VALUE + 100)
 public class TraceContextFeignInterceptor implements RequestInterceptor {
 
     private static String ip;
@@ -37,7 +39,6 @@ public class TraceContextFeignInterceptor implements RequestInterceptor {
     }
 
     private static void addTraceHeader(RequestTemplate request) {
-
         String traceCode = LogTraceContext.getTraceCode()
                 .orElse(IdWorker.nextStringId());
         String userCode = LogTraceContext.getUserCode()
