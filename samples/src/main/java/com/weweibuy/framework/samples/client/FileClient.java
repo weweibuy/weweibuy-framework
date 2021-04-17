@@ -18,6 +18,10 @@ import org.springframework.web.multipart.MultipartFile;
 @FeignClient(name = "fileClient", url = "http://localhost:9000", configuration = SpringFormEncoder.class)
 public interface FileClient {
 
+    /*
+     * SpringFormEncoder +  consumes = MediaType.MULTIPART_FORM_DATA_VALUE 是feign上传文件的固定格式
+     * Response 是feign 下载文件的接受详响应的固定格式
+     */
     @PostMapping(value = "/hello-file", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     Response uploadFile(@RequestPart("file") MultipartFile file, @RequestParam("name") String name);
 

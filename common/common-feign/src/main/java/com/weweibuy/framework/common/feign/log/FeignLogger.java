@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -25,7 +26,7 @@ public class FeignLogger extends Logger {
     private static final String BINARY_BODY_STR = "Binary data";
 
     public static void logForResponse(String body, int status, long elapsedTime) {
-        log.info("Feign 响应status: {} , Body: {}, 耗时: {}",
+        log.info("Feign 响应 Status: {}, Body: {}, 耗时: {}",
                 status,
                 body,
                 elapsedTime);
@@ -45,7 +46,11 @@ public class FeignLogger extends Logger {
          * String bodyStr = BINARY_BODY_STR.equals(bodyStr) ? StringUtils.EMPTY : bodyStr
          *
          */
-        String bodyStr = Optional.ofNullable(request.body())
+        Collection<String> contentType = request.headers().get(HttpHeaders.CONTENT_TYPE);
+        boolean match = CollectionUtils.isNotEmpty(contentType) && contentType.stream()
+                .anyMatch(c -> c.indexOf(MediaType.MULTIPART_FORM_DATA_VALUE) != -1);
+
+        String bodyStr = match ? BINARY_BODY_STR : Optional.ofNullable(request.body())
                 .map(String::new)
                 .orElse(StringUtils.EMPTY);
         log.info("Feign 请求地址: {}, Method: {}, Body: {}",
