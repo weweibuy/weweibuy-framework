@@ -3,14 +3,12 @@ package com.weweibuy.framework.common.feign.config;
 import com.weweibuy.framework.common.feign.log.FeignLogger;
 import com.weweibuy.framework.common.feign.log.TraceContextFeignInterceptor;
 import com.weweibuy.framework.common.feign.support.CustomFeignErrorDecoder;
-import feign.Feign;
-import feign.Logger;
-import feign.Request;
-import feign.Retryer;
+import feign.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -21,6 +19,7 @@ import java.util.concurrent.TimeUnit;
  **/
 @Configuration
 public class CommonFeignConfig {
+
 
     /**
      * feign 超时覆盖机制,  配置 feign.client.config.xxx.readTimeout 最优先
@@ -33,11 +32,11 @@ public class CommonFeignConfig {
      */
     @Bean
     @Scope("prototype")
-    public Feign.Builder feignBuilder(Retryer retryer) {
+    public Feign.Builder feignBuilder(Retryer retryer, List<RequestInterceptor> requestInterceptorList) {
         return Feign.builder()
                 .retryer(retryer)
                 .logLevel(Logger.Level.BASIC)
-                .requestInterceptor(traceContextFeignInterceptor())
+                .requestInterceptors(requestInterceptorList)
                 .errorDecoder(new CustomFeignErrorDecoder())
                 .options(new Request.Options(1, TimeUnit.SECONDS,
                         3, TimeUnit.SECONDS, false));

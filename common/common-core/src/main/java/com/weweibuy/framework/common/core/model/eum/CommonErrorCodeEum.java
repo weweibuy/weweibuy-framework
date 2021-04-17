@@ -23,7 +23,7 @@ public enum CommonErrorCodeEum implements ResponseCodeAndMsg {
 
     FORBIDDEN("403", "没有权限"),
 
-    NOT_FOUND("404", "请求地址不存在"),
+    NOT_FOUND("404", "请求地址或数据不存在"),
 
     UNSUPPORTED_MEDIA_TYPE("415", "不支持的请求类型"),
 
