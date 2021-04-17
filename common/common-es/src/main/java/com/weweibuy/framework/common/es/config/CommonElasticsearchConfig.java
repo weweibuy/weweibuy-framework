@@ -2,7 +2,6 @@ package com.weweibuy.framework.common.es.config;
 
 import com.weweibuy.framework.common.es.convert.CustomerMappingElasticsearchConverter;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.data.elasticsearch.core.convert.ElasticsearchConverter;
 import org.springframework.data.elasticsearch.core.convert.MappingElasticsearchConverter;
 import org.springframework.data.elasticsearch.core.mapping.ElasticsearchPersistentEntity;
@@ -22,7 +21,7 @@ import org.springframework.data.elasticsearch.core.mapping.SimpleElasticsearchMa
  * @author durenhao
  * @date 2019/8/12 20:35
  **/
-@Configuration
+//@Configuration
 public class CommonElasticsearchConfig {
 
     @Bean
