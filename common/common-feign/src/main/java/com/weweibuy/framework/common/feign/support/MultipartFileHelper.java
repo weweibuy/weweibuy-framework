@@ -52,9 +52,14 @@ public class MultipartFileHelper {
      * @throws IOException
      */
     public static MultipartFile createMultipartFile(InputStream inputStream, String fileName) throws IOException {
+        return createMultipartFile(inputStream, fileName, MediaType.TEXT_PLAIN_VALUE);
+    }
+
+
+    public static MultipartFile createMultipartFile(InputStream inputStream, String fileName, String contentType) throws IOException {
         int available = inputStream.available();
         FileItem fileItem = new DiskFileItem("file",
-                MediaType.TEXT_PLAIN_VALUE,
+                contentType,
                 false,
                 fileName,
                 available,
