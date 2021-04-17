@@ -5,6 +5,7 @@ import com.weweibuy.framework.common.feign.support.MultipartFileHelper;
 import com.weweibuy.framework.samples.client.*;
 import feign.Response;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.io.IOUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -51,15 +52,9 @@ public class FeignController {
         InputStream inputStream = response.body().asInputStream();
         return ResponseEntity.status(HttpStatus.OK)
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + name)
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + file.getOriginalFilename())
                 .body(outputStream ->
-                {
-                    byte[] buf = new byte[1024];
-                    int len = 0;
-                    while ((len = inputStream.read(buf)) != -1) {
-                        outputStream.write(buf);
-                    }
-                });
+                        IOUtils.copy(inputStream, outputStream));
     }
 
 }
