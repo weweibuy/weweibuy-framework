@@ -108,10 +108,10 @@
             <artifactId>common-db</artifactId>
         </dependency>
 
-        <!--<dependency>-->
-            <!--<groupId>com.weweibuy.framework</groupId>-->
-            <!--<artifactId>common-es</artifactId>-->
-        <!--</dependency>-->
+        <dependency>
+            <groupId>com.weweibuy.framework</groupId>
+            <artifactId>common-es</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>com.weweibuy.framework</groupId>
