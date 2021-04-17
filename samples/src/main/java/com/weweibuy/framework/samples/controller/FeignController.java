@@ -1,6 +1,7 @@
 package com.weweibuy.framework.samples.controller;
 
 import com.weweibuy.framework.common.core.model.dto.CommonDataResponse;
+import com.weweibuy.framework.common.feign.support.MultipartFileHelper;
 import com.weweibuy.framework.samples.client.*;
 import feign.Response;
 import lombok.RequiredArgsConstructor;
@@ -36,7 +37,6 @@ public class FeignController {
     private final MyLbFeignClient2 myLbFeignClient2;
 
 
-
     @GetMapping("/feign")
     public Object sendToFeign() {
         CommonDataResponse<String> token_123 = myFeignClient.helloPost(CommonDataResponse.success(""), "token_123");
@@ -46,21 +46,20 @@ public class FeignController {
 
     @PostMapping("/upload")
     public ResponseEntity<StreamingResponseBody> uploadFile(MultipartFile file, String name) throws IOException {
-        Response response = fileClient.uploadFile(file, name);
-        try (InputStream inputStream = response.body().asInputStream()) {
-            return ResponseEntity.status(HttpStatus.OK)
-                    .contentType(MediaType.APPLICATION_OCTET_STREAM)
-                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + name)
-                    .body(outputStream ->
-                    {
-                        byte[] buf = new byte[1024];
-                        int len = 0;
-                        while ((len = inputStream.read(buf)) != -1) {
-                            outputStream.write(buf);
-                        }
-                    });
-        }
-
+        MultipartFile multipartFile = MultipartFileHelper.createMultipartFile(file.getInputStream(), file.getOriginalFilename());
+        Response response = fileClient.uploadFile(multipartFile, name);
+        InputStream inputStream = response.body().asInputStream();
+        return ResponseEntity.status(HttpStatus.OK)
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + name)
+                .body(outputStream ->
+                {
+                    byte[] buf = new byte[1024];
+                    int len = 0;
+                    while ((len = inputStream.read(buf)) != -1) {
+                        outputStream.write(buf);
+                    }
+                });
     }
 
 }
