@@ -47,6 +47,8 @@
         <apollo-client.version>1.3.0</apollo-client.version>
         <easyexcel.version>2.2.7</easyexcel.version>
         <fastcsv.version>1.0.4</fastcsv.version>
+        <itext7.version>7.1.15</itext7.version>
+        <itext.html2pdf.version>3.0.4</itext.html2pdf.version>
     </properties>
 
     <dependencyManagement>
@@ -202,6 +204,24 @@
             </dependency>
 
             <dependency>
+                <groupId>com.weweibuy.framework</groupId>
+                <artifactId>common-util-excel</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.weweibuy.framework</groupId>
+                <artifactId>common-util-csv</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.weweibuy.framework</groupId>
+                <artifactId>common-util-pdf</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
                 <version>${guava.version}</version>
@@ -319,6 +339,19 @@
                 <groupId>de.siegmar</groupId>
                 <artifactId>fastcsv</artifactId>
                 <version>${fastcsv.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.itextpdf</groupId>
+                <artifactId>itext7-core</artifactId>
+                <version>${itext7.version}</version>
+                <type>pom</type>
+            </dependency>
+
+            <dependency>
+                <groupId>com.itextpdf</groupId>
+                <artifactId>html2pdf</artifactId>
+                <version>${itext.html2pdf.version}</version>
             </dependency>
 
         </dependencies>
