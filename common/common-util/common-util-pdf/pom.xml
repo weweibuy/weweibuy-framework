@@ -28,5 +28,10 @@
             <artifactId>html2pdf</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>org.xhtmlrenderer</groupId>
+            <artifactId>flying-saucer-pdf</artifactId>
+        </dependency>
+
     </dependencies>
 </project>
