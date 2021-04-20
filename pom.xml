@@ -354,6 +354,12 @@
                 <version>${itext.html2pdf.version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>org.xhtmlrenderer</groupId>
+                <artifactId>flying-saucer-pdf</artifactId>
+                <version>9.0.8</version>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 
