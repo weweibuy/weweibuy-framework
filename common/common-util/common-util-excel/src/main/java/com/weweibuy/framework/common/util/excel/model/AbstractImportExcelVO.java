@@ -26,7 +26,9 @@ public abstract class AbstractImportExcelVO {
      *
      * @return
      */
-    protected abstract String doValidate();
+    protected String doValidate() {
+        return null;
+    }
 
 
     public boolean validate() {
