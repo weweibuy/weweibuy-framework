@@ -19,7 +19,6 @@ public class Student extends AbstractImportExcelVO {
     private Integer age;
 
 
-    @Override
     protected String doValidate() {
         return null;
     }
