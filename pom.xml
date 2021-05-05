@@ -205,6 +205,12 @@
 
             <dependency>
                 <groupId>com.weweibuy.framework</groupId>
+                <artifactId>common-util</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.weweibuy.framework</groupId>
                 <artifactId>common-util-excel</artifactId>
                 <version>${project.version}</version>
             </dependency>
