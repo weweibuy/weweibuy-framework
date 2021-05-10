@@ -27,7 +27,7 @@
         <spring-boot.version>2.4.3</spring-boot.version>
         <spring-cloud-version>2020.0.2</spring-cloud-version>
         <rocketmq-client-version>4.6.0</rocketmq-client-version>
-        <guava.version>28.1-jre</guava.version>
+        <guava.version>29.0-jre</guava.version>
         <apache.common.lang.version>3.9</apache.common.lang.version>
         <mybatis.version>2.1.0</mybatis.version>
         <ttl.version>2.11.4</ttl.version>
