@@ -5,6 +5,8 @@ import java.nio.charset.StandardCharsets;
 import java.time.format.DateTimeFormatter;
 
 /**
+ * 通用常量
+ *
  * @author durenhao
  * @date 2020/2/27 20:56
  **/
@@ -108,6 +110,11 @@ public interface CommonConstant {
          * 请求时间戳
          */
         String REQUEST_TIMESTAMP = "http_request_timestamp";
+
+        /**
+         * 内置 http 端点请求路径
+         */
+        String ENDPOINT_PATH_PREFIX = "/endpoint";
 
 
     }

@@ -1,5 +1,6 @@
 package com.weweibuy.framework.lb.endpoint;
 
+import com.weweibuy.framework.common.core.model.constant.CommonConstant;
 import com.weweibuy.framework.common.core.model.dto.CommonCodeResponse;
 import com.weweibuy.framework.common.core.model.dto.CommonDataResponse;
 import com.weweibuy.framework.lb.support.LoadBalanceOperator;
@@ -16,7 +17,7 @@ import java.util.Map;
  * @date 2020/9/24 22:48
  **/
 @RestController
-@RequestMapping("/endpoint/_common/_lb")
+@RequestMapping(CommonConstant.HttpServletConstant.ENDPOINT_PATH_PREFIX + "/_common/_lb")
 public class LoadBalanceEndpoint {
 
     private final LoadBalanceOperator loadBalanceOperator;

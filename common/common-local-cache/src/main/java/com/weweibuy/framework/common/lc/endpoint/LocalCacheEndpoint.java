@@ -1,5 +1,6 @@
 package com.weweibuy.framework.common.lc.endpoint;
 
+import com.weweibuy.framework.common.core.model.constant.CommonConstant;
 import com.weweibuy.framework.common.core.model.dto.CommonCodeResponse;
 import com.weweibuy.framework.common.core.model.dto.CommonDataResponse;
 import com.weweibuy.framework.common.lc.cache.LocalCacheService;
@@ -16,7 +17,7 @@ import java.util.Map;
  * @date 2020/11/28 10:02
  **/
 @RestController
-@RequestMapping("/endpoint/_common/_local_cache")
+@RequestMapping(CommonConstant.HttpServletConstant.ENDPOINT_PATH_PREFIX + "/_common/_local_cache")
 public class LocalCacheEndpoint {
 
     @Autowired
