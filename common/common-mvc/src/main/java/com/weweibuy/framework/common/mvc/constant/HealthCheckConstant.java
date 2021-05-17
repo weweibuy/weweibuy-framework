@@ -1,5 +1,6 @@
 package com.weweibuy.framework.common.mvc.constant;
 
+import com.weweibuy.framework.common.core.model.constant.CommonConstant;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -10,6 +11,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class HealthCheckConstant {
 
-    public static final String HEALTH_CHECK_PATH = "/endpoint/_common/_health";
+    public static final String HEALTH_CHECK_PATH = CommonConstant.HttpServletConstant.ENDPOINT_PATH_PREFIX + "/_common/_health";
 
 }

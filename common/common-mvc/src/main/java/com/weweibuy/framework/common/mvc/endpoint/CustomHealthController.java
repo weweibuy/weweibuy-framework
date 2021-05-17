@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
+ * 健康检查端点
+ *
  * @author durenhao
  * @date 2020/9/25 20:45
  **/
