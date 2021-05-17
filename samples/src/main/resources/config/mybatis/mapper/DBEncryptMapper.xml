@@ -8,6 +8,10 @@
     <result column="order_no" jdbcType="VARCHAR" property="orderNo" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="is_delete" jdbcType="BIT" property="deleted" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.weweibuy.framework.samples.mybatis.plugin.model.po.DBEncrypt">
+    <result column="tag" jdbcType="LONGVARCHAR" property="tag" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -144,8 +148,35 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, phone, id_no, order_no, create_time, update_time
+    id, phone, id_no, order_no, create_time, update_time, is_delete
   </sql>
+  <sql id="Blob_Column_List">
+    tag
+  </sql>
+  <select id="selectByExampleWithBLOBs" parameterType="com.weweibuy.framework.samples.mybatis.plugin.model.example.DBEncryptExample" resultMap="ResultMapWithBLOBs">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from db_encrypt
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+    <if test="rows != null">
+      <if test="offset != null">
+        limit ${offset}, ${rows}
+      </if>
+      <if test="offset == null">
+        limit ${rows}
+      </if>
+    </if>
+  </select>
   <select id="selectByExample" parameterType="com.weweibuy.framework.samples.mybatis.plugin.model.example.DBEncryptExample" resultMap="BaseResultMap">
     select
     <if test="distinct">
@@ -167,6 +198,31 @@
         limit ${rows}
       </if>
     </if>
+  </select>
+  <select id="selectByExampleWithBLOBsForUpdate" parameterType="com.weweibuy.framework.samples.mybatis.plugin.model.example.DBEncryptExample" resultMap="ResultMapWithBLOBs">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from db_encrypt
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+    <if test="rows != null">
+      <if test="offset != null">
+        limit ${offset}, ${rows}
+      </if>
+      <if test="offset == null">
+        limit ${rows}
+      </if>
+    </if>
+    for update
   </select>
   <select id="selectByExampleForUpdate" parameterType="com.weweibuy.framework.samples.mybatis.plugin.model.example.DBEncryptExample" resultMap="BaseResultMap">
     select
@@ -191,6 +247,25 @@
     </if>
     for update
   </select>
+  <select id="selectByExampleWithBLOBsWithLimit" parameterType="com.weweibuy.framework.samples.mybatis.plugin.model.example.DBEncryptExample" resultMap="ResultMapWithBLOBs">
+    select
+    <if test="example.distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from db_encrypt
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+    <if test="example.orderByClause != null">
+      order by ${example.orderByClause}
+    </if>
+    <if test="limit != null">
+      limit #{limit}
+    </if>
+  </select>
   <select id="selectByExampleWithLimit" parameterType="map" resultMap="BaseResultMap">
     select
     <if test="example.distinct">
@@ -208,15 +283,19 @@
       limit #{limit}
     </if>
   </select>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="ResultMapWithBLOBs">
     select 
     <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
     from db_encrypt
     where id = #{id,jdbcType=BIGINT}
   </select>
-  <select id="selectByPrimaryKeyForUpdate" parameterType="java.lang.Long" resultMap="BaseResultMap">
+  <select id="selectByPrimaryKeyForUpdate" parameterType="java.lang.Long" resultMap="ResultMapWithBLOBs">
     select 
     <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
     from db_encrypt
     where id = #{id,jdbcType=BIGINT}
     for update
@@ -234,12 +313,12 @@
   <insert id="insert" parameterType="com.weweibuy.framework.samples.mybatis.plugin.model.po.DBEncrypt">
     insert into db_encrypt (id, phone, 
       id_no, 
-      order_no, create_time, update_time
-      )
+      order_no, create_time, update_time, 
+      is_delete, tag)
     values (#{id,jdbcType=BIGINT}, #{phone,jdbcType=VARCHAR,typeHandler=com.weweibuy.framework.common.db.type.AesEncryptTypeHandler}, 
       #{idNo,jdbcType=VARCHAR,typeHandler=com.weweibuy.framework.common.db.type.AesEncryptTypeHandler}, 
-      #{orderNo,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}
-      )
+      #{orderNo,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{deleted,jdbcType=BIT}, #{tag,jdbcType=LONGVARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.weweibuy.framework.samples.mybatis.plugin.model.po.DBEncrypt">
     insert into db_encrypt
@@ -262,6 +341,12 @@
       <if test="updateTime != null">
         update_time,
       </if>
+      <if test="deleted != null">
+        is_delete,
+      </if>
+      <if test="tag != null">
+        tag,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -281,6 +366,12 @@
       </if>
       <if test="updateTime != null">
         #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="deleted != null">
+        #{deleted,jdbcType=BIT},
+      </if>
+      <if test="tag != null">
+        #{tag,jdbcType=LONGVARCHAR},
       </if>
     </trim>
   </insert>
@@ -311,7 +402,27 @@
       <if test="record.updateTime != null">
         update_time = #{record.updateTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="record.deleted != null">
+        is_delete = #{record.deleted,jdbcType=BIT},
+      </if>
+      <if test="record.tag != null">
+        tag = #{record.tag,jdbcType=LONGVARCHAR},
+      </if>
     </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExampleWithBLOBs" parameterType="map">
+    update db_encrypt
+    set id = #{record.id,jdbcType=BIGINT},
+      phone = #{record.phone,jdbcType=VARCHAR,typeHandler=com.weweibuy.framework.common.db.type.AesEncryptTypeHandler},
+      id_no = #{record.idNo,jdbcType=VARCHAR,typeHandler=com.weweibuy.framework.common.db.type.AesEncryptTypeHandler},
+      order_no = #{record.orderNo,jdbcType=VARCHAR},
+      create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+      is_delete = #{record.deleted,jdbcType=BIT},
+      tag = #{record.tag,jdbcType=LONGVARCHAR}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -323,7 +434,8 @@
       id_no = #{record.idNo,jdbcType=VARCHAR,typeHandler=com.weweibuy.framework.common.db.type.AesEncryptTypeHandler},
       order_no = #{record.orderNo,jdbcType=VARCHAR},
       create_time = #{record.createTime,jdbcType=TIMESTAMP},
-      update_time = #{record.updateTime,jdbcType=TIMESTAMP}
+      update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+      is_delete = #{record.deleted,jdbcType=BIT}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -346,7 +458,24 @@
       <if test="updateTime != null">
         update_time = #{updateTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="deleted != null">
+        is_delete = #{deleted,jdbcType=BIT},
+      </if>
+      <if test="tag != null">
+        tag = #{tag,jdbcType=LONGVARCHAR},
+      </if>
     </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.weweibuy.framework.samples.mybatis.plugin.model.po.DBEncrypt">
+    update db_encrypt
+    set phone = #{phone,jdbcType=VARCHAR,typeHandler=com.weweibuy.framework.common.db.type.AesEncryptTypeHandler},
+      id_no = #{idNo,jdbcType=VARCHAR,typeHandler=com.weweibuy.framework.common.db.type.AesEncryptTypeHandler},
+      order_no = #{orderNo,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      is_delete = #{deleted,jdbcType=BIT},
+      tag = #{tag,jdbcType=LONGVARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.weweibuy.framework.samples.mybatis.plugin.model.po.DBEncrypt">
@@ -355,7 +484,8 @@
       id_no = #{idNo,jdbcType=VARCHAR,typeHandler=com.weweibuy.framework.common.db.type.AesEncryptTypeHandler},
       order_no = #{orderNo,jdbcType=VARCHAR},
       create_time = #{createTime,jdbcType=TIMESTAMP},
-      update_time = #{updateTime,jdbcType=TIMESTAMP}
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      is_delete = #{deleted,jdbcType=BIT}
     where id = #{id,jdbcType=BIGINT}
   </update>
   <select id="selectOneByExample" parameterType="com.weweibuy.framework.samples.mybatis.plugin.model.example.DBEncryptExample" resultMap="BaseResultMap">
@@ -373,6 +503,35 @@
   <select id="selectOneByExampleForUpdate" parameterType="com.weweibuy.framework.samples.mybatis.plugin.model.example.DBEncryptExample" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
+    from db_encrypt
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+    limit 1
+    for update
+  </select>
+  <select id="selectOneByExampleWithBLOBs" parameterType="com.weweibuy.framework.samples.mybatis.plugin.model.example.DBEncryptExample" resultMap="ResultMapWithBLOBs">
+    select
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from db_encrypt
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+    limit 1
+  </select>
+  <select id="selectOneByExampleWithBLOBsForUpdate" parameterType="com.weweibuy.framework.samples.mybatis.plugin.model.example.DBEncryptExample" resultMap="ResultMapWithBLOBs">
+    select
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
     from db_encrypt
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />

@@ -24,7 +24,10 @@
             <property name="startPage" value="0"/>
         </plugin>
         <plugin type="com.weweibuy.framework.mybatis.plugin.SelectForUpdatePlugin"/>
-        <plugin type="com.weweibuy.framework.mybatis.plugin.SerializablePlugin"/>
+
+        <plugin type="com.weweibuy.framework.mybatis.plugin.ImplementsInterfacePlugin">
+            <property name="interfaces" value="java.io.Serializable,com.weweibuy.framework.common.db.model.CommonPo"/>
+        </plugin>
 
 
         <commentGenerator>
@@ -73,6 +76,7 @@
         <table tableName="db_encrypt" domainObjectName="DBEncrypt">
             <columnOverride column="phone" typeHandler="com.weweibuy.framework.common.db.type.AesEncryptTypeHandler"/>
             <columnOverride column="id_no" typeHandler="com.weweibuy.framework.common.db.type.AesEncryptTypeHandler"/>
+            <columnOverride column="is_delete" property="deleted" javaType="Boolean"/>
         </table>
 
         <table tableName="cm_order" domainObjectName="CmOrder">

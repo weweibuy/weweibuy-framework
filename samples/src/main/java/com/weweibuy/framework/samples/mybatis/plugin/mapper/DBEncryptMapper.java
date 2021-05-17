@@ -20,6 +20,16 @@ public interface DBEncryptMapper {
 
     DBEncrypt selectOneByExample(DBEncryptExample example);
 
+    DBEncrypt selectOneByExampleWithBLOBs(DBEncryptExample example);
+
+    DBEncrypt selectOneByExampleWithBLOBsForUpdate(DBEncryptExample example);
+
+    List<DBEncrypt> selectByExampleWithBLOBsWithLimit(@Param("example") DBEncryptExample example, @Param("limit") Integer limit);
+
+    List<DBEncrypt> selectByExampleWithBLOBsForUpdate(DBEncryptExample example);
+
+    List<DBEncrypt> selectByExampleWithBLOBs(DBEncryptExample example);
+
     DBEncrypt selectOneByExampleForUpdate(DBEncryptExample example);
 
     List<DBEncrypt> selectByExampleWithLimit(@Param("example") DBEncryptExample example, @Param("limit") Integer limit);
@@ -34,9 +44,13 @@ public interface DBEncryptMapper {
 
     int updateByExampleSelective(@Param("record") DBEncrypt record, @Param("example") DBEncryptExample example);
 
+    int updateByExampleWithBLOBs(@Param("record") DBEncrypt record, @Param("example") DBEncryptExample example);
+
     int updateByExample(@Param("record") DBEncrypt record, @Param("example") DBEncryptExample example);
 
     int updateByPrimaryKeySelective(DBEncrypt record);
+
+    int updateByPrimaryKeyWithBLOBs(DBEncrypt record);
 
     int updateByPrimaryKey(DBEncrypt record);
 }
