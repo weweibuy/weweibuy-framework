@@ -25,7 +25,7 @@ public enum CommonErrorCodeEum implements ResponseCodeAndMsg {
 
     NOT_FOUND("404", "请求地址或数据不存在"),
 
-    PAYLOAD_TOO_LARGE("413", "请求数据过大"),
+    PAYLOAD_TOO_LARGE("413", "上传文件或请求报文过大"),
 
     UNSUPPORTED_MEDIA_TYPE("415", "不支持的请求类型"),
 

@@ -181,7 +181,7 @@ public class CommonExceptionAdvice implements InitializingBean {
     public ResponseEntity<CommonCodeResponse> handler(HttpServletRequest request, MaxUploadSizeExceededException e) {
         HttpLogger.determineAndLogForJsonRequest(request);
 
-        log.warn("请求数据过大, 请设置: spring.servlet.multipart.max-request-size 与 spring.servlet.multipart.max-file-size.", e);
+        log.warn("上传文件或请求报文过大, 请设置: spring.servlet.multipart.max-request-size 与 spring.servlet.multipart.max-file-size.", e);
         return builderCommonHeader(HttpStatus.PAYLOAD_TOO_LARGE)
                 .body(CommonCodeResponse.response(CommonErrorCodeEum.PAYLOAD_TOO_LARGE));
     }
