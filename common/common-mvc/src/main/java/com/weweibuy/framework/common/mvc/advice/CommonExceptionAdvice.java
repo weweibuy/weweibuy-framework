@@ -20,8 +20,10 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
@@ -39,7 +41,7 @@ public class CommonExceptionAdvice implements InitializingBean {
     @Autowired(required = false)
     private UnknownExceptionHandler unknownExceptionHandler;
 
-    @Autowired(required = false)
+    @Autowired
     private SystemIdGetter systemIdGetter;
 
     static String systemId;
@@ -151,6 +153,40 @@ public class CommonExceptionAdvice implements InitializingBean {
     }
 
     /**
+     * 缺少请求参数
+     *
+     * @param request
+     * @param e
+     * @return
+     * @throws IOException
+     */
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    public ResponseEntity<CommonCodeResponse> handler(HttpServletRequest request, MissingServletRequestParameterException e) {
+        HttpLogger.determineAndLogForJsonRequest(request);
+
+        log.warn("缺少请求参数: {}", e.getMessage());
+        return builderCommonHeader(HttpStatus.BAD_REQUEST)
+                .body(CommonCodeResponse.response(CommonErrorCodeEum.BAD_REQUEST_PARAM.getCode(), "缺少请求参数: " + e.getParameterName()));
+    }
+
+    /**
+     * 请求数据过大
+     *
+     * @param request
+     * @param e
+     * @return
+     * @throws IOException
+     */
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    public ResponseEntity<CommonCodeResponse> handler(HttpServletRequest request, MaxUploadSizeExceededException e) {
+        HttpLogger.determineAndLogForJsonRequest(request);
+
+        log.warn("请求数据过大, 请设置: spring.servlet.multipart.max-request-size 与 spring.servlet.multipart.max-file-size.", e);
+        return builderCommonHeader(HttpStatus.PAYLOAD_TOO_LARGE)
+                .body(CommonCodeResponse.response(CommonErrorCodeEum.PAYLOAD_TOO_LARGE));
+    }
+
+    /**
      * HTTP ResponseStatusException
      *
      * @param request
@@ -225,9 +261,8 @@ public class CommonExceptionAdvice implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        if (systemIdGetter != null) {
-            systemId = systemIdGetter.getSystemId();
-        } else {
+        systemId = systemIdGetter.getSystemId();
+        if (StringUtils.isBlank(systemId)) {
             log.warn("请设置systemId,以便Http响应报文可以区分系统");
             systemId = StringUtils.EMPTY;
         }
