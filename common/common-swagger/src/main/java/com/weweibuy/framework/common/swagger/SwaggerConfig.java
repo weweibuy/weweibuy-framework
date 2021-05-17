@@ -1,11 +1,13 @@
 package com.weweibuy.framework.common.swagger;
 
 import com.weweibuy.framework.common.swagger.properties.SwaggerProperties;
+import com.weweibuy.framework.common.swagger.support.CustomBasePackageSelectors;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.env.Environment;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestMethod;
 import springfox.documentation.builders.*;
 import springfox.documentation.schema.ModelRef;
@@ -62,7 +64,9 @@ public class SwaggerConfig {
                 .groupName(swaggerProperties.getGroup())
                 .apiInfo(apiInfo())
                 .select();
-        swaggerProperties.getBasePackage().forEach(p -> select.apis(RequestHandlerSelectors.basePackage(p)));
+        if (!CollectionUtils.isEmpty(swaggerProperties.getBasePackage())) {
+            select.apis(CustomBasePackageSelectors.basePackage(swaggerProperties.getBasePackage()));
+        }
         return select.paths(PathSelectors.any())
                 .build();
     }
