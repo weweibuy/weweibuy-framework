@@ -1,12 +1,13 @@
 package com.weweibuy.framework.samples.mybatis.plugin.model.po;
 
+import com.weweibuy.framework.common.db.model.CommonPo;
 import lombok.Data;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Data
-public class DBEncrypt implements Serializable {
+public class DBEncrypt implements CommonPo, Serializable {
     /**
      * id
      */
@@ -36,4 +37,12 @@ public class DBEncrypt implements Serializable {
      * update_time
      */
     private LocalDateTime updateTime;
+
+    /**
+     */
+    private Boolean deleted;
+
+    /**
+     */
+    private String tag;
 }

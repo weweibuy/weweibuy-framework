@@ -1,12 +1,12 @@
 package com.weweibuy.framework.samples.mybatis.plugin.model.po;
 
-import lombok.Data;
-
+import com.weweibuy.framework.common.db.model.CommonPo;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import lombok.Data;
 
 @Data
-public class CmOrder implements Serializable {
+public class CmOrder implements CommonPo, Serializable {
     /**
      * id
      */
@@ -31,4 +31,8 @@ public class CmOrder implements Serializable {
      * 更新时间
      */
     private LocalDateTime updateTime;
+
+    /**
+     */
+    private Boolean deleted;
 }
