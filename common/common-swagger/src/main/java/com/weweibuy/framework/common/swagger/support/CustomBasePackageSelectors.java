@@ -6,6 +6,7 @@ import com.google.common.base.Predicate;
 import org.springframework.util.ClassUtils;
 import springfox.documentation.RequestHandler;
 
+import java.util.Collection;
 import java.util.Set;
 
 /**
@@ -24,7 +25,7 @@ public class CustomBasePackageSelectors {
         };
     }
 
-    private static Function<Class<?>, Boolean> handlerPackage(Set<String> basePackage) {
+    private static Function<Class<?>, Boolean> handlerPackage(Collection<String> basePackage) {
         return new Function<Class<?>, Boolean>() {
             @Override
             public Boolean apply(Class<?> input) {
