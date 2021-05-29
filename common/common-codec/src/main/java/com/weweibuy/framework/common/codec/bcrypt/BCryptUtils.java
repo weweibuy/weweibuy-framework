@@ -27,8 +27,8 @@ public class BCryptUtils {
     /**
      * 匹配
      *
-     * @param ori
-     * @param encode
+     * @param ori    原文
+     * @param encode 密文
      * @return
      */
     public static boolean match(CharSequence ori, String encode) {
