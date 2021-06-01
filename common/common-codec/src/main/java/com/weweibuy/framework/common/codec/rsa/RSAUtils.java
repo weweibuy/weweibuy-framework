@@ -37,17 +37,19 @@ public class RSAUtils {
 
 
     /**
-     * The method that will create both the public and private key used to encrypt and decrypt the data.
+     * 生成一份二进制的秘钥
      *
-     * @param publicKeyOutput  The path of where the public key will be created.
-     * @param privateKeyOutput The path of where the private key will be created.
+     * @param publicKeyOutput
+     * @param privateKeyOutput
+     * @throws NoSuchAlgorithmException
+     * @throws IOException
      */
-    public static void generateKey(String publicKeyOutput, String privateKeyOutput) throws NoSuchAlgorithmException, IOException {
+    public static void generateBinaryKey(String publicKeyOutput, String privateKeyOutput) throws NoSuchAlgorithmException, IOException {
         final KeyPairGenerator keyGen = KeyPairGenerator.getInstance(ALGORITHM);
         keyGen.initialize(2048);
 
         final KeyPair key = keyGen.generateKeyPair();
-
+        checkAndMkdir(publicKeyOutput, privateKeyOutput);
         try (DataOutputStream dos = new DataOutputStream(new FileOutputStream(new File(publicKeyOutput)))) {
             dos.write(key.getPublic().getEncoded());
         }
@@ -57,16 +59,63 @@ public class RSAUtils {
         }
     }
 
-    public static void generateKeyBase64(String publicKeyOutput, String privateKeyOutput) throws NoSuchAlgorithmException, IOException {
+
+    /**
+     * 创建文件夹
+     *
+     * @param publicKeyOutput
+     * @param privateKeyOutput
+     */
+    private static void checkAndMkdir(String publicKeyOutput, String privateKeyOutput) {
+        File publicKeyFile = new File(publicKeyOutput);
+        File publicKeyParentFile = publicKeyFile.getParentFile();
+        if (publicKeyParentFile != null && !publicKeyParentFile.exists()) {
+            publicKeyParentFile.mkdirs();
+        }
+
+        File privateKeyFile = new File(privateKeyOutput);
+
+        File privateKeyParentFile = publicKeyFile.getParentFile();
+        if (privateKeyParentFile != null && !privateKeyParentFile.exists()) {
+            privateKeyParentFile.mkdirs();
+        }
+    }
+
+    /**
+     * 生成base64的秘钥
+     *
+     * @param publicKeyOutput
+     * @param privateKeyOutput
+     * @throws NoSuchAlgorithmException
+     * @throws IOException
+     */
+    public static void generateBase64Key(String publicKeyOutput, String privateKeyOutput) throws NoSuchAlgorithmException, IOException {
         final KeyPairGenerator keyGen = KeyPairGenerator.getInstance(ALGORITHM);
         keyGen.initialize(2048);
         final KeyPair key = keyGen.generateKeyPair();
+        checkAndMkdir(publicKeyOutput, privateKeyOutput);
         try (DataOutputStream dos = new DataOutputStream(new FileOutputStream(new File(publicKeyOutput)))) {
             dos.write(Base64.getEncoder().encode(key.getPublic().getEncoded()));
         }
         try (DataOutputStream dos = new DataOutputStream(new FileOutputStream(new File(privateKeyOutput)))) {
             dos.write(Base64.getEncoder().encode(key.getPrivate().getEncoded()));
         }
+    }
+
+    /**
+     * 生成 base64 key
+     *
+     * @return 数组0:  公钥;  数组1: 私钥
+     * @throws NoSuchAlgorithmException
+     * @throws IOException
+     */
+    public static String[] generateKeyToBase64Str() throws NoSuchAlgorithmException, IOException {
+        final KeyPairGenerator keyGen = KeyPairGenerator.getInstance(ALGORITHM);
+        keyGen.initialize(2048);
+        final KeyPair key = keyGen.generateKeyPair();
+        byte[] publicKey = Base64.getEncoder().encode(key.getPublic().getEncoded());
+        byte[] privateKey = Base64.getEncoder().encode(key.getPrivate().getEncoded());
+        return new String[]{new String(publicKey), new String(privateKey)};
     }
 
 
@@ -150,31 +199,50 @@ public class RSAUtils {
     }
 
     /**
-     * The method that will re-create a {@link PublicKey} from a serialized key.
+     * 获取公钥(二进制公钥)
      *
      * @param publicKeyPath The path of the public key file.
      * @return The {@link PublicKey} object.
      * @throws Exception If there was an issue reading the file.
      */
-    public static PublicKey getPublicKey(String publicKeyPath) throws Exception {
+    public static PublicKey getPublicKeyFromBinary(String publicKeyPath) throws Exception {
         return KeyFactory.getInstance(ALGORITHM).generatePublic(new X509EncodedKeySpec(Files.readAllBytes(Paths.get(publicKeyPath))));
     }
 
 
-    public static PublicKey getBase64PublicKey(String publicKeyPath) throws Exception {
+    /**
+     * 获取base64 后的key
+     *
+     * @param key
+     * @return
+     */
+    public static String getKeyBase64(Key key) {
+        byte[] encode = Base64.getEncoder().encode(key.getEncoded());
+        return new String(encode);
+    }
+
+
+    /**
+     * 获取base64 公钥(公钥为 一行base64的文本, 没有换行)
+     *
+     * @param publicKeyPath
+     * @return
+     * @throws Exception
+     */
+    public static PublicKey getPublicKeyFromBase64(String publicKeyPath) throws Exception {
         byte[] allBytes = Files.readAllBytes(Paths.get(publicKeyPath));
         byte[] decode = Base64.getDecoder().decode(allBytes);
         return KeyFactory.getInstance(ALGORITHM).generatePublic(new X509EncodedKeySpec(decode));
     }
 
     /**
-     * The method that will re-create a {@link PrivateKey} from a serialized key.
+     * 获取 私钥(二进制)
      *
      * @param privateKeyPath The path of the private key file.
      * @return The {@link PrivateKey} object.
      * @throws Exception If there was an issue reading the file.
      */
-    public static PrivateKey getPrivateKey(String privateKeyPath) throws Exception {
+    public static PrivateKey getPrivateKeyFromBinary(String privateKeyPath) throws Exception {
         return KeyFactory.getInstance(ALGORITHM).generatePrivate(new PKCS8EncodedKeySpec(Files.readAllBytes(Paths.get(privateKeyPath))));
     }
 
@@ -185,7 +253,7 @@ public class RSAUtils {
      * @return
      * @throws Exception
      */
-    public static PrivateKey getBase64PrivateKey(String privateKeyPath) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
+    public static PrivateKey getPrivateKeyFromBase64(String privateKeyPath) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
         byte[] bytes = Files.readAllBytes(Paths.get(privateKeyPath));
         byte[] decode = Base64.getDecoder().decode(bytes);
         return KeyFactory.getInstance(ALGORITHM).generatePrivate(new PKCS8EncodedKeySpec(decode));

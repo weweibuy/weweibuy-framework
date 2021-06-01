@@ -89,6 +89,8 @@ public class RsaKeyHelper {
         }
     }
 
+
+
     private static final Pattern SSH_PUB_KEY = Pattern.compile("ssh-(rsa|dsa) ([A-Za-z0-9/+]+=*) (.*)");
 
     static RSAPublicKey parsePublicKey(String key) {
