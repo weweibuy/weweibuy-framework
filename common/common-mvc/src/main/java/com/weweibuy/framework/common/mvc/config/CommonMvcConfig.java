@@ -26,11 +26,11 @@ public class CommonMvcConfig {
     private List<FeignMethodKeyMappingConverter> feignMethodKeyMappingConverterList;
 
 
-    /**
-     * 注意顺序必须在  {@link CommonMvcConfig#commonExceptionAdvice() 之前}
-     *
-     * @return
-     */
+    @Bean
+    public CommonExceptionAdvice commonExceptionAdvice() {
+        return new CommonExceptionAdvice();
+    }
+
     @Bean
     @ConditionalOnClass(name = {"feign.Feign", "com.weweibuy.framework.common.core.exception.MethodKeyFeignException"})
     public FeignExceptionAdvice feignExceptionAdvice() {
@@ -41,11 +41,6 @@ public class CommonMvcConfig {
     @ConditionalOnClass(name = {"org.springframework.transaction.TransactionManager"})
     public BdExceptionAdvice bdExceptionAdvice() {
         return new BdExceptionAdvice();
-    }
-
-    @Bean
-    public CommonExceptionAdvice commonExceptionAdvice() {
-        return new CommonExceptionAdvice();
     }
 
     @Bean

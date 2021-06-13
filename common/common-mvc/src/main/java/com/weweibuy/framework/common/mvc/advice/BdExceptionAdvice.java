@@ -4,6 +4,7 @@ import com.weweibuy.framework.common.core.model.dto.CommonCodeResponse;
 import com.weweibuy.framework.common.core.model.eum.CommonErrorCodeEum;
 import com.weweibuy.framework.common.log.logger.HttpLogger;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.annotation.Order;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +21,7 @@ import javax.servlet.http.HttpServletRequest;
  **/
 @Slf4j
 @RestControllerAdvice
+@Order(-200)
 public class BdExceptionAdvice {
 
     @ExceptionHandler(DataIntegrityViolationException.class)
