@@ -11,6 +11,7 @@ import feign.FeignException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -27,6 +28,7 @@ import java.io.IOException;
  **/
 @RestControllerAdvice
 @Slf4j
+@Order(-100)
 public class FeignExceptionAdvice {
 
     @Autowired(required = false)
