@@ -25,9 +25,9 @@
         </plugin>
         <plugin type="com.weweibuy.framework.mybatis.plugin.SelectForUpdatePlugin"/>
 
-        <plugin type="com.weweibuy.framework.mybatis.plugin.ImplementsInterfacePlugin">
-            <property name="interfaces" value="java.io.Serializable,com.weweibuy.framework.common.db.model.CommonPo"/>
-        </plugin>
+        <!--<plugin type="com.weweibuy.framework.mybatis.plugin.ImplementsInterfacePlugin">-->
+            <!--<property name="interfaces" value="java.io.Serializable,com.weweibuy.framework.common.db.model.CommonPo"/>-->
+        <!--</plugin>-->
 
 
         <commentGenerator>
@@ -79,9 +79,7 @@
             <columnOverride column="is_delete" property="deleted" javaType="Boolean"/>
         </table>
 
-        <table tableName="cm_order" domainObjectName="CmOrder">
-            <generatedKey identity="true" column="id" sqlStatement="SELECT LAST_INSERT_ID()"/>
-            <columnOverride column="is_delete" property="deleted" javaType="Boolean"/>
+        <table tableName="tb_item" domainObjectName="TbItem">
         </table>
     </context>
 </generatorConfiguration>

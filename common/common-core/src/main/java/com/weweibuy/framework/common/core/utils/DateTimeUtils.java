@@ -138,6 +138,17 @@ public class DateTimeUtils {
         return date.format(dateTimeFormatter(pattern));
     }
 
+    /**
+     * 转为日期 String
+     *
+     * @param date
+     * @param formatter 日期格式
+     * @return
+     */
+    public static String toStringDate(LocalDate date, DateTimeFormatter formatter) {
+        return date.format(formatter);
+    }
+
 
     /**
      * 转为时间日期 String
