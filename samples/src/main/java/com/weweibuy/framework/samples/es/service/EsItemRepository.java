@@ -7,5 +7,5 @@ import org.springframework.data.elasticsearch.repository.ElasticsearchRepository
  * @author durenhao
  * @date 2019/8/11 9:45
  **/
-public interface EsItemRepository extends ElasticsearchRepository<Item, String> {
+public interface EsItemRepository extends ElasticsearchRepository<Item, Long> {
 }
