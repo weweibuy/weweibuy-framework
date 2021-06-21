@@ -18,9 +18,9 @@ public class PdfUtil {
     private static final String FONT_PATH = "font/PingFang-SC.ttf";
 
     /**
-     * html转化为pdf文件
-     *
-     * @param outputStream 输出流
+     * html转化为pdf
+     * @文件
+     *param outputStream 输出流
      * @param html         html
      * @throws IOException exception
      * @throws DocumentException DocumentException
