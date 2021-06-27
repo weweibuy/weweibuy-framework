@@ -1,26 +1,32 @@
 {
   "groups": [
     {
-      "name": "rocket-mq.local-cache-evict.topic",
+      "name": "common.local-cache.mq-evict.topic",
       "type": "com.weweibuy.framework.common.lc.mq.LocalCacheEvictConsumer",
       "sourceType": "com.weweibuy.framework.common.lc.mq.LocalCacheEvictConsumer"
     }
   ],
   "properties": [
     {
-      "name": "rocket-mq.local-cache-evict.topic",
+      "name": "common.local-cache.mq-evict.topic",
       "type": "java.lang.String",
       "sourceType": "com.weweibuy.framework.common.lc.mq.LocalCacheEvictConsumer"
     },
     {
-      "name": "rocket-mq.local-cache-evict.consumer-group",
+      "name": "common.local-cache.mq-evict.consumer-group",
       "type": "java.lang.String",
       "sourceType": "com.weweibuy.framework.common.lc.mq.LocalCacheEvictConsumer"
     },
     {
-      "name": "rocket-mq.local-cache-evict.tag",
+      "name": "common.local-cache.mq-evict.tag",
       "type": "java.lang.String",
       "sourceType": "com.weweibuy.framework.common.lc.mq.LocalCacheEvictConsumer"
+    },
+    {
+      "name": "common.local-cache.mq-evict.enable",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.weweibuy.framework.common.lc.config.LocalCacheEvictMqConfig",
+      "default": false
     }
   ],
   "hints": []

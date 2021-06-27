@@ -3,6 +3,7 @@ package com.weweibuy.framework.lb.config;
 import com.weweibuy.framework.lb.mq.RocketServerChangeListener;
 import com.weweibuy.framework.lb.support.LoadBalanceOperator;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -12,6 +13,7 @@ import org.springframework.context.annotation.Configuration;
  **/
 @Configuration
 @ConditionalOnBean(type = "com.weweibuy.framework.rocketmq.core.consumer.RocketBeanPostProcessor")
+@ConditionalOnProperty(name = "common.lb.server-change-listener.enable", havingValue = "true")
 public class MqLoadBalancerListenerConfig {
 
     @Bean
