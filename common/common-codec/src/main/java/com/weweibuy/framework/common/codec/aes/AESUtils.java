@@ -25,7 +25,7 @@ import java.util.Arrays;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class AESUtils {
 
-    private static final String ALGORITHM = "AES";
+    public static final String ALGORITHM = "AES";
 
 
     public static SecretKey generateKey() {
