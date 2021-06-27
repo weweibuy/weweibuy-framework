@@ -28,7 +28,7 @@ spring:
 
   cloud:
     consul:
-      enabled: false
+      enabled: true
       host: 127.0.0.1
       discovery:
         prefer-ip-address: true
@@ -55,7 +55,6 @@ idempotent:
     insert-sql: "INSERT INTO idempotent SET idem_key =  ? "
     update-sql: "UPDATE idempotent SET exec_result = ? WHERE idem_key = ? "
     select-sql: "SELECT exec_result FROM idempotent WHERE idem_key = ? "
-
 
 
 rocket-mq:
@@ -133,6 +132,7 @@ common:
         desc: 业务异常
   lb:
     server-change-listener:
+      enable: false
       topic: COMMON_SERVER_UPDATE_TOPIC
       group: COMMON_SERVER_UPDATE_C_GROUP
 
