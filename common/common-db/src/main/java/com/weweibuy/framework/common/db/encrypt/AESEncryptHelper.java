@@ -14,6 +14,7 @@ import java.io.IOException;
 
 /**
  * AES 加密
+ * TODO 可扩展性秘钥获取方式
  *
  * @author durenhao
  * @date 2020/9/5 12:10
