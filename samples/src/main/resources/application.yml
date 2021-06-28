@@ -136,5 +136,17 @@ common:
       topic: COMMON_SERVER_UPDATE_TOPIC
       group: COMMON_SERVER_UPDATE_C_GROUP
 
-
+management:
+  endpoints:
+    web:
+      exposure:
+        include: 'prometheus'
+  metrics:
+    tags:
+      application: ${spring.application.name}
+    export:
+      prometheus:
+        pushgateway:
+          enabled: true
+          baseUrl: 106.12.208.53:9091
 

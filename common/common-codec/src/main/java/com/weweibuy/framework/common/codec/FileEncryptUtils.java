@@ -73,7 +73,6 @@ public class FileEncryptUtils {
     public static void decrypt(SecretKey secretKey, String algorithm, InputStream inputStream, OutputStream outputStream) throws GeneralSecurityException, IOException {
         Cipher cipher = Cipher.getInstance(algorithm);
         cipher.init(Cipher.DECRYPT_MODE, secretKey);
-        CipherInputStream cipherInputStream = new CipherInputStream(inputStream, cipher);
         try (CipherOutputStream cos = new CipherOutputStream(outputStream, cipher)) {
             IOUtils.copy(inputStream, cos);
         }
