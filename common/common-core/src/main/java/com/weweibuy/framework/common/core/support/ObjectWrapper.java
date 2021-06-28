@@ -13,6 +13,7 @@ import lombok.*;
 @Getter
 @EqualsAndHashCode
 @ToString
+@Setter
 public class ObjectWrapper<T> {
 
     private T object;
