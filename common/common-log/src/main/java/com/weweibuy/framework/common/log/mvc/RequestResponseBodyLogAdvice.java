@@ -59,7 +59,7 @@ public class RequestResponseBodyLogAdvice implements RequestBodyAdvice, Response
     @Override
     public Object beforeBodyWrite(Object body, MethodParameter returnType, MediaType selectedContentType, Class selectedConverterType, ServerHttpRequest request, ServerHttpResponse response) {
         try {
-            HttpLogger.logResponse(body);
+            HttpLogger.logResponse(body, selectedContentType);
         } catch (Exception e) {
             log.warn("输出响应日志异常: {}", e.getMessage());
         }
