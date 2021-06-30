@@ -8,6 +8,7 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.http.MediaType;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -29,6 +30,8 @@ import java.util.stream.Collectors;
 @Slf4j
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class HttpLogger {
+
+    private static final String BINARY_BODY_STR = "Binary data";
 
     private static Map<String, LogDisablePath.Type> patternDisabledPath;
 
@@ -63,14 +66,14 @@ public class HttpLogger {
                 HttpRequestUtils.parameterMapToString(request.getParameterMap()));
     }
 
-    public static void logResponse(Object body) {
+    public static void logResponse(Object body, MediaType mediaType) {
         String path = HttpRequestUtils.getRequestAttribute(RequestContextHolder.getRequestAttributes(), CommonConstant.HttpServletConstant.REQUEST_PATH);
         if (!shouldLogResponse(path)) {
             return;
         }
         Long timestamp = HttpRequestUtils.getRequestAttribute(RequestContextHolder.getRequestAttributes(), CommonConstant.HttpServletConstant.REQUEST_TIMESTAMP);
         log.info("Http 响应数据: {}, 请求耗时: {}",
-                JackJsonUtils.writeWithMvc(body),
+                MediaType.APPLICATION_OCTET_STREAM.includes(mediaType) ? BINARY_BODY_STR : JackJsonUtils.writeWithMvc(body),
                 System.currentTimeMillis() - timestamp);
     }
 
