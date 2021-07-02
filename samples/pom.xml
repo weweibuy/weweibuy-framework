@@ -15,6 +15,13 @@
     <dependencies>
 
         <dependency>
+            <groupId>io.prometheus</groupId>
+            <artifactId>simpleclient_pushgateway</artifactId>
+            <version>0.11.0</version>
+        </dependency>
+
+
+        <dependency>
             <groupId>com.weweibuy.framework</groupId>
             <artifactId>common-log</artifactId>
         </dependency>
@@ -88,16 +95,6 @@
         </dependency>
 
         <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>io.github.openfeign</groupId>
-            <artifactId>feign-httpclient</artifactId>
-        </dependency>
-
-        <dependency>
             <groupId>com.weweibuy.framework</groupId>
             <artifactId>common-metric</artifactId>
         </dependency>
@@ -110,6 +107,11 @@
         <dependency>
             <groupId>com.weweibuy.framework</groupId>
             <artifactId>common-es</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.weweibuy.framework</groupId>
+            <artifactId>common-local-cache</artifactId>
         </dependency>
 
         <dependency>
@@ -139,20 +141,6 @@
             <artifactId>swagger-annotations</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-elasticsearch</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.elasticsearch.client</groupId>
-                    <artifactId>transport</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.elasticsearch.plugin</groupId>
-                    <artifactId>transport-netty4-client</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
 
     </dependencies>
 
