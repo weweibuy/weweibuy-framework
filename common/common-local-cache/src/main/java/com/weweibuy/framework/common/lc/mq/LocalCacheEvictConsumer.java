@@ -21,7 +21,7 @@ import java.util.Set;
  * @date 2020/12/6 11:35
  **/
 @Slf4j
-@RocketListener(topic = "${rocket-mq.local-cache-evict.topic}", group = "${rocket-mq.local-cache-evict.consumer-group}",
+@RocketListener(topic = "${common.local-cache.mq-evict.topic}", group = "${common.local-cache.mq-evict.consumer-group}",
         messageModel = MessageModel.BROADCASTING, threadMax = 1, threadMin = 1)
 public class LocalCacheEvictConsumer {
 
@@ -32,7 +32,7 @@ public class LocalCacheEvictConsumer {
     private ApplicationContext applicationContext;
 
 
-    @RocketConsumerHandler(tags = "${rocket-mq.local-cache-evict.tag}")
+    @RocketConsumerHandler(tags = "${common.local-cache.mq-evict.tag}")
     public void onMessage(@Payload LocalCacheEvictMessage message) {
         String cacheName = message.getCacheName();
         Set<String> cacheKeyList = message.getCacheKeyList();

@@ -1,0 +1,5 @@
+--  prometheus
+docker run -d  -v /docker/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml -v /etc/timezone:/etc/timezone -v /etc/localtime:/etc/localtime --network es-net    -p 9090:9090 --name prometheus  prom/prometheus:v2.28.0
+
+-- pushGateway
+docker run -d  -p 9091:9091  --network es-net  -v /etc/timezone:/etc/timezone -v /etc/localtime:/etc/localtime   --name pushgateway  prom/pushgateway:v1.4.1

@@ -1,2 +1,3 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-  com.weweibuy.framework.common.metric.CommonMetricConfig
+  com.weweibuy.framework.common.metric.CommonMetricConfig,\
+  com.weweibuy.framework.common.metric.config.CommonMeterConfig

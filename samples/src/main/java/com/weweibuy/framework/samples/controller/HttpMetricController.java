@@ -1,7 +1,9 @@
 package com.weweibuy.framework.samples.controller;
 
 import com.weweibuy.framework.common.metric.http.HttpMetricOperator;
+import io.micrometer.core.instrument.MeterRegistry;
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,13 +18,13 @@ import java.util.Set;
  **/
 @RestController
 @RequestMapping("/http-metric")
+@RequiredArgsConstructor
 public class HttpMetricController {
+
+    private final MeterRegistry meterRegistry;
 
     private final HttpMetricOperator httpMetricOperator;
 
-    public HttpMetricController(HttpMetricOperator httpMetricOperator) {
-        this.httpMetricOperator = httpMetricOperator;
-    }
 
     @PostMapping("/add")
     public Object addMetric(@RequestBody @Valid Set<String> nameMappingSet) {

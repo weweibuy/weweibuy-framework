@@ -15,6 +15,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 /**
+ * bean 拷贝工具
+ *
  * @author durenhao
  * @date 2020/3/13 21:05
  **/

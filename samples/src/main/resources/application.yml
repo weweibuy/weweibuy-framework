@@ -18,6 +18,8 @@ spring:
     url: jdbc:mysql://106.12.208.53:3306/webuy_learning?useUnicode=true&characterEncoding=UTF-8&allowMutiQueries=true&serverTimezone=Asia/Shanghai
     username: user01
     password: ak402507979
+    hikari:
+      register-mbeans: true
   jackson:
     property-naming-strategy: SNAKE_CASE
     date-format: yyyy-MM-dd HH:mm:ss
@@ -28,7 +30,7 @@ spring:
 
   cloud:
     consul:
-      enabled: false
+      enabled: true
       host: 127.0.0.1
       discovery:
         prefer-ip-address: true
@@ -55,7 +57,6 @@ idempotent:
     insert-sql: "INSERT INTO idempotent SET idem_key =  ? "
     update-sql: "UPDATE idempotent SET exec_result = ? WHERE idem_key = ? "
     select-sql: "SELECT exec_result FROM idempotent WHERE idem_key = ? "
-
 
 
 rocket-mq:
@@ -133,8 +134,21 @@ common:
         desc: 业务异常
   lb:
     server-change-listener:
+      enable: false
       topic: COMMON_SERVER_UPDATE_TOPIC
       group: COMMON_SERVER_UPDATE_C_GROUP
 
-
+management:
+  endpoints:
+    web:
+      exposure:
+        include: 'prometheus'
+  metrics:
+    tags:
+      application: ${spring.application.name}
+    export:
+      prometheus:
+        pushgateway:
+          enabled: true
+          baseUrl: http://106.12.208.53:9091
 
