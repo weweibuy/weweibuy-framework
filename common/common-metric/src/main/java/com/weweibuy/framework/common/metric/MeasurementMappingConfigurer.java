@@ -19,13 +19,6 @@ public interface MeasurementMappingConfigurer {
     default void configurerMeasurementMappings(Map<String, String> measurementPatternMetricNameMapping) {
     }
 
-    /**
-     * 增加 Tag 转化器
-     *
-     * @param composite
-     */
-    default void configurerTagTransformer(TransformerComposite composite) {
-    }
 
 
 }

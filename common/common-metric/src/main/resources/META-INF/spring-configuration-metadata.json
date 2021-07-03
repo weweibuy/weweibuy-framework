@@ -21,13 +21,13 @@
       "name": "common.metric.http.enable",
       "type": "java.lang.Boolean",
       "sourceType": "com.weweibuy.framework.common.metric.http.CommonHttpMetricConfig",
-      "defaultValue":true
+      "defaultValue": true
     },
     {
       "name": "common.metric.hikari.enable",
       "type": "java.lang.Boolean",
       "sourceType": "com.weweibuy.framework.common.metric.hikari.CommonDataSourceMetricConfig",
-      "defaultValue":true
+      "defaultValue": true
     },
     {
       "name": "common.metric.influx-db.host",
@@ -59,7 +59,6 @@
       "type": "java.util.concurrent.TimeUnit",
       "sourceType": "com.weweibuy.framework.common.metric.MetricInfluxDbProperties"
     }
-
   ],
   "hints": []
 }
