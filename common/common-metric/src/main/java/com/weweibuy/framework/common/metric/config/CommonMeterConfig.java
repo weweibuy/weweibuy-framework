@@ -1,15 +1,14 @@
 package com.weweibuy.framework.common.metric.config;
 
+import com.weweibuy.framework.common.metric.support.MeterInstanceGetter;
+import com.weweibuy.framework.common.metric.support.SampleMeterInstanceGetter;
 import io.micrometer.core.instrument.MeterRegistry;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.actuate.autoconfigure.metrics.MeterRegistryCustomizer;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
-
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.util.Optional;
 
 /**
  * 通用的 Meter 配置
@@ -21,14 +20,18 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class CommonMeterConfig {
 
-    private final Environment environment;
 
     @Bean
-    public MeterRegistryCustomizer<MeterRegistry> metricsCommonTags() throws UnknownHostException {
-        InetAddress address = InetAddress.getLocalHost();
-        String hostAddress = address.getHostAddress() + ":" + Optional.ofNullable(environment.getProperty("server.port")).orElse("8080");
+    public MeterRegistryCustomizer<MeterRegistry> metricsCommonTags(MeterInstanceGetter meterInstanceGetter) {
+        String instance = meterInstanceGetter.getInstance();
         return registry -> registry.config()
-                .commonTags("instance", hostAddress);
+                .commonTags("instance", instance);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public MeterInstanceGetter meterInstanceGetter(Environment environment) {
+        return new SampleMeterInstanceGetter(environment);
     }
 
 }
