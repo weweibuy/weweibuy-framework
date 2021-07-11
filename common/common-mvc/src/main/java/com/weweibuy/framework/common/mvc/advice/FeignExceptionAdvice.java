@@ -44,7 +44,7 @@ public class FeignExceptionAdvice {
      * @throws IOException
      */
     @ExceptionHandler(FeignException.class)
-    public ResponseEntity<CommonCodeResponse> handler(HttpServletRequest request, FeignException e) throws IOException {
+    public ResponseEntity<CommonCodeResponse> handler(HttpServletRequest request, FeignException e) {
         HttpLogger.determineAndLogForJsonRequest(request);
 
         log.warn("调用接口异常: ", e);
@@ -67,8 +67,13 @@ public class FeignExceptionAdvice {
             codeAndMsg = CommonErrorCodeEum.UNKNOWN_SERVER_EXCEPTION;
         }
 
-        return CommonExceptionAdvice.builderCommonHeader(e.status())
-                .body(CommonCodeResponse.response(codeAndMsg));
+        ResponseEntity.BodyBuilder builder = CommonExceptionAdvice.builderCommonHeader(e.status())
+                .header(CommonConstant.LogTraceConstant.HTTP_TRACE_CODE_HEADER, LogTraceContext.getTraceCode().orElse(StringUtils.EMPTY));
+        if (e.hasRequest()) {
+            builder = builder.header(CommonConstant.HttpResponseConstant.RESPONSE_HEADER_FIELD_SYSTEM_ID,
+                    CustomFeignErrorDecoder.defaultFeignSystemId(e.request().requestTemplate().feignTarget()));
+        }
+        return builder.body(CommonCodeResponse.response(codeAndMsg));
     }
 
 
