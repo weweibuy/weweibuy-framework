@@ -1,10 +1,8 @@
 package com.weweibuy.framework.common.mvc.support;
 
 import com.weweibuy.framework.common.core.exception.MethodKeyFeignException;
-import com.weweibuy.framework.common.core.model.ResponseCodeAndMsg;
 import com.weweibuy.framework.common.core.model.constant.CommonConstant;
 import com.weweibuy.framework.common.core.model.dto.CommonCodeResponse;
-import com.weweibuy.framework.common.core.model.eum.CommonErrorCodeEum;
 import com.weweibuy.framework.common.core.utils.HttpRequestUtils;
 import com.weweibuy.framework.common.log.support.LogTraceContext;
 import com.weweibuy.framework.common.mvc.advice.FeignExceptionHandler;
@@ -57,17 +55,10 @@ public class DefaultFeignExceptionHandler implements FeignExceptionHandler {
         } catch (Exception ex) {
             log.warn("Feign 异常报文: {}, 无法转为 code ,msg 形式", content);
 
-            ResponseCodeAndMsg codeAndMsg = null;
-            if (e.status() < 500) {
-                codeAndMsg = CommonErrorCodeEum.REQUEST_EXCEPTION;
-            } else {
-                codeAndMsg = CommonErrorCodeEum.UNKNOWN_SERVER_EXCEPTION;
-            }
-
             return ResponseEntity.status(status)
                     .header(CommonConstant.HttpResponseConstant.RESPONSE_HEADER_FIELD_SYSTEM_ID, systemId)
                     .header(CommonConstant.LogTraceConstant.HTTP_TRACE_CODE_HEADER, LogTraceContext.getTraceCode().orElse(StringUtils.EMPTY))
-                    .body(CommonCodeResponse.response(codeAndMsg));
+                    .body(CommonCodeResponse.response(status + "", "目标服务异常: " + content));
         }
 
     }

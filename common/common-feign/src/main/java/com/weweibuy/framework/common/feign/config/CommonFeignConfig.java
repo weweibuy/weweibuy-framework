@@ -1,9 +1,11 @@
 package com.weweibuy.framework.common.feign.config;
 
+import com.weweibuy.framework.common.core.support.SystemIdGetter;
 import com.weweibuy.framework.common.feign.log.FeignLogger;
 import com.weweibuy.framework.common.feign.log.TraceContextFeignInterceptor;
 import com.weweibuy.framework.common.feign.support.CustomFeignErrorDecoder;
 import feign.*;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
@@ -18,8 +20,10 @@ import java.util.concurrent.TimeUnit;
  * @date 2020/3/2 19:39
  **/
 @Configuration
+@RequiredArgsConstructor
 public class CommonFeignConfig {
 
+    private final SystemIdGetter systemIdGetter;
 
     /**
      * feign 超时覆盖机制,  配置 feign.client.config.xxx.readTimeout 最优先
@@ -37,7 +41,7 @@ public class CommonFeignConfig {
                 .retryer(retryer)
                 .logLevel(Logger.Level.BASIC)
                 .requestInterceptors(requestInterceptorList)
-                .errorDecoder(new CustomFeignErrorDecoder())
+                .errorDecoder(new CustomFeignErrorDecoder(systemIdGetter))
                 .options(new Request.Options(1, TimeUnit.SECONDS,
                         3, TimeUnit.SECONDS, false));
     }

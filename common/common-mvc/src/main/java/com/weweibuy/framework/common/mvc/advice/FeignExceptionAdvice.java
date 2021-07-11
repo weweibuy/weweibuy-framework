@@ -5,6 +5,7 @@ import com.weweibuy.framework.common.core.model.ResponseCodeAndMsg;
 import com.weweibuy.framework.common.core.model.constant.CommonConstant;
 import com.weweibuy.framework.common.core.model.dto.CommonCodeResponse;
 import com.weweibuy.framework.common.core.model.eum.CommonErrorCodeEum;
+import com.weweibuy.framework.common.feign.support.CustomFeignErrorDecoder;
 import com.weweibuy.framework.common.log.logger.HttpLogger;
 import com.weweibuy.framework.common.log.support.LogTraceContext;
 import feign.FeignException;
@@ -49,7 +50,9 @@ public class FeignExceptionAdvice {
         log.warn("调用接口异常: ", e);
         Throwable cause = e.getCause();
         if (cause instanceof IOException) {
+            String message = cause.getMessage();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .header(CommonConstant.HttpResponseConstant.RESPONSE_HEADER_FIELD_SYSTEM_ID, CustomFeignErrorDecoder.defaultFeignSystemId(e.request().requestTemplate().feignTarget()))
                     .header(CommonConstant.LogTraceConstant.HTTP_TRACE_CODE_HEADER, LogTraceContext.getTraceCode().orElse(StringUtils.EMPTY))
                     .body(CommonCodeResponse.response(CommonErrorCodeEum.NETWORK_EXCEPTION));
         }

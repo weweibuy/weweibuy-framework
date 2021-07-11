@@ -57,7 +57,7 @@ public class CommonExceptionAdvice implements InitializingBean {
      * @throws IOException
      */
     @ExceptionHandler(BusinessException.class)
-    public ResponseEntity<CommonCodeResponse> handler(HttpServletRequest request, BusinessException e) throws IOException {
+    public ResponseEntity<CommonCodeResponse> handler(HttpServletRequest request, BusinessException e) {
         HttpLogger.determineAndLogForJsonRequest(request);
 
         log.warn("业务异常: ", e);
@@ -75,7 +75,7 @@ public class CommonExceptionAdvice implements InitializingBean {
      * @throws IOException
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<CommonCodeResponse> handler(HttpServletRequest request, MethodArgumentNotValidException e) throws IOException {
+    public ResponseEntity<CommonCodeResponse> handler(HttpServletRequest request, MethodArgumentNotValidException e) {
         HttpLogger.determineAndLogForJsonRequest(request);
 
         log.warn("输入参数错误: {}", e.getMessage());
@@ -94,7 +94,7 @@ public class CommonExceptionAdvice implements InitializingBean {
      * @throws IOException
      */
     @ExceptionHandler(BindException.class)
-    public ResponseEntity<CommonCodeResponse> handler(HttpServletRequest request, BindException e) throws IOException {
+    public ResponseEntity<CommonCodeResponse> handler(HttpServletRequest request, BindException e) {
         HttpLogger.determineAndLogForJsonRequest(request);
 
         log.warn("输入参数错误: {}", e.getMessage());
@@ -112,7 +112,7 @@ public class CommonExceptionAdvice implements InitializingBean {
      * @throws IOException
      */
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<CommonCodeResponse> handler(HttpServletRequest request, HttpMessageNotReadableException e) throws IOException {
+    public ResponseEntity<CommonCodeResponse> handler(HttpServletRequest request, HttpMessageNotReadableException e) {
         HttpLogger.determineAndLogForJsonRequest(request);
 
         log.warn("输入参数格式错误: {}", e.getMessage());
@@ -129,7 +129,7 @@ public class CommonExceptionAdvice implements InitializingBean {
      * @throws IOException
      */
     @ExceptionHandler(SystemException.class)
-    public ResponseEntity<CommonCodeResponse> handler(HttpServletRequest request, SystemException e) throws IOException {
+    public ResponseEntity<CommonCodeResponse> handler(HttpServletRequest request, SystemException e) {
         HttpLogger.determineAndLogForJsonRequest(request);
 
         log.error("系统异常: ", e);
@@ -146,7 +146,7 @@ public class CommonExceptionAdvice implements InitializingBean {
      * @throws IOException
      */
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
-    public ResponseEntity<CommonCodeResponse> handler(HttpServletRequest request, HttpRequestMethodNotSupportedException e) throws IOException {
+    public ResponseEntity<CommonCodeResponse> handler(HttpServletRequest request, HttpRequestMethodNotSupportedException e) {
         HttpLogger.determineAndLogForJsonRequest(request);
 
         log.warn("请求 HttpMethod 错误: {}", e.getMessage());
@@ -197,7 +197,7 @@ public class CommonExceptionAdvice implements InitializingBean {
      * @throws IOException
      */
     @ExceptionHandler(CustomResponseStatusException.class)
-    public ResponseEntity<CommonCodeResponse> handler(HttpServletRequest request, CustomResponseStatusException e) throws IOException {
+    public ResponseEntity<CommonCodeResponse> handler(HttpServletRequest request, CustomResponseStatusException e) {
         HttpLogger.determineAndLogForJsonRequest(request);
 
         log.warn("请求异常: {}", e.getMessage());
@@ -215,7 +215,7 @@ public class CommonExceptionAdvice implements InitializingBean {
      * @throws IOException
      */
     @ExceptionHandler(IdempotentNoLockException.class)
-    public ResponseEntity<CommonCodeResponse> handler(HttpServletRequest request, IdempotentNoLockException e) throws IOException {
+    public ResponseEntity<CommonCodeResponse> handler(HttpServletRequest request, IdempotentNoLockException e) {
         HttpLogger.determineAndLogForJsonRequest(request);
 
         log.warn("幂等异常: ", e.getMessage());
@@ -232,7 +232,7 @@ public class CommonExceptionAdvice implements InitializingBean {
      * @throws IOException
      */
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<CommonCodeResponse> handler(HttpServletRequest request, Exception e) throws IOException {
+    public ResponseEntity<CommonCodeResponse> handler(HttpServletRequest request, Exception e) {
         HttpLogger.determineAndLogForJsonRequest(request);
 
         if (unknownExceptionHandler != null) {

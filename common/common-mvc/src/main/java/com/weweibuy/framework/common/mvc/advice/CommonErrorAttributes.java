@@ -2,7 +2,6 @@ package com.weweibuy.framework.common.mvc.advice;
 
 import com.weweibuy.framework.common.core.model.constant.CommonConstant;
 import com.weweibuy.framework.common.core.model.eum.CommonErrorCodeEum;
-import com.weweibuy.framework.common.core.support.SystemIdGetter;
 import com.weweibuy.framework.common.core.utils.HttpRequestUtils;
 import com.weweibuy.framework.common.log.logger.HttpLogger;
 import lombok.extern.slf4j.Slf4j;
@@ -22,17 +21,10 @@ import java.util.Map;
 @Slf4j
 public class CommonErrorAttributes extends DefaultErrorAttributes {
 
-    private SystemIdGetter systemIdGetter;
-
     private final Map<String, Object> unKnownAttributes = new LinkedHashMap<>(4);
 
 
     public CommonErrorAttributes() {
-        this(null);
-    }
-
-    public CommonErrorAttributes(SystemIdGetter systemIdGetter) {
-        this.systemIdGetter = systemIdGetter;
         unKnownAttributes.put(CommonConstant.HttpResponseConstant.RESPONSE_MESSAGE_FIELD_CODE,
                 CommonErrorCodeEum.UNKNOWN_SERVER_EXCEPTION.getCode());
         unKnownAttributes.put(CommonConstant.HttpResponseConstant.RESPONSE_MESSAGE_FIELD_MSG,
