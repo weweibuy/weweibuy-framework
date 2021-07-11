@@ -30,7 +30,7 @@ spring:
 
   cloud:
     consul:
-      enabled: true
+      enabled: false
       host: 127.0.0.1
       discovery:
         prefer-ip-address: true

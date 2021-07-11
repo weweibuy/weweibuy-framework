@@ -4,15 +4,16 @@ import com.weweibuy.framework.common.core.exception.MethodKeyFeignClientExceptio
 import com.weweibuy.framework.common.core.exception.MethodKeyFeignException;
 import com.weweibuy.framework.common.core.exception.MethodKeyFeignServerException;
 import com.weweibuy.framework.common.core.model.constant.CommonConstant;
+import com.weweibuy.framework.common.core.support.SystemIdGetter;
 import feign.FeignException;
 import feign.Response;
+import feign.Target;
 import feign.Util;
 import feign.codec.ErrorDecoder;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.collections4.CollectionUtils;
 
 import java.io.IOException;
-import java.util.Collection;
-import java.util.Collections;
+import java.util.Optional;
 
 import static java.lang.String.format;
 
@@ -22,6 +23,11 @@ import static java.lang.String.format;
  **/
 public class CustomFeignErrorDecoder extends ErrorDecoder.Default {
 
+    private static String oriSystemId = "";
+
+    public CustomFeignErrorDecoder(SystemIdGetter systemIdGetter) {
+        oriSystemId = systemIdGetter.getSystemId();
+    }
 
     @Override
     public Exception decode(String methodKey, Response response) {
@@ -40,9 +46,12 @@ public class CustomFeignErrorDecoder extends ErrorDecoder.Default {
         } catch (IOException ignored) { // NOPMD
         }
         int status = response.status();
-        Collection<String> systemIdCollection = response.headers().getOrDefault(CommonConstant.HttpResponseConstant.RESPONSE_HEADER_FIELD_SYSTEM_ID,
-                Collections.singletonList(StringUtils.EMPTY));
-        String systemId = systemIdCollection.iterator().next();
+
+        String systemId = Optional.ofNullable(response.headers().get(CommonConstant.HttpResponseConstant.RESPONSE_HEADER_FIELD_SYSTEM_ID))
+                .filter(CollectionUtils::isNotEmpty)
+                .map(c -> c.iterator().next())
+                // 获取默认的系统id -->  格式 feign 服务/url 名称
+                .orElseGet(() -> defaultFeignSystemId(response));
 
         if (status >= 400 && status < 500) {
             return new MethodKeyFeignClientException(methodKey, status, message, response.request(), body, systemId);
@@ -53,4 +62,16 @@ public class CustomFeignErrorDecoder extends ErrorDecoder.Default {
         return new MethodKeyFeignException(methodKey, status, message, response.request(), body, systemId);
     }
 
+
+    private String defaultFeignSystemId(Response response) {
+        Target<?> target = response.request().requestTemplate().feignTarget();
+        return defaultFeignSystemId(target);
+    }
+
+
+    public static String defaultFeignSystemId(Target<?> target) {
+        String name = target.name();
+        String url = target.url();
+        return oriSystemId + " [Feign " + name + " " + url + "]";
+    }
 }

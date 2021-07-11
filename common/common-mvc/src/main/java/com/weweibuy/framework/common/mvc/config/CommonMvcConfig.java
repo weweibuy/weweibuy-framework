@@ -1,6 +1,5 @@
 package com.weweibuy.framework.common.mvc.config;
 
-import com.weweibuy.framework.common.core.support.SystemIdGetter;
 import com.weweibuy.framework.common.mvc.advice.*;
 import com.weweibuy.framework.common.mvc.endpoint.CustomHealthController;
 import com.weweibuy.framework.common.mvc.support.DefaultFeignExceptionHandler;
@@ -20,11 +19,7 @@ import java.util.List;
 public class CommonMvcConfig {
 
     @Autowired(required = false)
-    private SystemIdGetter systemIdGetter;
-
-    @Autowired(required = false)
     private List<FeignMethodKeyMappingConverter> feignMethodKeyMappingConverterList;
-
 
     @Bean
     public CommonExceptionAdvice commonExceptionAdvice() {
@@ -52,7 +47,7 @@ public class CommonMvcConfig {
     @Bean
     @Primary
     public CommonErrorAttributes commonErrorAttributes() {
-        return new CommonErrorAttributes(systemIdGetter);
+        return new CommonErrorAttributes();
     }
 
     @Bean
