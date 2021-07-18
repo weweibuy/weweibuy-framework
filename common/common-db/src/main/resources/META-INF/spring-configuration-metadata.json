@@ -22,6 +22,11 @@
       "name": "common.db.encrypt.passwordFile",
       "type": "java.lang.String",
       "sourceType": "com.weweibuy.framework.common.db.properties.DBEncryptProperties"
+    },
+    {
+      "name": "common.db.multiple-datasource",
+      "type": "java.util.Map<java.lang.String,com.weweibuy.framework.common.db.properties.DataSourceWithMybatisProperties>",
+      "sourceType": "com.weweibuy.framework.common.db.properties.DataSourceWithMybatisProperties"
     }
   ],
   "hints": []
