@@ -1,2 +1,4 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-  com.weweibuy.framework.common.db.config.CommonDBConfig\
+  com.weweibuy.framework.common.db.config.CommonDBConfig,\
+  com.weweibuy.framework.common.db.config.MultipleDatasourceConfig,\
+  com.weweibuy.framework.common.db.config.MultipleDatasourcePageHelperConfig
