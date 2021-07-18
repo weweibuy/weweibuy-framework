@@ -24,7 +24,7 @@ import java.util.Properties;
  * @date 2021/7/18 21:14
  **/
 @Configuration
-@ConditionalOnBean({SqlSessionFactory.class, MultipleDatasourceRegister.class})
+@ConditionalOnBean({MultipleDatasourceRegister.class})
 @EnableConfigurationProperties(PageHelperProperties.class)
 @AutoConfigureAfter(MultipleDatasourceConfig.class)
 public class MultipleDatasourcePageHelperConfig implements InitializingBean {
