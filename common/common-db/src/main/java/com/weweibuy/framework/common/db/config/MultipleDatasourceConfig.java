@@ -11,6 +11,8 @@ import org.springframework.context.annotation.Configuration;
 
 /**
  * 多数据源配置
+ * 排除 springBoot 自动配置:
+ * -- @SpringBootApplication(exclude = {DataSourceAutoConfiguration.class, MybatisAutoConfiguration.class})
  *
  * @author durenhao
  * @date 2021/7/18 9:48
