@@ -2,10 +2,8 @@ package com.weweibuy.framework.common.db.config;
 
 import com.weweibuy.framework.common.db.multiple.MultipleDatasourceRegister;
 import com.weweibuy.framework.common.db.properties.MultipleDataSourceProperties;
-import lombok.RequiredArgsConstructor;
 import org.mybatis.spring.boot.autoconfigure.MybatisAutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -19,8 +17,6 @@ import org.springframework.context.annotation.Configuration;
  **/
 @Configuration
 @EnableConfigurationProperties({MultipleDataSourceProperties.class})
-@ConditionalOnProperty(prefix = "common.db", name = "multipleDatasource")
-@RequiredArgsConstructor
 @ConditionalOnMissingBean({DataSourceAutoConfiguration.class, MybatisAutoConfiguration.class})
 public class MultipleDatasourceConfig {
 
