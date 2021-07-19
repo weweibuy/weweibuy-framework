@@ -4,13 +4,11 @@ import com.weweibuy.framework.common.db.properties.DataSourceWithMybatisProperti
 import com.weweibuy.framework.common.db.properties.MapperScanMybatisProperties;
 import com.weweibuy.framework.common.db.properties.MultipleDataSourceProperties;
 import org.apache.commons.collections4.CollectionUtils;
-import org.mybatis.spring.boot.autoconfigure.MybatisProperties;
 import org.mybatis.spring.mapper.MapperScannerConfigurer;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanDefinitionHolder;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.support.*;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.context.properties.bind.BindResult;
 import org.springframework.boot.context.properties.bind.Binder;
 import org.springframework.context.ApplicationContext;
@@ -21,6 +19,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.util.StringUtils;
 
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * @author durenhao
@@ -58,11 +57,12 @@ public class MultipleDatasourceRegister implements BeanDefinitionRegistryPostPro
      * @param dataSourceProperties
      * @param registry
      */
-    private void registryDatasourceFactoryBean(String beanName, DataSourceProperties dataSourceProperties, BeanDefinitionRegistry registry) {
+    private void registryDatasourceFactoryBean(String beanName, DataSourceWithMybatisProperties dataSourceProperties, BeanDefinitionRegistry registry) {
         BeanDefinitionBuilder definitionBuilder = BeanDefinitionBuilder
                 .genericBeanDefinition(DatasourceFactoryBean.class)
                 .addPropertyValue("dataSourceProperties", dataSourceProperties)
-//                .setPrimary(primary)
+                .addPropertyValue("name", beanName)
+                .setPrimary(Optional.ofNullable(dataSourceProperties.getPrimary()).orElse(false))
                 .setAutowireMode(AbstractBeanDefinition.AUTOWIRE_BY_TYPE);
         AbstractBeanDefinition definition = definitionBuilder.getBeanDefinition();
         BeanDefinitionHolder holder = new BeanDefinitionHolder(definition, beanName);
@@ -77,12 +77,12 @@ public class MultipleDatasourceRegister implements BeanDefinitionRegistryPostPro
      * @param mybatisProperties
      * @param registry
      */
-    public void registrySqlSessionFactoryBean(String datasourceName, MybatisProperties mybatisProperties, BeanDefinitionRegistry registry) {
+    public void registrySqlSessionFactoryBean(String datasourceName, MapperScanMybatisProperties mybatisProperties, BeanDefinitionRegistry registry) {
         BeanDefinitionBuilder definitionBuilder = BeanDefinitionBuilder
                 .genericBeanDefinition(CustomSqlSessionFactoryBean.class)
                 .addPropertyValue("datasourceName", datasourceName)
                 .addPropertyValue("properties", mybatisProperties)
-//                .setPrimary(primary)
+                .setPrimary(Optional.ofNullable(mybatisProperties.getPrimary()).orElse(false))
                 .setAutowireMode(AbstractBeanDefinition.AUTOWIRE_BY_TYPE);
         AbstractBeanDefinition definition = definitionBuilder.getBeanDefinition();
         BeanDefinitionHolder holder = new BeanDefinitionHolder(definition, sqlSessionFactoryBeanName(datasourceName));
