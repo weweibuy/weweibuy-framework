@@ -6,12 +6,14 @@ import com.weweibuy.framework.common.log.logger.HttpLogger;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.annotation.Order;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import javax.servlet.http.HttpServletRequest;
+import java.sql.SQLException;
 
 /**
  * 数据库异常处理
@@ -24,14 +26,41 @@ import javax.servlet.http.HttpServletRequest;
 @Order(-200)
 public class BdExceptionAdvice {
 
+    @ExceptionHandler(DuplicateKeyException.class)
+    public ResponseEntity<CommonCodeResponse> handler(HttpServletRequest request, DuplicateKeyException e) {
+        HttpLogger.determineAndLogForJsonRequest(request);
+
+        log.error("数据重复输入: ", e);
+
+        return CommonExceptionAdvice.builderCommonHeader(HttpStatus.BAD_REQUEST)
+                .body(CommonCodeResponse.response(CommonErrorCodeEum.BAD_REQUEST_PARAM.getCode(), "数据重复输入"));
+    }
+
+
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<CommonCodeResponse> handler(HttpServletRequest request, DataIntegrityViolationException e) {
         HttpLogger.determineAndLogForJsonRequest(request);
 
-        log.warn("输入数据字段过长: {}", e.getMessage());
+        log.error("数据库操作异常:", e);
 
-        return CommonExceptionAdvice.builderCommonHeader(HttpStatus.BAD_REQUEST)
-                .body(CommonCodeResponse.response(CommonErrorCodeEum.BAD_REQUEST_PARAM.getCode(), "输入数据字段过长"));
+        String message = e.getMessage();
+        if (message.indexOf("Data too long") != -1) {
+            return CommonExceptionAdvice.builderCommonHeader(HttpStatus.BAD_REQUEST)
+                    .body(CommonCodeResponse.response(CommonErrorCodeEum.BAD_REQUEST_PARAM.getCode(), "输入数据字段过长"));
+        }
+        Throwable cause = e.getCause();
+        if (cause instanceof SQLException) {
+            SQLException sqlException = (SQLException) cause;
+            int errorCode = sqlException.getErrorCode();
+            switch (errorCode) {
+                case 1364:
+                    return CommonExceptionAdvice.builderCommonHeader(HttpStatus.BAD_REQUEST)
+                            .body(CommonCodeResponse.response(CommonErrorCodeEum.BAD_REQUEST_PARAM.getCode(), "数据操作异常,输入参数为空"));
+            }
+        }
+
+        return CommonExceptionAdvice.builderCommonHeader(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(CommonCodeResponse.response(CommonErrorCodeEum.UNKNOWN_SERVER_EXCEPTION.getCode(), "数据操作异常"));
     }
 
 }

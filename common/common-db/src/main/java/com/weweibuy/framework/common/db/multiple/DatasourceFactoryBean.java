@@ -1,12 +1,15 @@
 package com.weweibuy.framework.common.db.multiple;
 
+import com.mysql.cj.jdbc.MysqlXADataSource;
 import com.zaxxer.hikari.HikariDataSource;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
+import org.springframework.boot.jta.atomikos.AtomikosDataSourceBean;
 
 import javax.sql.DataSource;
+import java.sql.SQLException;
 
 /**
  * @author durenhao
@@ -25,6 +28,8 @@ public class DatasourceFactoryBean implements FactoryBean<DataSource>  {
         HikariDataSource dataSource = (HikariDataSource)createDataSource(dataSourceProperties, HikariDataSource.class);
         dataSource.setPoolName(name + "-HikariPool");
         return dataSource;
+
+//        return atomikosDataSource(dataSourceProperties);
     }
 
     @Override
@@ -36,4 +41,17 @@ public class DatasourceFactoryBean implements FactoryBean<DataSource>  {
         return (T) properties.initializeDataSourceBuilder().type(type).build();
     }
 
+    // todo 数据源 事务
+    public DataSource atomikosDataSource(DataSourceProperties properties) throws SQLException {
+        MysqlXADataSource mysqlXADataSource = new MysqlXADataSource();
+        mysqlXADataSource.setURL(properties.getUrl());
+        mysqlXADataSource.setPassword(properties.getPassword());
+        mysqlXADataSource.setUser(properties.getUsername());
+        mysqlXADataSource.setPinGlobalTxToPhysicalConnection(true);
+        // 创建atomikos全局事务
+        AtomikosDataSourceBean xaDataSource = new AtomikosDataSourceBean();
+        xaDataSource.setXaDataSource(mysqlXADataSource);
+        xaDataSource.setUniqueResourceName(name);
+        return xaDataSource;
+    }
 }
