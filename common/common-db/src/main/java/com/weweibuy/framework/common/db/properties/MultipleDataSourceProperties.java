@@ -12,8 +12,10 @@ import java.util.Map;
  * @date 2021/7/18 9:55
  **/
 @Data
-@ConfigurationProperties(prefix = "common.db")
+@ConfigurationProperties(prefix = MultipleDataSourceProperties.PREFIX)
 public class MultipleDataSourceProperties {
+
+    public static final String PREFIX = "common.db";
 
     private Map<String, DataSourceWithMybatisProperties> multipleDatasource;
 

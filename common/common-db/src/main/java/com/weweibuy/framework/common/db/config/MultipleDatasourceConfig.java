@@ -1,8 +1,10 @@
 package com.weweibuy.framework.common.db.config;
 
 import com.weweibuy.framework.common.db.multiple.MultipleDatasourceRegister;
+import com.weweibuy.framework.common.db.multiple.XaDatasourceRegister;
 import com.weweibuy.framework.common.db.properties.MultipleDataSourceProperties;
 import org.mybatis.spring.boot.autoconfigure.MybatisAutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -19,12 +21,19 @@ import org.springframework.context.annotation.Configuration;
  **/
 @Configuration
 @EnableConfigurationProperties({MultipleDataSourceProperties.class})
-@ConditionalOnMissingBean({DataSourceAutoConfiguration.class, MybatisAutoConfiguration.class})
 public class MultipleDatasourceConfig {
 
     @Bean
+    @ConditionalOnMissingBean({DataSourceAutoConfiguration.class, MybatisAutoConfiguration.class})
     public MultipleDatasourceRegister multipleDatasourceRegister() {
         return new MultipleDatasourceRegister();
+    }
+
+    @Bean
+    @ConditionalOnBean(type = {"com.atomikos.icatch.config.UserTransactionServiceImp",
+            "org.springframework.transaction.jta.JtaTransactionManager"})
+    public XaDatasourceRegister xaDatasourceRegister() {
+        return new XaDatasourceRegister();
     }
 
 
