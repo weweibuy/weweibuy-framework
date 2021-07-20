@@ -21,6 +21,9 @@ import java.util.Map;
 import java.util.Optional;
 
 /**
+ * 多数据源
+ * datasource, sqlSessionFactory, mapperScan注册
+ *
  * @author durenhao
  * @date 2021/7/18 10:32
  **/
@@ -124,7 +127,8 @@ public class MultipleDatasourceRegister implements BeanDefinitionRegistryPostPro
     public void registerTransactionManager(String datasourceName, DataSourceWithMybatisProperties properties, BeanDefinitionRegistry registry) {
         BeanDefinitionBuilder builder = BeanDefinitionBuilder.genericBeanDefinition(DataSourceTransactionManagerFactoryBean.class)
                 .addPropertyValue("datasourceName", datasourceName)
-                .setPrimary(Optional.ofNullable(properties.getPrimary()).orElse(false));
+                .setPrimary(Optional.ofNullable(properties.getPrimary()).orElse(false))
+                .setAutowireMode(AbstractBeanDefinition.AUTOWIRE_BY_TYPE);
 
         String transactionManagerName = Optional.ofNullable(properties.getTransactionManagerName())
                 .orElseGet(() -> datasourceName + "TransactionManager");

@@ -1,5 +1,7 @@
 package com.weweibuy.framework.common.db.multiple;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.transaction.TransactionManagerCustomizers;
@@ -15,6 +17,8 @@ import javax.sql.DataSource;
  * @author durenhao
  * @date 2021/7/20 21:20
  **/
+@Getter
+@Setter
 public class DataSourceTransactionManagerFactoryBean implements FactoryBean<TransactionManager> {
 
     private String datasourceName;
