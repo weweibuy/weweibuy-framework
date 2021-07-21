@@ -6,8 +6,11 @@ import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
-import com.weweibuy.framework.common.core.config.JackJsonConfig;
 import com.weweibuy.framework.common.core.model.constant.CommonConstant;
 import org.springframework.beans.BeanUtils;
 import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
@@ -19,6 +22,8 @@ import org.springframework.util.ReflectionUtils;
 
 import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 
 /**
@@ -47,8 +52,8 @@ public class JacksonBuilderHelper {
                 new JacksonBuilderHelper.StandardJackson2ObjectMapperBuilderCustomizer();
         Jackson2ObjectMapperBuilder objectMapperBuilder = new Jackson2ObjectMapperBuilder();
         List<Jackson2ObjectMapperBuilderCustomizer> customizers = new ArrayList<>();
-        Jackson2ObjectMapperBuilderCustomizer localDateCustomizer = JackJsonConfig.localDateCustomizer();
-        Jackson2ObjectMapperBuilderCustomizer localDateTimeCustomizer = JackJsonConfig.localDateTimeCustomizer();
+        Jackson2ObjectMapperBuilderCustomizer localDateCustomizer = localDateCustomizer();
+        Jackson2ObjectMapperBuilderCustomizer localDateTimeCustomizer = localDateTimeCustomizer();
         customizers.add(standardJackson2ObjectMapperBuilderCustomizer);
         customizers.add(localDateCustomizer);
         customizers.add(localDateTimeCustomizer);
@@ -138,6 +143,36 @@ public class JacksonBuilderHelper {
         } catch (Exception ex) {
             throw new IllegalStateException(ex);
         }
+    }
+
+
+    public static Jackson2ObjectMapperBuilderCustomizer localDateTimeCustomizer() {
+        return builder ->
+                builder.serializerByType(LocalDateTime.class, localDateTimeSerializer())
+                        .deserializerByType(LocalDateTime.class, localDateTimeDeserializer());
+    }
+
+
+    public static Jackson2ObjectMapperBuilderCustomizer localDateCustomizer() {
+        return builder ->
+                builder.serializerByType(LocalDate.class, localDateSerializer())
+                        .deserializerByType(LocalDate.class, localDateDeserializer());
+    }
+
+    private static LocalDateTimeSerializer localDateTimeSerializer() {
+        return new LocalDateTimeSerializer(CommonConstant.DateConstant.STANDARD_DATE_TIME_FORMATTER);
+    }
+
+    private static LocalDateTimeDeserializer localDateTimeDeserializer() {
+        return new LocalDateTimeDeserializer(CommonConstant.DateConstant.STANDARD_DATE_TIME_FORMATTER);
+    }
+
+    private static LocalDateSerializer localDateSerializer() {
+        return new LocalDateSerializer(CommonConstant.DateConstant.STANDARD_DATE_FORMATTER);
+    }
+
+    private static LocalDateDeserializer localDateDeserializer() {
+        return new LocalDateDeserializer(CommonConstant.DateConstant.STANDARD_DATE_FORMATTER);
     }
 
 
