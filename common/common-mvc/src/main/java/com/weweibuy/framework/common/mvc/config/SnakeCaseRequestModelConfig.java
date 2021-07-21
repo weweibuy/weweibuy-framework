@@ -17,6 +17,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import java.util.List;
 
 /**
+ * GET 请求下滑线, 映射为Java 驼峰属性配置
+ *
  * @author durenhao
  * @date 2020/2/18 10:17
  **/

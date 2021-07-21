@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class HealthCheckConstant {
 
-    public static final String HEALTH_CHECK_PATH = CommonConstant.HttpServletConstant.ENDPOINT_PATH_PREFIX + "/_common/_health";
+    public static final String HEALTH_CHECK_PATH = CommonConstant.HttpServletConstant.ENDPOINT_PATH_PREFIX
+            + "/_common/_health";
 
 }
