@@ -1,6 +1,5 @@
 package com.weweibuy.framework.common.db.multiple;
 
-import com.mysql.cj.jdbc.MysqlXADataSource;
 import com.weweibuy.framework.common.db.properties.DataSourceWithMybatisProperties;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
@@ -9,10 +8,8 @@ import lombok.Setter;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
-import org.springframework.boot.jta.atomikos.AtomikosDataSourceBean;
 
 import javax.sql.DataSource;
-import java.sql.SQLException;
 import java.util.Optional;
 
 /**
@@ -25,16 +22,12 @@ public class DatasourceFactoryBean implements FactoryBean<DataSource> {
 
     private DataSourceWithMybatisProperties dataSourceProperties;
 
-    private Boolean xa;
-
     private String name;
 
     @Override
     public DataSource getObject() throws Exception {
-        if (!xa) {
-            return hikariDataSource();
-        }
-        return atomikosDataSource();
+        dataSourceProperties.setType(HikariDataSource.class);
+        return hikariDataSource();
     }
 
 
@@ -63,33 +56,5 @@ public class DatasourceFactoryBean implements FactoryBean<DataSource> {
         return dataSource;
     }
 
-    private DataSource atomikosDataSource() throws SQLException {
-        MysqlXADataSource mysqlXADataSource = new MysqlXADataSource();
-        mysqlXADataSource.setURL(dataSourceProperties.getUrl());
-        mysqlXADataSource.setPassword(dataSourceProperties.getPassword());
-        mysqlXADataSource.setUser(dataSourceProperties.getUsername());
-        mysqlXADataSource.setPinGlobalTxToPhysicalConnection(true);
-        mysqlXADataSource.setAutoGenerateTestcaseScript(false);
 
-        // 创建atomikos全局事务
-        AtomikosDataSourceBean xaDataSource = new AtomikosDataSourceBean();
-        AtomikosDataSourceBean atomikos = dataSourceProperties.getAtomikos();
-        if (atomikos != null) {
-            BeanUtils.copyProperties(atomikos, xaDataSource);
-        }
-        xaDataSource.setXaDataSource(mysqlXADataSource);
-        xaDataSource.setUniqueResourceName(name);
-        return xaDataSource;
-    }
-
-    public static void main(String[] args) {
-        AtomikosDataSourceBean xaDataSource = new AtomikosDataSourceBean();
-        AtomikosDataSourceBean atomikos  = new AtomikosDataSourceBean();
-        atomikos.setMaxIdleTime(111);
-        if (atomikos != null) {
-            BeanUtils.copyProperties(atomikos, xaDataSource);
-        }
-        int maxIdleTime = xaDataSource.getMaxIdleTime();
-        System.err.println(maxIdleTime);
-    }
 }
