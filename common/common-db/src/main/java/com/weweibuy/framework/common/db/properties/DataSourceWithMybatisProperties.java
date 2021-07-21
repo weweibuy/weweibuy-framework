@@ -3,7 +3,6 @@ package com.weweibuy.framework.common.db.properties;
 import com.zaxxer.hikari.HikariConfig;
 import lombok.Data;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
-import org.springframework.boot.jta.atomikos.AtomikosDataSourceBean;
 
 import java.util.List;
 
@@ -32,20 +31,13 @@ public class DataSourceWithMybatisProperties extends DataSourceProperties {
     private String transactionManagerName;
 
     /**
-     * 是否加入分布式事务控制器, 如果加入帮助创建 XaDatasource
-     */
-    private Boolean joinXa = false;
-
-    /**
-     * 入分布式事务控制器,创建数据源配置
-     */
-    private AtomikosDataSourceBean atomikos;
-
-    /**
      * hikari 数据连接配置
      */
     private HikariConfig hikari;
 
+    /**
+     * mybatis 配置
+     */
     private List<MapperScanMybatisProperties> mybatis;
 
 }

@@ -71,7 +71,6 @@ public class MultipleDatasourceRegister implements BeanDefinitionRegistryPostPro
                 .genericBeanDefinition(DatasourceFactoryBean.class)
                 .addPropertyValue("dataSourceProperties", dataSourceProperties)
                 .addPropertyValue("name", beanName)
-                .addPropertyValue("xa", false)
                 .setPrimary(Optional.ofNullable(dataSourceProperties.getPrimary()).orElse(false));
         AbstractBeanDefinition definition = definitionBuilder.getBeanDefinition();
         BeanDefinitionHolder holder = new BeanDefinitionHolder(definition, beanName);
