@@ -11,10 +11,10 @@ import org.apache.rocketmq.client.producer.SendResult;
  * @author durenhao
  * @date 2020/12/6 11:31
  **/
-@RocketProducer(topic = "${rocket-mq.local-cache-evict.topic}")
+@RocketProducer(topic = "${common.local-cache.mq-evict.topic}")
 public interface LocalCacheEvictProducer {
 
-    @RocketProducerHandler(tag = "${rocket-mq.local-cache-evict.tag}")
+    @RocketProducerHandler(tag = "${common.local-cache.mq-evict.tag}")
     SendResult send(LocalCacheEvictMessage evictMessage);
 
 }
