@@ -3,26 +3,44 @@ package com.weweibuy.framework.common.db.model;
 import java.time.LocalDateTime;
 
 /**
+ * 通用的数据库对象
+ *
  * @author durenhao
  * @date 2021/5/17 21:27
  **/
 public interface CommonPo {
 
-    Long getId();
+    default Long getId() {
+        return null;
+    }
 
-    void setId(Long id);
+    default void setId(Long id) {
 
-    Boolean getDeleted();
+    }
 
-    void setDeleted(Boolean deleted);
+    default Boolean getDeleted() {
+        return null;
+    }
 
-    LocalDateTime getCreateTime();
+    default void setDeleted(Boolean deleted) {
 
-    void setCreateTime(LocalDateTime createTime);
+    }
 
-    LocalDateTime getUpdateTime();
+    default LocalDateTime getCreateTime() {
+        return null;
+    }
 
-    void setUpdateTime(LocalDateTime updateTime);
+    default void setCreateTime(LocalDateTime createTime) {
+
+    }
+
+    default LocalDateTime getUpdateTime() {
+        return null;
+    }
+
+    default void setUpdateTime(LocalDateTime updateTime) {
+
+    }
 
 
 }
