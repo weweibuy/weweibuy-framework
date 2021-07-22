@@ -1,0 +1,24 @@
+{
+  "groups": [
+    {
+      "name": "common.jackson",
+      "type": "com.weweibuy.framework.common.core.config.properties.CommonJacksonProperties",
+      "sourceType": "com.weweibuy.framework.common.core.config.properties.CommonJacksonProperties"
+    }
+  ],
+  "properties": [
+    {
+      "name": "common.jackson.local-date-format",
+      "type": "java.lang.String",
+      "sourceType": "com.weweibuy.framework.common.core.config.properties.CommonJacksonProperties",
+      "defaultValue": "yyyy-MM-dd"
+    },
+    {
+      "name": "common.jackson.local-date-time-Format",
+      "type": "java.lang.String",
+      "sourceType": "com.weweibuy.framework.common.core.config.properties.CommonJacksonProperties",
+      "defaultValue": "yyyy-MM-dd HH:mm:ss"
+    }
+  ],
+  "hints": []
+}

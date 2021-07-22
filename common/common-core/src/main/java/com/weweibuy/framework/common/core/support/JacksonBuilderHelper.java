@@ -12,6 +12,7 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 import com.weweibuy.framework.common.core.model.constant.CommonConstant;
+import com.weweibuy.framework.common.core.utils.DateTimeUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
 import org.springframework.boot.jackson.JsonComponentModule;
@@ -52,12 +53,12 @@ public class JacksonBuilderHelper {
                 new JacksonBuilderHelper.StandardJackson2ObjectMapperBuilderCustomizer();
         Jackson2ObjectMapperBuilder objectMapperBuilder = new Jackson2ObjectMapperBuilder();
         List<Jackson2ObjectMapperBuilderCustomizer> customizers = new ArrayList<>();
-        Jackson2ObjectMapperBuilderCustomizer localDateCustomizer = localDateCustomizer();
-        Jackson2ObjectMapperBuilderCustomizer localDateTimeCustomizer = localDateTimeCustomizer();
+        Jackson2ObjectMapperBuilderCustomizer localDateCustomizer = localDateCustomizer(CommonConstant.DateConstant.STANDARD_DATE_FORMAT_STR);
+        Jackson2ObjectMapperBuilderCustomizer localDateTimeCustomizer = localDateTimeCustomizer(CommonConstant.DateConstant.STANDARD_DATE_TIME_FORMAT_STR);
         customizers.add(standardJackson2ObjectMapperBuilderCustomizer);
         customizers.add(localDateCustomizer);
         customizers.add(localDateTimeCustomizer);
-
+        // 加载自定义配置信息
         ServiceLoader<Jackson2ObjectMapperBuilderCustomizer> LOADER = ServiceLoader.load(Jackson2ObjectMapperBuilderCustomizer.class);
         Iterator<Jackson2ObjectMapperBuilderCustomizer> iterator = LOADER.iterator();
         while (iterator.hasNext()) {
@@ -146,33 +147,33 @@ public class JacksonBuilderHelper {
     }
 
 
-    public static Jackson2ObjectMapperBuilderCustomizer localDateTimeCustomizer() {
+    public static Jackson2ObjectMapperBuilderCustomizer localDateTimeCustomizer(String format) {
         return builder ->
-                builder.serializerByType(LocalDateTime.class, localDateTimeSerializer())
-                        .deserializerByType(LocalDateTime.class, localDateTimeDeserializer());
+                builder.serializerByType(LocalDateTime.class, localDateTimeSerializer(format))
+                        .deserializerByType(LocalDateTime.class, localDateTimeDeserializer(format));
     }
 
 
-    public static Jackson2ObjectMapperBuilderCustomizer localDateCustomizer() {
+    public static Jackson2ObjectMapperBuilderCustomizer localDateCustomizer(String format) {
         return builder ->
-                builder.serializerByType(LocalDate.class, localDateSerializer())
-                        .deserializerByType(LocalDate.class, localDateDeserializer());
+                builder.serializerByType(LocalDate.class, localDateSerializer(format))
+                        .deserializerByType(LocalDate.class, localDateDeserializer(format));
     }
 
-    private static LocalDateTimeSerializer localDateTimeSerializer() {
-        return new LocalDateTimeSerializer(CommonConstant.DateConstant.STANDARD_DATE_TIME_FORMATTER);
+    public static LocalDateTimeSerializer localDateTimeSerializer(String format) {
+        return new LocalDateTimeSerializer(DateTimeUtils.dateTimeFormatter(format));
     }
 
-    private static LocalDateTimeDeserializer localDateTimeDeserializer() {
-        return new LocalDateTimeDeserializer(CommonConstant.DateConstant.STANDARD_DATE_TIME_FORMATTER);
+    public static LocalDateTimeDeserializer localDateTimeDeserializer(String format) {
+        return new LocalDateTimeDeserializer(DateTimeUtils.dateTimeFormatter(format));
     }
 
-    private static LocalDateSerializer localDateSerializer() {
-        return new LocalDateSerializer(CommonConstant.DateConstant.STANDARD_DATE_FORMATTER);
+    public static LocalDateSerializer localDateSerializer(String format) {
+        return new LocalDateSerializer(DateTimeUtils.dateTimeFormatter(format));
     }
 
-    private static LocalDateDeserializer localDateDeserializer() {
-        return new LocalDateDeserializer(CommonConstant.DateConstant.STANDARD_DATE_FORMATTER);
+    public static LocalDateDeserializer localDateDeserializer(String format) {
+        return new LocalDateDeserializer(DateTimeUtils.dateTimeFormatter(format));
     }
 
 
