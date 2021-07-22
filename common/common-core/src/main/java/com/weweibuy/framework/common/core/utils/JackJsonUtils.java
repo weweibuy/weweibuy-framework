@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.weweibuy.framework.common.core.support.JacksonBuilderHelper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,9 +46,9 @@ public class JackJsonUtils {
         MVC_OBJECT_MAPPER = objectMapper;
         PropertyNamingStrategy propertyNamingStrategy = objectMapper.getPropertyNamingStrategy();
         if (propertyNamingStrategy == null ||
-                propertyNamingStrategy.getClass().isAssignableFrom(PropertyNamingStrategy.LOWER_CAMEL_CASE.getClass())) {
+                propertyNamingStrategy.getClass().isAssignableFrom(PropertyNamingStrategies.LOWER_CAMEL_CASE.getClass())) {
             mvcNamingStrategy = "LOWER_CAMEL_CASE";
-        } else if (propertyNamingStrategy.getClass().isAssignableFrom(PropertyNamingStrategy.SNAKE_CASE.getClass())) {
+        } else if (propertyNamingStrategy.getClass().isAssignableFrom(PropertyNamingStrategies.SNAKE_CASE.getClass())) {
             mvcNamingStrategy = "SNAKE_CASE";
         }
     }
@@ -58,7 +59,7 @@ public class JackJsonUtils {
                 .build();
 
         SNAKE_CASE_MAPPER = objectMapperBuilder.createXmlMapper(false)
-                .propertyNamingStrategy(PropertyNamingStrategy.SNAKE_CASE)
+                .propertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE)
                 .build();
     }
 
