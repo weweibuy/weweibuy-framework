@@ -22,10 +22,12 @@ weweibuy-framework
 - [common-log](./common/common-log/README.md)：common-log 介绍
 
 ### 4. 数据库 common-db
-  基于Mybatis无侵入的实现,数据库敏感字段的脱敏; 包含AES加解密,BCrypt加密功能  
-  适用场景:  数据库中存储敏感信息时对其脱敏  
+  基于Mybatis无侵入的实现,数据库敏感字段的脱敏/加解密与多数源功能  
+  适用场景:   
+   - 数据库中存储敏感信息时对其脱敏 
    - 密码进行不可逆加密
-   - 身份证进行可逆加密
+   - 身份证进行可逆加密   
+   - 通过简单配置实现多数据源功能
 *  [common-db](./common/common-db/README.md)：common-db 介绍
 
 ### 5. mvc扩展 common-mvc
