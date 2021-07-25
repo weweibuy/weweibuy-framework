@@ -24,6 +24,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 import javax.servlet.http.HttpServletRequest;
@@ -78,7 +79,7 @@ public class CommonExceptionAdvice implements InitializingBean {
     public ResponseEntity<CommonCodeResponse> handler(HttpServletRequest request, MethodArgumentNotValidException e) {
         HttpLogger.determineAndLogForJsonRequest(request);
 
-        log.warn("输入参数错误: {}", e.getMessage());
+        log.warn("输入参数错误: ", e.getMessage());
         String defaultMessage = e.getBindingResult().getFieldError().getDefaultMessage();
         return builderCommonHeader(HttpStatus.BAD_REQUEST)
                 .body(CommonCodeResponse.response(CommonErrorCodeEum.BAD_REQUEST_PARAM.getCode(), defaultMessage));
@@ -101,6 +102,15 @@ public class CommonExceptionAdvice implements InitializingBean {
         String defaultMessage = e.getFieldError().getDefaultMessage();
         return builderCommonHeader(HttpStatus.BAD_REQUEST)
                 .body(CommonCodeResponse.response(CommonErrorCodeEum.BAD_REQUEST_PARAM.getCode(), defaultMessage));
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<CommonCodeResponse> handler(HttpServletRequest request, MethodArgumentTypeMismatchException e) {
+        HttpLogger.determineAndLogForJsonRequest(request);
+
+        log.warn("输入参数字段类型错误:", e);
+        return builderCommonHeader(HttpStatus.BAD_REQUEST)
+                .body(CommonCodeResponse.response(CommonErrorCodeEum.BAD_REQUEST_PARAM.getCode(), "输入参数字段:[" + e.getName() + "]类型错误"));
     }
 
     /**
