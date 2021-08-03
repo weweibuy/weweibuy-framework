@@ -1,5 +1,6 @@
 package com.weweibuy.framework.common.util.excel.model;
 
+import com.alibaba.excel.annotation.ExcelIgnore;
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
 
@@ -12,13 +13,16 @@ import org.apache.commons.lang3.StringUtils;
 @Data
 public abstract class AbstractImportExcelVO {
 
+    @ExcelIgnore
     private Integer sheetNum;
 
+    @ExcelIgnore
     private Integer rowNum;
 
     /**
      * 错误信息
      */
+    @ExcelIgnore
     private String errorMsg;
 
     /**
