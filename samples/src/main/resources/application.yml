@@ -19,8 +19,7 @@ spring:
     username: user01
     password: ak402507979
     hikari:
-      register-mbeans: true
-      maximum-pool-size: 11
+      maximum-pool-size: 20
 
   jackson:
     property-naming-strategy: SNAKE_CASE
@@ -29,18 +28,12 @@ spring:
   redis:
     host: 122.51.171.126
     password: ak402507979
-
   cloud:
-    consul:
-      enabled: false
-      host: 127.0.0.1
+    nacos:
       discovery:
-        prefer-ip-address: true
-        instance-id: ${spring.application.name}:${spring.cloud.consul.discovery.ip-address}:${server.port}
-        ip-address: 127.0.0.1
-        health-check-path: /endpoint/_common/_health
-        health-check-critical-timeout: 10s
-        health-check-interval: 3s
+        server-addr: 122.51.171.126:8848
+        username: nacos
+        password: nacos
   elasticsearch:
     rest:
       uris: 106.12.208.53:9200
