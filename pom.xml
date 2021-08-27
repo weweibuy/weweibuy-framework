@@ -49,6 +49,7 @@
         <fastcsv.version>1.0.4</fastcsv.version>
         <itext7.version>7.1.15</itext7.version>
         <itext.html2pdf.version>3.0.4</itext.html2pdf.version>
+        <nacos.verion>2021.1</nacos.verion>
     </properties>
 
     <dependencyManagement>
@@ -65,10 +66,16 @@
 
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-dependencies</artifactId>
+                    <artifactId>spring-cloud-dependencies</artifactId>
                 <version>${spring-cloud-version}</version>
                 <type>pom</type>
                 <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>com.alibaba.cloud</groupId>
+                <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+                <version>${nacos.verion}</version>
             </dependency>
 
             <dependency>
