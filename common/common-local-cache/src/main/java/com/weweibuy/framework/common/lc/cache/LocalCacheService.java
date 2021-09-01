@@ -9,6 +9,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.CacheConfig;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -51,6 +52,12 @@ public class LocalCacheService {
         evictCache(name, null);
     }
 
+    /**
+     * 失效当前机器的本地缓存
+     *
+     * @param name
+     * @param keySet
+     */
     public void evictCache(String name, Set<String> keySet) {
         Collection<String> cacheNames = ruleMetaCache.getCacheNames();
         if (StringUtils.isBlank(name)) {
@@ -72,10 +79,20 @@ public class LocalCacheService {
         }
     }
 
+    /**
+     * 失效集群环境全部缓存
+     */
     public void evictClusterCache() {
         evictClusterCache(null);
     }
 
+    /**
+     * 失效集群环境缓存
+     * 指定cache name 下的缓存
+     * {@link CacheConfig#cacheNames()}
+     *
+     * @param cacheName
+     */
     public void evictClusterCache(String cacheName) {
         if (localCacheEvictProducer != null) {
             localCacheEvictProducer.send(LocalCacheEvictMessage.evict(cacheName));
