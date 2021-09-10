@@ -23,6 +23,7 @@
         <module>common-local-cache</module>
         <module>common-util</module>
         <module>common-es</module>
+        <module>common-test</module>
     </modules>
 
 

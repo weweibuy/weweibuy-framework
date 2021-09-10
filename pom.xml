@@ -23,7 +23,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-        <lombok.version>1.18.10</lombok.version>
+        <lombok.version>1.18.20</lombok.version>
         <spring-boot.version>2.5.2</spring-boot.version>
         <spring-cloud-version>2020.0.3</spring-cloud-version>
         <rocketmq-client-version>4.6.0</rocketmq-client-version>
@@ -212,6 +212,13 @@
 
             <dependency>
                 <groupId>com.weweibuy.framework</groupId>
+                <artifactId>common-test</artifactId>
+                <version>${project.version}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>com.weweibuy.framework</groupId>
                 <artifactId>common-util-excel</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -367,15 +374,25 @@
                 <version>9.0.8</version>
             </dependency>
 
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>${lombok.version}</version>
+                <scope>provided</scope>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 
     <dependencies>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
             <exclusions>
                 <exclusion>
                     <groupId>org.junit.jupiter</groupId>
@@ -395,13 +412,6 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <scope>provided</scope>
         </dependency>
     </dependencies>
 
