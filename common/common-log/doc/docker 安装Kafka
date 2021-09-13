@@ -1,0 +1,6 @@
+docker run -p 9092:9092   -v /docker/kafka/conf/server.properties:/opt/bitnami/kafka/config/server.properties  -d  --hostname kafka-server --name kafka-server \
+    --network rocketmq-net \
+    -e ALLOW_PLAINTEXT_LISTENER=yes \
+	-e KAFKA_BROKER_ID=1 \
+    -e KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181/kafka-server \
+    bitnami/kafka:2.8.0

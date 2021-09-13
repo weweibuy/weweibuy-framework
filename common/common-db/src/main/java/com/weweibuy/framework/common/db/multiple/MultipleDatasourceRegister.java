@@ -38,6 +38,7 @@ public class MultipleDatasourceRegister implements BeanDefinitionRegistryPostPro
     @Override
     public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry) throws BeansException {
 
+        // 配置文件绑定
         MultipleDataSourceProperties monitorRestBeanConfig = SpringResourcesUtils.bindConfig(MultipleDataSourceProperties.PREFIX,
                 MultipleDataSourceProperties.class, environment);
 
