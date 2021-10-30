@@ -4,8 +4,12 @@ import com.weweibuy.framework.common.core.support.SystemIdGetter;
 import com.weweibuy.framework.common.feign.log.FeignLogger;
 import com.weweibuy.framework.common.feign.log.TraceContextFeignInterceptor;
 import com.weweibuy.framework.common.feign.support.CustomFeignErrorDecoder;
+import com.weweibuy.framework.common.feign.support.DelegateFeignClient;
+import com.weweibuy.framework.common.feign.support.FeignFilter;
+import com.weweibuy.framework.common.feign.support.FeignFilterDelegateClient;
 import feign.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
@@ -61,5 +65,9 @@ public class CommonFeignConfig {
         return Retryer.NEVER_RETRY;
     }
 
+    @ConditionalOnBean(FeignFilter.class)
+    public DelegateFeignClient delegateFeignClient() {
+        return new FeignFilterDelegateClient();
+    }
 
 }

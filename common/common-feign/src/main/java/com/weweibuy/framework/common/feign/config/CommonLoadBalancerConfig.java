@@ -1,8 +1,10 @@
 package com.weweibuy.framework.common.feign.config;
 
+import com.weweibuy.framework.common.feign.support.DelegateFeignClient;
 import feign.Client;
 import feign.httpclient.ApacheHttpClient;
 import org.apache.http.client.HttpClient;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.cloud.client.loadbalancer.LoadBalancerClient;
@@ -20,6 +22,8 @@ import org.springframework.context.annotation.Configuration;
 @ConditionalOnClass(name = {"org.springframework.cloud.loadbalancer.support.LoadBalancerClientFactory"})
 public class CommonLoadBalancerConfig {
 
+    @Autowired(required = false)
+    private DelegateFeignClient delegateFeignClient;
 
     @Bean
     @ConditionalOnMissingBean(value = {LoadBalancerClient.class, HttpClient.class,
@@ -28,8 +32,11 @@ public class CommonLoadBalancerConfig {
                               HttpClient httpClient,
                               LoadBalancerProperties properties,
                               LoadBalancerClientFactory loadBalancerClientFactory) {
-        ApacheHttpClient delegate = new ApacheHttpClient(httpClient);
-        return new FeignBlockingLoadBalancerClient(delegate, loadBalancerClient, properties, loadBalancerClientFactory);
+        Client client = new ApacheHttpClient(httpClient);
+        if (delegateFeignClient != null) {
+            client = delegateFeignClient.delegate(client);
+        }
+        return new FeignBlockingLoadBalancerClient(client, loadBalancerClient, properties, loadBalancerClientFactory);
     }
 
 
