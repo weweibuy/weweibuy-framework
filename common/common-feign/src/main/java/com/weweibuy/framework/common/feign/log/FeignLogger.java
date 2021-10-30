@@ -146,7 +146,7 @@ public class FeignLogger extends Logger {
 
     public static String reqBody(Request request, Map<String, Collection<String>> header, FeignLogSetting feignLogSetting) {
         Boolean disableResp = feignLogSetting.getDisableReqBody();
-        if (disableResp) {
+        if (disableResp != null && disableResp) {
             return StringUtils.EMPTY;
         }
         Collection<String> contentType = header.get(HttpHeaders.CONTENT_TYPE);
@@ -177,7 +177,7 @@ public class FeignLogger extends Logger {
 
     public static Object[] respBody(Response response, Map<String, Collection<String>> header, FeignLogSetting feignLogSetting) throws IOException {
         Boolean disableResp = feignLogSetting.getDisableRespBody();
-        if (disableResp) {
+        if (disableResp != null && disableResp) {
             return new Object[]{StringUtils.EMPTY, response};
         }
         int status = response.status();

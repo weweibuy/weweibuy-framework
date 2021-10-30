@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 /**
  * feign配置
@@ -63,7 +64,11 @@ public class CommonFeignConfig {
         List<FeignLogSetting> arrayList = new ArrayList<>();
         Optional.ofNullable(feignLogConfigurerList)
                 .ifPresent(l -> l.forEach(f -> f.configurer(arrayList)));
-        return new FeignLogger(arrayList);
+        List<FeignLogSetting> settings = arrayList.stream()
+                .filter(FeignLogSetting::rightSetting)
+                .collect(Collectors.toList());
+
+        return new FeignLogger(settings);
     }
 
     @Bean
