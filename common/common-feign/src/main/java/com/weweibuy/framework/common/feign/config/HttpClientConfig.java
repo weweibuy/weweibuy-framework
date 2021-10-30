@@ -1,6 +1,7 @@
 package com.weweibuy.framework.common.feign.config;
 
 import com.weweibuy.framework.common.core.concurrent.LogExceptionThreadFactory;
+import com.weweibuy.framework.common.feign.support.DelegateFeignClient;
 import com.weweibuy.framework.common.feign.support.NoSwitchHttpClientConnectionOperator;
 import feign.Client;
 import feign.httpclient.ApacheHttpClient;
@@ -54,6 +55,9 @@ public class HttpClientConfig {
     @Autowired
     private HttpClientProperties httpClientProperties;
 
+    @Autowired(required = false)
+    private DelegateFeignClient delegateFeignClient;
+
     private ScheduledExecutorService schedule;
 
     /**
@@ -65,7 +69,11 @@ public class HttpClientConfig {
     @Bean
     @ConditionalOnMissingClass(value = {"org.springframework.cloud.loadbalancer.support.LoadBalancerClientFactory"})
     public Client feignClient(HttpClient httpClient) {
-        return new ApacheHttpClient(httpClient);
+        Client client = new ApacheHttpClient(httpClient);
+        if (delegateFeignClient != null) {
+            client = delegateFeignClient.delegate(client);
+        }
+        return client;
     }
 
 
