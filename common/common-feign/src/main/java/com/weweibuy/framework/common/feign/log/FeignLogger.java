@@ -85,10 +85,13 @@ public class FeignLogger extends Logger {
             logForResponse(BINARY_BODY_STR, status, elapsedTime);
             return response;
         }
-        if (response.body() != null && !(status == 204 || status == 205)) {
-            byte[] bodyData = Util.toByteArray(response.body().asInputStream());
+        Response.Body body = response.body();
+        if (body != null && !(status == 204 || status == 205)) {
+            byte[] bodyData = Util.toByteArray(body.asInputStream());
             bodyStr = new String(bodyData);
-            response = response.toBuilder().body(bodyData).build();
+            if (!body.isRepeatable()) {
+                response = response.toBuilder().body(bodyData).build();
+            }
         }
         logForResponse(bodyStr, status, elapsedTime);
         return response;
