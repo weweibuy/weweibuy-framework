@@ -3,6 +3,8 @@ package com.weweibuy.framework.common.feign.support;
 import feign.Request;
 import feign.Response;
 
+import java.io.IOException;
+
 /**
  * feign 请求过滤器
  * <p>
@@ -25,7 +27,7 @@ public interface FeignFilter {
      * @param chain
      * @return
      */
-    Response filter(Request request, Request.Options options, FeignFilterChain chain);
+    Response filter(Request request, Request.Options options, FeignFilterChain chain) throws IOException;
 
 
 }

@@ -3,18 +3,17 @@ package com.weweibuy.framework.common.feign.config;
 import com.weweibuy.framework.common.core.support.SystemIdGetter;
 import com.weweibuy.framework.common.feign.log.FeignLogger;
 import com.weweibuy.framework.common.feign.log.TraceContextFeignInterceptor;
-import com.weweibuy.framework.common.feign.support.CustomFeignErrorDecoder;
-import com.weweibuy.framework.common.feign.support.DelegateFeignClient;
-import com.weweibuy.framework.common.feign.support.FeignFilter;
-import com.weweibuy.framework.common.feign.support.FeignFilterDelegateClient;
+import com.weweibuy.framework.common.feign.support.*;
 import feign.*;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -28,6 +27,10 @@ import java.util.concurrent.TimeUnit;
 public class CommonFeignConfig {
 
     private final SystemIdGetter systemIdGetter;
+
+    @Autowired(required = false)
+    private List<FeignLogConfigurer> feignLogConfigurerList;
+
 
     /**
      * feign 超时覆盖机制,  配置 feign.client.config.xxx.readTimeout 最优先
@@ -43,7 +46,7 @@ public class CommonFeignConfig {
     public Feign.Builder feignBuilder(Retryer retryer, List<RequestInterceptor> requestInterceptorList) {
         return Feign.builder()
                 .retryer(retryer)
-                .logLevel(Logger.Level.BASIC)
+                .logLevel(Logger.Level.NONE)
                 .requestInterceptors(requestInterceptorList)
                 .errorDecoder(new CustomFeignErrorDecoder(systemIdGetter))
                 .options(new Request.Options(1, TimeUnit.SECONDS,
@@ -57,7 +60,10 @@ public class CommonFeignConfig {
 
     @Bean
     public FeignLogger feignLogger() {
-        return new FeignLogger();
+        List<FeignLogSetting> arrayList = new ArrayList<>();
+        Optional.ofNullable(feignLogConfigurerList)
+                .ifPresent(l -> l.forEach(f -> f.configurer(arrayList)));
+        return new FeignLogger(arrayList);
     }
 
     @Bean
@@ -65,9 +71,14 @@ public class CommonFeignConfig {
         return Retryer.NEVER_RETRY;
     }
 
-    @ConditionalOnBean(FeignFilter.class)
+    @Bean
     public DelegateFeignClient delegateFeignClient() {
         return new FeignFilterDelegateClient();
+    }
+
+    @Bean
+    public FeignFilter logFeignFilter() {
+        return new LogFeignFilter();
     }
 
 }
