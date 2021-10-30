@@ -4,6 +4,7 @@ import feign.Feign;
 import feign.Request;
 import lombok.Builder;
 import lombok.Data;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpMethod;
 
 import java.net.URI;
@@ -34,15 +35,11 @@ public class FeignLogSetting {
     private String methodKey;
 
     /**
-     * 请求主机
-     * host, path, method 为组合匹配条件
+     * 请求主机  host + path
+     * url, method 为组合匹配条件
      */
-    private String host;
+    private String url;
 
-    /**
-     * 请求路径
-     */
-    private String path;
 
     /**
      * 请求方法
@@ -81,7 +78,9 @@ public class FeignLogSetting {
         return false;
     }
 
+
     public boolean sameHostAndPath(Request request) {
+        // eg:
         String url = request.url();
         URI uri = null;
         try {
@@ -89,7 +88,8 @@ public class FeignLogSetting {
         } catch (URISyntaxException e) {
             throw new IllegalArgumentException("非法的请求地址:" + url, e);
         }
-        return uri.getAuthority().equals(host) && uri.getPath().equals(path);
+        String s = uri.getAuthority() + uri.getPath();
+        return s.equals(this.url);
     }
 
 
@@ -99,5 +99,10 @@ public class FeignLogSetting {
 
     public static FeignLogSetting getDEFAULT() {
         return DEFAULT;
+    }
+
+    public boolean rightSetting() {
+        return StringUtils.isNotBlank(methodKey) ||
+                (StringUtils.isNotBlank(url) && httpMethod != null);
     }
 }
