@@ -1,5 +1,7 @@
 package com.weweibuy.framework.common.feign.log;
 
+import com.weweibuy.framework.common.core.utils.JackJsonUtils;
+import com.weweibuy.framework.common.feign.support.FeignLogSetting;
 import feign.Logger;
 import feign.Request;
 import feign.Response;
@@ -11,8 +13,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 
 import java.io.IOException;
-import java.util.Collection;
-import java.util.Optional;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * TODO 区分请求响应?
@@ -25,9 +27,18 @@ public class FeignLogger extends Logger {
 
     private static final String BINARY_BODY_STR = "Binary data";
 
-    public static void logForResponse(String body, int status, long elapsedTime) {
-        log.info("Feign 响应 Status: {}, Body: {}, 耗时: {}",
+    private static Map<String, FeignLogSetting> configKeySetting = new ConcurrentHashMap<>(64);
+
+    private static List<FeignLogSetting> feignLogSettingList;
+
+    public FeignLogger(List<FeignLogSetting> logSettingList) {
+        feignLogSettingList = logSettingList;
+    }
+
+    public static void logForResponse(String body, Map<String, String> header, int status, long elapsedTime) {
+        log.info("Feign 响应 Status: {}, Header: {}, Body: {}, 耗时: {}",
                 status,
+                JackJsonUtils.writeCamelCase(header),
                 body,
                 elapsedTime);
     }
@@ -46,16 +57,21 @@ public class FeignLogger extends Logger {
          * String bodyStr = BINARY_BODY_STR.equals(bodyStr) ? StringUtils.EMPTY : bodyStr
          *
          */
-        Collection<String> contentType = request.headers().get(HttpHeaders.CONTENT_TYPE);
-        boolean match = CollectionUtils.isNotEmpty(contentType) && contentType.stream()
-                .anyMatch(c -> c.indexOf(MediaType.MULTIPART_FORM_DATA_VALUE) != -1);
+        doLogRequest(request);
+    }
 
-        String bodyStr = match ? BINARY_BODY_STR : Optional.ofNullable(request.body())
-                .map(String::new)
-                .orElse(StringUtils.EMPTY);
-        log.info("Feign 请求地址: {}, Method: {}, Body: {}",
+    private static void doLogRequest(Request request) {
+
+        String configKey = request.requestTemplate().methodMetadata().configKey();
+        FeignLogSetting feignLogSetting = configKeySetting(request);
+
+        Map<String, Collection<String>> headers = request.headers();
+        Map<String, String> header = reqHeader(headers, feignLogSetting);
+        String bodyStr = reqBody(request, headers, feignLogSetting);
+        log.info("Feign 请求地址: {}, Method: {}, Header: {}, Body: {}",
                 request.url(),
                 request.httpMethod(),
+                JackJsonUtils.writeCamelCase(header),
                 bodyStr);
     }
 
@@ -66,7 +82,7 @@ public class FeignLogger extends Logger {
 
     @Override
     protected Response logAndRebufferResponse(String configKey, Level logLevel, Response response, long elapsedTime) throws IOException {
-        return logAndRebufferResponse(response, elapsedTime);
+        return logAndReBufferResponse(response, elapsedTime);
     }
 
     @Override
@@ -75,16 +91,101 @@ public class FeignLogger extends Logger {
         return ioe;
     }
 
-    static Response logAndRebufferResponse(Response response, long elapsedTime) throws IOException {
+
+    public static void logFilterRequest(Request request) {
+        String s = request.requestTemplate()
+                .methodMetadata().configKey();
+        doLogRequest(request);
+    }
+
+    public static Response logAndReBufferFilterResponse(Request request, Response response, long startTime) throws IOException {
+        long elapsedTime = System.currentTimeMillis() - startTime;
+        if (response == null) {
+            log.warn("Feign 响应为空, 耗时: {}",
+                    elapsedTime);
+            return null;
+        }
+        return logAndReBufferResponse(response, elapsedTime);
+    }
+
+
+    static Response logAndReBufferResponse(Response response, long elapsedTime) throws IOException {
         int status = response.status();
 
-        String bodyStr = "";
+        FeignLogSetting feignLogSetting = configKeySetting(response.request());
+        Map<String, Collection<String>> headers = response.headers();
 
-        Collection<String> collection = response.headers().get(HttpHeaders.CONTENT_TYPE);
-        if (CollectionUtils.isNotEmpty(collection) && collection.iterator().next().indexOf("stream") != -1) {
-            logForResponse(BINARY_BODY_STR, status, elapsedTime);
-            return response;
+        Map<String, String> header = respHeader(headers, feignLogSetting);
+
+        Object[] objects = respBody(response, headers, feignLogSetting);
+
+        logForResponse((String) objects[0], header, status, elapsedTime);
+        return (Response) objects[1];
+    }
+
+    private static FeignLogSetting configKeySetting(Request request) {
+        String configKey = request.requestTemplate()
+                .methodMetadata().configKey();
+        return configKeySetting.computeIfAbsent(configKey, key -> matching(request));
+    }
+
+    private static FeignLogSetting matching(Request request) {
+        return feignLogSettingList.stream()
+                .filter(s -> s.match(request))
+                .findFirst()
+                .orElse(FeignLogSetting.getDEFAULT());
+    }
+
+    private static Map<String, String> reqHeader(Map<String, Collection<String>> headers, FeignLogSetting feignLogSetting) {
+        List<String> reqHeaderList = feignLogSetting.getReqHeaderList();
+        if (CollectionUtils.isEmpty(reqHeaderList)) {
+            return Collections.emptyMap();
         }
+        return header(reqHeaderList, headers);
+    }
+
+    public static String reqBody(Request request, Map<String, Collection<String>> header, FeignLogSetting feignLogSetting) {
+        Boolean disableResp = feignLogSetting.getDisableReqBody();
+        if (disableResp) {
+            return StringUtils.EMPTY;
+        }
+        Collection<String> contentType = header.get(HttpHeaders.CONTENT_TYPE);
+        boolean match = CollectionUtils.isNotEmpty(contentType) && contentType.stream()
+                .anyMatch(c -> c.indexOf(MediaType.MULTIPART_FORM_DATA_VALUE) != -1);
+        return match ? BINARY_BODY_STR : Optional.ofNullable(request.body())
+                .map(String::new)
+                .orElse(StringUtils.EMPTY);
+    }
+
+
+    private static Map<String, String> respHeader(Map<String, Collection<String>> headers, FeignLogSetting feignLogSetting) {
+        List<String> reqHeaderList = feignLogSetting.getRespHeaderList();
+        if (CollectionUtils.isEmpty(reqHeaderList)) {
+            return Collections.emptyMap();
+        }
+        return header(reqHeaderList, headers);
+    }
+
+    private static Map<String, String> header(List<String> reqHeaderList, Map<String, Collection<String>> headers) {
+        Map<String, String> hashMap = new HashMap<>();
+        reqHeaderList.forEach(s -> hashMap.put(s, Optional.ofNullable(headers.get(s))
+                .filter(CollectionUtils::isNotEmpty)
+                .map(l -> l.iterator().next())
+                .orElse("")));
+        return hashMap;
+    }
+
+    public static Object[] respBody(Response response, Map<String, Collection<String>> header, FeignLogSetting feignLogSetting) throws IOException {
+        Boolean disableResp = feignLogSetting.getDisableRespBody();
+        if (disableResp) {
+            return new Object[]{StringUtils.EMPTY, response};
+        }
+        int status = response.status();
+        Collection<String> collection = header.get(HttpHeaders.CONTENT_TYPE);
+        if (CollectionUtils.isNotEmpty(collection) && collection.iterator().next().indexOf("stream") != -1) {
+            return new Object[]{StringUtils.EMPTY, response};
+        }
+        String bodyStr = "";
         Response.Body body = response.body();
         if (body != null && !(status == 204 || status == 205)) {
             byte[] bodyData = Util.toByteArray(body.asInputStream());
@@ -93,8 +194,7 @@ public class FeignLogger extends Logger {
                 response = response.toBuilder().body(bodyData).build();
             }
         }
-        logForResponse(bodyStr, status, elapsedTime);
-        return response;
+        return new Object[]{bodyStr, response};
     }
 
 }

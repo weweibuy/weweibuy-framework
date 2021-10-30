@@ -13,6 +13,7 @@ public class MethodKeyFeignException extends FeignException {
     /**
      * 方法的key
      * {@link Feign#configKey(Class, java.lang.reflect.Method)}
+     * eg: MyFeignClient#helloPost(CommonDataResponse,String)
      */
     private final String methodKey;
 
