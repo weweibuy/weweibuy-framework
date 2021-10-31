@@ -14,6 +14,8 @@ import org.springframework.cloud.openfeign.loadbalancer.FeignBlockingLoadBalance
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.List;
+
 /**
  * @author durenhao
  * @date 2020/9/9 17:43
@@ -23,7 +25,7 @@ import org.springframework.context.annotation.Configuration;
 public class CommonLoadBalancerConfig {
 
     @Autowired(required = false)
-    private DelegateFeignClient delegateFeignClient;
+    private List<DelegateFeignClient> delegateFeignClientList;
 
     @Bean
     @ConditionalOnMissingBean(value = {LoadBalancerClient.class, HttpClient.class,
@@ -33,9 +35,7 @@ public class CommonLoadBalancerConfig {
                               LoadBalancerProperties properties,
                               LoadBalancerClientFactory loadBalancerClientFactory) {
         Client client = new ApacheHttpClient(httpClient);
-        if (delegateFeignClient != null) {
-            client = delegateFeignClient.delegate(client);
-        }
+        client = DelegateFeignClient.delegateChain(delegateFeignClientList, client);
         return new FeignBlockingLoadBalancerClient(client, loadBalancerClient, properties, loadBalancerClientFactory);
     }
 

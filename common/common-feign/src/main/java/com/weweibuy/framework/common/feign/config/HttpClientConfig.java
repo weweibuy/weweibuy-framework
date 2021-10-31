@@ -36,6 +36,7 @@ import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
+import java.util.List;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -56,7 +57,7 @@ public class HttpClientConfig {
     private HttpClientProperties httpClientProperties;
 
     @Autowired(required = false)
-    private DelegateFeignClient delegateFeignClient;
+    private List<DelegateFeignClient> delegateFeignClientList;
 
     private ScheduledExecutorService schedule;
 
@@ -70,9 +71,7 @@ public class HttpClientConfig {
     @ConditionalOnMissingClass(value = {"org.springframework.cloud.loadbalancer.support.LoadBalancerClientFactory"})
     public Client feignClient(HttpClient httpClient) {
         Client client = new ApacheHttpClient(httpClient);
-        if (delegateFeignClient != null) {
-            client = delegateFeignClient.delegate(client);
-        }
+        client = DelegateFeignClient.delegateChain(delegateFeignClientList, client);
         return client;
     }
 

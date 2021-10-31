@@ -7,10 +7,8 @@ import com.weweibuy.framework.common.core.utils.JackJsonUtils;
 import feign.*;
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.cloud.openfeign.loadbalancer.FeignBlockingLoadBalancerClient;
-import org.springframework.context.annotation.DependsOn;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -28,8 +26,7 @@ import java.util.stream.Collectors;
  * @author durenhao
  * @date 2020/12/27 22:36
  **/
-@DependsOn("jackJsonUtils")
-public class MockClient implements Client, InitializingBean {
+public class MockClient implements Client {
 
     private final Client delegate;
 
@@ -130,8 +127,7 @@ public class MockClient implements Client, InitializingBean {
     }
 
 
-    @Override
-    public void afterPropertiesSet() throws Exception {
+    public void init() throws IOException {
         String baseDir = System.getProperty("feign.mock.dir");
         if (StringUtils.isBlank(baseDir)) {
             File classPathFile = new File(MockClient.class.getResource("/").getPath());

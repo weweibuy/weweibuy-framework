@@ -3,12 +3,14 @@ package com.weweibuy.framework.common.feign.config;
 import com.weweibuy.framework.common.core.support.SystemIdGetter;
 import com.weweibuy.framework.common.feign.log.FeignLogger;
 import com.weweibuy.framework.common.feign.log.TraceContextFeignInterceptor;
+import com.weweibuy.framework.common.feign.mock.MockFeignDelegateClient;
 import com.weweibuy.framework.common.feign.support.*;
 import feign.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.Scope;
 
 import java.util.ArrayList;
@@ -83,6 +85,12 @@ public class CommonFeignConfig {
     @Bean
     public FeignFilter logFeignFilter() {
         return new LogFeignFilter();
+    }
+
+    @Bean
+    @Profile(value = {"mock"})
+    public MockFeignDelegateClient mockClient() {
+        return new MockFeignDelegateClient();
     }
 
 }
