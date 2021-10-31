@@ -4,7 +4,10 @@ import com.weweibuy.framework.common.core.model.constant.CommonConstant;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
-import java.time.*;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Map;
@@ -168,7 +171,7 @@ public class DateTimeUtils {
      * @return
      */
     public static LocalDateTime dateToLocalDateTime(Date date) {
-        return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+        return date.toInstant().atZone(CommonConstant.DateConstant.ZONE_ID).toLocalDateTime();
     }
 
     /**
@@ -178,7 +181,7 @@ public class DateTimeUtils {
      * @return
      */
     public static LocalDate dateToLocalDate(Date date) {
-        return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        return date.toInstant().atZone(CommonConstant.DateConstant.ZONE_ID).toLocalDate();
     }
 
 
@@ -189,7 +192,7 @@ public class DateTimeUtils {
      * @return
      */
     public static Date localDateTimeToDate(LocalDateTime localDateTime) {
-        return Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
+        return Date.from(localDateTime.atZone(CommonConstant.DateConstant.ZONE_ID).toInstant());
     }
 
     /**
@@ -209,7 +212,7 @@ public class DateTimeUtils {
      * @return
      */
     public static Date localDateTimeToDate(LocalDate localDate) {
-        return Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+        return Date.from(localDate.atStartOfDay(CommonConstant.DateConstant.ZONE_ID).toInstant());
     }
 
 
@@ -220,7 +223,7 @@ public class DateTimeUtils {
      * @return
      */
     public static LocalDateTime timestampMilliToLocalDateTime(long timestampMilli) {
-        return LocalDateTime.ofInstant(Instant.ofEpochMilli(timestampMilli), ZoneId.systemDefault());
+        return LocalDateTime.ofInstant(Instant.ofEpochMilli(timestampMilli), CommonConstant.DateConstant.ZONE_ID);
     }
 
 
@@ -231,7 +234,7 @@ public class DateTimeUtils {
      * @return
      */
     public static LocalDate timestampMilliToLocalDate(long timestampMilli) {
-        return Instant.ofEpochMilli(timestampMilli).atZone(ZoneId.systemDefault()).toLocalDate();
+        return Instant.ofEpochMilli(timestampMilli).atZone(CommonConstant.DateConstant.ZONE_ID).toLocalDate();
     }
 
 
@@ -242,7 +245,7 @@ public class DateTimeUtils {
      * @return
      */
     public static LocalDateTime timestampSecondToLocalDateTime(long timestampSecond) {
-        return LocalDateTime.ofInstant(Instant.ofEpochSecond(timestampSecond), ZoneId.systemDefault());
+        return LocalDateTime.ofInstant(Instant.ofEpochSecond(timestampSecond), CommonConstant.DateConstant.ZONE_ID);
     }
 
     /**
@@ -252,7 +255,7 @@ public class DateTimeUtils {
      * @return
      */
     public static LocalDate timestampSecondToLocalDate(long timestampSecond) {
-        return Instant.ofEpochSecond(timestampSecond).atZone(ZoneId.systemDefault()).toLocalDate();
+        return Instant.ofEpochSecond(timestampSecond).atZone(CommonConstant.DateConstant.ZONE_ID).toLocalDate();
     }
 
 
@@ -263,7 +266,7 @@ public class DateTimeUtils {
      * @return
      */
     public static long localDateTimeToTimestampMilli(LocalDateTime localDateTime) {
-        return localDateTime.toInstant(ZoneOffset.of(CommonConstant.DateConstant.TIME_OFFSET_ID)).toEpochMilli();
+        return localDateTime.toInstant(CommonConstant.DateConstant.ZONE_OFFSET).toEpochMilli();
     }
 
 
@@ -274,7 +277,7 @@ public class DateTimeUtils {
      * @return
      */
     public static long localDateToTimestampMilli(LocalDate localDate) {
-        return localDate.atStartOfDay(ZoneOffset.ofHours(8)).toInstant().toEpochMilli();
+        return localDate.atStartOfDay(CommonConstant.DateConstant.ZONE_ID).toInstant().toEpochMilli();
     }
 
     /**
@@ -284,7 +287,7 @@ public class DateTimeUtils {
      * @return
      */
     public static long localDateTimeToTimestampSecond(LocalDateTime localDateTime) {
-        return localDateTime.toEpochSecond(ZoneOffset.of(CommonConstant.DateConstant.TIME_OFFSET_ID));
+        return localDateTime.toEpochSecond(CommonConstant.DateConstant.ZONE_OFFSET);
     }
 
     /**
@@ -534,5 +537,13 @@ public class DateTimeUtils {
                 DateTimeFormatter.ofPattern(key));
     }
 
+    /**
+     * 当前时间秒值
+     *
+     * @return
+     */
+    public static Long currentTimeSeconds() {
+        return LocalDateTime.now().toEpochSecond(CommonConstant.DateConstant.ZONE_OFFSET);
+    }
 
 }

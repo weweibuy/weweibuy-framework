@@ -197,4 +197,5 @@ public class FeignLogger extends Logger {
         return new Object[]{bodyStr, response};
     }
 
+
 }
