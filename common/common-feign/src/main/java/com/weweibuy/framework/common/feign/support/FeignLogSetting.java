@@ -1,5 +1,6 @@
 package com.weweibuy.framework.common.feign.support;
 
+import com.weweibuy.framework.common.core.utils.HttpRequestUtils;
 import feign.Feign;
 import feign.Request;
 import lombok.Builder;
@@ -10,6 +11,7 @@ import org.springframework.http.HttpMethod;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * feign 日志输出设置
@@ -35,11 +37,16 @@ public class FeignLogSetting {
     private String methodKey;
 
     /**
-     * 请求主机  host + path
-     * url, method 为组合匹配条件
+     * 请求主机  host  eg:  www.baidu.com
      */
-    private String url;
+    private String host;
 
+    /**
+     * 请求路基 支持通配
+     * eg:  /v1/user/list
+     * eg:  /v1/user/**
+     */
+    private String path;
 
     /**
      * 请求方法
@@ -72,15 +79,10 @@ public class FeignLogSetting {
         if (configKey.equals(methodKey)) {
             return true;
         }
-        if (sameMethod(request) && sameHostAndPath(request)) {
-            return true;
+        if (StringUtils.isBlank(host) && StringUtils.isBlank(path) && httpMethod == null) {
+            return false;
         }
-        return false;
-    }
 
-
-    public boolean sameHostAndPath(Request request) {
-        // eg:
         String url = request.url();
         URI uri = null;
         try {
@@ -88,8 +90,42 @@ public class FeignLogSetting {
         } catch (URISyntaxException e) {
             throw new IllegalArgumentException("非法的请求地址:" + url, e);
         }
-        String s = uri.getAuthority() + uri.getPath();
-        return s.equals(this.url);
+
+        if (StringUtils.isNotBlank(host) && StringUtils.isBlank(path) && httpMethod == null) {
+            return sameHost(uri);
+        }
+
+        if (StringUtils.isNotBlank(host) && StringUtils.isNotBlank(path) && httpMethod == null) {
+            return sameHost(uri) && matchPath(uri);
+        }
+
+        if (StringUtils.isNotBlank(host) && StringUtils.isNotBlank(path) && httpMethod != null) {
+            return sameHost(uri) && matchPath(uri) && sameMethod(request);
+        }
+
+        if (StringUtils.isBlank(host) && StringUtils.isNotBlank(path) && httpMethod == null) {
+            return matchPath(uri);
+        }
+
+        if (StringUtils.isBlank(host) && StringUtils.isNotBlank(path) && httpMethod != null) {
+            return matchPath(uri) && sameMethod(request);
+        }
+
+        if (StringUtils.isBlank(host) && StringUtils.isBlank(path) && httpMethod != null) {
+            return sameMethod(request);
+        }
+        return false;
+    }
+
+
+    private boolean matchPath(URI uri) {
+        String rawPath = uri.getRawPath();
+        return HttpRequestUtils.isMatchPath(path, rawPath);
+    }
+
+    private boolean sameHost(URI uri) {
+        String rawAuthority = uri.getRawAuthority();
+        return Objects.equals(rawAuthority, host);
     }
 
 
@@ -101,8 +137,4 @@ public class FeignLogSetting {
         return DEFAULT;
     }
 
-    public boolean rightSetting() {
-        return StringUtils.isNotBlank(methodKey) ||
-                (StringUtils.isNotBlank(url) && httpMethod != null);
-    }
 }
