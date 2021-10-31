@@ -24,7 +24,7 @@ public interface AlarmService {
      * @param msgFormat
      * @param msg
      */
-    default void sendAlarmFormatMsg(String bizType, String msgFormat, String... msg) {
+    default void sendAlarmFormatMsg(String bizType, String msgFormat, Object... msg) {
         sendAlarm(bizType, String.format(msgFormat, msg));
     }
 
