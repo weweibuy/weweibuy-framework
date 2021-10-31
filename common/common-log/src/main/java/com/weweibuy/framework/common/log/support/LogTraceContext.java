@@ -1,5 +1,6 @@
 package com.weweibuy.framework.common.log.support;
 
+import com.weweibuy.framework.common.core.exception.Exceptions;
 import com.weweibuy.framework.common.log.constant.LogMdcConstant;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -26,12 +27,27 @@ public class LogTraceContext {
     }
 
     /**
+     * 获取 traceCode
+     *
+     * @return
+     */
+    public static String getTraceCodeOrEmpty() {
+        return Optional.ofNullable(MDC.get(LogMdcConstant.TID_FIELD_NAME))
+                .orElse("");
+    }
+
+    /**
      * 获取 userCode
      *
      * @return
      */
     public static Optional<String> getUserCode() {
         return Optional.ofNullable(MDC.get(LogMdcConstant.UID_FIELD_NAME));
+    }
+
+    public static String getUserCodeOrThrow() {
+        return Optional.ofNullable(MDC.get(LogMdcConstant.UID_FIELD_NAME))
+                .orElseThrow(() -> Exceptions.business("用户信息异常"));
     }
 
     public static void setTraceCode(String traceCode) {
