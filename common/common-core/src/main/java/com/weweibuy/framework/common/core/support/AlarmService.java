@@ -17,4 +17,15 @@ public interface AlarmService {
     void sendAlarm(String bizType, String msg);
 
 
+    /**
+     * 发送报警
+     *
+     * @param bizType
+     * @param msgFormat
+     * @param msg
+     */
+    default void sendAlarmFormatMsg(String bizType, String msgFormat, String... msg) {
+        sendAlarm(bizType, String.format(msgFormat, msg));
+    }
+
 }
