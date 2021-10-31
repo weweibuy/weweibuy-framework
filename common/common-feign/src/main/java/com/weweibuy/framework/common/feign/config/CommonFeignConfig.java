@@ -65,7 +65,6 @@ public class CommonFeignConfig {
         Optional.ofNullable(feignLogConfigurerList)
                 .ifPresent(l -> l.forEach(f -> f.configurer(arrayList)));
         List<FeignLogSetting> settings = arrayList.stream()
-                .filter(FeignLogSetting::rightSetting)
                 .collect(Collectors.toList());
 
         return new FeignLogger(settings);
