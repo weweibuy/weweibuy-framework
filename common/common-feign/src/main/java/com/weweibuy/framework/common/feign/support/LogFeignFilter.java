@@ -18,7 +18,7 @@ import java.io.IOException;
  * @author durenhao
  * @date 2021/10/30 17:40
  **/
-@Order(Integer.MIN_VALUE + 100)
+@Order(Integer.MAX_VALUE - 100)
 public class LogFeignFilter implements FeignFilter {
 
     @Override
