@@ -1,5 +1,4 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
   com.weweibuy.framework.common.feign.config.CommonFeignConfig,\
   com.weweibuy.framework.common.feign.config.HttpClientConfig,\
-  com.weweibuy.framework.common.feign.config.CommonLoadBalancerConfig,\
-  com.weweibuy.framework.common.feign.config.MockFeignConfig
+  com.weweibuy.framework.common.feign.config.CommonLoadBalancerConfig
