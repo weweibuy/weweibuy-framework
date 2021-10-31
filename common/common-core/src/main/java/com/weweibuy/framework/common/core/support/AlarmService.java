@@ -9,23 +9,48 @@ package com.weweibuy.framework.common.core.support;
 public interface AlarmService {
 
     /**
+     * 报警级别
+     */
+    public enum AlarmLevel {
+
+        /**
+         * 紧急
+         */
+        CRITICAL,
+
+        /**
+         * 警告
+         */
+        WARN,
+
+        /**
+         * 信息
+         */
+        INFO,;
+
+
+    }
+
+    /**
      * 发送报警
      *
-     * @param bizType 业务类型
-     * @param msg     报警消息
+     * @param alarmLevel 级别
+     * @param bizType    业务类型
+     * @param msg        报警消息
      */
-    void sendAlarm(String bizType, String msg);
+    void sendAlarm(AlarmLevel alarmLevel, String bizType, String msg);
 
 
     /**
      * 发送报警
      *
+     * @param alarmLevel 级别
      * @param bizType
      * @param msgFormat
      * @param msg
      */
-    default void sendAlarmFormatMsg(String bizType, String msgFormat, Object... msg) {
-        sendAlarm(bizType, String.format(msgFormat, msg));
+    default void sendAlarmFormatMsg(AlarmLevel alarmLevel, String bizType, String msgFormat, Object... msg) {
+        sendAlarm(alarmLevel, bizType, String.format(msgFormat, msg));
     }
 
 }

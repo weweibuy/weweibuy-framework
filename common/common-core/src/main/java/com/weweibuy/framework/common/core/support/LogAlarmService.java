@@ -12,7 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 public class LogAlarmService implements AlarmService {
 
     @Override
-    public void sendAlarm(String bizType, String msg) {
-        log.warn("业务报警: 业务类型: {}, 报警内容: {}", bizType, msg);
+    public void sendAlarm(AlarmLevel alarmLevel, String bizType, String msg) {
+        log.warn("业务报警: 级别: {}, 业务类型: {}, 报警内容: {}", alarmLevel, bizType, msg);
     }
 }

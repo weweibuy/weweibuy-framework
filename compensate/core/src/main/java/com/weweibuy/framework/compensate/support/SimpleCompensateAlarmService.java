@@ -25,7 +25,7 @@ public class SimpleCompensateAlarmService implements CompensateAlarmService {
 
     @Override
     public void sendAlarm(CompensateInfoExt compensateInfoExt) {
-        alarmService.sendAlarm(ALARM_BIZ_TYPE, buildMsg0(compensateInfoExt));
+        alarmService.sendAlarm(AlarmService.AlarmLevel.WARN, ALARM_BIZ_TYPE, buildMsg0(compensateInfoExt));
     }
 
     @Override
@@ -36,12 +36,12 @@ public class SimpleCompensateAlarmService implements CompensateAlarmService {
                 compensateInfo.getCompensateType(),
                 compensateInfo.getMethodArgs(),
                 e);
-        alarmService.sendAlarm(ALARM_BIZ_TYPE, buildMsg1(compensateInfo, e));
+        alarmService.sendAlarm(AlarmService.AlarmLevel.WARN, ALARM_BIZ_TYPE, buildMsg1(compensateInfo, e));
     }
 
     @Override
     public void sendRecoverAlarm(CompensateInfoExt compensateInfoExt, Throwable e) {
-        alarmService.sendAlarm(ALARM_BIZ_TYPE, buildMsg2(compensateInfoExt, e));
+        alarmService.sendAlarm(AlarmService.AlarmLevel.WARN, ALARM_BIZ_TYPE, buildMsg2(compensateInfoExt, e));
     }
 
 
