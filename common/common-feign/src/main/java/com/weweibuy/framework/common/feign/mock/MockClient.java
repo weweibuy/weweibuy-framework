@@ -4,11 +4,14 @@ import com.fasterxml.jackson.databind.JavaType;
 import com.weweibuy.framework.common.core.exception.Exceptions;
 import com.weweibuy.framework.common.core.utils.HttpRequestUtils;
 import com.weweibuy.framework.common.core.utils.JackJsonUtils;
-import feign.*;
+import feign.Client;
+import feign.Request;
+import feign.RequestTemplate;
+import feign.Response;
+import feign.Target;
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.cloud.openfeign.loadbalancer.FeignBlockingLoadBalancerClient;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -17,7 +20,13 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -43,17 +52,11 @@ public class MockClient implements Client {
 
     @Override
     public Response execute(Request request, Request.Options options) throws IOException {
-        String url = request.url();
-        Request.HttpMethod httpMethod = request.httpMethod();
-        List<MockConfig> configList = JackJsonUtils.readValueWithMvc(new File(configFile), configJavaType);
 
-        Optional<MockConfig> mockDataOpt = configList.stream()
-                .filter(config -> StringUtils.equalsIgnoreCase(httpMethod.toString(), config.getMethod()))
-                .filter(config -> !Objects.equals(config.enable, false))
-                .filter(config -> StringUtils.equalsIgnoreCase(getHost(url), getHost(config.getHost())))
-                .filter(config -> HttpRequestUtils.isEqualsOrMatchPath(config.getPath(), getPath(url)))
-                .findFirst();
-        MockConfig mockConfig = mockDataOpt.orElse(null);
+        String name = lbName(request);
+
+        MockConfig mockConfig = matchMockConfig(name, request);
+
         if (mockConfig != null) {
             // 读取mock数据
             String target = mockConfig.getTarget();
@@ -65,7 +68,7 @@ public class MockClient implements Client {
                             .collect(Collectors.groupingBy(Map.Entry::getKey,
                                     Collectors.mapping(Map.Entry::getValue,
                                             Collectors.toList()))))
-                    .orElse(new HashMap<>());
+                    .orElseGet(() -> new HashMap<>());
 
             if (header.get(HttpHeaders.CONTENT_TYPE) == null) {
                 header.put(HttpHeaders.CONTENT_TYPE, Collections.singletonList(MediaType.APPLICATION_JSON_VALUE));
@@ -86,33 +89,62 @@ public class MockClient implements Client {
                     .build();
         }
 
-
-        return getClient(request).execute(request, options);
+        return delegate.execute(request, options);
     }
 
 
-    private Client getClient(Request request) {
+    private MockConfig matchMockConfig(String lbName, Request request) {
+        String url = request.url();
+        Request.HttpMethod httpMethod = request.httpMethod();
+        List<MockConfig> configList = JackJsonUtils.readValueWithMvc(new File(configFile), configJavaType);
+
+        Optional<MockConfig> mockDataOpt = configList.stream()
+                .filter(config -> !Objects.equals(config.enable, false))
+                .filter(config -> StringUtils.equalsIgnoreCase(httpMethod.toString(), config.getMethod()))
+                .filter(config -> isMatchMockConfig(lbName, config, url))
+                .findFirst();
+        return mockDataOpt.orElse(null);
+    }
+
+
+    private boolean isMatchMockConfig(String lbName, MockConfig config, String requestUrl) {
+        if (StringUtils.isNotBlank(config.getName()) && config.getName().equals(lbName)
+                && HttpRequestUtils.isEqualsOrMatchPath(Optional.ofNullable(config.getPath()).orElse(""), getPath(requestUrl))) {
+            // LB 模式匹配
+            return true;
+        }
+
+        if (StringUtils.isBlank(config.getName()) && StringUtils.isNotBlank(config.getHost())
+                && StringUtils.equalsIgnoreCase(getHost(requestUrl), getHost(config.getHost()))
+                && HttpRequestUtils.isEqualsOrMatchPath(Optional.ofNullable(config.getPath()).orElse(""), getPath(requestUrl))) {
+            // url 模式匹配
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * LB 情况下, 对应feign的 name {@link FeignClient#name()}
+     *
+     * @param request
+     * @return
+     */
+    private String lbName(Request request) {
         RequestTemplate target = request.requestTemplate().target(null);
         Target<?> feignTarget = target.feignTarget();
         FeignClient annotation = feignTarget.type().getAnnotation(FeignClient.class);
         String url = annotation.url();
         if (StringUtils.isBlank(url)) {
-            // LB 的形式
-            return this.delegate;
+            return annotation.name();
         }
-
-        if (this.delegate instanceof FeignBlockingLoadBalancerClient) {
-            // not load balancing because we have a url,
-            // but Spring Cloud LoadBalancer is on the classpath, so unwrap
-            return ((FeignBlockingLoadBalancerClient) this.delegate).getDelegate();
-        }
-        return this.delegate;
+        return null;
     }
+
 
 
     public String getHost(String url) {
         try {
-            return new URI(url).getAuthority();
+            return new URI(url).getRawAuthority();
         } catch (URISyntaxException e) {
             throw Exceptions.formatSystem(e, "请求地址:%s 错误", url);
         }
@@ -120,7 +152,7 @@ public class MockClient implements Client {
 
     public String getPath(String url) {
         try {
-            return new URI(url).getPath();
+            return new URI(url).getRawPath();
         } catch (URISyntaxException e) {
             throw Exceptions.formatSystem(e, "请求地址:%s 错误", url);
         }
@@ -149,12 +181,39 @@ public class MockClient implements Client {
     @Data
     static class MockConfig {
 
+        /**
+         * feign的名字 适用于LB的情况下, 填写FeignClient的Name
+         * 与 host 互斥
+         * {@link FeignClient#name()}
+         */
+        private String name;
+
+        /**
+         * 使用与非LB的情况下, 配置请求url; 可以不用填写 schema;
+         * 与 name 互斥
+         * <p>
+         * eg: localhost:8080
+         * eg: localhost:8080
+         */
         private String host;
 
+        /**
+         * 请求路径
+         * eg: /user/list
+         * eg: /user/detail/**
+         */
         private String path;
 
+
+        /**
+         * 请求方法
+         * {@link  org.springframework.http.HttpMethod}
+         */
         private String method;
 
+        /**
+         * mock 目标的Json 名称
+         */
         private String target;
 
         /**
@@ -168,10 +227,19 @@ public class MockClient implements Client {
     @Data
     static class MockData {
 
+        /**
+         * mock 响应Http状态
+         */
         private Integer status;
 
+        /**
+         * mock 响应Http头
+         */
         private Map<String, String> header;
 
+        /**
+         * mock 响应 body体
+         */
         private Object body;
 
     }

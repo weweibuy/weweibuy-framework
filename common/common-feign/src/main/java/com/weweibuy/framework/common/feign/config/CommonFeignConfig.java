@@ -4,12 +4,23 @@ import com.weweibuy.framework.common.core.support.SystemIdGetter;
 import com.weweibuy.framework.common.feign.log.FeignLogger;
 import com.weweibuy.framework.common.feign.log.TraceContextFeignInterceptor;
 import com.weweibuy.framework.common.feign.mock.MockFeignDelegateClient;
-import com.weweibuy.framework.common.feign.support.*;
-import feign.*;
+import com.weweibuy.framework.common.feign.support.CustomFeignErrorDecoder;
+import com.weweibuy.framework.common.feign.support.DelegateFeignClient;
+import com.weweibuy.framework.common.feign.support.FeignFilter;
+import com.weweibuy.framework.common.feign.support.FeignFilterDelegateClient;
+import com.weweibuy.framework.common.feign.support.FeignLogConfigurer;
+import com.weweibuy.framework.common.feign.support.FeignLogSetting;
+import com.weweibuy.framework.common.feign.support.LogFeignFilter;
+import feign.Feign;
+import feign.Logger;
+import feign.Request;
+import feign.RequestInterceptor;
+import feign.Retryer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.Scope;
 
@@ -88,6 +99,7 @@ public class CommonFeignConfig {
     }
 
     @Bean
+    @DependsOn("jackJsonUtils")
     @Profile(value = {"mock"})
     public MockFeignDelegateClient mockClient() {
         return new MockFeignDelegateClient();
