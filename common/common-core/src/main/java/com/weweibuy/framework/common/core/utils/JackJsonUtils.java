@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.weweibuy.framework.common.core.model.constant.CommonConstant;
 import com.weweibuy.framework.common.core.support.JacksonBuilderHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
@@ -37,7 +38,8 @@ public class JackJsonUtils {
     private ObjectMapper objectMapper;
 
     static {
-        Jackson2ObjectMapperBuilder objectMapperBuilder = JacksonBuilderHelper.objectMapperBuilder();
+        Jackson2ObjectMapperBuilder objectMapperBuilder =
+                JacksonBuilderHelper.objectMapperBuilder(CommonConstant.DateConstant.STANDARD_DATE_TIME_FORMAT_STR, CommonConstant.DateConstant.STANDARD_DATE_FORMAT_STR);
         init(objectMapperBuilder);
     }
 
@@ -52,6 +54,29 @@ public class JackJsonUtils {
             mvcNamingStrategy = "SNAKE_CASE";
         }
     }
+
+
+    /**
+     * 创建 objectMapper
+     *
+     * @param dataTimeFormat
+     * @param dataFormat
+     * @param propertyNamingStrategy
+     * @return
+     */
+    public static ObjectMapper createObjectMapper(String dataTimeFormat, String dataFormat, PropertyNamingStrategy propertyNamingStrategy) {
+        Jackson2ObjectMapperBuilder objectMapperBuilder =
+                JacksonBuilderHelper.objectMapperBuilder(dataTimeFormat,
+                        dataFormat);
+        if (propertyNamingStrategy.getClass().isAssignableFrom(PropertyNamingStrategies.SNAKE_CASE.getClass())) {
+            return objectMapperBuilder.createXmlMapper(false)
+                    .propertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE)
+                    .build();
+        }
+        return CAMEL_CASE_MAPPER = objectMapperBuilder.createXmlMapper(false)
+                .build();
+    }
+
 
     private static void init(Jackson2ObjectMapperBuilder objectMapperBuilder) {
 
@@ -406,7 +431,6 @@ public class JackJsonUtils {
     }
 
 
-
     public static <T> T readValue(String json, Class<? extends T> clazz) {
         try {
             return CAMEL_CASE_MAPPER.readValue(json, clazz);
@@ -519,7 +543,6 @@ public class JackJsonUtils {
             throw new UncheckedIOException(e);
         }
     }
-
 
 
     public static ObjectMapper getCamelCaseMapper() {

@@ -4,11 +4,7 @@ import com.fasterxml.jackson.databind.JavaType;
 import com.weweibuy.framework.common.core.exception.Exceptions;
 import com.weweibuy.framework.common.core.utils.HttpRequestUtils;
 import com.weweibuy.framework.common.core.utils.JackJsonUtils;
-import feign.Client;
-import feign.Request;
-import feign.RequestTemplate;
-import feign.Response;
-import feign.Target;
+import feign.*;
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -20,13 +16,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -143,7 +133,7 @@ public class MockClient implements Client {
 
     public String getHost(String url) {
         // 增加 schema 防止无 schema  new URI(url) 解析不出Host的问题
-        if (url.indexOf("http://") == -1 || url.indexOf("https://") == -1) {
+        if (!url.startsWith("http://") && !url.startsWith("https://")) {
             url = "http://" + url;
         }
         try {
@@ -152,6 +142,7 @@ public class MockClient implements Client {
             throw Exceptions.formatSystem(e, "请求地址:%s 错误", url);
         }
     }
+
 
     public String getPath(String url) {
         try {

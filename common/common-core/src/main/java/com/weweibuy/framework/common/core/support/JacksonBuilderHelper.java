@@ -48,13 +48,13 @@ public class JacksonBuilderHelper {
     }
 
 
-    public static Jackson2ObjectMapperBuilder objectMapperBuilder() {
+    public static Jackson2ObjectMapperBuilder objectMapperBuilder(String dateTimeFormat, String dataFormat) {
         JacksonBuilderHelper.StandardJackson2ObjectMapperBuilderCustomizer standardJackson2ObjectMapperBuilderCustomizer =
                 new JacksonBuilderHelper.StandardJackson2ObjectMapperBuilderCustomizer();
         Jackson2ObjectMapperBuilder objectMapperBuilder = new Jackson2ObjectMapperBuilder();
         List<Jackson2ObjectMapperBuilderCustomizer> customizers = new ArrayList<>();
-        Jackson2ObjectMapperBuilderCustomizer localDateCustomizer = localDateCustomizer(CommonConstant.DateConstant.STANDARD_DATE_FORMAT_STR);
-        Jackson2ObjectMapperBuilderCustomizer localDateTimeCustomizer = localDateTimeCustomizer(CommonConstant.DateConstant.STANDARD_DATE_TIME_FORMAT_STR);
+        Jackson2ObjectMapperBuilderCustomizer localDateCustomizer = localDateCustomizer(dataFormat);
+        Jackson2ObjectMapperBuilderCustomizer localDateTimeCustomizer = localDateTimeCustomizer(dateTimeFormat);
         customizers.add(standardJackson2ObjectMapperBuilderCustomizer);
         customizers.add(localDateCustomizer);
         customizers.add(localDateTimeCustomizer);
