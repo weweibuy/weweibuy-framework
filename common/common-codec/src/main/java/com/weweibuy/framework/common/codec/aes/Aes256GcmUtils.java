@@ -46,18 +46,44 @@ public final class Aes256GcmUtils {
      */
     public static String decrypt(byte[] encryptText, byte[] associatedData, byte[] nonce, SecretKey secretKey)
             throws GeneralSecurityException, IOException {
+        return new String(decryptToByte(encryptText, associatedData, nonce, secretKey),
+                "utf-8");
+    }
+
+    public static byte[] decryptToByte(byte[] encryptText, byte[] associatedData, byte[] nonce, SecretKey secretKey)
+            throws GeneralSecurityException, IOException {
         try {
             Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
             GCMParameterSpec spec = new GCMParameterSpec(TAG_LENGTH_BIT, nonce);
             cipher.init(Cipher.DECRYPT_MODE, secretKey, spec);
             cipher.updateAAD(associatedData);
-            return new String(cipher.doFinal(encryptText),
-                    "utf-8");
+            return cipher.doFinal(encryptText);
         } catch (NoSuchAlgorithmException | NoSuchPaddingException e) {
             throw new IllegalStateException(e);
         } catch (InvalidKeyException | InvalidAlgorithmParameterException e) {
             throw new IllegalArgumentException("AES解密失败", e);
         }
+    }
+
+
+    public static byte[] encryptToByte(byte[] text, byte[] associatedData, byte[] nonce, SecretKey secretKey)
+            throws GeneralSecurityException, IOException {
+        try {
+            Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
+            GCMParameterSpec spec = new GCMParameterSpec(TAG_LENGTH_BIT, nonce);
+            cipher.init(Cipher.ENCRYPT_MODE, secretKey, spec);
+            cipher.updateAAD(associatedData);
+            return cipher.doFinal(text);
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException e) {
+            throw new IllegalStateException(e);
+        } catch (InvalidKeyException | InvalidAlgorithmParameterException e) {
+            throw new IllegalArgumentException("AES加密失败", e);
+        }
+    }
+
+    public static String encrypt(byte[] text, byte[] associatedData, byte[] nonce, SecretKey secretKey)
+            throws GeneralSecurityException, IOException {
+        return new String(encryptToByte(text, associatedData, nonce, secretKey));
     }
 
     /**
@@ -76,14 +102,29 @@ public final class Aes256GcmUtils {
         return decrypt(encryptText.getBytes(), associatedData.getBytes(), nonce.getBytes(), secretKey);
     }
 
+    public static String encrypt(String text, String associatedData, String nonce, SecretKey secretKey)
+            throws GeneralSecurityException, IOException {
+        return encrypt(text.getBytes(), associatedData.getBytes(), nonce.getBytes(), secretKey);
+    }
 
     public static String decryptBase64Text(String encryptText, byte[] associatedData, byte[] nonce, SecretKey secretKey)
             throws GeneralSecurityException, IOException {
         return decrypt(Base64.getDecoder().decode(encryptText), associatedData, nonce, secretKey);
     }
 
+    public static String encryptToBase64(String text, byte[] associatedData, byte[] nonce, SecretKey secretKey)
+            throws GeneralSecurityException, IOException {
+        return new String(Base64.getEncoder().encode(decryptToByte(text.getBytes(), associatedData, nonce, secretKey)));
+    }
+
     public static String decryptBase64Text(String encryptText, String associatedData, String nonce, SecretKey secretKey)
             throws GeneralSecurityException, IOException {
         return decrypt(Base64.getDecoder().decode(encryptText), associatedData.getBytes(), nonce.getBytes(), secretKey);
+    }
+
+    public static String encryptToBase64(String text, String associatedData, String nonce, SecretKey secretKey)
+            throws GeneralSecurityException, IOException {
+        return new String(Base64.getEncoder().encode(decryptToByte(text.getBytes(), associatedData.getBytes(), nonce.getBytes(), secretKey)));
+
     }
 }
