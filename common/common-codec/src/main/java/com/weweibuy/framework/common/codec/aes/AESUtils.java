@@ -19,6 +19,9 @@ import java.util.Arrays;
 
 /**
  * A simple utility class for easily encrypting and decrypting data using the AES algorithm.
+ * <p>
+ * 注意:  JDK  1.8.0_161 之前AES 只支持 126位即16长度的秘钥
+ * 之后可以支持  256位即32长度的秘钥
  *
  * @author Chad Adams
  */
