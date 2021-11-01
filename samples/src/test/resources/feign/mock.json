@@ -1,9 +1,23 @@
 [
   {
-    "host": "http://localhost:9000",
+    "host": "localhost:9000",
     "path": "/hello",
     "method": "post",
     "target": "hello.json",
-    "enable": false
+    "enable": true
+  },
+  {
+    "name": "learning-feign-consume",
+    "path": "/hello",
+    "method": "GET",
+    "target": "hello.json",
+    "enable": true
+  },
+  {
+    "name": "learning-feign-consume",
+    "path": "/hello",
+    "method": "POST",
+    "target": "hello.json",
+    "enable": true
   }
 ]
