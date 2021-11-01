@@ -114,7 +114,7 @@ public final class Aes256GcmUtils {
 
     public static String encryptToBase64(String text, byte[] associatedData, byte[] nonce, SecretKey secretKey)
             throws GeneralSecurityException, IOException {
-        return new String(Base64.getEncoder().encode(decryptToByte(text.getBytes(), associatedData, nonce, secretKey)));
+        return new String(Base64.getEncoder().encode(encryptToByte(text.getBytes(), associatedData, nonce, secretKey)));
     }
 
     public static String decryptBase64Text(String encryptText, String associatedData, String nonce, SecretKey secretKey)
@@ -124,7 +124,7 @@ public final class Aes256GcmUtils {
 
     public static String encryptToBase64(String text, String associatedData, String nonce, SecretKey secretKey)
             throws GeneralSecurityException, IOException {
-        return new String(Base64.getEncoder().encode(decryptToByte(text.getBytes(), associatedData.getBytes(), nonce.getBytes(), secretKey)));
+        return encryptToBase64(text, associatedData.getBytes(), nonce.getBytes(), secretKey);
 
     }
 }
