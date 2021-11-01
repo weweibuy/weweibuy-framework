@@ -141,8 +141,11 @@ public class MockClient implements Client {
     }
 
 
-
     public String getHost(String url) {
+        // 增加 schema 防止无 schema  new URI(url) 解析不出Host的问题
+        if (url.indexOf("http://") == -1) {
+            url = "http://" + url;
+        }
         try {
             return new URI(url).getRawAuthority();
         } catch (URISyntaxException e) {
