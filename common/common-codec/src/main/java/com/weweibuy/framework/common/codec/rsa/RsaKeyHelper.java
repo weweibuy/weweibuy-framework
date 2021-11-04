@@ -89,11 +89,49 @@ public class RsaKeyHelper {
         }
     }
 
+    /**
+     * 从 pem 公钥中获取公钥
+     *
+     * @param pemData
+     * @return
+     */
+    public static PublicKey parsePublicKeyPem(String pemData) throws Exception {
+        Matcher m = PEM_DATA.matcher(pemData.trim());
+        if (!m.matches()) {
+            throw new IllegalArgumentException("String is not PEM encoded data");
+        }
+        String type = m.group(1);
 
+        if (!type.equals("PUBLIC KEY")) {
+            throw new IllegalArgumentException(type + " is not a supported format");
+        }
+        byte[] content = Base64.getMimeDecoder().decode(utf8Encode(m.group(2)));
+        return RSAUtils.getPublicKeyFromBase64(content);
+    }
+
+    /**
+     * 从 pem Pkcs格式 获取私钥
+     *
+     * @param pemData
+     * @return
+     */
+    public static PrivateKey parsePrivateKeyPemPkcs(String pemPkcsData) throws Exception {
+        Matcher m = PEM_DATA.matcher(pemPkcsData.trim());
+        if (!m.matches()) {
+            throw new IllegalArgumentException("String is not PEM encoded data");
+        }
+        String type = m.group(1);
+
+        if (!type.equals("PRIVATE KEY")) {
+            throw new IllegalArgumentException(type + " is not a supported format");
+        }
+        byte[] content = Base64.getMimeDecoder().decode(utf8Encode(m.group(2)));
+        return RSAUtils.getPrivateKey(content);
+    }
 
     private static final Pattern SSH_PUB_KEY = Pattern.compile("ssh-(rsa|dsa) ([A-Za-z0-9/+]+=*) (.*)");
 
-    static RSAPublicKey parsePublicKey(String key) {
+    public static RSAPublicKey parsePublicKey(String key) {
         Matcher m = SSH_PUB_KEY.matcher(key);
 
         if (m.matches()) {
@@ -139,7 +177,7 @@ public class RsaKeyHelper {
         }
     }
 
-    static RSAPublicKey createPublicKey(BigInteger n, BigInteger e) {
+    public static RSAPublicKey createPublicKey(BigInteger n, BigInteger e) {
         try {
             return (RSAPublicKey) KeyFactory.getInstance("RSA").generatePublic(new RSAPublicKeySpec(n, e));
         } catch (Exception ex) {
@@ -171,8 +209,7 @@ public class RsaKeyHelper {
             byte[] bytesCopy = new byte[bytes.limit()];
             System.arraycopy(bytes.array(), 0, bytesCopy, 0, bytes.limit());
             return bytesCopy;
-        }
-        catch (CharacterCodingException e) {
+        } catch (CharacterCodingException e) {
             throw new RuntimeException(e);
         }
     }
