@@ -10,6 +10,18 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 
 public class RsaKeyHelperTest {
+    @Test
+    public void parsePublicKeyPem() throws Exception {
+        InputStream resourceAsStream = RsaKeyHelperTest.class.getClassLoader().getResourceAsStream("key/rsa_public_key.pem");
+        String string = IOUtils.toString(resourceAsStream, Charset.forName("UTF-8"));
+        PublicKey publicKey = RsaKeyHelper.parsePublicKeyPem(string);
+        InputStream resourceAsStream2 = RsaKeyHelperTest.class.getClassLoader().getResourceAsStream("key/rsa_private_key_pkcs.pem");
+        String string2 = IOUtils.toString(resourceAsStream2, Charset.forName("UTF-8"));
+        PrivateKey privateKey = RsaKeyHelper.parsePrivateKeyPemPkcs(string2);
+        String toStr = RSAUtils.encrypt(publicKey, "123");
+        String s = RSAUtils.decryptToStr(privateKey, toStr);
+        System.err.println(s);
+    }
 
 
     @Test

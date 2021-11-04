@@ -33,7 +33,7 @@ public class RSAUtils {
      */
     private static final String ALGORITHM = "RSA";
 
-    private static final String SIGN_ALGORITHM = "MD5withRSA";
+    private static final String SIGN_ALGORITHM = "SHA256withRSA";
 
 
     /**
@@ -232,6 +232,15 @@ public class RSAUtils {
     public static PublicKey getPublicKeyFromBase64(String publicKeyPath) throws Exception {
         byte[] allBytes = Files.readAllBytes(Paths.get(publicKeyPath));
         byte[] decode = Base64.getDecoder().decode(allBytes);
+        return KeyFactory.getInstance(ALGORITHM).generatePublic(new X509EncodedKeySpec(decode));
+    }
+
+    public static PublicKey getPublicKeyFromBase64Str(String publicKeyBase64Str) throws Exception {
+        byte[] decode = Base64.getDecoder().decode(publicKeyBase64Str);
+        return KeyFactory.getInstance(ALGORITHM).generatePublic(new X509EncodedKeySpec(decode));
+    }
+
+    public static PublicKey getPublicKeyFromBase64(byte[] decode) throws Exception {
         return KeyFactory.getInstance(ALGORITHM).generatePublic(new X509EncodedKeySpec(decode));
     }
 
