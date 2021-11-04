@@ -1,0 +1,1 @@
+openssl genrsa -out jwt_private_key.pem 2048
