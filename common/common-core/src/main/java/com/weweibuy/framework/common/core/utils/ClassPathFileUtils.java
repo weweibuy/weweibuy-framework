@@ -4,9 +4,11 @@ import com.weweibuy.framework.common.core.exception.Exceptions;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.core.io.ClassPathResource;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * 类路径下文件工具
@@ -26,18 +28,13 @@ public final class ClassPathFileUtils {
      * @param path
      * @return
      */
-    public static String getClassPath(String path) {
-        if (isClassPath(path)) {
+    public static InputStream getClassPathFileStream(String path) throws IOException {
+        if (!isClassPath(path)) {
             return null;
         }
-        File classPathFile = new File(ClassPathFileUtils.class.getResource("/").getPath());
-        String classPath = null;
-        try {
-            classPath = classPathFile.getCanonicalPath();
-        } catch (IOException e) {
-            throw Exceptions.uncheckedIO(e);
-        }
-        return classPath + File.separator + path.substring(CLASSPATH_STR.length(), path.length());
+        path = path.substring(CLASSPATH_STR.length(), path.length());
+        ClassPathResource classPathResource = new ClassPathResource(path);
+        return classPathResource.getInputStream();
     }
 
     /**
