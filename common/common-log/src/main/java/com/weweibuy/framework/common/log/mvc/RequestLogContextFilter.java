@@ -52,7 +52,7 @@ public class RequestLogContextFilter extends OncePerRequestFilter {
         if (StringUtils.isBlank(contentType) || !MediaType.valueOf(contentType).isCompatibleWith(MediaType.APPLICATION_JSON) || !includePayload) {
             HttpLogger.logForNotJsonRequest(request);
             if (readableBodyRequestHandler != null) {
-                readableBodyRequestHandler.handlerReadableBodyRequest(request);
+                readableBodyRequestHandler.handlerReadableBodyRequest(request, response, true);
             }
         }
 
@@ -77,7 +77,7 @@ public class RequestLogContextFilter extends OncePerRequestFilter {
         }
 
         if (readableBodyResponseHandler != null) {
-            readableBodyResponseHandler.handlerReadableBodyResponse(response);
+            readableBodyResponseHandler.handlerReadableBodyResponse(request, response);
             ContentCachingResponseWrapper cachingResponseWrapper = (ContentCachingResponseWrapper) response;
             cachingResponseWrapper.copyBodyToResponse();
         }

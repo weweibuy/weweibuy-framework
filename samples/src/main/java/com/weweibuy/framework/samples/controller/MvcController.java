@@ -33,7 +33,7 @@ public class MvcController {
     }
 
     @PostMapping("/test-json")
-    public Object request4(@RequestBody @Valid  MvcUser user) {
+    public Object request4(  @Valid  MvcUser user) {
         return CommonDataResponse.success(user);
     }
 
