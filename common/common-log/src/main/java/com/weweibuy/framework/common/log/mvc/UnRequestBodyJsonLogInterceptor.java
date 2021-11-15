@@ -1,7 +1,9 @@
 package com.weweibuy.framework.common.log.mvc;
 
+import com.weweibuy.framework.common.core.support.ReadableBodyRequestHandler;
 import com.weweibuy.framework.common.core.utils.HttpRequestUtils;
 import com.weweibuy.framework.common.log.logger.HttpLogger;
+import lombok.RequiredArgsConstructor;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.method.HandlerMethod;
@@ -18,7 +20,10 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author durenhao
  * @date 2020/6/5 21:12
  **/
+@RequiredArgsConstructor
 public class UnRequestBodyJsonLogInterceptor implements HandlerInterceptor {
+
+    private final ReadableBodyRequestHandler readableBodyRequestHandler;
 
     private static final ConcurrentHashMap<HandlerMethod, Boolean> LOG_MAP = new ConcurrentHashMap<>(32);
 
@@ -31,6 +36,9 @@ public class UnRequestBodyJsonLogInterceptor implements HandlerInterceptor {
 
             if (!match) {
                 HttpLogger.logForJsonRequest(request, false);
+                if (readableBodyRequestHandler != null) {
+                    readableBodyRequestHandler.handlerReadableBodyRequest(request);
+                }
             }
         }
         return true;
