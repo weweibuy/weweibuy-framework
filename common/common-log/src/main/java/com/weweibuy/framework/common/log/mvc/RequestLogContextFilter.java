@@ -1,18 +1,22 @@
 package com.weweibuy.framework.common.log.mvc;
 
 import com.weweibuy.framework.common.core.model.constant.CommonConstant;
+import com.weweibuy.framework.common.core.support.ReadableBodyRequestHandler;
+import com.weweibuy.framework.common.core.support.ReadableBodyResponseHandler;
 import com.weweibuy.framework.common.core.utils.HttpRequestUtils;
 import com.weweibuy.framework.common.log.desensitization.SensitizationMappingConfigurer;
 import com.weweibuy.framework.common.log.desensitization.SensitizationMappingOperator;
 import com.weweibuy.framework.common.log.logger.HttpLogger;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.MediaType;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.util.ContentCachingRequestWrapper;
+import org.springframework.web.util.ContentCachingResponseWrapper;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -29,6 +33,11 @@ import java.util.Optional;
 @Order(-103)
 public class RequestLogContextFilter extends OncePerRequestFilter {
 
+    @Autowired(required = false)
+    private ReadableBodyRequestHandler readableBodyRequestHandler;
+
+    @Autowired(required = false)
+    private ReadableBodyResponseHandler readableBodyResponseHandler;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -42,11 +51,18 @@ public class RequestLogContextFilter extends OncePerRequestFilter {
         // 非json请求
         if (StringUtils.isBlank(contentType) || !MediaType.valueOf(contentType).isCompatibleWith(MediaType.APPLICATION_JSON) || !includePayload) {
             HttpLogger.logForNotJsonRequest(request);
+            if (readableBodyRequestHandler != null) {
+                readableBodyRequestHandler.handlerReadableBodyRequest(request);
+            }
         }
 
         Optional<SensitizationMappingConfigurer.HttpSensitizationMapping> matchRequest = SensitizationMappingOperator.matchRequest(request);
 
         SensitizationMappingConfigurer.HttpSensitizationMapping mapping = matchRequest.orElse(null);
+
+        if (readableBodyResponseHandler != null) {
+            response = new ContentCachingResponseWrapper(response);
+        }
 
         if (mapping == null) {
             filterChain.doFilter(request, response);
@@ -60,6 +76,11 @@ public class RequestLogContextFilter extends OncePerRequestFilter {
             }
         }
 
+        if (readableBodyResponseHandler != null) {
+            readableBodyResponseHandler.handlerReadableBodyResponse(response);
+            ContentCachingResponseWrapper cachingResponseWrapper = (ContentCachingResponseWrapper) response;
+            cachingResponseWrapper.copyBodyToResponse();
+        }
     }
 
     private void setRequestAttributes(HttpServletRequest request) {

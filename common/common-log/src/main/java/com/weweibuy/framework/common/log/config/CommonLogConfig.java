@@ -1,5 +1,6 @@
 package com.weweibuy.framework.common.log.config;
 
+import com.weweibuy.framework.common.core.support.ReadableBodyRequestHandler;
 import com.weweibuy.framework.common.log.logger.HttpLogger;
 import com.weweibuy.framework.common.log.mvc.RequestLogContextFilter;
 import com.weweibuy.framework.common.log.mvc.RequestResponseBodyLogAdvice;
@@ -40,6 +41,9 @@ public class CommonLogConfig implements WebMvcConfigurer, InitializingBean {
     @Autowired(required = false)
     private List<LogDisableConfigurer> logDisableConfigurer;
 
+    @Autowired(required = false)
+    private ReadableBodyRequestHandler readableBodyRequestHandler;
+
     @Bean
     public RequestLogContextFilter requestLogContextFilter() {
         return new RequestLogContextFilter();
@@ -58,7 +62,7 @@ public class CommonLogConfig implements WebMvcConfigurer, InitializingBean {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new UnRequestBodyJsonLogInterceptor());
+        registry.addInterceptor(new UnRequestBodyJsonLogInterceptor(readableBodyRequestHandler));
     }
 
     @Override
