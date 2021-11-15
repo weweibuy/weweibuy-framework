@@ -16,7 +16,7 @@ public interface ReadableBodyResponseHandler {
      *
      * @param response
      */
-    void handlerReadableBodyResponse(HttpServletRequest request, HttpServletResponse response);
+    void handlerReadableBodyResponse(HttpServletRequest request, HttpServletResponse response) throws Exception;
 
 
 }
