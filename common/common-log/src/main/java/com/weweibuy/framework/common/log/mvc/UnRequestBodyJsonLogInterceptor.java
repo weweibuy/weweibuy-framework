@@ -37,7 +37,7 @@ public class UnRequestBodyJsonLogInterceptor implements HandlerInterceptor {
             if (!match) {
                 HttpLogger.logForJsonRequest(request, false);
                 if (readableBodyRequestHandler != null) {
-                    readableBodyRequestHandler.handlerReadableBodyRequest(request);
+                    readableBodyRequestHandler.handlerReadableBodyRequest(request, response, false);
                 }
             }
         }

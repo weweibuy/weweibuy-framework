@@ -187,4 +187,13 @@ public class HttpRequestUtils {
         }
     }
 
+
+    public static String readRequestBodyForJson(HttpServletRequest request) {
+        if (request instanceof ContentCachingRequestWrapper) {
+            return readFromRequestWrapper((ContentCachingRequestWrapper) request);
+        } else {
+            return readFromRequest(request);
+        }
+    }
+
 }

@@ -17,6 +17,7 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestBodyAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.lang.reflect.Type;
 
@@ -51,7 +52,8 @@ public class RequestResponseBodyLogAdvice implements RequestBodyAdvice, Response
         if (readableBodyRequestHandler != null) {
             ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
             HttpServletRequest request = requestAttributes.getRequest();
-            readableBodyRequestHandler.handlerReadableBodyRequest(request);
+            HttpServletResponse response = requestAttributes.getResponse();
+            readableBodyRequestHandler.handlerReadableBodyRequest(request, response, false);
         }
 
         return body;

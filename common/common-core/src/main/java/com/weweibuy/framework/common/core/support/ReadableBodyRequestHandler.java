@@ -1,6 +1,7 @@
 package com.weweibuy.framework.common.core.support;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * 可读的http请求
@@ -15,7 +16,7 @@ public interface ReadableBodyRequestHandler {
      *
      * @param request
      */
-    void handlerReadableBodyRequest(HttpServletRequest request);
+    boolean handlerReadableBodyRequest(HttpServletRequest request, HttpServletResponse response, boolean servletLevel);
 
 
 }

@@ -1,5 +1,6 @@
 package com.weweibuy.framework.common.core.support;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
@@ -15,7 +16,7 @@ public interface ReadableBodyResponseHandler {
      *
      * @param response
      */
-    void handlerReadableBodyResponse(HttpServletResponse response);
+    void handlerReadableBodyResponse(HttpServletRequest request, HttpServletResponse response);
 
 
 }
