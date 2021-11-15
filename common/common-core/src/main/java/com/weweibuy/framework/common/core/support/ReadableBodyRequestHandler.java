@@ -16,7 +16,7 @@ public interface ReadableBodyRequestHandler {
      *
      * @param request
      */
-    boolean handlerReadableBodyRequest(HttpServletRequest request, HttpServletResponse response, boolean servletLevel);
+    void handlerReadableBodyRequest(HttpServletRequest request, HttpServletResponse response, boolean servletLevel);
 
 
 }
