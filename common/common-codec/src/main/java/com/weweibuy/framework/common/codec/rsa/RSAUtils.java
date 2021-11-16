@@ -33,7 +33,9 @@ public class RSAUtils {
      */
     private static final String ALGORITHM = "RSA";
 
-    private static final String SIGN_ALGORITHM = "SHA256withRSA";
+    public static final String SIGN_ALGORITHM_SHA256_WITH_RSA = "SHA256withRSA";
+
+    public static final String SIGN_ALGORITHM_SHA1_WITH_RSA = "SHA1withRSA";
 
 
     /**
@@ -300,8 +302,8 @@ public class RSAUtils {
      * @throws InvalidKeyException
      * @throws SignatureException
      */
-    public static String sign(PrivateKey privateKey, String data) throws NoSuchAlgorithmException, InvalidKeyException, SignatureException {
-        Signature signature = Signature.getInstance(SIGN_ALGORITHM);
+    public static String sign(PrivateKey privateKey, String data, String signAlgorithm) throws NoSuchAlgorithmException, InvalidKeyException, SignatureException {
+        Signature signature = Signature.getInstance(signAlgorithm);
         signature.initSign(privateKey);
         signature.update(data.getBytes());
         return HexUtils.toHexString(signature.sign());
@@ -316,9 +318,9 @@ public class RSAUtils {
      * @param sign
      * @return
      */
-    public static boolean verifySign(PublicKey publicKey, String data, String sign) {
+    public static boolean verifySign(PublicKey publicKey, String data, String sign, String signAlgorithm) {
         try {
-            Signature signature = Signature.getInstance(SIGN_ALGORITHM);
+            Signature signature = Signature.getInstance(signAlgorithm);
             signature.initVerify(publicKey);
             signature.update(data.getBytes());
             return signature.verify(HexUtils.fromHexString(sign));
