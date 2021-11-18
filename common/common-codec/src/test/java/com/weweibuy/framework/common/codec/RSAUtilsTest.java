@@ -56,9 +56,9 @@ public class RSAUtilsTest {
         String dataStr = "hello cryptography";
         PublicKey publicKey = RSAUtils.getPublicKeyFromBase64("E:/tmp/key/rsa/public64.key");
         PrivateKey privateKey = RSAUtils.getPrivateKeyFromBase64("E:/tmp/key/rsa/private64.key");
-        String sign = RSAUtils.sign(privateKey, dataStr);
+        String sign = RSAUtils.sign(privateKey, dataStr, "");
         System.err.println(sign);
-        boolean verifySign = RSAUtils.verifySign(publicKey, dataStr, sign);
+        boolean verifySign = RSAUtils.verifySign(publicKey, dataStr, sign, "");
         System.err.println(verifySign);
     }
 
