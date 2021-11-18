@@ -7,6 +7,7 @@ import com.weweibuy.framework.common.core.utils.HttpRequestUtils;
 import com.weweibuy.framework.common.log.desensitization.SensitizationMappingConfigurer;
 import com.weweibuy.framework.common.log.desensitization.SensitizationMappingOperator;
 import com.weweibuy.framework.common.log.logger.HttpLogger;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +40,7 @@ public class RequestLogContextFilter extends OncePerRequestFilter {
     @Autowired(required = false)
     private ReadableBodyResponseHandler readableBodyResponseHandler;
 
+    @SneakyThrows
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String contentType = request.getContentType();
