@@ -270,6 +270,11 @@ public class RSAUtils {
         return KeyFactory.getInstance(ALGORITHM).generatePrivate(new PKCS8EncodedKeySpec(decode));
     }
 
+    public static PrivateKey getPrivateKeyFromBase64Str(String base64Str) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
+        byte[] decode = Base64.getDecoder().decode(base64Str.getBytes());
+        return KeyFactory.getInstance(ALGORITHM).generatePrivate(new PKCS8EncodedKeySpec(decode));
+    }
+
     /**
      * The method that will re-create a {@link PublicKey} from a public key byte array.
      *
@@ -309,6 +314,12 @@ public class RSAUtils {
         return HexUtils.toHexString(signature.sign());
     }
 
+    public static String signToBase64(PrivateKey privateKey, String data, String signAlgorithm) throws NoSuchAlgorithmException, InvalidKeyException, SignatureException {
+        Signature signature = Signature.getInstance(signAlgorithm);
+        signature.initSign(privateKey);
+        signature.update(data.getBytes());
+        return new String(Base64.getEncoder().encode(signature.sign()));
+    }
 
     /**
      * 验签
