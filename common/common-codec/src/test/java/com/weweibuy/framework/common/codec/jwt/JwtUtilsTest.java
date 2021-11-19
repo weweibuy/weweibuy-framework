@@ -1,5 +1,6 @@
 package com.weweibuy.framework.common.codec.jwt;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.weweibuy.framework.common.codec.rsa.RsaKeyHelper;
 import com.weweibuy.framework.common.codec.rsa.RsaKeyHelperTest;
 import io.jsonwebtoken.Header;
@@ -47,6 +48,10 @@ public class JwtUtilsTest {
         Header header = parse.getHeader();
 
         Jwt<Header, Object> decode = JwtUtils.parser(keyPair.getPublic(), test_sub);
+        Object body1 = decode.getBody();
+        ObjectMapper objectMapper = new ObjectMapper();
+        String s = objectMapper.writeValueAsString(body1);
+        System.err.println(s);
 
         System.err.println(decode);
     }
