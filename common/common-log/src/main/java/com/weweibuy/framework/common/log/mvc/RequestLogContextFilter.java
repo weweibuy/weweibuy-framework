@@ -62,10 +62,14 @@ public class RequestLogContextFilter extends OncePerRequestFilter {
                 try {
                     readableBodyRequestHandler.handlerReadableBodyRequest(request, response, true);
                 } catch (BusinessException e) {
+                    response = cacheResponse(response);
                     writeResponse(response, HttpStatus.BAD_REQUEST, e.getCodeAndMsg());
+                    copyResponse(request, response);
                     return;
                 } catch (SystemException e) {
+                    response = cacheResponse(response);
                     writeResponse(response, HttpStatus.INTERNAL_SERVER_ERROR, e.getCodeAndMsg());
+                    copyResponse(request, response);
                     return;
                 }
 
@@ -76,9 +80,7 @@ public class RequestLogContextFilter extends OncePerRequestFilter {
 
         SensitizationMappingConfigurer.HttpSensitizationMapping mapping = matchRequest.orElse(null);
 
-        if (readableBodyResponseHandler != null) {
-            response = new ContentCachingResponseWrapper(response);
-        }
+        response = cacheResponse(response);
 
         if (mapping == null) {
             filterChain.doFilter(request, response);
@@ -91,13 +93,25 @@ public class RequestLogContextFilter extends OncePerRequestFilter {
                 SensitizationMappingOperator.removeSensitizationContext();
             }
         }
+        copyResponse(request, response);
+    }
 
+    private void copyResponse(HttpServletRequest request, HttpServletResponse response) throws Exception {
         if (readableBodyResponseHandler != null) {
             readableBodyResponseHandler.handlerReadableBodyResponse(request, response);
             ContentCachingResponseWrapper cachingResponseWrapper = (ContentCachingResponseWrapper) response;
             cachingResponseWrapper.copyBodyToResponse();
         }
     }
+
+
+    private HttpServletResponse cacheResponse(HttpServletResponse response) {
+        if (readableBodyResponseHandler != null) {
+            return new ContentCachingResponseWrapper(response);
+        }
+        return response;
+    }
+
 
     private void setRequestAttributes(HttpServletRequest request) {
         RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
