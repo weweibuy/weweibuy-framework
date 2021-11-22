@@ -29,8 +29,8 @@ public class TraceCodeFilter extends OncePerRequestFilter {
         try {
             LogTraceContext.setTraceCodeAndUserCode(logTraceCodeGetter.getTraceCode(request),
                     logTraceCodeGetter.getUserCode(request));
-            filterChain.doFilter(request, response);
             response.addHeader(CommonConstant.LogTraceConstant.HTTP_TRACE_CODE_HEADER, LogTraceContext.getTraceCode().orElse(""));
+            filterChain.doFilter(request, response);
         } finally {
             LogTraceContext.clear();
         }
