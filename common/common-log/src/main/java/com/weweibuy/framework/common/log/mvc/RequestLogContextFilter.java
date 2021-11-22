@@ -1,9 +1,13 @@
 package com.weweibuy.framework.common.log.mvc;
 
+import com.weweibuy.framework.common.core.exception.BusinessException;
+import com.weweibuy.framework.common.core.exception.SystemException;
+import com.weweibuy.framework.common.core.model.ResponseCodeAndMsg;
 import com.weweibuy.framework.common.core.model.constant.CommonConstant;
 import com.weweibuy.framework.common.core.support.ReadableBodyRequestHandler;
 import com.weweibuy.framework.common.core.support.ReadableBodyResponseHandler;
 import com.weweibuy.framework.common.core.utils.HttpRequestUtils;
+import com.weweibuy.framework.common.core.utils.JackJsonUtils;
 import com.weweibuy.framework.common.log.desensitization.SensitizationMappingConfigurer;
 import com.weweibuy.framework.common.log.desensitization.SensitizationMappingOperator;
 import com.weweibuy.framework.common.log.logger.HttpLogger;
@@ -12,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -54,7 +59,16 @@ public class RequestLogContextFilter extends OncePerRequestFilter {
         if (StringUtils.isBlank(contentType) || !MediaType.valueOf(contentType).isCompatibleWith(MediaType.APPLICATION_JSON) || !includePayload) {
             HttpLogger.logForNotJsonRequest(request);
             if (readableBodyRequestHandler != null) {
-                readableBodyRequestHandler.handlerReadableBodyRequest(request, response, true);
+                try {
+                    readableBodyRequestHandler.handlerReadableBodyRequest(request, response, true);
+                } catch (BusinessException e) {
+                    writeResponse(response, HttpStatus.BAD_REQUEST, e.getCodeAndMsg());
+                    return;
+                } catch (SystemException e) {
+                    writeResponse(response, HttpStatus.INTERNAL_SERVER_ERROR, e.getCodeAndMsg());
+                    return;
+                }
+
             }
         }
 
@@ -92,6 +106,12 @@ public class RequestLogContextFilter extends OncePerRequestFilter {
         requestAttributes.setAttribute(CommonConstant.HttpServletConstant.REQUEST_CONTENT_TYPE, request.getContentType(), RequestAttributes.SCOPE_REQUEST);
         requestAttributes.setAttribute(CommonConstant.HttpServletConstant.REQUEST_PARAMETER_MAP, request.getParameterMap(), RequestAttributes.SCOPE_REQUEST);
         requestAttributes.setAttribute(CommonConstant.HttpServletConstant.REQUEST_TIMESTAMP, System.currentTimeMillis(), RequestAttributes.SCOPE_REQUEST);
+    }
+
+    private void writeResponse(HttpServletResponse response, HttpStatus httpStatus, ResponseCodeAndMsg responseCodeAndMsg) throws IOException {
+        response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
+        response.setStatus(httpStatus.value());
+        response.getWriter().write(JackJsonUtils.writeWithMvc(responseCodeAndMsg));
     }
 
 
