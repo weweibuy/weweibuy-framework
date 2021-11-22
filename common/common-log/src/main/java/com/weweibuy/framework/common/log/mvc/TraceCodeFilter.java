@@ -1,5 +1,6 @@
 package com.weweibuy.framework.common.log.mvc;
 
+import com.weweibuy.framework.common.core.model.constant.CommonConstant;
 import com.weweibuy.framework.common.core.support.LogTraceCodeGetter;
 import com.weweibuy.framework.common.log.support.LogTraceContext;
 import org.springframework.core.annotation.Order;
@@ -29,6 +30,7 @@ public class TraceCodeFilter extends OncePerRequestFilter {
             LogTraceContext.setTraceCodeAndUserCode(logTraceCodeGetter.getTraceCode(request),
                     logTraceCodeGetter.getUserCode(request));
             filterChain.doFilter(request, response);
+            response.setHeader(CommonConstant.HttpResponseConstant.RESPONSE_HEADER_FIELD_SYSTEM_ID, LogTraceContext.getTraceCode().orElse(""));
         } finally {
             LogTraceContext.clear();
         }
