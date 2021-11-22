@@ -66,6 +66,19 @@ public class HttpLogger {
                 HttpRequestUtils.parameterMapToString(request.getParameterMap()));
     }
 
+
+    public static void logResponseBody(String body) {
+        String path = HttpRequestUtils.getRequestAttribute(RequestContextHolder.getRequestAttributes(), CommonConstant.HttpServletConstant.REQUEST_PATH);
+        if (!shouldLogResponse(path)) {
+            return;
+        }
+        Long timestamp = HttpRequestUtils.getRequestAttribute(RequestContextHolder.getRequestAttributes(), CommonConstant.HttpServletConstant.REQUEST_TIMESTAMP);
+        log.info("Http 响应数据: {}, 请求耗时: {}",
+                body,
+                System.currentTimeMillis() - timestamp);
+    }
+
+
     public static void logResponse(Object body, MediaType mediaType) {
         String path = HttpRequestUtils.getRequestAttribute(RequestContextHolder.getRequestAttributes(), CommonConstant.HttpServletConstant.REQUEST_PATH);
         if (!shouldLogResponse(path)) {

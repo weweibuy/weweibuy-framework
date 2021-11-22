@@ -13,6 +13,7 @@ import com.weweibuy.framework.common.log.desensitization.SensitizationMappingOpe
 import com.weweibuy.framework.common.log.logger.HttpLogger;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
@@ -29,6 +30,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Optional;
 
 /**
@@ -49,7 +51,7 @@ public class RequestLogContextFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String contentType = request.getContentType();
-
+        response = new ContentCachingResponseWrapper(response);
         boolean includePayload = HttpRequestUtils.isIncludePayload(request);
         if (includePayload) {
             request = new ContentCachingRequestWrapper(request);
@@ -62,14 +64,12 @@ public class RequestLogContextFilter extends OncePerRequestFilter {
                 try {
                     readableBodyRequestHandler.handlerReadableBodyRequest(request, response, true);
                 } catch (BusinessException e) {
-                    response = cacheResponse(response);
                     writeResponse(response, HttpStatus.BAD_REQUEST, e.getCodeAndMsg());
-                    copyResponse(request, response);
+                    copyAndLogResponse(request, response);
                     return;
                 } catch (SystemException e) {
-                    response = cacheResponse(response);
                     writeResponse(response, HttpStatus.INTERNAL_SERVER_ERROR, e.getCodeAndMsg());
-                    copyResponse(request, response);
+                    copyAndLogResponse(request, response);
                     return;
                 }
 
@@ -79,8 +79,6 @@ public class RequestLogContextFilter extends OncePerRequestFilter {
         Optional<SensitizationMappingConfigurer.HttpSensitizationMapping> matchRequest = SensitizationMappingOperator.matchRequest(request);
 
         SensitizationMappingConfigurer.HttpSensitizationMapping mapping = matchRequest.orElse(null);
-
-        response = cacheResponse(response);
 
         if (mapping == null) {
             filterChain.doFilter(request, response);
@@ -93,15 +91,19 @@ public class RequestLogContextFilter extends OncePerRequestFilter {
                 SensitizationMappingOperator.removeSensitizationContext();
             }
         }
-        copyResponse(request, response);
+        copyAndLogResponse(request, response);
     }
 
-    private void copyResponse(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    private void copyAndLogResponse(HttpServletRequest request, HttpServletResponse response) throws Exception {
         if (readableBodyResponseHandler != null) {
             readableBodyResponseHandler.handlerReadableBodyResponse(request, response);
-            ContentCachingResponseWrapper cachingResponseWrapper = (ContentCachingResponseWrapper) response;
-            cachingResponseWrapper.copyBodyToResponse();
         }
+        ContentCachingResponseWrapper cachingResponseWrapper = (ContentCachingResponseWrapper) response;
+        InputStream contentInputStream = cachingResponseWrapper.getContentInputStream();
+        String body = IOUtils.toString(contentInputStream, CommonConstant.CharsetConstant.UT8);
+        String contentType = response.getContentType();
+        HttpLogger.logResponseBody(body);
+        cachingResponseWrapper.copyBodyToResponse();
     }
 
 
