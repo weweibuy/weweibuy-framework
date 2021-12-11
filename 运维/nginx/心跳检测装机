@@ -1,0 +1,26 @@
+下载解压nginx
+下载解压心跳检测module: wget https://github.com/yaoweibin/nginx_upstream_check_module/archive/master.zip
+cd nginx-1.20.1/
+patch -p1 <  ../nginx_upstream_check_module-master/check_1.20.1+.patch
+./configure  --add-module=../nginx_upstream_check_module-master --with-stream
+make
+make install
+
+配置:
+upstream weweibuy {
+    server localhost:6080;
+    server localhost:16080;
+    check interval=3000 rise=2 fall=2 timeout=1000 type=http default_down=false;
+    check_http_send "GET /endpoint/_common/_health HTTP/1.0\r\n\r\n";
+    check_http_expect_alive http_2xx;
+}
+
+server {
+    listen 80;
+    server_name api.weweibuy.com;
+    access_log /usr/local/nginx/logs/api.log combined;
+
+    location / {
+	proxy_pass         http://weweibuy;
+    }
+}

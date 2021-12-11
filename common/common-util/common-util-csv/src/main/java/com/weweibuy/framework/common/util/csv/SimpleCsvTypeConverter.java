@@ -1,5 +1,6 @@
 package com.weweibuy.framework.common.util.csv;
 
+import com.weweibuy.framework.common.core.exception.Exceptions;
 import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 
@@ -46,6 +47,9 @@ public class SimpleCsvTypeConverter implements CsvTypeConverter {
 
     @Override
     public Object convert(String value, Class fieldType, int typeIndex) {
+        if (-1 == typeIndex) {
+            throw Exceptions.business("不支持的CSV数据类型转化: ", fieldType.getName());
+        }
         return Optional.ofNullable(typeFunction[typeIndex])
                 .map(f -> f.apply(value))
                 .orElse(null);
@@ -54,6 +58,11 @@ public class SimpleCsvTypeConverter implements CsvTypeConverter {
     @Override
     public int typeIndex(Class fieldType) {
         return Optional.ofNullable(typeIndexMap.get(fieldType.getName())).orElse(-1);
+    }
+
+    @Override
+    public void setPattern(String pattern) {
+
     }
 
 

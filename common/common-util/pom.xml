@@ -15,6 +15,7 @@
         <module>common-util-excel</module>
         <module>common-util-csv</module>
         <module>common-util-pdf</module>
+        <module>common-util-email</module>
     </modules>
 
 

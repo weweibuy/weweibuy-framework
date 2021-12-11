@@ -1,10 +1,12 @@
 package com.weweibuy.framework.common.mvc.support;
 
 import com.weweibuy.framework.common.core.exception.MethodKeyFeignException;
+import com.weweibuy.framework.common.core.model.ResponseCodeAndMsg;
 import com.weweibuy.framework.common.core.model.constant.CommonConstant;
 import com.weweibuy.framework.common.core.model.dto.CommonCodeResponse;
+import com.weweibuy.framework.common.core.model.eum.CommonErrorCodeEum;
 import com.weweibuy.framework.common.core.utils.HttpRequestUtils;
-import com.weweibuy.framework.common.log.support.LogTraceContext;
+import com.weweibuy.framework.common.core.utils.ResponseCodeUtils;
 import com.weweibuy.framework.common.mvc.advice.FeignExceptionHandler;
 import com.weweibuy.framework.common.mvc.advice.FeignMethodKeyMappingConverter;
 import lombok.extern.slf4j.Slf4j;
@@ -48,17 +50,25 @@ public class DefaultFeignExceptionHandler implements FeignExceptionHandler {
             return feignMethodKeyMappingConverter.convertResponse(status, content);
         }
         try {
+            ResponseCodeAndMsg responseCodeAndMsg = HttpRequestUtils.convertJsonStrToCodeAndMsg(content);
+
+            if (StringUtils.isBlank(responseCodeAndMsg.getCode())) {
+                responseCodeAndMsg = HttpRequestUtils.httpHttpStatus(status)
+                        .map(s -> ResponseCodeUtils.newResponseCodeAndMsg(s.value() + "", content))
+                        .orElseGet(() ->
+                                ResponseCodeUtils.newResponseCodeAndMsg(CommonErrorCodeEum.UNKNOWN_EXCEPTION.getCode(),
+                                        "调用第三方接口异常: " + content));
+            }
+
             return ResponseEntity.status(status)
                     .header(CommonConstant.HttpResponseConstant.RESPONSE_HEADER_FIELD_SYSTEM_ID, systemId)
-                    .header(CommonConstant.LogTraceConstant.HTTP_TRACE_CODE_HEADER, LogTraceContext.getTraceCode().orElse(StringUtils.EMPTY))
-                    .body(CommonCodeResponse.response(HttpRequestUtils.convertJsonStrToCodeAndMsg(content)));
+                    .body(CommonCodeResponse.response(responseCodeAndMsg));
         } catch (Exception ex) {
             log.warn("Feign 异常报文: {}, 无法转为 code ,msg 形式", content);
 
             return ResponseEntity.status(status)
                     .header(CommonConstant.HttpResponseConstant.RESPONSE_HEADER_FIELD_SYSTEM_ID, systemId)
-                    .header(CommonConstant.LogTraceConstant.HTTP_TRACE_CODE_HEADER, LogTraceContext.getTraceCode().orElse(StringUtils.EMPTY))
-                    .body(CommonCodeResponse.response(status + "", "目标服务异常: " + content));
+                    .body(CommonCodeResponse.response(status + "", "调用第三方接口异常: " + content));
         }
 
     }

@@ -7,6 +7,7 @@ import com.weweibuy.framework.common.core.model.dto.CommonCodeResponse;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.context.request.RequestAttributes;
@@ -17,9 +18,13 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.io.UnsupportedEncodingException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URLDecoder;
 import java.util.Arrays;
 import java.util.Map;
+import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -34,6 +39,9 @@ public class HttpRequestUtils {
     private static final String LINE_SEPARATOR = System.getProperty("line.separator");
 
     private static final AntPathMatcher ANT_PATH_MATCHER = new AntPathMatcher();
+
+    private static final Map<Integer, HttpStatus> HTTP_STATUS_MAP = Arrays.stream(HttpStatus.values())
+            .collect(Collectors.toMap(HttpStatus::value, Function.identity(), (o, n) -> n));
 
     /**
      * 是否为json 请求
@@ -195,5 +203,19 @@ public class HttpRequestUtils {
             return readFromRequest(request);
         }
     }
+
+
+    public static URI uri(String url) {
+        try {
+            return new URI(url);
+        } catch (URISyntaxException e) {
+            throw Exceptions.business("错误的url: " + url);
+        }
+    }
+
+    public static Optional<HttpStatus> httpHttpStatus(Integer code) {
+        return Optional.ofNullable(HTTP_STATUS_MAP.get(code));
+    }
+
 
 }

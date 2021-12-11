@@ -6,8 +6,14 @@ package com.weweibuy.framework.common.log.constant;
  **/
 public interface LogMdcConstant {
 
+    /**
+     * 请求路径
+     */
     String REQUEST_PATH = "requestPath";
 
+    /**
+     * 请求时间戳
+     */
     String REQUEST_TIMESTAMP = "requestTimestamp";
 
     String REQUEST_METHOD = "requestMethod";
@@ -16,13 +22,24 @@ public interface LogMdcConstant {
 
     String LOG_SENSITIZATION = "logSensitization";
 
+    /**
+     * 敏感字段
+     */
     String SENSITIZATION_FIELDS = "sensitization_fields";
 
+    /**
+     * 脱敏logger
+     */
     String SENSITIZATION_LOGGER = "sensitization_logger";
 
     String TID_FIELD_NAME = "tid";
 
     String UID_FIELD_NAME = "uid";
+
+    /**
+     * 是否已经输出过请求日志
+     */
+    String HAS_LOG_REQ_FIELD_NAME = "uid";
 
 
 }

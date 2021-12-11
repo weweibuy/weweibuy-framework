@@ -1,0 +1,2 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  com.weweibuy.common.util.email.config.CommonEmailSendConfig

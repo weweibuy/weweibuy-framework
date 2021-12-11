@@ -4,6 +4,7 @@ import com.weweibuy.framework.common.core.exception.BusinessException;
 import com.weweibuy.framework.common.core.exception.SystemException;
 import com.weweibuy.framework.common.core.model.ResponseCodeAndMsg;
 import com.weweibuy.framework.common.core.model.constant.CommonConstant;
+import com.weweibuy.framework.common.core.model.eum.CommonErrorCodeEum;
 import com.weweibuy.framework.common.core.support.ReadableBodyRequestHandler;
 import com.weweibuy.framework.common.core.support.ReadableBodyResponseHandler;
 import com.weweibuy.framework.common.core.utils.HttpRequestUtils;
@@ -61,18 +62,11 @@ public class RequestLogContextFilter extends OncePerRequestFilter {
         if (StringUtils.isBlank(contentType) || !MediaType.valueOf(contentType).isCompatibleWith(MediaType.APPLICATION_JSON) || !includePayload) {
             HttpLogger.logForNotJsonRequest(request);
             if (readableBodyRequestHandler != null) {
-                try {
-                    readableBodyRequestHandler.handlerReadableBodyRequest(request, response, true);
-                } catch (BusinessException e) {
-                    writeResponse(response, HttpStatus.BAD_REQUEST, e.getCodeAndMsg());
-                    copyAndLogResponse(request, response);
-                    return;
-                } catch (SystemException e) {
-                    writeResponse(response, HttpStatus.INTERNAL_SERVER_ERROR, e.getCodeAndMsg());
-                    copyAndLogResponse(request, response);
+                // 处理可读取的请求体
+                boolean shouldReturn = handlerReadableBodyReq(request, response);
+                if (shouldReturn) {
                     return;
                 }
-
             }
         }
 
@@ -81,6 +75,7 @@ public class RequestLogContextFilter extends OncePerRequestFilter {
         SensitizationMappingConfigurer.HttpSensitizationMapping mapping = matchRequest.orElse(null);
 
         if (mapping == null) {
+            // 不需要脱敏
             filterChain.doFilter(request, response);
         } else {
             // 脱敏上下文绑定
@@ -94,6 +89,30 @@ public class RequestLogContextFilter extends OncePerRequestFilter {
         copyAndLogResponse(request, response);
     }
 
+
+    private boolean handlerReadableBodyReq(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        try {
+            readableBodyRequestHandler.handlerReadableBodyRequest(request, response, true);
+        } catch (BusinessException e) {
+            log.warn("处理请求异常: ", e);
+            writeResponse(response, HttpStatus.BAD_REQUEST, e.getCodeAndMsg());
+            copyAndLogResponse(request, response);
+            return true;
+        } catch (SystemException e) {
+            log.error("处理请求异常: ", e);
+            writeResponse(response, HttpStatus.INTERNAL_SERVER_ERROR, e.getCodeAndMsg());
+            copyAndLogResponse(request, response);
+            return true;
+        } catch (Exception e) {
+            log.error("处理请求异常: ", e);
+            writeResponse(response, HttpStatus.INTERNAL_SERVER_ERROR, CommonErrorCodeEum.UNKNOWN_EXCEPTION);
+            copyAndLogResponse(request, response);
+            return true;
+        }
+        return false;
+    }
+
+
     private void copyAndLogResponse(HttpServletRequest request, HttpServletResponse response) throws Exception {
         if (readableBodyResponseHandler != null) {
             readableBodyResponseHandler.handlerReadableBodyResponse(request, response);
@@ -102,7 +121,7 @@ public class RequestLogContextFilter extends OncePerRequestFilter {
         InputStream contentInputStream = cachingResponseWrapper.getContentInputStream();
         String body = IOUtils.toString(contentInputStream, CommonConstant.CharsetConstant.UT8);
         String contentType = response.getContentType();
-        HttpLogger.logResponseBody(body);
+        HttpLogger.logResponseBody(body, response.getStatus());
         cachingResponseWrapper.copyBodyToResponse();
     }
 

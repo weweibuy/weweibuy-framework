@@ -1,5 +1,6 @@
 package com.weweibuy.framework.common.util.csv;
 
+import com.weweibuy.framework.common.core.model.constant.CommonConstant;
 import com.weweibuy.framework.common.core.utils.DateTimeUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -12,10 +13,13 @@ import java.util.Optional;
  **/
 public class LocalDateTimeCsvTypeConverter implements CsvTypeConverter<LocalDateTime> {
 
+    private String pattern;
+
+
     @Override
     public String convert(LocalDateTime localDateTime) {
         return Optional.ofNullable(localDateTime)
-                .map(DateTimeUtils::toStringDate)
+                .map(d -> DateTimeUtils.toStringDate(d, pattern))
                 .orElse(StringUtils.EMPTY);
     }
 
@@ -24,12 +28,19 @@ public class LocalDateTimeCsvTypeConverter implements CsvTypeConverter<LocalDate
         if (StringUtils.EMPTY.equals(value)) {
             return null;
         }
-        return DateTimeUtils.stringToLocalDateTime(value);
+        return DateTimeUtils.stringToLocalDateTime(value, pattern);
     }
 
     @Override
     public int typeIndex(Class<LocalDateTime> fieldType) {
         return -1;
+    }
+
+    @Override
+    public void setPattern(String pattern) {
+        this.pattern = Optional.ofNullable(pattern)
+                .filter(StringUtils::isNotBlank)
+                .orElse(CommonConstant.DateConstant.STANDARD_DATE_TIME_FORMAT_STR);
     }
 
 }

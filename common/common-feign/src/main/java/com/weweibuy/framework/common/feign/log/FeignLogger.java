@@ -1,5 +1,6 @@
 package com.weweibuy.framework.common.feign.log;
 
+import com.weweibuy.framework.common.core.model.constant.CommonConstant;
 import com.weweibuy.framework.common.core.utils.JackJsonUtils;
 import com.weweibuy.framework.common.feign.support.FeignLogSetting;
 import feign.Logger;
@@ -153,7 +154,7 @@ public class FeignLogger extends Logger {
         boolean match = CollectionUtils.isNotEmpty(contentType) && contentType.stream()
                 .anyMatch(c -> c.indexOf(MediaType.MULTIPART_FORM_DATA_VALUE) != -1);
         return match ? BINARY_BODY_STR : Optional.ofNullable(request.body())
-                .map(String::new)
+                .map(b -> new String(b, CommonConstant.CharsetConstant.UT8))
                 .orElse(StringUtils.EMPTY);
     }
 
@@ -189,7 +190,7 @@ public class FeignLogger extends Logger {
         Response.Body body = response.body();
         if (body != null && !(status == 204 || status == 205)) {
             byte[] bodyData = Util.toByteArray(body.asInputStream());
-            bodyStr = new String(bodyData);
+            bodyStr = new String(bodyData, CommonConstant.CharsetConstant.UT8);
             if (!body.isRepeatable()) {
                 response = response.toBuilder().body(bodyData).build();
             }

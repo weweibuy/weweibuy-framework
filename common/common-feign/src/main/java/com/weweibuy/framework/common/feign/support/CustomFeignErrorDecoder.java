@@ -5,14 +5,14 @@ import com.weweibuy.framework.common.core.exception.MethodKeyFeignException;
 import com.weweibuy.framework.common.core.exception.MethodKeyFeignServerException;
 import com.weweibuy.framework.common.core.model.constant.CommonConstant;
 import com.weweibuy.framework.common.core.support.SystemIdGetter;
-import feign.FeignException;
-import feign.Response;
-import feign.Target;
-import feign.Util;
+import com.weweibuy.framework.common.core.utils.HttpRequestUtils;
+import feign.*;
 import feign.codec.ErrorDecoder;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
+import java.net.URI;
 import java.util.Optional;
 
 import static java.lang.String.format;
@@ -64,14 +64,23 @@ public class CustomFeignErrorDecoder extends ErrorDecoder.Default {
 
 
     private String defaultFeignSystemId(Response response) {
-        Target<?> target = response.request().requestTemplate().feignTarget();
-        return defaultFeignSystemId(target);
+        Request request = response.request();
+        return defaultFeignSystemId(request);
     }
 
 
-    public static String defaultFeignSystemId(Target<?> target) {
+    public static String defaultFeignSystemId(Request request) {
+        Target<?> target = request.requestTemplate().feignTarget();
         String name = target.name();
         String url = target.url();
-        return oriSystemId + " [Feign " + name + " " + url + "]";
+        URI uri = HttpRequestUtils.uri(request.url());
+        String path = uri.getPath();
+        String urlName = null;
+        if (StringUtils.isNotBlank(url)) {
+            urlName = uri.getHost() + uri.getPath();
+        } else {
+            urlName = name + uri.getPath();
+        }
+        return oriSystemId + " [Feign " + name + " " + urlName + "]";
     }
 }

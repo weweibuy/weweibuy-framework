@@ -141,6 +141,10 @@
             <artifactId>swagger-annotations</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>com.weweibuy.framework</groupId>
+            <artifactId>common-util-email</artifactId>
+        </dependency>
 
     </dependencies>
 

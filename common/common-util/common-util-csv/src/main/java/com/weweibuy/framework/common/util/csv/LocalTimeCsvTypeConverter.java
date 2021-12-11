@@ -4,34 +4,34 @@ import com.weweibuy.framework.common.core.model.constant.CommonConstant;
 import com.weweibuy.framework.common.core.utils.DateTimeUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.Date;
+import java.time.LocalTime;
 import java.util.Optional;
 
 /**
  * @author durenhao
- * @date 2021/1/15 17:53
+ * @date 2021/1/15 17:55
  **/
-public class DataCsvTypeConverter implements CsvTypeConverter<Date> {
+public class LocalTimeCsvTypeConverter implements CsvTypeConverter<LocalTime> {
 
     private String pattern;
 
     @Override
-    public String convert(Date date) {
-        return Optional.ofNullable(date)
+    public String convert(LocalTime localTime) {
+        return Optional.ofNullable(localTime)
                 .map(d -> DateTimeUtils.toStringDate(d, pattern))
                 .orElse(StringUtils.EMPTY);
     }
 
     @Override
-    public Date convert(String value, Class<Date> fieldType, int typeIndex) {
+    public LocalTime convert(String value, Class<LocalTime> fieldType, int typeIndex) {
         if (StringUtils.EMPTY.equals(value)) {
             return null;
         }
-        return DateTimeUtils.strToDate(value, pattern);
+        return DateTimeUtils.stringToLocalTime(value, pattern);
     }
 
     @Override
-    public int typeIndex(Class<Date> fieldType) {
+    public int typeIndex(Class<LocalTime> fieldType) {
         return -1;
     }
 
@@ -39,7 +39,7 @@ public class DataCsvTypeConverter implements CsvTypeConverter<Date> {
     public void setPattern(String pattern) {
         this.pattern = Optional.ofNullable(pattern)
                 .filter(StringUtils::isNotBlank)
-                .orElse(CommonConstant.DateConstant.STANDARD_DATE_TIME_FORMAT_STR);
+                .orElse(CommonConstant.DateConstant.STANDARD_TIME_FORMAT_STR);
     }
 
 }

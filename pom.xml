@@ -236,6 +236,12 @@
             </dependency>
 
             <dependency>
+                <groupId>com.weweibuy.framework</groupId>
+                <artifactId>common-util-email</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
                 <version>${guava.version}</version>

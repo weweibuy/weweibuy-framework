@@ -8,6 +8,9 @@
 
     <property name="log.path" value="${log.path:-/logs/${app_name}}"/>
 
+    <property name="log.maxDay" value="${log.maxDay:30}"/>
+
+
     <conversionRule conversionWord="clr" converterClass="org.springframework.boot.logging.logback.ColorConverter"/>
     <conversionRule conversionWord="wex"
                     converterClass="org.springframework.boot.logging.logback.WhitespaceThrowableProxyConverter"/>
@@ -37,15 +40,21 @@
             <charset>UTF-8</charset>
         </encoder>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>${log.path}/application-%d{yyyy-MM-dd}.%i.log.tar.gz</fileNamePattern>
+            <fileNamePattern>${log.path}/application-%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
             <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
                 <maxFileSize>100MB</maxFileSize>
             </timeBasedFileNamingAndTriggeringPolicy>
-            <maxHistory>15</maxHistory>
+            <maxHistory>${log.maxDay}</maxHistory>
         </rollingPolicy>
     </appender>
 
     <springProfile name="dev">
+        <root level="INFO">
+            <appender-ref ref="CONSOLE"/>
+        </root>
+    </springProfile>
+
+    <springProfile name="uat">
         <root level="INFO">
             <appender-ref ref="CONSOLE"/>
         </root>

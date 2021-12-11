@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import javax.validation.Validator;
 import java.io.File;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.List;
 
 /**
@@ -86,8 +87,56 @@ public class ExcelUtils {
      * @param data
      * @param <T>
      */
-    public static <T extends AbstractImportExcelVO> void writeFromFile(String fullName, String sheetName, Class<T> clazz, List<T> data) {
+    public static <T> void writeFromFile(String fullName, String sheetName, Class<T> clazz, List<T> data) {
         EasyExcel.write(fullName, clazz).sheet(sheetName).doWrite(data);
+    }
+
+
+    /**
+     * 写出Excel 文件
+     *
+     * @param fullName
+     * @param template  文件模板
+     * @param sheetName
+     * @param clazz
+     * @param data
+     * @param <T>
+     */
+    public static <T> void writeFromTemplate(String fullName, InputStream template, String sheetName, Class<T> clazz, List<T> data) {
+        writeFromTemplate(fullName, template, false, sheetName, clazz, data);
+    }
+
+    public static <T> void writeFromTemplate(OutputStream out, InputStream template, String sheetName, Class<T> clazz, List<T> data) {
+        writeFromTemplate(out, template, false, sheetName, clazz, data);
+    }
+
+    /**
+     * 写出Excel 文件
+     *
+     * @param fullName
+     * @param template  文件模板
+     * @param needHead  是否需要表头
+     * @param sheetName
+     * @param clazz
+     * @param data
+     * @param <T>
+     */
+    public static <T> void writeFromTemplate(String fullName, InputStream template,
+                                                                       boolean needHead, String sheetName, Class<T> clazz, List<T> data) {
+        EasyExcel.write(fullName, clazz)
+                .withTemplate(template)
+                .sheet(sheetName)
+                .needHead(needHead)
+                .doWrite(data);
+    }
+
+    public static <T> void writeFromTemplate(OutputStream out, InputStream template,
+                                             boolean needHead, String sheetName, Class<T> clazz, List<T> data) {
+        EasyExcel.write(out, clazz)
+                .withTemplate(template)
+                .sheet(sheetName)
+                .needHead(needHead)
+                .doWrite(data);
     }
 
     private static void unWrapException(ExcelAnalysisException e) {

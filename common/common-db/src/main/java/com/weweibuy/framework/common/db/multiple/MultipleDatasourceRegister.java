@@ -4,6 +4,7 @@ import com.weweibuy.framework.common.core.utils.SpringResourcesUtils;
 import com.weweibuy.framework.common.db.properties.DataSourceWithMybatisProperties;
 import com.weweibuy.framework.common.db.properties.MapperScanMybatisProperties;
 import com.weweibuy.framework.common.db.properties.MultipleDataSourceProperties;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.mybatis.spring.mapper.MapperScannerConfigurer;
 import org.springframework.beans.BeansException;
@@ -27,6 +28,7 @@ import java.util.Optional;
  * @author durenhao
  * @date 2021/7/18 10:32
  **/
+@Slf4j
 public class MultipleDatasourceRegister implements BeanDefinitionRegistryPostProcessor, EnvironmentAware, ApplicationContextAware {
 
     private BeanNameGenerator beanNameGenerator = AnnotationBeanNameGenerator.INSTANCE;
@@ -41,6 +43,9 @@ public class MultipleDatasourceRegister implements BeanDefinitionRegistryPostPro
         // 配置文件绑定
         MultipleDataSourceProperties monitorRestBeanConfig = SpringResourcesUtils.bindConfig(MultipleDataSourceProperties.PREFIX,
                 MultipleDataSourceProperties.class, environment);
+        if (log.isDebugEnabled()) {
+            log.debug("绑定多数据源配置文件: {}", monitorRestBeanConfig);
+        }
 
         Map<String, DataSourceWithMybatisProperties> coreRestServices = monitorRestBeanConfig.getMultipleDatasource();
 
