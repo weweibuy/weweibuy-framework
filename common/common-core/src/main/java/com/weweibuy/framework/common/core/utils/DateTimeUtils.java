@@ -4,10 +4,7 @@ import com.weweibuy.framework.common.core.model.constant.CommonConstant;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
-import java.time.Duration;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Map;
@@ -30,6 +27,7 @@ public class DateTimeUtils {
     static {
         DATE_TIME_FORMATTER_MAP.put(CommonConstant.DateConstant.STANDARD_DATE_TIME_FORMAT_STR, CommonConstant.DateConstant.STANDARD_DATE_TIME_FORMATTER);
         DATE_TIME_FORMATTER_MAP.put(CommonConstant.DateConstant.STANDARD_DATE_FORMAT_STR, CommonConstant.DateConstant.STANDARD_DATE_FORMATTER);
+        DATE_TIME_FORMATTER_MAP.put(CommonConstant.DateConstant.STANDARD_TIME_FORMAT_STR, CommonConstant.DateConstant.STANDARD_TIME_FORMATTER);
     }
 
     /**
@@ -64,6 +62,15 @@ public class DateTimeUtils {
      */
     public static String toStringDate(LocalDateTime date) {
         return date.format(CommonConstant.DateConstant.STANDARD_DATE_TIME_FORMATTER);
+    }
+
+
+    public static String toStringDate(LocalTime date) {
+        return date.format(CommonConstant.DateConstant.STANDARD_TIME_FORMATTER);
+    }
+
+    public static String toStringDate(LocalTime date, String pattern) {
+        return date.format(dateTimeFormatter(pattern));
     }
 
     /**
@@ -107,6 +114,15 @@ public class DateTimeUtils {
      */
     public static LocalDate stringToLocalDate(String str) {
         return LocalDate.parse(str, CommonConstant.DateConstant.STANDARD_DATE_FORMATTER);
+    }
+
+    public static LocalTime stringToLocalTime(String str) {
+        return LocalTime.parse(str, CommonConstant.DateConstant.STANDARD_TIME_FORMATTER);
+    }
+
+
+    public static LocalTime stringToLocalTime(String str, String pattern) {
+        return LocalTime.parse(str, dateTimeFormatter(pattern));
     }
 
     /**
@@ -203,6 +219,11 @@ public class DateTimeUtils {
      */
     public static Date strToDate(String strDate) {
         return localDateTimeToDate(stringToLocalDateTime(strDate));
+    }
+
+
+    public static Date strToDate(String strDate, String pattern) {
+        return localDateTimeToDate(stringToLocalDateTime(strDate, pattern));
     }
 
     /**

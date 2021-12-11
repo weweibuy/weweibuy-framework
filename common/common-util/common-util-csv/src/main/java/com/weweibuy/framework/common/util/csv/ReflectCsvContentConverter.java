@@ -63,7 +63,7 @@ public class ReflectCsvContentConverter<T> implements CsvContentConverter<T> {
                 .peek(field -> indexName[sortAtomicInteger.get()] = arrFieldIndexMap.get(field))
                 .peek(field -> getters[sortAtomicInteger.get()] = Utils.fieldGetter(field))
                 .peek(field -> setters[sortAtomicInteger.get()] = Utils.fieldSetter(field))
-                .peek(field -> converters[sortAtomicInteger.get()] = Utils.typeConverter(field.getAnnotation(CsvProperty.class).converter(), field.getType()))
+                .peek(field -> converters[sortAtomicInteger.get()] = Utils.typeConverter(field.getAnnotation(CsvProperty.class).converter(), field.getAnnotation(CsvProperty.class).pattern(), field.getType()))
                 .forEach(field -> types[sortAtomicInteger.getAndIncrement()] = field.getType());
 
         bulkBean = BulkBean.create(type, getters, setters, types);

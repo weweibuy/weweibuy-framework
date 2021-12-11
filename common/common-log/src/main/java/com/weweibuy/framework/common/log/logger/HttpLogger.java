@@ -4,6 +4,7 @@ import com.weweibuy.framework.common.core.model.constant.CommonConstant;
 import com.weweibuy.framework.common.core.utils.HttpRequestUtils;
 import com.weweibuy.framework.common.core.utils.JackJsonUtils;
 import com.weweibuy.framework.common.log.config.LogDisablePath;
+import com.weweibuy.framework.common.log.constant.LogMdcConstant;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -53,6 +54,8 @@ public class HttpLogger {
                     method,
                     body);
         }
+        RequestContextHolder.getRequestAttributes().setAttribute(
+                LogMdcConstant.HAS_LOG_REQ_FIELD_NAME, true, RequestAttributes.SCOPE_REQUEST);
     }
 
     public static void logForNotJsonRequest(HttpServletRequest request) {
@@ -67,13 +70,14 @@ public class HttpLogger {
     }
 
 
-    public static void logResponseBody(String body) {
+    public static void logResponseBody(String body, Integer status) {
         String path = HttpRequestUtils.getRequestAttribute(RequestContextHolder.getRequestAttributes(), CommonConstant.HttpServletConstant.REQUEST_PATH);
         if (!shouldLogResponse(path)) {
             return;
         }
         Long timestamp = HttpRequestUtils.getRequestAttribute(RequestContextHolder.getRequestAttributes(), CommonConstant.HttpServletConstant.REQUEST_TIMESTAMP);
-        log.info("Http 响应数据: {}, 请求耗时: {}",
+        log.info("Http 响应 Status: {}, 数据: {}, 请求耗时: {}",
+                status,
                 body,
                 System.currentTimeMillis() - timestamp);
     }
@@ -141,6 +145,12 @@ public class HttpLogger {
 
     private static boolean shouldLogRequest(String path) {
         if (StringUtils.isBlank(path)) {
+            return false;
+        }
+        Boolean hasLogged = HttpRequestUtils.getRequestAttribute(RequestContextHolder.getRequestAttributes(),
+                LogMdcConstant.HAS_LOG_REQ_FIELD_NAME);
+
+        if (hasLogged != null && hasLogged) {
             return false;
         }
         LogDisablePath.Type type = null;

@@ -9,7 +9,6 @@ import com.weweibuy.framework.common.core.model.dto.CommonCodeResponse;
 import com.weweibuy.framework.common.core.model.eum.CommonErrorCodeEum;
 import com.weweibuy.framework.common.core.support.SystemIdGetter;
 import com.weweibuy.framework.common.log.logger.HttpLogger;
-import com.weweibuy.framework.common.log.support.LogTraceContext;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.InitializingBean;
@@ -266,8 +265,7 @@ public class CommonExceptionAdvice implements InitializingBean {
 
     static ResponseEntity.BodyBuilder builderCommonHeader(int status) {
         return ResponseEntity.status(status)
-                .header(CommonConstant.HttpResponseConstant.RESPONSE_HEADER_FIELD_SYSTEM_ID, systemId)
-                .header(CommonConstant.LogTraceConstant.HTTP_TRACE_CODE_HEADER, LogTraceContext.getTraceCode().orElse(StringUtils.EMPTY));
+                .header(CommonConstant.HttpResponseConstant.RESPONSE_HEADER_FIELD_SYSTEM_ID, systemId);
     }
 
 

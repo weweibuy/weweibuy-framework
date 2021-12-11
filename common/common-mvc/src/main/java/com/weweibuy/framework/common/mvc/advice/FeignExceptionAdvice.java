@@ -7,10 +7,8 @@ import com.weweibuy.framework.common.core.model.dto.CommonCodeResponse;
 import com.weweibuy.framework.common.core.model.eum.CommonErrorCodeEum;
 import com.weweibuy.framework.common.feign.support.CustomFeignErrorDecoder;
 import com.weweibuy.framework.common.log.logger.HttpLogger;
-import com.weweibuy.framework.common.log.support.LogTraceContext;
 import feign.FeignException;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
@@ -52,8 +50,8 @@ public class FeignExceptionAdvice {
         if (cause instanceof IOException) {
             String message = cause.getMessage();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .header(CommonConstant.HttpResponseConstant.RESPONSE_HEADER_FIELD_SYSTEM_ID, CustomFeignErrorDecoder.defaultFeignSystemId(e.request().requestTemplate().feignTarget()))
-                    .header(CommonConstant.LogTraceConstant.HTTP_TRACE_CODE_HEADER, LogTraceContext.getTraceCode().orElse(StringUtils.EMPTY))
+                    .header(CommonConstant.HttpResponseConstant.RESPONSE_HEADER_FIELD_SYSTEM_ID,
+                            CustomFeignErrorDecoder.defaultFeignSystemId(e.request()))
                     .body(CommonCodeResponse.response(CommonErrorCodeEum.NETWORK_EXCEPTION));
         }
         if (exceptionHandler != null && e instanceof MethodKeyFeignException) {
@@ -67,11 +65,10 @@ public class FeignExceptionAdvice {
             codeAndMsg = CommonErrorCodeEum.UNKNOWN_SERVER_EXCEPTION;
         }
 
-        ResponseEntity.BodyBuilder builder = CommonExceptionAdvice.builderCommonHeader(e.status())
-                .header(CommonConstant.LogTraceConstant.HTTP_TRACE_CODE_HEADER, LogTraceContext.getTraceCode().orElse(StringUtils.EMPTY));
+        ResponseEntity.BodyBuilder builder = CommonExceptionAdvice.builderCommonHeader(e.status());
         if (e.hasRequest()) {
             builder = builder.header(CommonConstant.HttpResponseConstant.RESPONSE_HEADER_FIELD_SYSTEM_ID,
-                    CustomFeignErrorDecoder.defaultFeignSystemId(e.request().requestTemplate().feignTarget()));
+                    CustomFeignErrorDecoder.defaultFeignSystemId(e.request()));
         }
         return builder.body(CommonCodeResponse.response(codeAndMsg));
     }

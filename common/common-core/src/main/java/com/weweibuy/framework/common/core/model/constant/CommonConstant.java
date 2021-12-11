@@ -52,9 +52,13 @@ public interface CommonConstant {
 
         String STANDARD_DATE_FORMAT_STR = "yyyy-MM-dd";
 
+        String STANDARD_TIME_FORMAT_STR = "HH:mm:ss";
+
         DateTimeFormatter STANDARD_DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern(STANDARD_DATE_TIME_FORMAT_STR);
 
         DateTimeFormatter STANDARD_DATE_FORMATTER = DateTimeFormatter.ofPattern(STANDARD_DATE_FORMAT_STR);
+
+        DateTimeFormatter STANDARD_TIME_FORMATTER = DateTimeFormatter.ofPattern(STANDARD_TIME_FORMAT_STR);
 
         /**
          * 时区

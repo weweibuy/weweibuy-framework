@@ -33,5 +33,12 @@ public interface CsvTypeConverter<T> {
      */
     int typeIndex(Class<T> fieldType);
 
+    /**
+     * 设置时间格式
+     *
+     * @param pattern
+     */
+    void setPattern(String pattern);
+
 
 }

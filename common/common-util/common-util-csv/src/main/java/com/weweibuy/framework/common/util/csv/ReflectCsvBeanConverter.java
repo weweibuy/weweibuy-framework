@@ -166,7 +166,7 @@ public class ReflectCsvBeanConverter<T> implements CsvBeanConverter<T> {
         getters[indexAtomicInteger.get()] = Utils.fieldGetter(field);
         setters[indexAtomicInteger.get()] = Utils.fieldSetter(field);
         types[indexAtomicInteger.get()] = field.getType();
-        converters[indexAtomicInteger.get()] = Utils.typeConverter(field.getAnnotation(CsvProperty.class).converter(), field.getType());
+        converters[indexAtomicInteger.get()] = Utils.typeConverter(field.getAnnotation(CsvProperty.class).converter(), field.getAnnotation(CsvProperty.class).pattern(), field.getType());
         converterTypeIndex[indexAtomicInteger.get()] = converters[indexAtomicInteger.get()].typeIndex(field.getType());
 
     }

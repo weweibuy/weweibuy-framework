@@ -16,10 +16,10 @@ import lombok.ToString;
 @ToString(callSuper = true)
 public class Student extends Person {
 
-    @CsvProperty(name = "班级")
+    @CsvProperty(index = 0)
     private String group;
 
-    @CsvProperty(name = "学校")
+    @CsvProperty(index = 1)
     private String school;
 
 

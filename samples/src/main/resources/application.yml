@@ -40,7 +40,13 @@ spring:
       uris: 106.12.208.53:9200
       username: elastic
       password: ak402507979
-
+  mail:
+   default-encoding: UTF-8
+   host: smtp.126.com
+   port: 25
+   protocol: smtp
+   username: ak40250@126.com
+   password: xxx
 
 
 mybatis:

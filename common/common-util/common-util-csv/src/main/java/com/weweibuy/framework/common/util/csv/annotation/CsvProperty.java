@@ -42,4 +42,12 @@ public @interface CsvProperty {
      */
     Class<? extends CsvTypeConverter> converter() default SimpleCsvTypeConverter.class;
 
+    /**
+     * 时间格式
+     *
+     * @return
+     */
+    String pattern() default "";
+
+
 }

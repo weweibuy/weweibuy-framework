@@ -26,7 +26,12 @@ public class LogFeignFilter implements FeignFilter {
         logRequest(request);
         long millis = System.currentTimeMillis();
         Response response = null;
-        response = chain.doFilter(request, options);
+        try {
+            response = chain.doFilter(request, options);
+        } catch (Exception e) {
+            logAndReBufferResponse(request, response, millis);
+            throw e;
+        }
         return logAndReBufferResponse(request, response, millis);
 
     }
