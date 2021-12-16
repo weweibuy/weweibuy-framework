@@ -6,12 +6,16 @@ import com.weweibuy.framework.common.core.model.constant.CommonConstant;
 import com.weweibuy.framework.common.core.model.dto.CommonCodeResponse;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.util.AntPathMatcher;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.util.ContentCachingRequestWrapper;
+import org.springframework.web.util.UriUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.BufferedReader;
@@ -21,10 +25,11 @@ import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLDecoder;
-import java.util.Arrays;
-import java.util.Map;
-import java.util.Optional;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
 import java.util.function.Function;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -39,6 +44,9 @@ public class HttpRequestUtils {
     private static final String LINE_SEPARATOR = System.getProperty("line.separator");
 
     private static final AntPathMatcher ANT_PATH_MATCHER = new AntPathMatcher();
+
+    private static final Pattern QUERY_PATTERN = Pattern.compile("([^&=]+)(=?)([^&]+)?");
+
 
     private static final Map<Integer, HttpStatus> HTTP_STATUS_MAP = Arrays.stream(HttpStatus.values())
             .collect(Collectors.toMap(HttpStatus::value, Function.identity(), (o, n) -> n));
@@ -215,6 +223,50 @@ public class HttpRequestUtils {
 
     public static Optional<HttpStatus> httpHttpStatus(Integer code) {
         return Optional.ofNullable(HTTP_STATUS_MAP.get(code));
+    }
+
+    public static Map<String, String> parseQueryParamsToMap(URI uri) {
+        return parseQueryParamsToMap(uriQuery(uri));
+    }
+
+    public static Map<String, String> parseQueryParamsToMap(String uri) {
+        return parseQueryParams(uri).toSingleValueMap();
+    }
+
+    public static MultiValueMap<String, String> parseQueryParams(URI uri) {
+        return parseQueryParams(uriQuery(uri));
+    }
+
+    public static String uriQuery(String uri) {
+        return StringUtils.substringAfter(uri, "?");
+    }
+
+    public static String uriQuery(URI uri) {
+        return uri.getRawQuery();
+    }
+
+
+    public static MultiValueMap<String, String> parseQueryParams(String uri) {
+        MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
+        String query = uriQuery(uri);
+        if (StringUtils.isBlank(query)) {
+            return queryParams;
+        }
+        if (query != null) {
+            Matcher matcher = QUERY_PATTERN.matcher(query);
+            while (matcher.find()) {
+                String name = UriUtils.decode(matcher.group(1), StandardCharsets.UTF_8);
+                String eq = matcher.group(2);
+                String value = matcher.group(3);
+                if (value != null) {
+                    value = UriUtils.decode(value, StandardCharsets.UTF_8);
+                } else {
+                    value = (org.springframework.util.StringUtils.hasLength(eq) ? "" : null);
+                }
+                queryParams.add(name, value);
+            }
+        }
+        return queryParams;
     }
 
 
