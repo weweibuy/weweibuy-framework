@@ -1,9 +1,8 @@
 package com.weweibuy.framework.samples.mybatis.plugin.model.po;
 
-import lombok.Data;
-
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import lombok.Data;
 
 @Data
 public class TbItem {

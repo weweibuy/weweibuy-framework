@@ -572,5 +572,4 @@
     limit 1
     for update
   </select>
-
 </mapper>
