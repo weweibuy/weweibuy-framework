@@ -11,7 +11,7 @@
         <plugin type="com.itfsw.mybatis.generator.plugins.ExampleTargetPlugin">
             <property name="targetPackage" value="com.weweibuy.framework.samples.mybatis.plugin.model.example"/>
         </plugin>
-        <plugin type="com.weweibuy.framework.mybatis.plugin.OverwrittenMapperXmlPlugin"/>
+        <plugin type="org.mybatis.generator.plugins.UnmergeableXmlMappersPlugin" />
         <plugin type="com.weweibuy.framework.mybatis.plugin.SelectByExampleWithLimitPlugin"/>
         <plugin type="com.itfsw.mybatis.generator.plugins.CommentPlugin">
             <!-- 自定义模板路径 -->
