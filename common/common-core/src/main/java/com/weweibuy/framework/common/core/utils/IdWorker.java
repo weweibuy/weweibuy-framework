@@ -89,8 +89,8 @@ public final class IdWorker {
     }
 
     private long getNextId() {
+        long timestamp = currentTimestamp();
         synchronized (this) {
-            long timestamp = currentTimestamp();
             if (this.lastTimestamp == timestamp) {
                 this.sequence = (this.sequence + 1) & MAX_SEQUENCE;
                 if (this.sequence == 0) {
@@ -144,7 +144,7 @@ public final class IdWorker {
         long pid = getPid() & ((1 << PID_BITS) - 1);
 
         long workId = (workerId << PID_BITS) | pid;
-
+        log.info("当前WorkId: {}", workId);
         return workId;
     }
 
@@ -175,9 +175,10 @@ public final class IdWorker {
             }
             ips.deleteCharAt(ips.length() - 1);
         }
-
         return localAddresses.get(0);
     }
+
+
 
     /**
      * 取得本机所有IP
