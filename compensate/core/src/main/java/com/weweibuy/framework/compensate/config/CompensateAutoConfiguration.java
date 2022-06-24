@@ -26,16 +26,16 @@ public class CompensateAutoConfiguration {
     @Autowired
     private ApplicationContext applicationContext;
 
-    @Autowired
-    private MethodArgsTypeHolder methodArgsTypeHolder;
-
     @Autowired(required = false)
     private List<CompensateConfigurer> configurerList;
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
 
     @Bean
     public CompensateAnnotationMetaDataParser metaDataParser(CompensateConfigStore compensateConfigStore,
-                                                             MethodArgsConverter argsConverter, CompensateTypeResolverComposite composite) {
+                                                             CompensateTypeResolverComposite composite) {
         return new CompensateAnnotationMetaDataParser(compensateConfigStore, composite);
     }
 
@@ -53,19 +53,19 @@ public class CompensateAutoConfiguration {
     }
 
     @Bean
-    public MethodArgsConverter jsonMethodArgsWrapperConverter(ObjectMapper objectMapper) {
-        return new JackJsonMethodConverter(objectMapper, methodArgsTypeHolder);
+    public MethodArgsConverter jsonMethodArgsWrapperConverter() {
+        return new JackJsonMethodConverter(objectMapper, methodArgsTypeHolder());
     }
 
     @Bean
-    public MethodArgsTypeHolder methodArgsTypeHolder(ObjectMapper objectMapper) {
+    public MethodArgsTypeHolder methodArgsTypeHolder() {
         return new MethodArgsTypeHolder(objectMapper);
     }
 
     @Bean
     public CompensateBeanPostProcessor compensateBeanPostProcessor(CompensateMethodRegister register) {
         CompensateBeanPostProcessor compensateBeanPostProcessor = new CompensateBeanPostProcessor(register);
-        compensateBeanPostProcessor.setMethodArgsTypeHolder(methodArgsTypeHolder);
+        compensateBeanPostProcessor.setMethodArgsTypeHolder(methodArgsTypeHolder());
         return compensateBeanPostProcessor;
     }
 

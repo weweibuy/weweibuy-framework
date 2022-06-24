@@ -25,6 +25,11 @@ public class CompensateHandlerMethod {
 
     private boolean asyncRecover;
 
+    private String recoverBeanName;
+
+    private String recoverMethodName;
+
+
 
     public Object invoke(Object[] args) throws InvocationTargetException {
         ReflectionUtils.makeAccessible(method);
