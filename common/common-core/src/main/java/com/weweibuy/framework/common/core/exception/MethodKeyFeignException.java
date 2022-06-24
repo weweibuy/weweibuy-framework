@@ -4,6 +4,8 @@ import feign.Feign;
 import feign.FeignException;
 import feign.Request;
 
+import java.util.Collections;
+
 /**
  * @author durenhao
  * @date 2020/7/6 15:42
@@ -25,7 +27,7 @@ public class MethodKeyFeignException extends FeignException {
 
     public MethodKeyFeignException(String methodKey, int status,
                                    String message, Request request, byte[] body, String systemId) {
-        super(status, message, request, body);
+        super(status, message, request, body, Collections.emptyMap());
         this.methodKey = methodKey;
         this.systemId = systemId;
     }

@@ -1,6 +1,8 @@
 package com.weweibuy.framework.compensate.core;
 
 import com.weweibuy.framework.compensate.annotation.Compensate;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.SmartInitializingSingleton;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.BridgeMethodResolver;
 import org.springframework.util.Assert;
@@ -17,7 +19,7 @@ import java.util.Map;
  * @author durenhao
  * @date 2020/2/14 19:58
  **/
-public class CompensateMethodRegister {
+public class CompensateMethodRegister implements SmartInitializingSingleton {
 
     private Map<String, CompensateHandlerMethod> compensateHandlerMethodMap = new HashMap<>();
 
@@ -36,30 +38,38 @@ public class CompensateMethodRegister {
         boolean async = compensate.recover().async();
         CompensateHandlerMethod.CompensateHandlerMethodBuilder handlerMethodBuilder = CompensateHandlerMethod.builder()
                 .bean(bean)
-                .method(method);
+                .method(method).recoverMethodName(recoverMethodName)
+                .recoverBeanName(recoverBeanName)
+                .asyncRecover(async);
+        compensateHandlerMethodMap.put(key, handlerMethodBuilder.build());
+    }
 
-        if (!StringUtils.isEmpty(recoverBeanName) && !StringUtils.isEmpty(recoverMethodName)) {
+    private void recoverInfo(CompensateHandlerMethod compensateHandlerMethod) {
+        String recoverBeanName = compensateHandlerMethod.getRecoverBeanName();
+        String recoverMethodName = compensateHandlerMethod.getRecoverMethodName();
+        if (!StringUtils.hasLength(recoverBeanName) && !StringUtils.hasLength(recoverMethodName)) {
             Object recoverBean = applicationContext.getBean(recoverBeanName);
-            Assert.notNull(recoverBean, bean.getClass().getCanonicalName() + method.getName() + " 补偿指定的 recoverBean  " + recoverBeanName + "不存在");
             Method[] declaredMethods = ReflectionUtils.getAllDeclaredMethods(recoverBean.getClass());
             boolean hashMethod = false;
             for (Method recoverMethod : declaredMethods) {
                 if (recoverMethod.getName().equals(recoverMethodName)) {
-                    handlerMethodBuilder.recoverMethod(BridgeMethodResolver.findBridgedMethod(recoverMethod));
+                    compensateHandlerMethod.setRecoverMethod(BridgeMethodResolver.findBridgedMethod(recoverMethod));
                     hashMethod = true;
                     break;
                 }
             }
-            Assert.isTrue(hashMethod, bean.getClass().getCanonicalName() + method.getName() + " 补偿指定的 recoverMethod: " + recoverMethodName + " 不存在");
-            handlerMethodBuilder.recoverBean(recoverBean);
-            handlerMethodBuilder.asyncRecover(async);
+            compensateHandlerMethod.setRecoverBean(recoverBean);
         }
-        compensateHandlerMethodMap.put(key, handlerMethodBuilder.build());
-    }
 
+    }
 
     public CompensateHandlerMethod getCompensateHandlerMethod(String key) {
         return compensateHandlerMethodMap.get(key);
     }
 
+
+    @Override
+    public void afterSingletonsInstantiated() {
+        compensateHandlerMethodMap.values().forEach(this::recoverInfo);
+    }
 }
