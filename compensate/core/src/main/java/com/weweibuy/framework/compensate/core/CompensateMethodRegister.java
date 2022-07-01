@@ -1,7 +1,6 @@
 package com.weweibuy.framework.compensate.core;
 
 import com.weweibuy.framework.compensate.annotation.Compensate;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.SmartInitializingSingleton;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.BridgeMethodResolver;
@@ -47,7 +46,7 @@ public class CompensateMethodRegister implements SmartInitializingSingleton {
     private void recoverInfo(CompensateHandlerMethod compensateHandlerMethod) {
         String recoverBeanName = compensateHandlerMethod.getRecoverBeanName();
         String recoverMethodName = compensateHandlerMethod.getRecoverMethodName();
-        if (!StringUtils.hasLength(recoverBeanName) && !StringUtils.hasLength(recoverMethodName)) {
+        if (StringUtils.hasLength(recoverBeanName) && StringUtils.hasLength(recoverMethodName)) {
             Object recoverBean = applicationContext.getBean(recoverBeanName);
             Method[] declaredMethods = ReflectionUtils.getAllDeclaredMethods(recoverBean.getClass());
             boolean hashMethod = false;

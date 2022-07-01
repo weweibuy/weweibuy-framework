@@ -2,7 +2,6 @@ package com.weweibuy.framework.common.mvc.config;
 
 import com.weweibuy.framework.common.mvc.resolver.SnakeCaseRequestParamResolver;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.validation.ValidatorAdapter;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Configuration;
@@ -27,8 +26,8 @@ public class SnakeCaseRequestModelConfig implements WebMvcConfigurer {
 
     private final SnakeCaseWebMvcConfigurerComposite configurers = new SnakeCaseWebMvcConfigurerComposite();
 
-    @Qualifier("mvcConversionService")
-    @Autowired
+//    @Qualifier("mvcConversionService")
+//    @Autowired
     private FormattingConversionService conversionService;
 
     @Autowired

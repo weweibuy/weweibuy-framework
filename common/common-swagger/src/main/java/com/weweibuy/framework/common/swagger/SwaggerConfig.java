@@ -8,12 +8,13 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.env.Environment;
 import org.springframework.util.CollectionUtils;
-import org.springframework.web.bind.annotation.RequestMethod;
-import springfox.documentation.builders.*;
-import springfox.documentation.schema.ModelRef;
+import springfox.documentation.builders.ApiInfoBuilder;
+import springfox.documentation.builders.PathSelectors;
+import springfox.documentation.builders.RequestParameterBuilder;
+import springfox.documentation.builders.ResponseBuilder;
 import springfox.documentation.service.ApiInfo;
-import springfox.documentation.service.Parameter;
-import springfox.documentation.service.ResponseMessage;
+import springfox.documentation.service.RequestParameter;
+import springfox.documentation.service.Response;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.ApiSelectorBuilder;
 import springfox.documentation.spring.web.plugins.Docket;
@@ -46,23 +47,16 @@ public class SwaggerConfig {
     @Bean
     public Docket createRestApi() {
 
-        List<Parameter> parameters = swaggerProperties.getHeaders().stream()
+        List<RequestParameter> parameters = swaggerProperties.getHeaders().stream()
                 .map(this::buildParameter)
                 .collect(Collectors.toList());
 
-        List<ResponseMessage> responseMessageList = swaggerProperties.getResponse().stream()
+        List<Response> responseMessageList = swaggerProperties.getResponse().stream()
                 .map(this::buildResponseMessage)
                 .collect(Collectors.toList());
 
         ApiSelectorBuilder select = new Docket(DocumentationType.SWAGGER_2)
-                .globalResponseMessage(RequestMethod.GET, responseMessageList)
-                .globalResponseMessage(RequestMethod.POST, responseMessageList)
-                .globalResponseMessage(RequestMethod.PUT, responseMessageList)
-                .globalResponseMessage(RequestMethod.DELETE, responseMessageList)
-                .enable(true)
-                .globalOperationParameters(parameters)
-                .groupName(swaggerProperties.getGroup())
-                .apiInfo(apiInfo())
+
                 .select();
         if (!CollectionUtils.isEmpty(swaggerProperties.getBasePackage())) {
             select.apis(CustomBasePackageSelectors.basePackage(swaggerProperties.getBasePackage()));
@@ -72,19 +66,16 @@ public class SwaggerConfig {
     }
 
 
-    private ResponseMessage buildResponseMessage(SwaggerProperties.HttpStatusDescProperties statusDescProperties) {
-        return new ResponseMessageBuilder()
-                .code(statusDescProperties.getStatus())
-                .message(statusDescProperties.getDesc())
-                .responseModel(new ModelRef("CommonCodeResponse"))
+    private Response buildResponseMessage(SwaggerProperties.HttpStatusDescProperties statusDescProperties) {
+        return new ResponseBuilder()
+                .code(statusDescProperties.getStatus() + "")
                 .build();
     }
 
-    private Parameter buildParameter(SwaggerProperties.SwaggerHeaderProperties headerProperties) {
-        Parameter build = new ParameterBuilder().name(headerProperties.getName())
+    private RequestParameter buildParameter(SwaggerProperties.SwaggerHeaderProperties headerProperties) {
+        RequestParameter build = new RequestParameterBuilder()
+                .name(headerProperties.getName())
                 .description(headerProperties.getDesc())
-                .modelRef(new ModelRef("String"))
-                .parameterType("header")
                 .required(headerProperties.getRequired())
                 .build();
         return build;

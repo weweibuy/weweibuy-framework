@@ -2,8 +2,10 @@ package com.weweibuy.framework.common.core.utils;
 
 import org.junit.Assert;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
+import org.springframework.boot.autoconfigure.web.servlet.WebMvcAutoConfiguration;
+import org.springframework.http.server.PathContainer;
+import org.springframework.web.util.pattern.PathPattern;
+import org.springframework.web.util.pattern.PathPatternParser;
 
 public class HttpRequestUtilsTest {
 
@@ -24,4 +26,15 @@ public class HttpRequestUtilsTest {
         String s4 = HttpRequestUtils.sanitizedPath("///hello///world");
         Assert.assertEquals(s4, "/hello/world");
     }
+
+    @Test
+    public void test01() {
+        PathPatternParser pathPatternParser = WebMvcAutoConfiguration.pathPatternParser;
+        PathContainer pathContainer = PathContainer.parsePath("/112/hello");
+        PathPattern parse = pathPatternParser.parse("/*/hello");
+        boolean matches = parse.matches(pathContainer);
+        System.err.println(matches);
+
+    }
+
 }
