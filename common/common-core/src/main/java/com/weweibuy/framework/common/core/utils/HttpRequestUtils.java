@@ -6,16 +6,17 @@ import com.weweibuy.framework.common.core.model.constant.CommonConstant;
 import com.weweibuy.framework.common.core.model.dto.CommonCodeResponse;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.boot.autoconfigure.web.servlet.WebMvcAutoConfiguration;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.util.AntPathMatcher;
+import org.springframework.http.server.PathContainer;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.util.ContentCachingRequestWrapper;
 import org.springframework.web.util.UriUtils;
+import org.springframework.web.util.pattern.PathPatternParser;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.BufferedReader;
@@ -26,7 +27,9 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -43,7 +46,7 @@ public class HttpRequestUtils {
 
     private static final String LINE_SEPARATOR = System.getProperty("line.separator");
 
-    private static final AntPathMatcher ANT_PATH_MATCHER = new AntPathMatcher();
+    private static final PathPatternParser PATH_MATCHER = WebMvcAutoConfiguration.pathPatternParser;
 
     private static final Pattern QUERY_PATTERN = Pattern.compile("([^&=]+)(=?)([^&]+)?");
 
@@ -141,7 +144,8 @@ public class HttpRequestUtils {
      * @return
      */
     public static boolean isMatchPath(String pattern, String path) {
-        return ANT_PATH_MATCHER.match(pattern, path);
+        return PATH_MATCHER.parse(pattern)
+                .matches(PathContainer.parsePath(path));
     }
 
     /**

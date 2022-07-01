@@ -1,13 +1,13 @@
 package com.weweibuy.framework.common.swagger.support;
 
-import com.google.common.base.Function;
-import com.google.common.base.Optional;
-import com.google.common.base.Predicate;
 import org.springframework.util.ClassUtils;
 import springfox.documentation.RequestHandler;
 
 import java.util.Collection;
+import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 /**
  * @author durenhao
@@ -19,8 +19,8 @@ public class CustomBasePackageSelectors {
     public static Predicate<RequestHandler> basePackage(Set<String> basePackage) {
         return new Predicate<RequestHandler>() {
             @Override
-            public boolean apply(RequestHandler input) {
-                return declaringClass(input).transform(handlerPackage(basePackage)).or(true);
+            public boolean test(RequestHandler input) {
+                return declaringClass(input).map(handlerPackage(basePackage)).orElse(true);
             }
         };
     }
@@ -37,7 +37,7 @@ public class CustomBasePackageSelectors {
     }
 
     private static Optional<? extends Class<?>> declaringClass(RequestHandler input) {
-        return Optional.fromNullable(input.declaringClass());
+        return Optional.ofNullable(input.declaringClass());
     }
 
 }

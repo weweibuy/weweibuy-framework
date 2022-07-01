@@ -6,16 +6,12 @@ import com.weweibuy.framework.common.db.multiple.MultipleDatasourceRegister;
 import org.apache.ibatis.plugin.Interceptor;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.util.List;
-import java.util.Properties;
 
 /**
  * 分页插件配置
@@ -29,32 +25,19 @@ import java.util.Properties;
 @AutoConfigureAfter(MultipleDatasourceConfig.class)
 public class MultipleDatasourcePageHelperConfig implements InitializingBean {
 
-    @Autowired
-    private List<SqlSessionFactory> sqlSessionFactoryList;
+    private final List<SqlSessionFactory> sqlSessionFactoryList;
 
-    @Autowired
-    private PageHelperProperties properties;
+    private final PageHelperProperties properties;
 
-    /**
-     * 接受分页插件额外的属性
-     *
-     * @return
-     */
-    @Bean
-    @ConfigurationProperties(prefix = PageHelperProperties.PAGEHELPER_PREFIX)
-    public Properties pageHelperProperties() {
-        return new Properties();
+    public MultipleDatasourcePageHelperConfig(List<SqlSessionFactory> sqlSessionFactoryList, PageHelperProperties properties) {
+        this.sqlSessionFactoryList = sqlSessionFactoryList;
+        this.properties = properties;
     }
 
     @Override
     public void afterPropertiesSet() throws Exception {
         PageInterceptor interceptor = new PageInterceptor();
-        Properties properties = new Properties();
-        //先把一般方式配置的属性放进去
-        properties.putAll(pageHelperProperties());
-        //在把特殊配置放进去，由于close-conn 利用上面方式时，属性名就是 close-conn 而不是 closeConn，所以需要额外的一步
-        properties.putAll(this.properties.getProperties());
-        interceptor.setProperties(properties);
+        interceptor.setProperties(this.properties);
         for (SqlSessionFactory sqlSessionFactory : sqlSessionFactoryList) {
             org.apache.ibatis.session.Configuration configuration = sqlSessionFactory.getConfiguration();
             if (!containsInterceptor(configuration, interceptor)) {
