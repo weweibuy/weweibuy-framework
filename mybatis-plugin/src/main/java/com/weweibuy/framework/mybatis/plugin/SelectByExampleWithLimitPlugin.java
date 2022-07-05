@@ -15,8 +15,9 @@ import org.mybatis.generator.api.dom.xml.XmlElement;
 import static org.mybatis.generator.internal.util.StringUtility.stringHasValue;
 
 /**
- * for update 插件
+ * limit 插件
  */
+@Deprecated
 public class SelectByExampleWithLimitPlugin extends BasePlugin {
     public static final String METHOD_SELECT_LIMIT_BY_EXAMPLE = "selectByExampleWithLimit";  // 方法名
     public static final String METHOD_SELECT_LIMIT_BY_EXAMPLE_WITH_BLOBS = "selectByExampleWithBLOBsWithLimit";  // 方法名

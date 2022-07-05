@@ -55,7 +55,7 @@ public class SwaggerConfig {
                 .map(this::buildResponseMessage)
                 .collect(Collectors.toList());
 
-        ApiSelectorBuilder select = new Docket(DocumentationType.SWAGGER_2)
+        ApiSelectorBuilder select = new Docket(DocumentationType.OAS_30)
 
                 .select();
         if (!CollectionUtils.isEmpty(swaggerProperties.getBasePackage())) {
