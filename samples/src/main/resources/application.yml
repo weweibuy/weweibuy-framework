@@ -12,6 +12,9 @@ spring:
     multipart:
       max-request-size: 100MB
       max-file-size: 100MB
+#  mvc:
+#    pathmatch:
+#      matching-strategy: ant_path_matcher
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     type: com.zaxxer.hikari.HikariDataSource
