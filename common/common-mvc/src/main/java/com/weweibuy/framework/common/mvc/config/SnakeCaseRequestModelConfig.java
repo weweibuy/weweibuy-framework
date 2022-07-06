@@ -26,10 +26,6 @@ public class SnakeCaseRequestModelConfig implements WebMvcConfigurer {
 
     private final SnakeCaseWebMvcConfigurerComposite configurers = new SnakeCaseWebMvcConfigurerComposite();
 
-//    @Qualifier("mvcConversionService")
-//    @Autowired
-    private FormattingConversionService conversionService;
-
     @Autowired
     private ApplicationContext applicationContext;
 
@@ -58,6 +54,9 @@ public class SnakeCaseRequestModelConfig implements WebMvcConfigurer {
     public ConfigurableWebBindingInitializer getConfigurableWebBindingInitializer() {
 
         ConfigurableWebBindingInitializer initializer = new ConfigurableWebBindingInitializer();
+        // 解决循环依赖问题
+        FormattingConversionService conversionService = (FormattingConversionService) applicationContext.getBean("mvcConversionService");
+
         initializer.setConversionService(conversionService);
 
         Validator validator = ValidatorAdapter.get(applicationContext, configurers.getValidator());
