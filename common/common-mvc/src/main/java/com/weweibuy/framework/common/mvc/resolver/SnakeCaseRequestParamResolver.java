@@ -21,6 +21,7 @@ import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.method.HandlerMethod;
+import org.springframework.web.method.annotation.ModelAttributeMethodProcessor;
 import org.springframework.web.method.annotation.ModelFactory;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
@@ -34,6 +35,8 @@ import java.util.Map;
 import java.util.Optional;
 
 /**
+ * {@link ModelAttributeMethodProcessor}
+ *
  * @author durenhao
  * @date 2020/2/17 21:59
  **/
@@ -47,7 +50,6 @@ public class SnakeCaseRequestParamResolver implements HandlerMethodArgumentResol
     public SnakeCaseRequestParamResolver(WebBindingInitializer webBindingInitializer) {
         this.webBindingInitializer = webBindingInitializer;
     }
-
 
 
     @Override
