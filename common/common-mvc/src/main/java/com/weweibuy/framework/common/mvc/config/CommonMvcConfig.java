@@ -4,6 +4,7 @@ import com.weweibuy.framework.common.mvc.advice.*;
 import com.weweibuy.framework.common.mvc.endpoint.CustomHealthController;
 import com.weweibuy.framework.common.mvc.support.DefaultFeignExceptionHandler;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,7 +16,7 @@ import java.util.List;
  * @author durenhao
  * @date 2020/3/2 17:53
  **/
-@Configuration
+@AutoConfiguration
 public class CommonMvcConfig {
 
     @Autowired(required = false)

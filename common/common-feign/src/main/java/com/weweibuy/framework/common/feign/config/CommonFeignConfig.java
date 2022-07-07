@@ -18,6 +18,7 @@ import feign.RequestInterceptor;
 import feign.Retryer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
@@ -36,7 +37,7 @@ import java.util.stream.Collectors;
  * @author durenhao
  * @date 2020/3/2 19:39
  **/
-@Configuration
+@AutoConfiguration
 @RequiredArgsConstructor
 public class CommonFeignConfig {
 

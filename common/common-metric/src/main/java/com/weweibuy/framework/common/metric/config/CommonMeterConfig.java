@@ -5,6 +5,7 @@ import com.weweibuy.framework.common.metric.support.SampleMeterInstanceGetter;
 import io.micrometer.core.instrument.MeterRegistry;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.actuate.autoconfigure.metrics.MeterRegistryCustomizer;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,7 +17,7 @@ import org.springframework.core.env.Environment;
  * @author durenhao
  * @date 2021/7/1 22:45
  **/
-@Configuration
+@AutoConfiguration
 @RequiredArgsConstructor
 public class CommonMeterConfig {
 

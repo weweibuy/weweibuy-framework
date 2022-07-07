@@ -4,6 +4,7 @@ import com.weweibuy.framework.common.core.support.AlarmService;
 import com.weweibuy.framework.common.core.support.ApplicationNameSystemIdGetter;
 import com.weweibuy.framework.common.core.support.LogAlarmService;
 import com.weweibuy.framework.common.core.support.SystemIdGetter;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,6 +15,7 @@ import org.springframework.core.env.Environment;
  * @date 2021/5/17 22:37
  **/
 @Configuration
+@AutoConfiguration
 public class CommonCoreConfig {
 
     @Bean
