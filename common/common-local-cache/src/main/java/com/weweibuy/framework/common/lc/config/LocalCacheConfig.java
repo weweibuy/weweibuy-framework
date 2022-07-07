@@ -2,6 +2,7 @@ package com.weweibuy.framework.common.lc.config;
 
 import com.weweibuy.framework.common.lc.cache.LocalCacheService;
 import com.weweibuy.framework.common.lc.endpoint.LocalCacheEndpoint;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.cache.CacheManager;
 import org.springframework.context.annotation.Bean;
@@ -13,7 +14,7 @@ import org.springframework.context.annotation.Configuration;
  * @author durenhao
  * @date 2020/12/6 11:26
  **/
-@Configuration
+@AutoConfiguration
 public class LocalCacheConfig {
 
     @Bean

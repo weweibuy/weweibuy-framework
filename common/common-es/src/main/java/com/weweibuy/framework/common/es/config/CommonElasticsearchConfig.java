@@ -5,6 +5,7 @@ import com.weweibuy.framework.common.es.converter.LocalDateToStrConverter;
 import lombok.RequiredArgsConstructor;
 import org.elasticsearch.client.RestClientBuilder;
 import org.elasticsearch.client.RestHighLevelClient;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.elasticsearch.config.AbstractElasticsearchConfiguration;
@@ -32,7 +33,7 @@ import java.util.List;
  * @author durenhao
  * @date 2019/8/12 20:35
  **/
-@Configuration
+@AutoConfiguration
 @RequiredArgsConstructor
 public class CommonElasticsearchConfig extends AbstractElasticsearchConfiguration {
 

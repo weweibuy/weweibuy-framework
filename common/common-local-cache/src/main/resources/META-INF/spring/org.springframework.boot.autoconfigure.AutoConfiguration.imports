@@ -1,0 +1,2 @@
+com.weweibuy.framework.common.lc.config.LocalCacheConfig
+com.weweibuy.framework.common.lc.config.LocalCacheEvictMqConfig

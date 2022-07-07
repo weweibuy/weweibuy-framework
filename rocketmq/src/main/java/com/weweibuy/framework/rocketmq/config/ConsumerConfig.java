@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * 消费者相关配置
+ *
  * @author durenhao
  * @date 2020/1/4 20:49
  **/

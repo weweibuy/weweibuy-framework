@@ -1,3 +1,0 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-  com.weweibuy.framework.common.mvc.config.CommonMvcConfig,\
-  com.weweibuy.framework.common.mvc.config.SnakeCaseRequestModelConfig
