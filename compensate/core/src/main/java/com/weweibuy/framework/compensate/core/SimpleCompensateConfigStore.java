@@ -67,13 +67,13 @@ public class SimpleCompensateConfigStore implements CompensateConfigStore, Initi
 
         config.values().stream()
                 .forEach(v -> {
-                    if (StringUtils.isEmpty(v.getCompensateType())) {
+                    if (StringUtils.hasLength(v.getCompensateType())) {
                         v.setCompensateType(BuiltInCompensateType.METHOD_ARGS.toString());
                     }
-                    if (StringUtils.isEmpty(v.getAlarmRule())) {
+                    if (StringUtils.hasLength(v.getAlarmRule())) {
                         v.setAlarmRule(defaultProperties.getAlarmRule());
                     }
-                    if (StringUtils.isEmpty(v.getRetryRule())) {
+                    if (StringUtils.hasLength(v.getRetryRule())) {
                         v.setRetryRule(defaultProperties.getRetryRule());
                     }
                 });
