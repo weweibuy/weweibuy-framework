@@ -144,7 +144,8 @@ public class RequestLogContextFilter extends OncePerRequestFilter {
     }
 
     private void writeResponse(HttpServletResponse response, HttpStatus httpStatus, ResponseCodeAndMsg responseCodeAndMsg) throws IOException {
-        response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        response.setCharacterEncoding(CommonConstant.CharsetConstant.UTF8_STR);
         response.setStatus(httpStatus.value());
         response.getWriter().write(JackJsonUtils.writeWithMvc(responseCodeAndMsg));
     }
