@@ -13,13 +13,13 @@
 <dependency>
     <groupId>com.weweibuy.framework</groupId>
     <artifactId>common-db</artifactId>
-    <version>1.2-SNAPSHOT</version>
+    <version>1.4-SNAPSHOT</version>
 </dependency>
 
 <dependency>
     <groupId>com.weweibuy.framework</groupId>
     <artifactId>common-codec</artifactId>
-    <version>1.2-SNAPSHOT</version>
+    <version>1.4-SNAPSHOT</version>
 </dependency>
 ```
   其中 common-db 为基础的数据量相关依赖, common-codec(可选依赖) 提供加密功能;  
