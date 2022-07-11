@@ -147,8 +147,9 @@ public class HttpLogger {
         if (StringUtils.isBlank(path)) {
             return false;
         }
-        Boolean hasLogged = HttpRequestUtils.getRequestAttribute(RequestContextHolder.getRequestAttributes(),
-                LogMdcConstant.HAS_LOG_REQ_FIELD_NAME);
+        Boolean hasLogged = Optional.ofNullable(HttpRequestUtils.<Boolean>getRequestAttribute(RequestContextHolder.getRequestAttributes(),
+                LogMdcConstant.HAS_LOG_REQ_FIELD_NAME))
+                .orElse(false);
 
         if (hasLogged != null && hasLogged) {
             return false;
