@@ -10,7 +10,7 @@
 <dependency>
     <groupId>com.weweibuy.framework</groupId>
     <artifactId>common-util-excel</artifactId>
-    <version>1.2-SNAPSHOT</version>
+    <version>1.3-SNAPSHOT</version>
 </dependency>
 ```
   参考: 
@@ -24,7 +24,7 @@
  <dependency>
      <groupId>com.weweibuy.framework</groupId>
      <artifactId>common-util-csv</artifactId>
-     <version>1.2-SNAPSHOT</version>
+     <version>1.3-SNAPSHOT</version>
  </dependency>
  ```
    2. CSV写出  
