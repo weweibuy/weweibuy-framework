@@ -16,9 +16,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.util.ContentCachingRequestWrapper;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -34,9 +32,9 @@ public class HttpLogger {
 
     private static final String BINARY_BODY_STR = "Binary data";
 
-    private static Map<String, LogDisablePath.Type> patternDisabledPath;
+    private static Map<String, LogDisablePath.Type> patternDisabledPath = Collections.emptyMap();
 
-    private static Map<String, LogDisablePath.Type> exactDisabledPath;
+    private static Map<String, LogDisablePath.Type> exactDisabledPath = Collections.emptyMap();
 
     public static void logForJsonRequest(String path, String method, Map<String, String[]> parameterMap, String body) {
         if (!shouldLogRequest(path)) {
@@ -148,7 +146,7 @@ public class HttpLogger {
             return false;
         }
         Boolean hasLogged = Optional.ofNullable(HttpRequestUtils.<Boolean>getRequestAttribute(RequestContextHolder.getRequestAttributes(),
-                LogMdcConstant.HAS_LOG_REQ_FIELD_NAME))
+                        LogMdcConstant.HAS_LOG_REQ_FIELD_NAME))
                 .orElse(false);
 
         if (hasLogged != null && hasLogged) {
