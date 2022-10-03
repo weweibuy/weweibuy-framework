@@ -48,7 +48,6 @@ public class FeignExceptionAdvice {
         log.warn("调用接口异常: ", e);
         Throwable cause = e.getCause();
         if (cause instanceof IOException) {
-            String message = cause.getMessage();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .header(CommonConstant.HttpResponseConstant.RESPONSE_HEADER_FIELD_SYSTEM_ID,
                             CustomFeignErrorDecoder.defaultFeignSystemId(e.request()))
