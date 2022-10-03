@@ -59,7 +59,7 @@ public class FeignExceptionAdvice {
         }
 
         ResponseCodeAndMsg codeAndMsg = null;
-        if (e.status() < 500) {
+        if (e.status() >= 300 && e.status() < 500) {
             codeAndMsg = CommonErrorCodeEum.REQUEST_EXCEPTION;
         } else {
             codeAndMsg = CommonErrorCodeEum.UNKNOWN_SERVER_EXCEPTION;
