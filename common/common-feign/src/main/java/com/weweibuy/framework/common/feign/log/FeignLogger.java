@@ -29,7 +29,7 @@ public class FeignLogger extends Logger {
 
     private static Map<String, FeignLogSetting> configKeySetting = new ConcurrentHashMap<>(64);
 
-    private static List<FeignLogSetting> feignLogSettingList;
+    private static List<FeignLogSetting> feignLogSettingList = new ArrayList<>();
 
     public FeignLogger(List<FeignLogSetting> logSettingList) {
         feignLogSettingList = logSettingList;
