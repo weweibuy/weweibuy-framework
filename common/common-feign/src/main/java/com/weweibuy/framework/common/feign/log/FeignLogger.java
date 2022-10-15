@@ -1,6 +1,7 @@
 package com.weweibuy.framework.common.feign.log;
 
 import com.weweibuy.framework.common.core.model.constant.CommonConstant;
+import com.weweibuy.framework.common.core.utils.HttpRequestUtils;
 import com.weweibuy.framework.common.core.utils.JackJsonUtils;
 import com.weweibuy.framework.common.feign.support.FeignLogSetting;
 import feign.Logger;
@@ -25,8 +26,6 @@ import java.util.concurrent.ConcurrentHashMap;
  **/
 @Slf4j
 public class FeignLogger extends Logger {
-
-    private static final String BINARY_BODY_STR = "Binary data";
 
     private static Map<String, FeignLogSetting> configKeySetting = new ConcurrentHashMap<>(64);
 
@@ -62,8 +61,6 @@ public class FeignLogger extends Logger {
     }
 
     private static void doLogRequest(Request request) {
-
-        String configKey = request.requestTemplate().methodMetadata().configKey();
         FeignLogSetting feignLogSetting = configKeySetting(request);
 
         Map<String, Collection<String>> headers = request.headers();
@@ -94,8 +91,6 @@ public class FeignLogger extends Logger {
 
 
     public static void logFilterRequest(Request request) {
-        String s = request.requestTemplate()
-                .methodMetadata().configKey();
         doLogRequest(request);
     }
 
@@ -153,7 +148,7 @@ public class FeignLogger extends Logger {
         Collection<String> contentType = header.get(HttpHeaders.CONTENT_TYPE);
         boolean match = CollectionUtils.isNotEmpty(contentType) && contentType.stream()
                 .anyMatch(c -> c.indexOf(MediaType.MULTIPART_FORM_DATA_VALUE) != -1);
-        return match ? BINARY_BODY_STR : Optional.ofNullable(request.body())
+        return match ? HttpRequestUtils.BOUNDARY_BODY : Optional.ofNullable(request.body())
                 .map(b -> new String(b, CommonConstant.CharsetConstant.UT8))
                 .orElse(StringUtils.EMPTY);
     }
@@ -183,8 +178,8 @@ public class FeignLogger extends Logger {
         }
         int status = response.status();
         Collection<String> collection = header.get(HttpHeaders.CONTENT_TYPE);
-        if (CollectionUtils.isNotEmpty(collection) && collection.iterator().next().indexOf("stream") != -1) {
-            return new Object[]{StringUtils.EMPTY, response};
+        if (CollectionUtils.isNotEmpty(collection) && !HttpRequestUtils.contentTypeCanLogBody(collection.iterator().next())) {
+            return new Object[]{HttpRequestUtils.BOUNDARY_BODY, response};
         }
         String bodyStr = "";
         Response.Body body = response.body();

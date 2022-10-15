@@ -50,6 +50,10 @@ public class HttpRequestUtils {
 
     private static final Pattern QUERY_PATTERN = Pattern.compile("([^&=]+)(=?)([^&]+)?");
 
+    private static final Pattern CAN_LOG_PATTERN = Pattern.compile("text|json|xml|html|plain|form-urlencoded");
+
+    public static final String BOUNDARY_BODY = "Binary data";
+
 
     private static final Map<Integer, HttpStatus> HTTP_STATUS_MAP = Arrays.stream(HttpStatus.values())
             .collect(Collectors.toMap(HttpStatus::value, Function.identity(), (o, n) -> n));
@@ -271,6 +275,11 @@ public class HttpRequestUtils {
             }
         }
         return queryParams;
+    }
+
+    public static boolean contentTypeCanLogBody(String contentType) {
+        Matcher matcher = CAN_LOG_PATTERN.matcher(contentType);
+        return matcher.find();
     }
 
 
