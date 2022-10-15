@@ -2,6 +2,7 @@ package com.weweibuy.framework.common.mvc.config;
 
 import com.weweibuy.framework.common.mvc.resolver.SnakeCaseRequestParamResolver;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.validation.ValidatorAdapter;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Configuration;
@@ -21,7 +22,7 @@ import java.util.List;
  * @author durenhao
  * @date 2020/2/18 10:17
  **/
-@Configuration
+@AutoConfiguration
 public class SnakeCaseRequestModelConfig implements WebMvcConfigurer {
 
     private final SnakeCaseWebMvcConfigurerComposite configurers = new SnakeCaseWebMvcConfigurerComposite();

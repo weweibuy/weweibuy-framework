@@ -2,6 +2,7 @@ package com.weweibuy.framework.compensate.core;
 
 import com.weweibuy.framework.common.core.concurrent.LogExceptionThreadFactory;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.SmartInitializingSingleton;
 
 import java.util.concurrent.ScheduledExecutorService;
@@ -14,7 +15,7 @@ import java.util.concurrent.TimeUnit;
  * @date 2020/2/13 22:19
  **/
 @Slf4j
-public class SimpleTimerCompensateTrigger extends AbstractCompensateTrigger implements SmartInitializingSingleton {
+public class SimpleTimerCompensateTrigger extends AbstractCompensateTrigger implements SmartInitializingSingleton, DisposableBean {
 
     private static final ScheduledExecutorService SCHEDULE = new ScheduledThreadPoolExecutor(1,
             new LogExceptionThreadFactory("compensate-"),
@@ -31,5 +32,10 @@ public class SimpleTimerCompensateTrigger extends AbstractCompensateTrigger impl
     @Override
     public void afterSingletonsInstantiated() {
         SCHEDULE.scheduleAtFixedRate(this::trigger0, 5, 10, TimeUnit.SECONDS);
+    }
+
+    @Override
+    public void destroy() throws Exception {
+        SCHEDULE.shutdown();
     }
 }

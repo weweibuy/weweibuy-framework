@@ -26,6 +26,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * 生成者相关配置
+ *
  * @author durenhao
  * @date 2020/1/1 23:03
  **/
@@ -73,7 +75,6 @@ public class ProducerConfig {
         if (!CollectionUtils.isEmpty(configurer)) {
             configurer.forEach(c -> c.addAnnotatedParameterProcessor(composite));
         }
-
 
         return new TargetMethodMetaDataParser(rocketMessageBodyParameterProcessor(messageConverter), composite);
     }

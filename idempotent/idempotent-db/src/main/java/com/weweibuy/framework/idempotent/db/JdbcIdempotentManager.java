@@ -58,7 +58,7 @@ public class JdbcIdempotentManager implements IdempotentManager {
     public Object handlerNoLock(IdempotentInfo idempotentInfo) {
         String selectSql = jdbcIdempotentProperties.getSelectSql();
         Object[] prepareArgs = prepareArgs(idempotentInfo);
-        List<String> result = jdbcTemplate.query(selectSql, prepareArgs, new SingleColumnRowMapper(String.class));
+        List<String> result = jdbcTemplate.query(selectSql, new SingleColumnRowMapper(String.class), prepareArgs);
         if (CollectionUtils.isEmpty(result)) {
             throw new IdempotentException("无法根据幂等Key: " + idempotentInfo.getKey() + "查询到幂等数据");
         }

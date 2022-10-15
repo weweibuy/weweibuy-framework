@@ -2,6 +2,7 @@ package com.weweibuy.framework.common.swagger;
 
 import com.weweibuy.framework.common.swagger.properties.SwaggerProperties;
 import com.weweibuy.framework.common.swagger.support.CustomBasePackageSelectors;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,7 +30,7 @@ import java.util.stream.Collectors;
  * @author durenhao
  * @date 2020/7/13 18:26
  **/
-@Configuration
+@AutoConfiguration
 @Profile(value = {"dev"})
 @EnableSwagger2
 @EnableConfigurationProperties(SwaggerProperties.class)

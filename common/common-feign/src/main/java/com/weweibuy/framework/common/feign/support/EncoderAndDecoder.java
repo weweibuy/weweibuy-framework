@@ -24,7 +24,8 @@ public class EncoderAndDecoder extends SpringEncoder implements Decoder {
 
     public EncoderAndDecoder(ObjectFactory<HttpMessageConverters> messageConverters) {
         super(messageConverters);
-        this.delegate = new OptionalDecoder(new ResponseEntityDecoder(new SpringDecoder(messageConverters)));
+        this.delegate = new OptionalDecoder(new ResponseEntityDecoder(new SpringDecoder(messageConverters,
+                new EmptyObjectProvider<>())));
     }
 
 

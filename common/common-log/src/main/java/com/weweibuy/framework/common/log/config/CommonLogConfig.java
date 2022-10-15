@@ -11,6 +11,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -28,7 +29,7 @@ import java.util.stream.Collectors;
  * @author durenhao
  * @date 2020/3/1 10:39
  **/
-@Configuration
+@AutoConfiguration
 @EnableConfigurationProperties({CommonLogProperties.class})
 @ConditionalOnProperty(prefix = "common.log", name = "enable", havingValue = "true", matchIfMissing = true)
 @ConditionalOnBean(type = "org.springframework.boot.autoconfigure.web.servlet.WebMvcAutoConfiguration")
