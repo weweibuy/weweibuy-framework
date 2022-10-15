@@ -23,6 +23,10 @@ public class LogFeignFilter implements FeignFilter {
 
     @Override
     public Response filter(Request request, Request.Options options, FeignFilterChain chain) throws IOException {
+        return filterReq(request, options, chain);
+    }
+
+    public static Response filterReq(Request request, Request.Options options, FeignFilterChain chain) throws IOException {
         logRequest(request);
         long millis = System.currentTimeMillis();
         Response response = null;
@@ -33,14 +37,13 @@ public class LogFeignFilter implements FeignFilter {
             throw e;
         }
         return logAndReBufferResponse(request, response, millis);
-
     }
 
-    private void logRequest(Request request) {
+    private static void logRequest(Request request) {
         FeignLogger.logFilterRequest(request);
     }
 
-    private Response logAndReBufferResponse(Request request, Response response, long startTimeMillis) throws IOException {
+    private static Response logAndReBufferResponse(Request request, Response response, long startTimeMillis) throws IOException {
         return FeignLogger.logAndReBufferFilterResponse(request, response, startTimeMillis);
     }
 

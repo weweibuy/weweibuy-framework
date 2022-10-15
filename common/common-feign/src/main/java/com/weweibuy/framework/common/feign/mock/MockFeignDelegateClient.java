@@ -3,6 +3,7 @@ package com.weweibuy.framework.common.feign.mock;
 import com.weweibuy.framework.common.core.exception.Exceptions;
 import com.weweibuy.framework.common.feign.support.DelegateFeignClient;
 import feign.Client;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.core.annotation.Order;
 
@@ -18,6 +19,7 @@ import java.io.IOException;
 @DependsOn("jackJsonUtils")
 public class MockFeignDelegateClient implements DelegateFeignClient {
 
+    private MockClient mockClientInstance;
 
     @Override
     public Client delegate(Client client) {
@@ -27,6 +29,11 @@ public class MockFeignDelegateClient implements DelegateFeignClient {
         } catch (IOException e) {
             throw Exceptions.uncheckedIO(e);
         }
+        mockClientInstance = mockClient;
         return mockClient;
+    }
+
+    public MockClient getMockClientInstance() {
+        return mockClientInstance;
     }
 }
