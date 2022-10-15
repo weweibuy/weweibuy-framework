@@ -308,9 +308,13 @@ public class RSAUtils {
      * @throws SignatureException
      */
     public static String sign(PrivateKey privateKey, String data, String signAlgorithm) throws NoSuchAlgorithmException, InvalidKeyException, SignatureException {
+        return sign(privateKey, data.getBytes(), signAlgorithm);
+    }
+
+    public static String sign(PrivateKey privateKey, byte[] data, String signAlgorithm) throws NoSuchAlgorithmException, InvalidKeyException, SignatureException {
         Signature signature = Signature.getInstance(signAlgorithm);
         signature.initSign(privateKey);
-        signature.update(data.getBytes());
+        signature.update(data);
         return HexUtils.toHexString(signature.sign());
     }
 

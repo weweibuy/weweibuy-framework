@@ -119,8 +119,14 @@ public class RequestLogContextFilter extends OncePerRequestFilter {
         }
         ContentCachingResponseWrapper cachingResponseWrapper = (ContentCachingResponseWrapper) response;
         InputStream contentInputStream = cachingResponseWrapper.getContentInputStream();
-        String body = IOUtils.toString(contentInputStream, CommonConstant.CharsetConstant.UT8);
-        String contentType = response.getContentType();
+        String body = "";
+        String contentType = Optional.ofNullable(response.getContentType())
+                .orElse(StringUtils.EMPTY);
+        if (!HttpRequestUtils.contentTypeCanLogBody(contentType)) {
+            body = HttpRequestUtils.BOUNDARY_BODY;
+        } else {
+            body = IOUtils.toString(contentInputStream, CommonConstant.CharsetConstant.UT8);
+        }
         HttpLogger.logResponseBody(body, response.getStatus());
         cachingResponseWrapper.copyBodyToResponse();
     }
