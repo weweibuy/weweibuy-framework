@@ -6,6 +6,7 @@ import com.weweibuy.framework.common.db.multiple.MultipleDatasourceRegister;
 import org.apache.ibatis.plugin.Interceptor;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -19,10 +20,9 @@ import java.util.List;
  * @author durenhao
  * @date 2021/7/18 21:14
  **/
-@Configuration
+@AutoConfiguration(after = MultipleDatasourceConfig.class)
 @ConditionalOnBean({MultipleDatasourceRegister.class})
 @EnableConfigurationProperties(PageHelperProperties.class)
-@AutoConfigureAfter(MultipleDatasourceConfig.class)
 public class MultipleDatasourcePageHelperConfig implements InitializingBean {
 
     private final List<SqlSessionFactory> sqlSessionFactoryList;

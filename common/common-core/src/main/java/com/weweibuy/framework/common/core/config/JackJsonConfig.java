@@ -4,6 +4,7 @@ import com.weweibuy.framework.common.core.config.properties.CommonJacksonPropert
 import com.weweibuy.framework.common.core.support.JacksonBuilderHelper;
 import com.weweibuy.framework.common.core.utils.JackJsonUtils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -15,9 +16,9 @@ import org.springframework.context.annotation.Configuration;
  * @author durenhao
  * @date 2020/3/1 10:57
  **/
-@Configuration
 @EnableConfigurationProperties({CommonJacksonProperties.class})
 @RequiredArgsConstructor
+@AutoConfiguration
 public class JackJsonConfig {
 
     private final CommonJacksonProperties commonJacksonProperties;
