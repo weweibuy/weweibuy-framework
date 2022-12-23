@@ -1,16 +1,17 @@
 package com.weweibuy.framework.common.db.multiple;
 
+import com.weweibuy.framework.common.core.utils.SpringResourcesUtils;
 import com.weweibuy.framework.common.db.properties.DataSourceWithMybatisProperties;
+import com.weweibuy.framework.common.db.properties.MultipleDataSourceProperties;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
+import org.springframework.core.env.Environment;
 
 import javax.sql.DataSource;
-import java.util.Optional;
 
 /**
  * @author durenhao
@@ -21,6 +22,8 @@ import java.util.Optional;
 public class DatasourceFactoryBean implements FactoryBean<DataSource> {
 
     private DataSourceWithMybatisProperties dataSourceProperties;
+
+    private Environment environment;
 
     private String name;
 
@@ -43,15 +46,13 @@ public class DatasourceFactoryBean implements FactoryBean<DataSource> {
 
 
     private DataSource hikariDataSource() {
-        HikariDataSource dataSource = (HikariDataSource) createDataSource(dataSourceProperties, HikariDataSource.class);
+        HikariDataSource dataSource = createDataSource(dataSourceProperties, HikariDataSource.class);
         HikariConfig hikari = dataSourceProperties.getHikari();
         if (hikari != null) {
-            HikariDataSource hikariDataSource = new HikariDataSource();
-            BeanUtils.copyProperties(hikari, hikariDataSource,
-                    "driverClassName", "exceptionOverrideClassName", "minimumIdle");
-            Optional.ofNullable(hikari.getMinimumIdle())
-                    .filter(i -> i >= 0)
-                    .ifPresent(hikariDataSource::setMinimumIdle);
+            // 配置文件绑定
+            SpringResourcesUtils.bindConfig(MultipleDataSourceProperties.PREFIX +
+                            ".multiple-datasource." + name + ".hikari",
+                    dataSource, environment);
         }
         return dataSource;
     }

@@ -1,5 +1,6 @@
 package com.weweibuy.framework.common.feign.log;
 
+import com.weweibuy.framework.common.core.model.constant.CommonConstant;
 import com.weweibuy.framework.common.core.utils.HttpRequestUtils;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -9,10 +10,12 @@ import org.apache.http.*;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.client.methods.HttpRequestWrapper;
 import org.apache.http.entity.ByteArrayEntity;
+import org.apache.http.entity.ContentType;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.URI;
+import java.nio.charset.Charset;
 import java.util.Optional;
 
 /**
@@ -84,10 +87,11 @@ public final class HttpClientLogger {
         } else if (entity != null) {
             ByteArrayOutputStream buffer = new ByteArrayOutputStream();
             entity.writeTo(buffer);
+            Charset charset = parseCharset(contentType);
             if (!entity.isRepeatable()) {
                 response.setEntity(new ByteArrayEntity(buffer.toByteArray()));
             }
-            body = new String(buffer.toByteArray());
+            body = new String(buffer.toByteArray(), charset);
         }
 
         StatusLine statusLine = response.getStatusLine();
@@ -97,5 +101,23 @@ public final class HttpClientLogger {
                 body,
                 System.currentTimeMillis() - reqTime);
     }
+
+    private static Charset parseCharset(String contentType) {
+        if (contentType.indexOf("charset") == -1 ||
+                contentType.indexOf("UTF-8") != -1 || contentType.indexOf("utf-8") != -1) {
+            return CommonConstant.CharsetConstant.UT8;
+        }
+        if (contentType.indexOf("GB") != -1 || contentType.indexOf("gb") != -1) {
+            return CommonConstant.CharsetConstant.GBK;
+        }
+        try {
+            ContentType parse = ContentType.parse(contentType);
+            return Optional.ofNullable(parse.getCharset())
+                    .orElse(CommonConstant.CharsetConstant.UT8);
+        } catch (Exception e) {
+            return CommonConstant.CharsetConstant.UT8;
+        }
+    }
+
 
 }
