@@ -7,6 +7,7 @@ import java.util.Map;
 
 /**
  * 多数据源配置
+ * 注意配置的是时候必须使用 中划线风格!  eg:  common.db.multiple-datasource.xxx
  *
  * @author durenhao
  * @date 2021/7/18 9:55
