@@ -12,7 +12,7 @@
 <dependency>
     <groupId>com.weweibuy.framework</groupId>
     <artifactId>common-log</artifactId>
-    <version>1.4-SNAPSHOT</version>
+    <version>3.0-SNAPSHOT</version>
 </dependency>
 ```
 

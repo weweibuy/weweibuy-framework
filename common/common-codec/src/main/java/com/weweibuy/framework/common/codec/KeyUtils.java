@@ -3,6 +3,7 @@ package com.weweibuy.framework.common.codec;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
+
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import java.util.Base64;

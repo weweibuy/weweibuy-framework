@@ -29,7 +29,7 @@ public class HttpRequestUtilsTest {
 
     @Test
     public void test01() {
-        PathPatternParser pathPatternParser = WebMvcAutoConfiguration.pathPatternParser;
+        PathPatternParser pathPatternParser = PathPatternParser.defaultInstance;
         PathContainer pathContainer = PathContainer.parsePath("/112/hello");
         PathPattern parse = pathPatternParser.parse("/*/hello");
         boolean matches = parse.matches(pathContainer);

@@ -27,7 +27,7 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 import org.springframework.web.servlet.HandlerMapping;
 
-import javax.servlet.ServletRequest;
+import jakarta.servlet.ServletRequest;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.util.Collections;

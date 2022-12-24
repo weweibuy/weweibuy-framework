@@ -16,12 +16,12 @@ import org.apache.http.conn.HttpClientConnectionManager;
 import org.apache.http.conn.socket.ConnectionSocketFactory;
 import org.apache.http.conn.socket.PlainConnectionSocketFactory;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.conn.ssl.TrustStrategy;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.DefaultHttpClientConnectionOperator;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
+import org.apache.http.ssl.TrustStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -30,7 +30,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplicat
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.ExtractingResponseErrorHandler;
 import org.springframework.web.client.RestTemplate;
@@ -162,19 +161,19 @@ public class HttpClientConfig {
     }
 
 
-    @Bean
-    @ConditionalOnClass(name = {"org.apache.http.impl.client.CloseableHttpClient"})
-    public RestTemplate restTemplate(RestTemplateBuilder restTemplateBuilder) throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
-        ExtractingResponseErrorHandler errorHandler = new ExtractingResponseErrorHandler();
-
-        HttpComponentsClientHttpRequestFactory requestFactory =
-                new HttpComponentsClientHttpRequestFactory(httpClient());
-
-        return restTemplateBuilder.errorHandler(errorHandler)
-                .requestFactory(() -> requestFactory)
-                .build();
-
-    }
+//    @Bean
+//    @ConditionalOnClass(name = {"org.apache.http.impl.client.CloseableHttpClient"})
+//    public RestTemplate restTemplate(RestTemplateBuilder restTemplateBuilder) throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
+//        ExtractingResponseErrorHandler errorHandler = new ExtractingResponseErrorHandler();
+//
+//        HttpComponentsClientHttpRequestFactory requestFactory =
+//                new HttpComponentsClientHttpRequestFactory(httpClient());
+//
+//        return restTemplateBuilder.errorHandler(errorHandler)
+//                .requestFactory(() -> requestFactory)
+//                .build();
+//
+//    }
 
 
 }

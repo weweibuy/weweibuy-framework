@@ -1,7 +1,8 @@
 package com.weweibuy.framework.common.core.support;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * 可读的http请求, 只在引入了 log 模块生效

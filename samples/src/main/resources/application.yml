@@ -12,13 +12,10 @@ spring:
     multipart:
       max-request-size: 100MB
       max-file-size: 100MB
-#  mvc:
-#    pathmatch:
-#      matching-strategy: ant_path_matcher
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     type: com.zaxxer.hikari.HikariDataSource
-    url: jdbc:mysql://106.12.208.53:3306/webuy_learning?useUnicode=true&characterEncoding=UTF-8&allowMutiQueries=true&serverTimezone=Asia/Shanghai
+    url: jdbc:mysql://223.247.141.69:3306/webuy_learning?useUnicode=true&characterEncoding=UTF-8&allowMutiQueries=true&serverTimezone=Asia/Shanghai
     username: user01
     password: ak402507979
     hikari:
@@ -28,9 +25,6 @@ spring:
     property-naming-strategy: SNAKE_CASE
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: GMT+8
-  redis:
-    host: 122.51.171.126
-    password: ak402507979
   cloud:
     nacos:
       discovery:
@@ -50,6 +44,7 @@ spring:
    protocol: smtp
    username: ak40250@126.com
    password: xxx
+
 
 
 mybatis:

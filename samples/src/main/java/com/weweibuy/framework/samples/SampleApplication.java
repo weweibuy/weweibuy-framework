@@ -2,6 +2,7 @@ package com.weweibuy.framework.samples;
 
 import com.weweibuy.framework.compensate.annotation.EnableCompensate;
 import com.weweibuy.framework.idempotent.core.annotation.EnableIdempotent;
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cache.annotation.EnableCaching;

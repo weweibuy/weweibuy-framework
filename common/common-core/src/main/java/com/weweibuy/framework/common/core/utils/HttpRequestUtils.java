@@ -18,7 +18,7 @@ import org.springframework.web.util.ContentCachingRequestWrapper;
 import org.springframework.web.util.UriUtils;
 import org.springframework.web.util.pattern.PathPatternParser;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -46,7 +46,7 @@ public class HttpRequestUtils {
 
     private static final String LINE_SEPARATOR = System.getProperty("line.separator");
 
-    private static final PathPatternParser PATH_MATCHER = WebMvcAutoConfiguration.pathPatternParser;
+    private static final PathPatternParser PATH_MATCHER = PathPatternParser.defaultInstance;
 
     private static final Pattern QUERY_PATTERN = Pattern.compile("([^&=]+)(=?)([^&]+)?");
 
