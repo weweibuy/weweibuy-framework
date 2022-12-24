@@ -14,7 +14,7 @@
 <dependency>
     <groupId>com.weweibuy.framework</groupId>
     <artifactId>common-feign</artifactId>
-    <version>1.4-SNAPSHOT</version>
+    <version>3.0-SNAPSHOT</version>
 </dependency>
 ```
   引入依赖后自动输出请求响应日志,添加APM,异常信息跨应用上抛; 

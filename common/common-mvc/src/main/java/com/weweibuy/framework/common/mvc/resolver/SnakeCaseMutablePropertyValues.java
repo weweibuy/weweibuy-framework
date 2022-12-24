@@ -5,7 +5,7 @@ import org.springframework.beans.MutablePropertyValues;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
-import javax.servlet.ServletRequest;
+import jakarta.servlet.ServletRequest;
 import java.util.Enumeration;
 import java.util.Map;
 import java.util.TreeMap;

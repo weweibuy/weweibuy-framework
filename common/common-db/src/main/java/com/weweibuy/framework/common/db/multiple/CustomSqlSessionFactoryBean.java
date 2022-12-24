@@ -120,13 +120,16 @@ public class CustomSqlSessionFactoryBean implements FactoryBean<SqlSessionFactor
 
     }
 
+
     private void applyConfiguration(SqlSessionFactoryBean factory) {
-        Configuration configuration = this.properties.getConfiguration();
-        if (configuration == null && !StringUtils.hasText(this.properties.getConfigLocation())) {
+        MybatisProperties.CoreConfiguration coreConfiguration = this.properties.getConfiguration();
+        Configuration configuration = null;
+        if (coreConfiguration != null || !StringUtils.hasText(this.properties.getConfigLocation())) {
             configuration = new Configuration();
         }
-//        ResolvableType resolvableType = ResolvableType.forClassWithGenerics(List.class, ConfigurationCustomizer.class);
-//        ObjectProvider<Object> beanProvider = applicationContext.getBeanProvider(resolvableType);
+        if (configuration != null && coreConfiguration != null) {
+            coreConfiguration.applyTo(configuration);
+        }
 
         List<ConfigurationCustomizer> configurationCustomizers = configurationCustomizersProvider.getIfAvailable();
 

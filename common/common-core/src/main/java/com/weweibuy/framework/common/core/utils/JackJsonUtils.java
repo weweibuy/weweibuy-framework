@@ -11,7 +11,7 @@ import com.weweibuy.framework.common.core.support.JacksonBuilderHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 import java.io.File;
 import java.io.IOException;
 import java.io.UncheckedIOException;

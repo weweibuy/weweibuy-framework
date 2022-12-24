@@ -7,9 +7,9 @@
 package com.weweibuy.framework.common.core.validate;
 
 import com.weweibuy.framework.common.core.validate.annotation.Maximum;
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
 
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
 
 /**
  * @author durenhao

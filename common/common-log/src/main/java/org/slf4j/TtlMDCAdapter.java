@@ -1,9 +1,11 @@
 package org.slf4j;
 
 import com.alibaba.ttl.TransmittableThreadLocal;
+import org.slf4j.helpers.ThreadLocalMapOfStacks;
 import org.slf4j.spi.MDCAdapter;
 
 import java.util.Collections;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,6 +31,8 @@ public class TtlMDCAdapter implements MDCAdapter {
 
     // keeps track of the last operation performed
     final ThreadLocal<Integer> lastOperation = new ThreadLocal<>();
+
+    private final ThreadLocalMapOfStacks threadLocalMapOfDeques = new ThreadLocalMapOfStacks();
 
     static {
         mtcMDCAdapter = new TtlMDCAdapter();
@@ -175,7 +179,22 @@ public class TtlMDCAdapter implements MDCAdapter {
 
         // the newMap replaces the old one for serialisation's sake
         copyOnInheritThreadLocal.set(newMap);
-
-
     }
+
+    public void pushByKey(String key, String value) {
+        this.threadLocalMapOfDeques.pushByKey(key, value);
+    }
+
+    public String popByKey(String key) {
+        return this.threadLocalMapOfDeques.popByKey(key);
+    }
+
+    public Deque<String> getCopyOfDequeByKey(String key) {
+        return this.threadLocalMapOfDeques.getCopyOfDequeByKey(key);
+    }
+
+    public void clearDequeByKey(String key) {
+        this.threadLocalMapOfDeques.clearDequeByKey(key);
+    }
+
 }

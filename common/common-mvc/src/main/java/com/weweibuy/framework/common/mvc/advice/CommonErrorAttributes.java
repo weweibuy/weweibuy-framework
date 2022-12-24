@@ -36,9 +36,9 @@ public class CommonErrorAttributes extends DefaultErrorAttributes {
     public Map<String, Object> getErrorAttributes(WebRequest webRequest, ErrorAttributeOptions options) {
         String contentType = HttpRequestUtils.getRequestAttribute(webRequest, CommonConstant.HttpServletConstant.REQUEST_CONTENT_TYPE);
 
-        Integer status = HttpRequestUtils.getRequestAttribute(webRequest, "javax.servlet.error.status_code");
+        Integer status = HttpRequestUtils.getRequestAttribute(webRequest, "jakarta.servlet.error.status_code");
 
-        String path = HttpRequestUtils.getRequestAttribute(webRequest, "javax.servlet.error.request_uri");
+        String path = HttpRequestUtils.getRequestAttribute(webRequest, "jakarta.servlet.error.request_uri");
 
         String method = HttpRequestUtils.getRequestAttribute(webRequest, CommonConstant.HttpServletConstant.REQUEST_METHOD);
 

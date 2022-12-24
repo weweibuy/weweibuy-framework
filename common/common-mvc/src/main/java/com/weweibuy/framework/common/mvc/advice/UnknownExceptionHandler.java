@@ -3,7 +3,7 @@ package com.weweibuy.framework.common.mvc.advice;
 import com.weweibuy.framework.common.core.model.dto.CommonCodeResponse;
 import org.springframework.http.ResponseEntity;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * http 未知异常处理

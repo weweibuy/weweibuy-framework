@@ -7,7 +7,7 @@ import com.weweibuy.framework.common.util.excel.model.AbstractImportExcelVO;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
-import javax.validation.Validator;
+import jakarta.validation.Validator;
 import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;

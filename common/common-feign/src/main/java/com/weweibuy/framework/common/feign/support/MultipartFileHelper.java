@@ -7,7 +7,6 @@ import org.apache.commons.fileupload.disk.DiskFileItem;
 import org.apache.commons.io.IOUtils;
 import org.springframework.http.MediaType;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -40,7 +39,9 @@ public class MultipartFileHelper {
              OutputStream outputStream = fileItem.getOutputStream()) {
             IOUtils.copy(fileInputStream, outputStream);
         }
-        return new CommonsMultipartFile(fileItem);
+//        return new CommonsMultipartFile(fileItem);
+        //TODO 3.0 删除了 CommonsMultipartFile
+        return null;
     }
 
     /**
@@ -67,7 +68,9 @@ public class MultipartFileHelper {
         try (OutputStream outputStream = fileItem.getOutputStream()) {
             IOUtils.copy(inputStream, outputStream);
         }
-        return new CommonsMultipartFile(fileItem);
+//        return new CommonsMultipartFile(fileItem);
+        //TODO 3.0 删除了 CommonsMultipartFile
+        return null;
     }
 
 }

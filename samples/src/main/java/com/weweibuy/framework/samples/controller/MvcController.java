@@ -5,9 +5,9 @@ import com.weweibuy.framework.common.mvc.resolver.annotation.SnakeCaseRequestPar
 import lombok.Data;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 /**
  * @author durenhao
