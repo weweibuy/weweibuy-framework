@@ -35,10 +35,36 @@
 
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${log.path}/application.log</file>
-        <encoder>
-            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} [%X{uid},%X{tid}] - %m%n</pattern>
-            <charset>UTF-8</charset>
-        </encoder>
+
+        <springProfile name="!prod">
+            <encoder>
+                <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} [%X{uid},%X{tid}] - %m%n</pattern>
+                <charset>UTF-8</charset>
+            </encoder>
+        </springProfile>
+
+        <springProfile name="prod">
+                <encoder charset="UTF-8" class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+                    <providers>
+                        <pattern>
+                            <pattern>
+                                {
+                                "app":"${app_name}",
+                                "timestamp":"%d{yyyy-MM-dd HH:mm:ss.SSS}",
+                                "thread":"%thread",
+                                "level":"%level",
+                                "logger":"%logger{50}",
+                                "uid":"%X{uid}",
+                                "tid":"%X{tid}",
+                                "message":"%m",
+                                "exception":"%ex"
+                                }
+                            </pattern>
+                        </pattern>
+                    </providers>
+                </encoder>
+        </springProfile>
+
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <fileNamePattern>${log.path}/application-%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
             <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
@@ -49,12 +75,6 @@
     </appender>
 
     <springProfile name="dev">
-        <root level="INFO">
-            <appender-ref ref="CONSOLE"/>
-        </root>
-    </springProfile>
-
-    <springProfile name="uat">
         <root level="INFO">
             <appender-ref ref="CONSOLE"/>
         </root>
