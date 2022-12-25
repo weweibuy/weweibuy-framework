@@ -2,7 +2,7 @@ package com.weweibuy.framework.samples;
 
 import com.weweibuy.framework.compensate.annotation.EnableCompensate;
 import com.weweibuy.framework.idempotent.core.annotation.EnableIdempotent;
-import org.mybatis.spring.annotation.MapperScan;
+import com.weweibuy.framework.rocketmq.annotation.EnableRocket;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cache.annotation.EnableCaching;
@@ -17,7 +17,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableCaching
 @SpringBootApplication
 @EnableCompensate
-//@EnableRocket
+@EnableRocket
 @EnableFeignClients
 @EnableIdempotent
 @EnableTransactionManagement(order = 1000)
