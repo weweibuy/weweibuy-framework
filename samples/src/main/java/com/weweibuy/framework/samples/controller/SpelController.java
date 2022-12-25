@@ -30,10 +30,16 @@ public class SpelController {
 
     @GetMapping("/spel")
     public Object spel(String spel) {
-        log.info("测试日志, \"   {}", "\"");
-        BusinessException business = Exceptions.business("xx\" \\\"xx");
-        log.info("测试日志异常,  {}", business.getMessage() , business);
-        return "11";
+        User user = new User();
+        user.setName("tom");
+        user.setAge(12);
+        user.setTotal(new BigDecimal("10"));
+        user.setPrice(new BigDecimal("10.1"));
+        Dog dog = new Dog();
+        dog.setName("jack");
+        dog.setAge(2);
+        user.setDog(dog);
+        return spelService.evaluatorExpressionStr(spel, user);
     }
 
 }

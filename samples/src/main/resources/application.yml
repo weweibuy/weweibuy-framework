@@ -60,7 +60,7 @@ idempotent:
 
 
 rocket-mq:
-  name-server: 122.51.171.126:9876
+  name-server: 223.247.141.69:9876
   producer:
     group: TEST_SAMPLE_01_P_GROUP
     sample-provider:
