@@ -1,7 +1,9 @@
 package com.weweibuy.framework.common.db.multiple;
 
+import com.weweibuy.framework.common.core.utils.IdWorker;
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.commons.io.FileUtils;
 import org.apache.ibatis.mapping.DatabaseIdProvider;
 import org.apache.ibatis.plugin.Interceptor;
 import org.apache.ibatis.scripting.LanguageDriver;
@@ -16,6 +18,7 @@ import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.boot.context.properties.PropertyMapper;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ResourceLoaderAware;
@@ -23,9 +26,15 @@ import org.springframework.core.io.ResourceLoader;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.sql.DataSource;
 import java.beans.PropertyDescriptor;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -128,7 +137,7 @@ public class CustomSqlSessionFactoryBean implements FactoryBean<SqlSessionFactor
             configuration = new Configuration();
         }
         if (configuration != null && coreConfiguration != null) {
-            coreConfiguration.applyTo(configuration);
+            applyConfigTo(coreConfiguration, configuration);
         }
 
         List<ConfigurationCustomizer> configurationCustomizers = configurationCustomizersProvider.getIfAvailable();
@@ -149,5 +158,41 @@ public class CustomSqlSessionFactoryBean implements FactoryBean<SqlSessionFactor
     @Override
     public void setResourceLoader(ResourceLoader resourceLoader) {
         this.resourceLoader = resourceLoader;
+    }
+
+
+    void applyConfigTo(MybatisProperties.CoreConfiguration source, Configuration target) {
+        PropertyMapper mapper = PropertyMapper.get().alwaysApplyingWhenNonNull();
+        mapper.from(source.getSafeRowBoundsEnabled()).to(target::setSafeRowBoundsEnabled);
+        mapper.from(source.getSafeResultHandlerEnabled()).to(target::setSafeResultHandlerEnabled);
+        mapper.from(source.getMapUnderscoreToCamelCase()).to(target::setMapUnderscoreToCamelCase);
+        mapper.from(source.getAggressiveLazyLoading()).to(target::setAggressiveLazyLoading);
+        mapper.from(source.getMultipleResultSetsEnabled()).to(target::setMultipleResultSetsEnabled);
+        mapper.from(source.getUseGeneratedKeys()).to(target::setUseGeneratedKeys);
+        mapper.from(source.getUseColumnLabel()).to(target::setUseColumnLabel);
+        mapper.from(source.getCacheEnabled()).to(target::setCacheEnabled);
+        mapper.from(source.getCallSettersOnNulls()).to(target::setCallSettersOnNulls);
+        mapper.from(source.getUseActualParamName()).to(target::setUseActualParamName);
+        mapper.from(source.getReturnInstanceForEmptyRow()).to(target::setReturnInstanceForEmptyRow);
+        mapper.from(source.getShrinkWhitespacesInSql()).to(target::setShrinkWhitespacesInSql);
+        mapper.from(source.getNullableOnForEach()).to(target::setNullableOnForEach);
+        mapper.from(source.getArgNameBasedConstructorAutoMapping()).to(target::setArgNameBasedConstructorAutoMapping);
+        mapper.from(source.getLazyLoadingEnabled()).to(target::setLazyLoadingEnabled);
+        mapper.from(source.getLogPrefix()).to(target::setLogPrefix);
+        mapper.from(source.getLazyLoadTriggerMethods()).to(target::setLazyLoadTriggerMethods);
+        mapper.from(source.getDefaultStatementTimeout()).to(target::setDefaultStatementTimeout);
+        mapper.from(source.getDefaultFetchSize()).to(target::setDefaultFetchSize);
+        mapper.from(source.getLocalCacheScope()).to(target::setLocalCacheScope);
+        mapper.from(source.getJdbcTypeForNull()).to(target::setJdbcTypeForNull);
+        mapper.from(source.getDefaultResultSetType()).to(target::setDefaultResultSetType);
+        mapper.from(source.getDefaultExecutorType()).to(target::setDefaultExecutorType);
+        mapper.from(source.getAutoMappingBehavior()).to(target::setAutoMappingBehavior);
+        mapper.from(source.getAutoMappingUnknownColumnBehavior()).to(target::setAutoMappingUnknownColumnBehavior);
+        mapper.from(source.getVariables()).to(target::setVariables);
+        mapper.from(source.getLogImpl()).to(target::setLogImpl);
+        mapper.from(source.getVfsImpl()).to(target::setVfsImpl);
+        mapper.from(source.getDefaultSqlProviderType()).to(target::setDefaultSqlProviderType);
+        mapper.from(source.getConfigurationFactory()).to(target::setConfigurationFactory);
+        mapper.from(source.getDefaultEnumTypeHandler()).to(target::setDefaultEnumTypeHandler);
     }
 }
