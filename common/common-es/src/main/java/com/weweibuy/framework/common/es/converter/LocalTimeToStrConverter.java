@@ -4,16 +4,16 @@ import com.weweibuy.framework.common.core.utils.DateTimeUtils;
 import org.springframework.core.convert.converter.Converter;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
+import java.time.LocalTime;
 
 /**
  * @author durenhao
  * @date 2021/6/19 17:14
  **/
-public class LocalDateToStrConverter implements Converter<LocalDate, String> {
+public class LocalTimeToStrConverter implements Converter<LocalTime, String> {
 
     @Override
-    public String convert(LocalDate source) {
+    public String convert(LocalTime source) {
         return DateTimeUtils.toStringDate(source);
     }
 }

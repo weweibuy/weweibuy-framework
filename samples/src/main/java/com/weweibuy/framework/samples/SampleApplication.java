@@ -25,6 +25,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 public class SampleApplication {
 
     public static void main(String[] args) {
+        // JDK17 启动时加上参数:  --add-opens java.base/java.lang=ALL-UNNAMED  !!!
         SpringApplication.run(SampleApplication.class, args);
     }
 

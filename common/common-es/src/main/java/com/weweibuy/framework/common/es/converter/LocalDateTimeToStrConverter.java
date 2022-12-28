@@ -4,7 +4,6 @@ import com.weweibuy.framework.common.core.utils.DateTimeUtils;
 import org.springframework.core.convert.converter.Converter;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 /**
  * @author durenhao
@@ -14,6 +13,6 @@ public class LocalDateTimeToStrConverter implements Converter<LocalDateTime, Str
 
     @Override
     public String convert(LocalDateTime source) {
-        return DateTimeUtils.toStringDate(source, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+        return DateTimeUtils.toStringDate(source);
     }
 }
