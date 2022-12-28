@@ -3,17 +3,16 @@ package com.weweibuy.framework.common.es.converter;
 import com.weweibuy.framework.common.core.utils.DateTimeUtils;
 import org.springframework.core.convert.converter.Converter;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
+import java.time.LocalDateTime;
 
 /**
  * @author durenhao
  * @date 2021/6/19 17:14
  **/
-public class LocalDateToStrConverter implements Converter<LocalDate, String> {
+public class StrToLocalDateTimeConverter implements Converter<String, LocalDateTime> {
 
     @Override
-    public String convert(LocalDate source) {
-        return DateTimeUtils.toStringDate(source);
+    public LocalDateTime convert(String source) {
+        return DateTimeUtils.stringToLocalDateTime(source);
     }
 }

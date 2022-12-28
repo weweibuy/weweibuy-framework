@@ -13,7 +13,6 @@ import java.io.File;
  * @author durenhao
  * @date 2020/5/30 22:03
  * @deprecated 使用 {@link  org.mybatis.generator.plugins.UnmergeableXmlMappersPlugin}
- *
  **/
 @Slf4j
 @Deprecated
@@ -21,6 +20,7 @@ public class OverwrittenMapperXmlPlugin extends BasePlugin {
 
     /**
      * 测试提交
+     *
      * @param sqlMap
      * @param introspectedTable
      * @return

@@ -20,6 +20,7 @@ spring:
     password: ak402507979
     hikari:
       maximum-pool-size: 20
+      max-lifetime: 30000
 
   jackson:
     property-naming-strategy: SNAKE_CASE
@@ -33,10 +34,10 @@ spring:
         password: nacos
         enabled: false
   elasticsearch:
-    rest:
-      uris: 106.12.208.53:9200
-      username: elastic
-      password: ak402507979
+    uris: https://223.247.141.69:9200
+    username: elastic
+    password: ak402507979
+
   mail:
    default-encoding: UTF-8
    host: smtp.126.com
