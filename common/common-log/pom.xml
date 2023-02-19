@@ -51,12 +51,6 @@
             <version>7.2</version>
         </dependency>
 
-<!--        <dependency>-->
-<!--            <groupId>org.codehaus.janino</groupId>-->
-<!--            <artifactId>janino</artifactId>-->
-<!--        </dependency>-->
-
-
     </dependencies>
 
 </project>

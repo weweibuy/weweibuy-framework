@@ -2,7 +2,7 @@ package com.weweibuy.framework.common.mvc.advice;
 
 import com.weweibuy.framework.common.core.model.dto.CommonCodeResponse;
 import com.weweibuy.framework.common.core.model.eum.CommonErrorCodeEum;
-import com.weweibuy.framework.common.log.logger.HttpLogger;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.annotation.Order;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -12,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import jakarta.servlet.http.HttpServletRequest;
 import java.sql.SQLException;
 
 /**
@@ -28,8 +27,6 @@ public class BdExceptionAdvice {
 
     @ExceptionHandler(DuplicateKeyException.class)
     public ResponseEntity<CommonCodeResponse> handler(HttpServletRequest request, DuplicateKeyException e) {
-        HttpLogger.determineAndLogForJsonRequest(request);
-
         log.error("数据重复输入: ", e);
 
         return CommonExceptionAdvice.builderCommonHeader(HttpStatus.BAD_REQUEST)
@@ -39,8 +36,6 @@ public class BdExceptionAdvice {
 
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<CommonCodeResponse> handler(HttpServletRequest request, DataIntegrityViolationException e) {
-        HttpLogger.determineAndLogForJsonRequest(request);
-
         log.error("数据库操作异常:", e);
 
         String message = e.getMessage();

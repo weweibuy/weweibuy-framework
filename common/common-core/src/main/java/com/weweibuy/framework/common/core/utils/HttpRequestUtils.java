@@ -4,10 +4,10 @@ import com.weweibuy.framework.common.core.exception.Exceptions;
 import com.weweibuy.framework.common.core.model.ResponseCodeAndMsg;
 import com.weweibuy.framework.common.core.model.constant.CommonConstant;
 import com.weweibuy.framework.common.core.model.dto.CommonCodeResponse;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.boot.autoconfigure.web.servlet.WebMvcAutoConfiguration;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.server.PathContainer;
@@ -18,7 +18,6 @@ import org.springframework.web.util.ContentCachingRequestWrapper;
 import org.springframework.web.util.UriUtils;
 import org.springframework.web.util.pattern.PathPatternParser;
 
-import jakarta.servlet.http.HttpServletRequest;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -277,10 +276,12 @@ public class HttpRequestUtils {
         return queryParams;
     }
 
-    public static boolean contentTypeCanLogBody(String contentType) {
+
+    public static boolean notBoundaryBody(String contentType) {
         Matcher matcher = CAN_LOG_PATTERN.matcher(contentType);
         return matcher.find();
     }
+
 
 
 }
