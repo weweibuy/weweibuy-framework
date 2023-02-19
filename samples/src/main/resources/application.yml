@@ -122,8 +122,10 @@ common:
       host: 106.12.208.53:8086
       database: java_metric
   log:
-    http:
-      disablePath: REQ_/hello1/**
+    http-path:
+      'get_/wqewq':
+        disable-req: true
+
   db:
     encrypt:
       enable: true

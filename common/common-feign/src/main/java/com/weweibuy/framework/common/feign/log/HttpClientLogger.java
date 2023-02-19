@@ -53,7 +53,7 @@ public final class HttpClientLogger {
         String body = "";
         if (StringUtils.isBlank(contentType)) {
             body = "";
-        } else if (!HttpRequestUtils.contentTypeCanLogBody(contentType)) {
+        } else if (!HttpRequestUtils.notBoundaryBody(contentType)) {
             // 上传文件
             body = HttpRequestUtils.BOUNDARY_BODY;
         } else if (request instanceof HttpEntityEnclosingRequest && ((HttpEntityEnclosingRequest) request).getEntity() != null) {
@@ -82,7 +82,7 @@ public final class HttpClientLogger {
         String contentType = Optional.ofNullable(response.getFirstHeader(HttpHeaders.CONTENT_TYPE))
                 .map(Header::getValue)
                 .orElse("");
-        if (!HttpRequestUtils.contentTypeCanLogBody(contentType)) {
+        if (!HttpRequestUtils.notBoundaryBody(contentType)) {
             body = HttpRequestUtils.BOUNDARY_BODY;
         } else if (entity != null) {
             ByteArrayOutputStream buffer = new ByteArrayOutputStream();

@@ -277,10 +277,12 @@ public class HttpRequestUtils {
         return queryParams;
     }
 
-    public static boolean contentTypeCanLogBody(String contentType) {
+
+    public static boolean notBoundaryBody(String contentType) {
         Matcher matcher = CAN_LOG_PATTERN.matcher(contentType);
         return matcher.find();
     }
+
 
 
 }

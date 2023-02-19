@@ -20,10 +20,4 @@ public interface PatternReplaceConfig {
         // do nothing
     }
 
-    /**
-     * 增加脱敏规则配置
-     *
-     * @param configurer {@link  DesensitizationLogMessageConverter}  内置部分字段处理方式
-     */
-    void addDesensitizationRule(SensitizationMappingConfigurer configurer);
 }

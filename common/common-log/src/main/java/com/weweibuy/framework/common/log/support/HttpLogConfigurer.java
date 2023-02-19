@@ -1,6 +1,6 @@
 package com.weweibuy.framework.common.log.support;
 
-import com.weweibuy.framework.common.log.config.LogDisablePath;
+import com.weweibuy.framework.common.log.config.CommonLogProperties;
 
 import java.util.List;
 
@@ -10,12 +10,12 @@ import java.util.List;
  * @author durenhao
  * @date 2020/7/25 22:48
  **/
-public interface LogDisableConfigurer {
+public interface HttpLogConfigurer {
 
     /**
      * 增加Http禁止输出配置
      */
-    default void addHttpDisableConfig(List<LogDisablePath> disablePathList) {
+    default void addHttpLogConfig(List<CommonLogProperties.CommonLogHttpProperties> logHttpProperties) {
 
     }
 
