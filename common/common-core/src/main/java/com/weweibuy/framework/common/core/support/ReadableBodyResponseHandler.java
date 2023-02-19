@@ -1,7 +1,7 @@
 package com.weweibuy.framework.common.core.support;
 
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.web.util.ContentCachingResponseWrapper;
 
 /**
  * 可读的http请求, 只在引入了 log 模块生效
@@ -16,7 +16,7 @@ public interface ReadableBodyResponseHandler {
      *
      * @param response
      */
-    void handlerReadableBodyResponse(HttpServletRequest request, HttpServletResponse response) throws Exception;
+    boolean handlerReadableBodyResponse(HttpServletRequest request, ContentCachingResponseWrapper response);
 
 
 }

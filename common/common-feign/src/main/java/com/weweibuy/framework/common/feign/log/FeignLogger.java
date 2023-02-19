@@ -178,7 +178,7 @@ public class FeignLogger extends Logger {
         }
         int status = response.status();
         Collection<String> collection = header.get(HttpHeaders.CONTENT_TYPE);
-        if (CollectionUtils.isNotEmpty(collection) && !HttpRequestUtils.contentTypeCanLogBody(collection.iterator().next())) {
+        if (CollectionUtils.isNotEmpty(collection) && !HttpRequestUtils.notBoundaryBody(collection.iterator().next())) {
             return new Object[]{HttpRequestUtils.BOUNDARY_BODY, response};
         }
         String bodyStr = "";

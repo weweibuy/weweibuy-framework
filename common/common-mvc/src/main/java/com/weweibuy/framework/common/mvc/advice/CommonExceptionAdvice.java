@@ -8,7 +8,7 @@ import com.weweibuy.framework.common.core.model.constant.CommonConstant;
 import com.weweibuy.framework.common.core.model.dto.CommonCodeResponse;
 import com.weweibuy.framework.common.core.model.eum.CommonErrorCodeEum;
 import com.weweibuy.framework.common.core.support.SystemIdGetter;
-import com.weweibuy.framework.common.log.logger.HttpLogger;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.InitializingBean;
@@ -26,7 +26,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
-import jakarta.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 /**
@@ -58,8 +57,6 @@ public class CommonExceptionAdvice implements InitializingBean {
      */
     @ExceptionHandler(BusinessException.class)
     public ResponseEntity<CommonCodeResponse> handler(HttpServletRequest request, BusinessException e) {
-        HttpLogger.determineAndLogForJsonRequest(request);
-
         log.warn("业务异常: ", e);
         return builderCommonHeader(HttpStatus.BAD_REQUEST)
                 .body(CommonCodeResponse.response(e.getCodeAndMsg()));
@@ -76,7 +73,6 @@ public class CommonExceptionAdvice implements InitializingBean {
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<CommonCodeResponse> handler(HttpServletRequest request, MethodArgumentNotValidException e) {
-        HttpLogger.determineAndLogForJsonRequest(request);
 
         log.warn("输入参数错误: ", e.getMessage());
         String defaultMessage = e.getBindingResult().getFieldError().getDefaultMessage();
@@ -95,7 +91,6 @@ public class CommonExceptionAdvice implements InitializingBean {
      */
     @ExceptionHandler(BindException.class)
     public ResponseEntity<CommonCodeResponse> handler(HttpServletRequest request, BindException e) {
-        HttpLogger.determineAndLogForJsonRequest(request);
 
         log.warn("输入参数错误: {}", e.getMessage());
         String defaultMessage = e.getFieldError().getDefaultMessage();
@@ -105,7 +100,6 @@ public class CommonExceptionAdvice implements InitializingBean {
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResponseEntity<CommonCodeResponse> handler(HttpServletRequest request, MethodArgumentTypeMismatchException e) {
-        HttpLogger.determineAndLogForJsonRequest(request);
 
         log.warn("输入参数字段类型错误:", e);
         return builderCommonHeader(HttpStatus.BAD_REQUEST)
@@ -122,7 +116,6 @@ public class CommonExceptionAdvice implements InitializingBean {
      */
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<CommonCodeResponse> handler(HttpServletRequest request, HttpMessageNotReadableException e) {
-        HttpLogger.determineAndLogForJsonRequest(request);
 
         log.warn("输入参数格式错误: {}", e.getMessage());
         return builderCommonHeader(HttpStatus.BAD_REQUEST)
@@ -139,8 +132,6 @@ public class CommonExceptionAdvice implements InitializingBean {
      */
     @ExceptionHandler(SystemException.class)
     public ResponseEntity<CommonCodeResponse> handler(HttpServletRequest request, SystemException e) {
-        HttpLogger.determineAndLogForJsonRequest(request);
-
         log.error("系统异常: ", e);
         return builderCommonHeader(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(CommonCodeResponse.response(e.getCodeAndMsg()));
@@ -156,7 +147,6 @@ public class CommonExceptionAdvice implements InitializingBean {
      */
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public ResponseEntity<CommonCodeResponse> handler(HttpServletRequest request, HttpRequestMethodNotSupportedException e) {
-        HttpLogger.determineAndLogForJsonRequest(request);
 
         log.warn("请求 HttpMethod 错误: {}", e.getMessage());
         return builderCommonHeader(HttpStatus.BAD_REQUEST)
@@ -173,7 +163,6 @@ public class CommonExceptionAdvice implements InitializingBean {
      */
     @ExceptionHandler(MissingServletRequestParameterException.class)
     public ResponseEntity<CommonCodeResponse> handler(HttpServletRequest request, MissingServletRequestParameterException e) {
-        HttpLogger.determineAndLogForJsonRequest(request);
 
         log.warn("缺少请求参数: {}", e.getMessage());
         return builderCommonHeader(HttpStatus.BAD_REQUEST)
@@ -190,7 +179,6 @@ public class CommonExceptionAdvice implements InitializingBean {
      */
     @ExceptionHandler(MaxUploadSizeExceededException.class)
     public ResponseEntity<CommonCodeResponse> handler(HttpServletRequest request, MaxUploadSizeExceededException e) {
-        HttpLogger.determineAndLogForJsonRequest(request);
 
         log.warn("上传文件或请求报文过大, 请设置: spring.servlet.multipart.max-request-size 与 spring.servlet.multipart.max-file-size.", e);
         return builderCommonHeader(HttpStatus.PAYLOAD_TOO_LARGE)
@@ -207,7 +195,6 @@ public class CommonExceptionAdvice implements InitializingBean {
      */
     @ExceptionHandler(CustomResponseStatusException.class)
     public ResponseEntity<CommonCodeResponse> handler(HttpServletRequest request, CustomResponseStatusException e) {
-        HttpLogger.determineAndLogForJsonRequest(request);
 
         log.warn("请求异常: {}", e.getMessage());
         return builderCommonHeader(e.getStatus())
@@ -225,7 +212,6 @@ public class CommonExceptionAdvice implements InitializingBean {
      */
     @ExceptionHandler(IdempotentNoLockException.class)
     public ResponseEntity<CommonCodeResponse> handler(HttpServletRequest request, IdempotentNoLockException e) {
-        HttpLogger.determineAndLogForJsonRequest(request);
 
         log.warn("幂等异常: ", e.getMessage());
         return builderCommonHeader(HttpStatus.TOO_MANY_REQUESTS)
@@ -242,7 +228,6 @@ public class CommonExceptionAdvice implements InitializingBean {
      */
     @ExceptionHandler(Exception.class)
     public ResponseEntity<CommonCodeResponse> handler(HttpServletRequest request, Exception e) {
-        HttpLogger.determineAndLogForJsonRequest(request);
 
         if (unknownExceptionHandler != null) {
             return unknownExceptionHandler.handlerException(request, e);

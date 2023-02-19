@@ -9,11 +9,9 @@ import com.weweibuy.framework.samples.mybatis.plugin.model.po.TbItem;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.elasticsearch.client.elc.ElasticsearchTemplate;
-import org.springframework.data.elasticsearch.client.erhlc.ElasticsearchRestTemplate;
 import org.springframework.data.elasticsearch.client.erhlc.NativeSearchQueryBuilder;
 import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.data.elasticsearch.core.query.BaseQuery;
-import org.springframework.data.elasticsearch.core.query.BaseQueryBuilder;
 import org.springframework.data.elasticsearch.core.query.Criteria;
 import org.springframework.data.elasticsearch.core.query.CriteriaQueryBuilder;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author durenhao
@@ -59,16 +58,34 @@ public class EsController {
     public CommonCodeResponse sync() {
         esItemRepository.deleteAll();
         List<TbItem> tbItems = tbItemMapper.selectByExample(null);
-        List<Item> itemList = tbItems.stream()
-                .map(i -> {
-                    Item item = BeanCopyUtils.copy(i, Item.class);
-                    item.setId(i.getId());
-                    return item;
-                })
-                .collect(Collectors.toList());
+        List<Item> itemList = tbItems.stream().map(i -> {
+            Item item = BeanCopyUtils.copy(i, Item.class);
+            item.setId(i.getId());
+            return item;
+        }).collect(Collectors.toList());
 
         esItemRepository.saveAll(itemList);
         return CommonCodeResponse.success();
+    }
+
+    public static void main(String[] args) {
+        List<Integer> collect = Stream.iterate(0, n -> n + 1)
+                .limit(1000000).collect(Collectors.toList());
+
+        long l = System.currentTimeMillis();
+        collect.forEach(i -> {
+            int i1 = i + 1;
+        });
+        System.err.println(System.currentTimeMillis() - l);
+        collect.parallelStream().forEachOrdered(i -> {
+            int i1 = i + 1;
+        });
+        long l2 = System.currentTimeMillis();
+        collect.parallelStream().forEachOrdered(i -> {
+            int i1 = i + 1;
+        });
+        System.err.println(System.currentTimeMillis() - l2);
+
     }
 
 

@@ -2,23 +2,24 @@ package com.weweibuy.framework.common.log.logger;
 
 import com.weweibuy.framework.common.core.model.constant.CommonConstant;
 import com.weweibuy.framework.common.core.utils.HttpRequestUtils;
-import com.weweibuy.framework.common.core.utils.JackJsonUtils;
-import com.weweibuy.framework.common.log.config.LogDisablePath;
-import com.weweibuy.framework.common.log.constant.LogMdcConstant;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.web.context.request.RequestAttributes;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-import org.springframework.web.util.ContentCachingRequestWrapper;
+import org.springframework.web.util.ContentCachingResponseWrapper;
 
-import jakarta.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.UncheckedIOException;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -32,139 +33,92 @@ import java.util.stream.Collectors;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class HttpLogger {
 
-    private static Map<String, LogDisablePath.Type> patternDisabledPath = Collections.emptyMap();
 
-    private static Map<String, LogDisablePath.Type> exactDisabledPath = Collections.emptyMap();
+    public static void logForRequest(HttpServletRequest request, Boolean notBoundaryBody, List<String> headerKeyList) {
+        Map<String, String> headerMap = headerMap(headerKeyList, request::getHeader);
 
-    public static void logForJsonRequest(String path, String method, Map<String, String[]> parameterMap, String body) {
-        if (!shouldLogRequest(path)) {
-            return;
+        String body;
+        if (notBoundaryBody) {
+            body = HttpRequestUtils.readRequestBodyForJson(request);
+        } else {
+            body = HttpRequestUtils.BOUNDARY_BODY;
         }
-        if (parameterMap != null && !parameterMap.isEmpty()) {
-            log.info("Http 请求路径: {}, Method: {}, 参数: {} , Body: {}",
+        logForRequest(request.getRequestURI(), request.getMethod(), request.getParameterMap(),
+                headerMap, body);
+    }
+
+    private static void logForRequest(String path, String method, Map<String, String[]> parameterMap,
+                                      Map<String, String> headerMap, String body) {
+        parameterMap = Optional.ofNullable(parameterMap)
+                .orElse(Collections.emptyMap());
+        if (headerMap == null) {
+            log.info("Http请求 Path: {}, Method: {}, Parameter: {}, Body: {}",
                     path,
                     method,
                     HttpRequestUtils.parameterMapToString(parameterMap),
                     body);
         } else {
-            log.info("Http 请求路径: {}, Method: {}, Body: {}",
+            log.info("Http请求 Path: {}, Method: {}, Parameter: {}, Header: {}, Body: {}",
                     path,
                     method,
+                    HttpRequestUtils.parameterMapToString(parameterMap),
+                    headerStr(headerMap),
                     body);
         }
-        RequestContextHolder.getRequestAttributes().setAttribute(
-                LogMdcConstant.HAS_LOG_REQ_FIELD_NAME, true, RequestAttributes.SCOPE_REQUEST);
-    }
 
-    public static void logForNotJsonRequest(HttpServletRequest request) {
-        String path = request.getRequestURI();
-        if (!shouldLogRequest(path)) {
-            return;
-        }
-        log.info("Http 请求路径: {}, Method: {}, 参数: {}",
-                path,
-                request.getMethod(),
-                HttpRequestUtils.parameterMapToString(request.getParameterMap()));
     }
 
 
-    public static void logResponseBody(String body, Integer status) {
-        String path = HttpRequestUtils.getRequestAttribute(RequestContextHolder.getRequestAttributes(), CommonConstant.HttpServletConstant.REQUEST_PATH);
-        if (!shouldLogResponse(path)) {
-            return;
-        }
-        Long timestamp = HttpRequestUtils.getRequestAttribute(RequestContextHolder.getRequestAttributes(), CommonConstant.HttpServletConstant.REQUEST_TIMESTAMP);
-        log.info("Http 响应 Status: {}, 数据: {}, 请求耗时: {}",
-                status,
-                body,
-                System.currentTimeMillis() - timestamp);
-    }
+    public static void logResponseBody(ContentCachingResponseWrapper response, boolean notBoundaryBody, List<String> headerKeyList) {
 
-
-    public static void logForJsonBodyRequest(Object body) {
-        RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
-        logForJsonRequest(requestAttributes, body);
-    }
-
-
-    public static void determineAndLogForJsonRequest(HttpServletRequest request) {
-        if (HttpRequestUtils.isJsonRequest(request.getContentType())) {
-            logForJsonRequest(request, true);
-        }
-    }
-
-
-    public static void logForJsonRequest(HttpServletRequest request, boolean useWrapper) {
-        logForJsonRequest(request.getRequestURI(), request.getMethod(), request.getParameterMap(),
-                HttpRequestUtils.readRequestBodyForJson(request, useWrapper));
-    }
-
-    public static void logForJsonRequest(RequestAttributes requestAttributes, Object body) {
-        String bodyStr = readRequestBody(requestAttributes, body);
-        String path = HttpRequestUtils.getRequestAttribute(requestAttributes, CommonConstant.HttpServletConstant.REQUEST_PATH);
-        String httpMethod = HttpRequestUtils.getRequestAttribute(requestAttributes, CommonConstant.HttpServletConstant.REQUEST_METHOD);
-        Map<String, String[]> parameterMap = HttpRequestUtils.getRequestAttribute(requestAttributes, CommonConstant.HttpServletConstant.REQUEST_PARAMETER_MAP);
-        logForJsonRequest(path, httpMethod, parameterMap, bodyStr);
-    }
-
-    static String readRequestBody(RequestAttributes requestAttributes, Object body) {
-        if (requestAttributes instanceof ServletRequestAttributes) {
-            ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) requestAttributes;
-            HttpServletRequest request = servletRequestAttributes.getRequest();
-            if (request instanceof ContentCachingRequestWrapper) {
-                return HttpRequestUtils.readFromRequestWrapper((ContentCachingRequestWrapper) request);
+        String body;
+        if (notBoundaryBody) {
+            InputStream contentInputStream = response.getContentInputStream();
+            try {
+                body = IOUtils.toString(contentInputStream, CommonConstant.CharsetConstant.UT8);
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
             }
+        } else {
+            body = HttpRequestUtils.BOUNDARY_BODY;
         }
-        return Optional.ofNullable(body)
-                .map(JackJsonUtils::writeWithMvc)
-                .orElse(StringUtils.EMPTY);
-    }
 
-    public static void configDisabledPath(Set<LogDisablePath> patternDisabledPath,
-                                          Set<LogDisablePath> exactDisabledPath) {
-        HttpLogger.patternDisabledPath = patternDisabledPath.stream()
-                .peek(d -> d.setPath(HttpRequestUtils.sanitizedPath(d.getPath())))
-                .collect(Collectors.toMap(LogDisablePath::getPath, LogDisablePath::getType, (o, n) -> n));
-        HttpLogger.exactDisabledPath = exactDisabledPath.stream()
-                .peek(d -> d.setPath(HttpRequestUtils.sanitizedPath(d.getPath())))
-                .collect(Collectors.toMap(LogDisablePath::getPath, LogDisablePath::getType, (o, n) -> n));
-    }
-
-    private static boolean shouldLogRequest(String path) {
-        if (StringUtils.isBlank(path)) {
-            return false;
-        }
-        Boolean hasLogged = Optional.ofNullable(HttpRequestUtils.<Boolean>getRequestAttribute(RequestContextHolder.getRequestAttributes(),
-                        LogMdcConstant.HAS_LOG_REQ_FIELD_NAME))
-                .orElse(false);
-
-        if (hasLogged != null && hasLogged) {
-            return false;
-        }
-        LogDisablePath.Type type = null;
-        if ((type = exactDisabledPath.get(path)) != null &&
-                (LogDisablePath.Type.REQ.equals(type) || LogDisablePath.Type.ALL.equals(type))) {
-            return false;
-        }
-        return !patternDisabledPath.entrySet().stream()
-                .anyMatch(p -> HttpRequestUtils.isMatchPath(p.getKey(), path) &&
-                        (LogDisablePath.Type.REQ.equals(p.getValue()) || LogDisablePath.Type.ALL.equals(p.getValue())));
+        Map<String, String> headerMap = headerMap(headerKeyList, response::getHeader);
+        logResponseBody(body, response.getStatus(), headerMap);
     }
 
 
-    private static boolean shouldLogResponse(String path) {
-        if (StringUtils.isBlank(path)) {
-            return false;
+    public static void logResponseBody(String body, int status, Map<String, String> headerMap) {
+        Long timestamp = HttpRequestUtils.getRequestAttribute(RequestContextHolder.getRequestAttributes(), CommonConstant.HttpServletConstant.REQUEST_TIMESTAMP);
+        if (headerMap == null) {
+            log.info("Http响应 Status: {}, Body: {}, 请求耗时: {}",
+                    status,
+                    body,
+                    System.currentTimeMillis() - timestamp);
+        } else {
+            log.info("Http响应 Status: {}, Header: {}, Body: {}, 请求耗时: {}",
+                    status,
+                    headerStr(headerMap),
+                    body,
+                    System.currentTimeMillis() - timestamp);
         }
-        LogDisablePath.Type type = null;
-        if ((type = exactDisabledPath.get(path)) != null &&
-                (LogDisablePath.Type.RESP.equals(type) || LogDisablePath.Type.ALL.equals(type))) {
-            return false;
-        }
-        return !patternDisabledPath.entrySet().stream()
-                .anyMatch(p -> HttpRequestUtils.isMatchPath(p.getKey(), path) &&
-                        (LogDisablePath.Type.RESP.equals(p.getValue()) || LogDisablePath.Type.ALL.equals(p.getValue())));
+
     }
 
+    private static String headerStr(Map<String, String> headerMap) {
+        return headerMap.entrySet().stream()
+                .map(e -> e.getKey() + ":" + e.getValue())
+                .collect(Collectors.joining(","));
+    }
+
+
+    private static Map<String, String> headerMap(List<String> headerKeyList, Function<String, String> getHeaderF) {
+        return Optional.ofNullable(headerKeyList)
+                .map(l -> l.stream()
+                        .map(k -> Pair.of(k, getHeaderF.apply(k)))
+                        .filter(p -> StringUtils.isNotBlank(p.getValue()))
+                        .collect(Collectors.toMap(Pair::getLeft, Pair::getRight, (o, n) -> n)))
+                .orElse(null);
+    }
 
 }
