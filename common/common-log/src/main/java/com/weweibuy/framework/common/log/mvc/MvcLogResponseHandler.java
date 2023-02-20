@@ -36,8 +36,8 @@ public class MvcLogResponseHandler implements ReadableBodyResponseHandler {
             return true;
         }
         String contentType = response.getContentType();
-        boolean notBoundaryBody = StringUtils.isNotBlank(contentType)
-                && HttpRequestUtils.notBoundaryBody(contentType);
+        boolean notBoundaryBody = StringUtils.isBlank(contentType)
+                || HttpRequestUtils.notBoundaryBody(contentType);
 
         List<String> headerKeyList = Optional.ofNullable(logProperties)
                 .map(CommonLogProperties.CommonLogHttpProperties::getLogReqHeader)
