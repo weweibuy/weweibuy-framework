@@ -44,7 +44,6 @@ public class ReadableBodyFilter extends OncePerRequestFilter {
         setRequestAttributes(request);
 
         boolean includePayload = HttpRequestUtils.isIncludePayload(request);
-        int available = request.getInputStream().available();
         if (includePayload) {
             request = new CopyContentCachingRequestWrapper(request);
         }

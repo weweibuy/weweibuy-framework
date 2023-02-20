@@ -119,8 +119,9 @@ common:
       database: java_metric
   log:
     http-path:
-      'get_/wqewq':
-        disable-req: true
+      - path: /hello
+        method: GET
+        log-req-header: Host,Connection
 
   db:
     encrypt:
