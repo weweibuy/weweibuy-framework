@@ -415,6 +415,9 @@
       <if test="record.seller != null">
         seller = #{record.seller,jdbcType=VARCHAR},
       </if>
+      <if test="updateSql != null">
+        ${updateSql} ,
+      </if>
     </set>
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
