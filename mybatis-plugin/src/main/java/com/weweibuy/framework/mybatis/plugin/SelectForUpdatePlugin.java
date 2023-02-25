@@ -191,6 +191,7 @@ public class SelectForUpdatePlugin extends BasePlugin implements ISelectOneByExa
         commentGenerator.addComment(xmlElement);
         this.selectByExampleWithBLOBsForUpdateEle = xmlElement;
         return super.sqlMapSelectByExampleWithBLOBsElementGenerated(element, introspectedTable);
+
     }
 
 

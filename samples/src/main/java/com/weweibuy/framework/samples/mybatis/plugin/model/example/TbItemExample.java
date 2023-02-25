@@ -16,6 +16,8 @@ public class TbItemExample {
 
     protected Integer rows;
 
+    protected String updateSql;
+
     public TbItemExample() {
         oredCriteria = new ArrayList<Criteria>();
     }
@@ -139,6 +141,31 @@ public class TbItemExample {
     public TbItemExample page(Integer page, Integer pageSize) {
         this.offset = page * pageSize;
         this.rows = pageSize;
+        return this;
+    }
+
+    public void setUpdateSql(String updateSql) {
+        this.updateSql = updateSql;
+    }
+
+    public String getUpdateSql() {
+        return this.updateSql;
+    }
+
+    public TbItemExample updateSql(String updateSqlClause) {
+        this.updateSql = updateSqlClause;
+        return this;
+    }
+
+    public TbItemExample updateSql(String ... updateSqlClauses) {
+        StringBuffer sb = new StringBuffer();
+        for (int i = 0; i < updateSqlClauses.length; i++) {
+            sb.append(updateSqlClauses[i]);
+            if (i < updateSqlClauses.length - 1) {
+                sb.append(" , ");
+            }
+        }
+        this.updateSql = sb.toString();
         return this;
     }
 
