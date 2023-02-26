@@ -18,28 +18,15 @@ import java.util.List;
  **/
 public class CustomerUpdatePlugin extends BasePlugin {
 
-
-    @Override
-    public boolean clientUpdateByExampleSelectiveMethodGenerated(Method method, Interface interfaze, IntrospectedTable introspectedTable) {
-        return super.clientUpdateByExampleSelectiveMethodGenerated(method, interfaze, introspectedTable);
-    }
-
-    @Override
-    public boolean clientUpdateByExampleSelectiveMethodGenerated(Method method, TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
-        return super.clientUpdateByExampleSelectiveMethodGenerated(method, topLevelClass, introspectedTable);
-    }
-
     @Override
     public boolean sqlMapUpdateByExampleSelectiveElementGenerated(XmlElement element, IntrospectedTable introspectedTable) {
         List<Element> elements = element.getElements();
         List<Element> elementsList = ((XmlElement) elements.get(1)).getElements();
-
         XmlElement ifUpdateSqlElement = new XmlElement("if");
-        ifUpdateSqlElement.addAttribute(new Attribute("test", "updateSql != null"));
-        ifUpdateSqlElement.addElement(new TextElement("${updateSql} ,"));
+        ifUpdateSqlElement.addAttribute(new Attribute("test", "example.updateSql != null"));
+        ifUpdateSqlElement.addElement(new TextElement("${example.updateSql} ,"));
         elementsList.add(ifUpdateSqlElement);
         return super.sqlMapSelectByExampleWithBLOBsElementGenerated(element, introspectedTable);
-
     }
 
     @Override
@@ -62,7 +49,7 @@ public class CustomerUpdatePlugin extends BasePlugin {
 
         updateSqlMethod = JavaElementGeneratorTools.generateMethodBody(
                 updateSqlMethod,
-                "this.updateSql = updateSqlClause;",
+                "this.setUpdateSql(updateSqlClause);",
                 "return this;"
         );
         FormatTools.addMethodWithBestPosition(topLevelClass, updateSqlMethod);
@@ -85,7 +72,7 @@ public class CustomerUpdatePlugin extends BasePlugin {
                 "sb.append(\" , \");",
                 "}",
                 "}",
-                "this.updateSql = sb.toString();",
+                "this.setUpdateSql(sb.toString());",
                 "return this;"
         );
 
@@ -94,7 +81,14 @@ public class CustomerUpdatePlugin extends BasePlugin {
     }
 
 
-    private void updateSqlField(TopLevelClass topLevelClass, IntrospectedTable introspectedTable){
+    private void updateSqlField(TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
+        boolean match = topLevelClass.getImportedTypes().stream()
+                .anyMatch(f -> f.getFullyQualifiedName().equals("com.weweibuy.framework.common.db.utils.SqlUtils"));
+        if (!match) {
+            topLevelClass.addImportedType("com.weweibuy.framework.common.db.utils.SqlUtils");
+        }
+
+
         // 添加offset和rows字段
         Field offsetField = JavaElementGeneratorTools.generateField(
                 "updateSql",
@@ -105,8 +99,17 @@ public class CustomerUpdatePlugin extends BasePlugin {
         commentGenerator.addFieldComment(offsetField, introspectedTable);
         topLevelClass.addField(offsetField);
 
-        Method setterMethod = JavaElementGeneratorTools.generateSetterMethod(offsetField);
         Method getterMethod = JavaElementGeneratorTools.generateGetterMethod(offsetField);
+
+        Method setterMethod = JavaElementGeneratorTools.generateMethod(
+                "set" + FormatTools.upFirstChar(offsetField.getName()),
+                JavaVisibility.PUBLIC,
+                null,
+                new Parameter(offsetField.getType(), offsetField.getName())
+        );
+        JavaElementGeneratorTools.generateMethodBody(setterMethod, "this." + offsetField.getName() + " = "
+                + "SqlUtils.containsSqlInjectionAndThrow(" + offsetField.getName() + ");");
+
 
         commentGenerator.addGeneralMethodComment(setterMethod, introspectedTable);
         commentGenerator.addGeneralMethodComment(getterMethod, introspectedTable);
