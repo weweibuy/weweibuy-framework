@@ -4,6 +4,7 @@ import com.weweibuy.framework.samples.mybatis.plugin.mapper.DBEncryptMapper;
 import com.weweibuy.framework.samples.mybatis.plugin.model.example.DBEncryptExample;
 import com.weweibuy.framework.samples.mybatis.plugin.model.po.DBEncrypt;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,13 +26,23 @@ public class MybatisController {
         DBEncryptExample example = DBEncryptExample
                 .newAndCreateCriteria()
                 .andIdEqualTo(1L)
+                .andPhoneLike("%%")
                 .example()
-                .updateSql("create_time = now()",
-                        "update_time = '2022-12-12 00:00:00'"
+                .updateSql("create_time = now(); " +
+                                "update db_encrypt set update_time = '2022-12-11 00:00:00'"
                         );
+
 
         int i = dbEncryptMapper.updateByExampleSelective(dbEncrypt, example);
         return i + "";
+    }
+
+    public static void main(String[] args) {
+
+
+        String s = StringEscapeUtils.unescapeHtml4("update db_encrypt set update_time = 1;");
+        System.err.println(s);
+
     }
 
 

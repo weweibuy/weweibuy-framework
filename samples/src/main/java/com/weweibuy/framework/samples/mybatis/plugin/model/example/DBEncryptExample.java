@@ -1,5 +1,6 @@
 package com.weweibuy.framework.samples.mybatis.plugin.model.example;
 
+import com.weweibuy.framework.common.db.utils.SqlUtils;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +23,7 @@ public class DBEncryptExample {
     }
 
     public void setOrderByClause(String orderByClause) {
-        this.orderByClause = orderByClause;
+         this.orderByClause = SqlUtils.containsSqlInjectionAndThrow(orderByClause);
     }
 
     public String getOrderByClause() {
@@ -144,7 +145,7 @@ public class DBEncryptExample {
     }
 
     public void setUpdateSql(String updateSql) {
-        this.updateSql = updateSql;
+        this.updateSql = SqlUtils.containsSqlInjectionAndThrow(updateSql);
     }
 
     public String getUpdateSql() {
@@ -152,7 +153,7 @@ public class DBEncryptExample {
     }
 
     public DBEncryptExample updateSql(String updateSqlClause) {
-        this.updateSql = updateSqlClause;
+        this.setUpdateSql(updateSqlClause);
         return this;
     }
 
@@ -164,7 +165,7 @@ public class DBEncryptExample {
                 sb.append(" , ");
             }
         }
-        this.updateSql = sb.toString();
+        this.setUpdateSql(sb.toString());
         return this;
     }
 
