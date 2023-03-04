@@ -30,7 +30,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplicat
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.ExtractingResponseErrorHandler;
 import org.springframework.web.client.RestTemplate;
@@ -94,7 +93,7 @@ public class HttpClientConfig {
         if (customHttpClientLogInterceptor != null) {
             httpClientBuilder = httpClientBuilder
                     .addInterceptorLast((HttpRequestInterceptor) customHttpClientLogInterceptor)
-                    .addInterceptorFirst((HttpResponseInterceptor) customHttpClientLogInterceptor);
+                    .addInterceptorLast((HttpResponseInterceptor) customHttpClientLogInterceptor);
         }
 
         if (httpClientProperties.isUseSSL()) {
