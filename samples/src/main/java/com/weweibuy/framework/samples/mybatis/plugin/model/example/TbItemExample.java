@@ -1,5 +1,6 @@
 package com.weweibuy.framework.samples.mybatis.plugin.model.example;
 
+import com.weweibuy.framework.common.db.utils.SqlUtils;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -23,7 +24,7 @@ public class TbItemExample {
     }
 
     public void setOrderByClause(String orderByClause) {
-        this.orderByClause = orderByClause;
+         this.orderByClause = SqlUtils.containsSqlInjectionAndThrow(orderByClause);
     }
 
     public String getOrderByClause() {
@@ -145,7 +146,7 @@ public class TbItemExample {
     }
 
     public void setUpdateSql(String updateSql) {
-        this.updateSql = updateSql;
+        this.updateSql = SqlUtils.containsSqlInjectionAndThrow(updateSql);
     }
 
     public String getUpdateSql() {
@@ -153,7 +154,7 @@ public class TbItemExample {
     }
 
     public TbItemExample updateSql(String updateSqlClause) {
-        this.updateSql = updateSqlClause;
+        this.setUpdateSql(updateSqlClause);
         return this;
     }
 
@@ -165,7 +166,7 @@ public class TbItemExample {
                 sb.append(" , ");
             }
         }
-        this.updateSql = sb.toString();
+        this.setUpdateSql(sb.toString());
         return this;
     }
 
