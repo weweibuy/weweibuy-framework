@@ -93,7 +93,7 @@ public class HttpClientConfig {
         if (customHttpClientLogInterceptor != null) {
             httpClientBuilder = httpClientBuilder
                     .addInterceptorLast((HttpRequestInterceptor) customHttpClientLogInterceptor)
-                    .addInterceptorFirst((HttpResponseInterceptor) customHttpClientLogInterceptor);
+                    .addInterceptorLast((HttpResponseInterceptor) customHttpClientLogInterceptor);
         }
 
         if (httpClientProperties.isUseSSL()) {
