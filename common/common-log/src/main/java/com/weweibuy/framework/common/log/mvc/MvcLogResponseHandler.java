@@ -1,15 +1,13 @@
 package com.weweibuy.framework.common.log.mvc;
 
 import com.weweibuy.framework.common.core.support.ReadableBodyResponseHandler;
-import com.weweibuy.framework.common.core.utils.HttpRequestUtils;
 import com.weweibuy.framework.common.log.config.CommonLogProperties;
 import com.weweibuy.framework.common.log.logger.HttpLogger;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.annotation.Order;
 import org.springframework.web.util.ContentCachingResponseWrapper;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Optional;
 
@@ -52,7 +50,8 @@ public class MvcLogResponseHandler implements ReadableBodyResponseHandler {
                 .map(CommonLogProperties.CommonLogHttpProperties::getLogReqHeader)
                 .orElse(null);
 
-        HttpLogger.logResponseBody(response,  headerKeyList);
+        HttpLogger.logResponseBody(response, headerKeyList);
     }
+
 
 }
