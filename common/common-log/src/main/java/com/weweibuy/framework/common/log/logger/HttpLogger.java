@@ -34,17 +34,23 @@ import java.util.stream.Collectors;
 public class HttpLogger {
 
 
-    public static void logForRequest(HttpServletRequest request, Boolean notBoundaryBody, List<String> headerKeyList) {
+    public static void logForRequest(HttpServletRequest request, List<String> headerKeyList) {
         Map<String, String> headerMap = headerMap(headerKeyList, request::getHeader);
-
-        String body;
-        if (notBoundaryBody) {
-            body = HttpRequestUtils.readRequestBodyForJson(request);
-        } else {
-            body = HttpRequestUtils.BOUNDARY_BODY;
-        }
+        String body = reqBody(request);
         logForRequest(request.getRequestURI(), request.getMethod(), request.getParameterMap(),
                 headerMap, body);
+    }
+
+    private static String reqBody(HttpServletRequest request) {
+        boolean includePayload = HttpRequestUtils.isIncludePayload(request);
+        if (!includePayload) {
+            return "";
+        }
+        String contentType = request.getContentType();
+        if (isBoundaryBody(contentType)) {
+            return HttpRequestUtils.BOUNDARY_BODY;
+        }
+        return HttpRequestUtils.readRequestBodyForJson(request);
     }
 
     private static void logForRequest(String path, String method, Map<String, String[]> parameterMap,
@@ -69,22 +75,28 @@ public class HttpLogger {
     }
 
 
-    public static void logResponseBody(ContentCachingResponseWrapper response, boolean notBoundaryBody, List<String> headerKeyList) {
-
-        String body;
-        if (notBoundaryBody) {
-            InputStream contentInputStream = response.getContentInputStream();
-            try {
-                body = IOUtils.toString(contentInputStream, CommonConstant.CharsetConstant.UT8);
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
-            }
-        } else {
-            body = HttpRequestUtils.BOUNDARY_BODY;
-        }
-
+    public static void logResponseBody(ContentCachingResponseWrapper response, List<String> headerKeyList) {
+        String body = respBody(response);
         Map<String, String> headerMap = headerMap(headerKeyList, response::getHeader);
         logResponseBody(body, response.getStatus(), headerMap);
+    }
+
+    private static boolean isBoundaryBody(String contentType){
+        return StringUtils.isNotBlank(contentType)
+                && !HttpRequestUtils.notBoundaryBody(contentType);
+    }
+
+    private static String respBody(ContentCachingResponseWrapper response) {
+        String contentType = response.getContentType();
+        if (isBoundaryBody(contentType)) {
+            return HttpRequestUtils.BOUNDARY_BODY;
+        }
+        InputStream contentInputStream = response.getContentInputStream();
+        try {
+            return IOUtils.toString(contentInputStream, CommonConstant.CharsetConstant.UT8);
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
     }
 
 

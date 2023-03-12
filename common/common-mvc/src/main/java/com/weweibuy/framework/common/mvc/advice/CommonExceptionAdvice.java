@@ -18,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindException;
+import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
@@ -105,6 +106,17 @@ public class CommonExceptionAdvice implements InitializingBean {
         return builderCommonHeader(HttpStatus.BAD_REQUEST)
                 .body(CommonCodeResponse.response(CommonErrorCodeEum.BAD_REQUEST_PARAM.getCode(), "输入参数字段:[" + e.getName() + "]类型错误"));
     }
+
+    @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
+    public ResponseEntity<CommonCodeResponse> handler(HttpServletRequest request, HttpMediaTypeNotSupportedException e) {
+
+        log.warn("接口输入Content-Type错误: {}", e.getMessage());
+        return builderCommonHeader(HttpStatus.BAD_REQUEST)
+                .body(CommonCodeResponse.response(CommonErrorCodeEum.BAD_REQUEST_PARAM.getCode(),
+                        "不支持的请求Content-Type: " + e.getContentType()));
+    }
+
+
 
     /**
      * 无法读取请求报文

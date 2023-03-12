@@ -1,11 +1,10 @@
 package com.weweibuy.framework.common.log.mvc;
 
 import com.weweibuy.framework.common.core.support.ReadableBodyResponseHandler;
-import com.weweibuy.framework.common.core.utils.HttpRequestUtils;
 import com.weweibuy.framework.common.log.config.CommonLogProperties;
 import com.weweibuy.framework.common.log.logger.HttpLogger;
 import jakarta.servlet.http.HttpServletRequest;
-import org.apache.commons.lang3.StringUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.annotation.Order;
 import org.springframework.web.util.ContentCachingResponseWrapper;
 
@@ -18,6 +17,7 @@ import java.util.Optional;
  * @author durenhao
  * @date 2023/2/12 17:52
  **/
+@Slf4j
 @Order(10000)
 public class MvcLogResponseHandler implements ReadableBodyResponseHandler {
 
@@ -30,21 +30,27 @@ public class MvcLogResponseHandler implements ReadableBodyResponseHandler {
 
     @Override
     public boolean handlerReadableBodyResponse(HttpServletRequest request, ContentCachingResponseWrapper response) {
+        try {
+            handlerReadableBodyResponse0(request, response);
+        } catch (Exception e) {
+            log.error("输出响应日志异常: ", e);
+        }
+        return true;
+    }
+
+
+    private void handlerReadableBodyResponse0(HttpServletRequest request, ContentCachingResponseWrapper response) {
         CommonLogProperties.CommonLogHttpProperties logProperties = mvcPathMappingOperator.findLogProperties(request);
 
         if (logProperties != null && Boolean.TRUE.equals(logProperties.getDisableResp())) {
-            return true;
+            return;
         }
-        String contentType = response.getContentType();
-        boolean notBoundaryBody = StringUtils.isBlank(contentType)
-                || HttpRequestUtils.notBoundaryBody(contentType);
 
         List<String> headerKeyList = Optional.ofNullable(logProperties)
                 .map(CommonLogProperties.CommonLogHttpProperties::getLogReqHeader)
                 .orElse(null);
 
-        HttpLogger.logResponseBody(response, notBoundaryBody, headerKeyList);
-        return true;
+        HttpLogger.logResponseBody(response, headerKeyList);
     }
 
 

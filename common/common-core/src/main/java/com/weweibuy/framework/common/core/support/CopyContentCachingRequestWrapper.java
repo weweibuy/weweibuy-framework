@@ -6,7 +6,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletRequestWrapper;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
-import org.springframework.lang.Nullable;
 import org.springframework.util.FastByteArrayOutputStream;
 import org.springframework.web.util.WebUtils;
 
@@ -22,11 +21,8 @@ public class CopyContentCachingRequestWrapper extends HttpServletRequestWrapper 
 
     private final FastByteArrayOutputStream cachedContent;
 
-    @Nullable
     private ServletInputStream inputStream;
 
-    @Nullable
-    private BufferedReader reader;
 
 
     /**
