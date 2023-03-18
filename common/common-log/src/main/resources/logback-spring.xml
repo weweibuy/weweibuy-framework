@@ -8,7 +8,7 @@
 
     <property name="log.path" value="${log.path:-/logs/${app_name}}"/>
 
-    <property name="log.maxDay" value="${log.maxDay:30}"/>
+    <property name="log.maxDay" value="${log.maxDay:-30}"/>
 
 
     <conversionRule conversionWord="clr" converterClass="org.springframework.boot.logging.logback.ColorConverter"/>
