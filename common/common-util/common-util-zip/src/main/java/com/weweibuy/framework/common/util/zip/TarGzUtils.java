@@ -6,6 +6,7 @@ import org.apache.commons.compress.archivers.ArchiveOutputStream;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
+import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream;
 import org.apache.commons.compress.compressors.gzip.GzipCompressorOutputStream;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -20,7 +21,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-import java.util.zip.GZIPInputStream;
 
 /**
  * @author durenhao
@@ -99,7 +99,7 @@ public final class TarGzUtils {
     public static List<File> unTarGz(File source, String dest) throws IOException {
         List<File> fileList = new ArrayList<>();
         try (FileInputStream fin = new FileInputStream(source);
-             GZIPInputStream gin = new GZIPInputStream(fin);
+             GzipCompressorInputStream gin = new GzipCompressorInputStream(fin);
              TarArchiveInputStream tarArchiveInputStream = new TarArchiveInputStream(gin)) {
             TarArchiveEntry entry;
             while ((entry = tarArchiveInputStream.getNextTarEntry()) != null) {
@@ -117,6 +117,38 @@ public final class TarGzUtils {
 
         }
         return fileList;
+    }
+
+
+    public static void gz(String source, String dest) throws IOException {
+        gz(new File(source), dest);
+    }
+
+
+    public static void gz(File source, String dest) throws IOException {
+        try (FileInputStream fileInputStream = new FileInputStream(source);
+             FileOutputStream fileOutputStream = FileUtils.openOutputStream(new File(dest), false);
+             GzipCompressorOutputStream gzip = new GzipCompressorOutputStream(fileOutputStream);) {
+            IOUtils.copy(fileInputStream, gzip);
+        }
+    }
+
+
+    public static void unGz(String source, String dest) throws IOException {
+        unGz(new File(source), dest);
+    }
+
+    public static void unGz(File source, String dest) throws IOException {
+        unGz(source, new File(dest));
+    }
+
+    public static void unGz(File source, File dest) throws IOException {
+        try (FileInputStream fin = new FileInputStream(source);
+             GzipCompressorInputStream gin = new GzipCompressorInputStream(fin);
+             FileOutputStream fileOutputStream = FileUtils.openOutputStream(dest, false)) {
+            IOUtils.copy(gin, fileOutputStream);
+        }
+
     }
 
 }
