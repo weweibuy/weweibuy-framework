@@ -12,6 +12,7 @@ public class TarGzUtilsTest {
         String destdir = classPath + "/tardir.tar.gz";
         TarGzUtils.tarGz(dir, destdir, false);
     }
+
     @Test
     public void unTarGz() throws Exception {
         String classPath = ClassPathFileUtils.getClassPath();
@@ -20,6 +21,21 @@ public class TarGzUtilsTest {
         TarGzUtils.unTarGz(tarFile, dest);
     }
 
+    @Test
+    public void gz() throws Exception {
+        String classPath = ClassPathFileUtils.getClassPath();
+        String tarFile = classPath + "/ES.txt";
+        String dest = classPath + "/gz/ES.gz";
+        TarGzUtils.gz(tarFile, dest);
+    }
+
+    @Test
+    public void unGz() throws Exception {
+        String classPath = ClassPathFileUtils.getClassPath();
+        String tarFile = classPath + "/gz/ES.gz";
+        String dest = classPath + "/ungz/ES.txt";
+        TarGzUtils.unGz(tarFile, dest);
+    }
 
 
 }
