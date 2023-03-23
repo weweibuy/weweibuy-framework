@@ -28,8 +28,6 @@ public class BdExceptionAdvice {
 
     @ExceptionHandler(DuplicateKeyException.class)
     public ResponseEntity<CommonCodeResponse> handler(HttpServletRequest request, DuplicateKeyException e) {
-        HttpLogger.determineAndLogForJsonRequest(request);
-
         log.error("数据重复输入: ", e);
 
         return CommonExceptionAdvice.builderCommonHeader(HttpStatus.BAD_REQUEST)
@@ -39,8 +37,6 @@ public class BdExceptionAdvice {
 
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<CommonCodeResponse> handler(HttpServletRequest request, DataIntegrityViolationException e) {
-        HttpLogger.determineAndLogForJsonRequest(request);
-
         log.error("数据库操作异常:", e);
 
         String message = e.getMessage();
