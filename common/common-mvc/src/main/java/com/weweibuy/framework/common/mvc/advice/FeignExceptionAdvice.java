@@ -6,7 +6,6 @@ import com.weweibuy.framework.common.core.model.constant.CommonConstant;
 import com.weweibuy.framework.common.core.model.dto.CommonCodeResponse;
 import com.weweibuy.framework.common.core.model.eum.CommonErrorCodeEum;
 import com.weweibuy.framework.common.feign.support.CustomFeignErrorDecoder;
-import com.weweibuy.framework.common.log.logger.HttpLogger;
 import feign.FeignException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +42,6 @@ public class FeignExceptionAdvice {
      */
     @ExceptionHandler(FeignException.class)
     public ResponseEntity<CommonCodeResponse> handler(HttpServletRequest request, FeignException e) {
-        HttpLogger.determineAndLogForJsonRequest(request);
 
         log.warn("调用接口异常: ", e);
         Throwable cause = e.getCause();

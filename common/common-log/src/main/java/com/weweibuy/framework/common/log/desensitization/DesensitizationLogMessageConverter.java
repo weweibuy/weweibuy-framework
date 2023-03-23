@@ -2,10 +2,14 @@ package com.weweibuy.framework.common.log.desensitization;
 
 import ch.qos.logback.classic.pattern.ClassicConverter;
 import ch.qos.logback.classic.spi.ILoggingEvent;
+import com.weweibuy.framework.common.log.mvc.MvcPathMappingOperator;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.ServiceLoader;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
@@ -39,9 +43,9 @@ public class DesensitizationLogMessageConverter extends ClassicConverter {
 
     @Override
     public String convert(ILoggingEvent event) {
-        return SensitizationMappingOperator.getSensitizationField()
+        return MvcPathMappingOperator.getSensitizationField()
                 .filter(s -> Level.INFO.getName().equals(event.getLevel().levelStr))
-                .filter(s -> SensitizationMappingOperator.getSensitizationLogger()
+                .filter(s -> MvcPathMappingOperator.getSensitizationLogger()
                         .map(l -> event.getLoggerName().equals(l))
                         .orElse(true))
                 .map(s -> doDesensitization(event.getFormattedMessage(), s))
@@ -102,9 +106,7 @@ public class DesensitizationLogMessageConverter extends ClassicConverter {
     private static void initCustomConfig() {
         for (PatternReplaceConfig config : LOADER) {
             config.addPatternReplace(FILED_PATTERN_MAP);
-            config.addDesensitizationRule(SensitizationMappingOperator.getConfigurerInstance());
         }
-        SensitizationMappingOperator.initConfigurer();
     }
 
 
