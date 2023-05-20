@@ -279,6 +279,9 @@ public class HttpRequestUtils {
 
 
     public static boolean notBoundaryBody(String contentType) {
+        if (StringUtils.isBlank(contentType)) {
+            return true;
+        }
         Matcher matcher = CAN_LOG_PATTERN.matcher(contentType);
         return matcher.find();
     }
