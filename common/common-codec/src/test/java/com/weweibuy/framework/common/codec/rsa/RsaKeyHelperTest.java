@@ -18,8 +18,8 @@ public class RsaKeyHelperTest {
         InputStream resourceAsStream2 = RsaKeyHelperTest.class.getClassLoader().getResourceAsStream("key/rsa_private_key_pkcs.pem");
         String string2 = IOUtils.toString(resourceAsStream2, Charset.forName("UTF-8"));
         PrivateKey privateKey = RsaKeyHelper.parsePrivateKeyPemPkcs(string2);
-        String toStr = RSAUtils.encrypt(publicKey, "123");
-        String s = RSAUtils.decryptToStr(privateKey, toStr);
+        String toStr = RSAUtils.encryptToHex(publicKey, "123");
+        String s = RSAUtils.decryptHex(privateKey, toStr);
         System.err.println(s);
     }
 
