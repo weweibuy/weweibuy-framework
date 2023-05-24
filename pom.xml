@@ -50,6 +50,7 @@
         <itext.html2pdf.version>3.0.4</itext.html2pdf.version>
         <nacos.verion>2021.1</nacos.verion>
         <knife4j-spring-boot-starter.verion>3.0.3</knife4j-spring-boot-starter.verion>
+        <snakeyaml.version>1.33</snakeyaml.version>
     </properties>
 
     <dependencyManagement>
@@ -64,6 +65,12 @@
                 <scope>import</scope>
             </dependency>
 
+            <dependency>
+                <groupId>org.yaml</groupId>
+                <artifactId>snakeyaml</artifactId>
+                <version>${snakeyaml.version}</version>
+            </dependency>
+                 
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                     <artifactId>spring-cloud-dependencies</artifactId>
