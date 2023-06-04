@@ -39,17 +39,21 @@ public class MvcLogRequestHandler implements ReadableBodyRequestHandler {
     }
 
     private void handlerReadableBodyRequest0(HttpServletRequest request, HttpServletResponse response) {
-        CommonLogProperties.CommonLogHttpProperties logProperties = mvcPathMappingOperator.findLogProperties(request);
+        CommonLogProperties.LogProperties logProperties = mvcPathMappingOperator.findLogProperties(request);
 
         if (logProperties != null && Boolean.TRUE.equals(logProperties.getDisableReq())) {
             return;
         }
 
         List<String> headerKeyList = Optional.ofNullable(logProperties)
-                .map(CommonLogProperties.CommonLogHttpProperties::getLogReqHeader)
+                .map(CommonLogProperties.LogProperties::getLogReqHeader)
                 .orElse(null);
 
-        HttpLogger.logForRequest(request, headerKeyList);
+        Boolean disableReqBody = Optional.ofNullable(logProperties)
+                .map(CommonLogProperties.LogProperties::getDisableReqBody)
+                .orElse(false);
+
+        HttpLogger.logForRequest(request, headerKeyList, disableReqBody);
 
     }
 
