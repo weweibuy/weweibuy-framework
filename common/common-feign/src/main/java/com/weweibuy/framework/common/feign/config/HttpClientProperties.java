@@ -7,6 +7,9 @@ import org.springframework.http.HttpMethod;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author durenhao
@@ -62,10 +65,13 @@ public class HttpClientProperties {
     /**
      * http 路径日志相关配置
      */
-    private List<HttpClientProperties.LogHttpProperties> log;
+    private List<HttpClientProperties.HttpReqProperties> httpReq;
 
     @Data
-    public static class LogHttpProperties {
+    public static class HttpReqProperties {
+
+        private static final Set<HttpMethod> SUPPORT_METHOD =
+                Stream.of(HttpMethod.GET, HttpMethod.POST, HttpMethod.PUT, HttpMethod.DELETE).collect(Collectors.toSet());
 
         /**
          * 请求host
@@ -75,22 +81,32 @@ public class HttpClientProperties {
         /**
          * 请求路径
          */
-        private String path;
+        private String path = "/**";
 
         /**
          * 请求 method
          */
-        private List<HttpMethod> methods;
+        private Set<HttpMethod> methods = SUPPORT_METHOD;
+
+        /**
+         * 日志配置
+         */
+        private LogHttpProperties log;
+
+    }
+
+    @Data
+    public static class LogHttpProperties {
 
         /**
          * 需要输出的请求头
          */
-        private List<String> logReqHeader;
+        private Set<String> logReqHeader;
 
         /**
          * 需要输出的响应请头
          */
-        private List<String> logRespHeader;
+        private Set<String> logRespHeader;
 
         /**
          * 是否禁止请求日志输出
@@ -112,6 +128,7 @@ public class HttpClientProperties {
          */
         private Boolean disableRespBody;
 
-
     }
+
+
 }

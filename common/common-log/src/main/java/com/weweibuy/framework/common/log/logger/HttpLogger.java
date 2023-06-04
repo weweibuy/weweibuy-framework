@@ -15,10 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -34,7 +31,7 @@ import java.util.stream.Collectors;
 public class HttpLogger {
 
 
-    public static void logForRequest(HttpServletRequest request, List<String> headerKeyList, Boolean disableReqBody) {
+    public static void logForRequest(HttpServletRequest request, Set<String> headerKeyList, Boolean disableReqBody) {
         Map<String, String> headerMap = headerMap(headerKeyList, request::getHeader);
         String body = HttpRequestUtils.BOUNDARY_BODY;
         if (!Boolean.TRUE.equals(disableReqBody)) {
@@ -78,7 +75,7 @@ public class HttpLogger {
     }
 
 
-    public static void logResponseBody(ContentCachingResponseWrapper response, List<String> headerKeyList, Boolean disableRespBody) {
+    public static void logResponseBody(ContentCachingResponseWrapper response, Set<String> headerKeyList, Boolean disableRespBody) {
         String body = HttpRequestUtils.BOUNDARY_BODY;
         if (!Boolean.TRUE.equals(disableRespBody)) {
             body = respBody(response);
@@ -130,7 +127,7 @@ public class HttpLogger {
     }
 
 
-    private static Map<String, String> headerMap(List<String> headerKeyList, Function<String, String> getHeaderF) {
+    private static Map<String, String> headerMap(Set<String> headerKeyList, Function<String, String> getHeaderF) {
         return Optional.ofNullable(headerKeyList)
                 .map(l -> l.stream()
                         .map(k -> Pair.of(k, getHeaderF.apply(k)))
