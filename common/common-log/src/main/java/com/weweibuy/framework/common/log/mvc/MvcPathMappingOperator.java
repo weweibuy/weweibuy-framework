@@ -10,10 +10,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.MDC;
+import org.springframework.http.HttpMethod;
 
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * 脱敏规则映射操作
@@ -24,44 +26,23 @@ import java.util.stream.Collectors;
 @Slf4j
 public class MvcPathMappingOperator {
 
+    private static final String HTTP_PATH_PROPERTIES_ATTR_KEY = "http_path_properties_attr_key";
 
     /**
-     * 精确匹配
+     * 精确匹配 key --> path + method
      */
-    private Map<String, CommonLogProperties.CommonLogHttpProperties> methodPathExactProperties = new HashMap<>();
+    private Map<String, CommonLogProperties.HttpPathProperties> methodPathExactProperties = new HashMap<>();
 
     /**
-     * 路径匹配
+     * 路径匹配 key --> method
      */
-    private Map<String, List<CommonLogProperties.CommonLogHttpProperties>> methodPatternProperties = new HashMap<>();
+    private Map<String, List<CommonLogProperties.HttpPathProperties>> methodPatternProperties = new HashMap<>();
 
 
-    public MvcPathMappingOperator(CommonLogProperties commonLogProperties, List<HttpLogConfigurer> logDisableConfigurer) {
-        mergeProperties(commonLogProperties, logDisableConfigurer);
-        init(commonLogProperties);
+    public MvcPathMappingOperator(List<CommonLogProperties.HttpPathProperties> propertiesConfig, List<CommonLogProperties.HttpPathProperties> codeConfig) {
+        init(propertiesConfig, codeConfig);
     }
 
-    private void mergeProperties(CommonLogProperties commonLogProperties, List<HttpLogConfigurer> logDisableConfigurer) {
-
-        if (CollectionUtils.isEmpty(logDisableConfigurer)) {
-            return;
-        }
-        List<CommonLogProperties.CommonLogHttpProperties> logHttpProperties = new ArrayList<>();
-        logDisableConfigurer.forEach(l -> l.addHttpLogConfig(logHttpProperties));
-        if (CollectionUtils.isEmpty(commonLogProperties.getHttpPath())) {
-            commonLogProperties.setHttpPath(logHttpProperties);
-            return;
-        }
-
-        Map<String, CommonLogProperties.CommonLogHttpProperties> propertiesMap = commonLogProperties.getHttpPath().stream()
-                .collect(Collectors.toMap(CommonLogProperties.CommonLogHttpProperties::getPath, Function.identity(), (o, n) -> n));
-
-        for (CommonLogProperties.CommonLogHttpProperties commonLogHttpProperties : logHttpProperties) {
-            if (!propertiesMap.containsKey(commonLogHttpProperties.getPath())) {
-                commonLogProperties.getHttpPath().add(commonLogHttpProperties);
-            }
-        }
-    }
 
     /**
      * 获取请求的日志配置信息
@@ -69,17 +50,41 @@ public class MvcPathMappingOperator {
      * @param request
      * @return
      */
-    public CommonLogProperties.CommonLogHttpProperties findLogProperties(HttpServletRequest request) {
-        String path = request.getRequestURI();
-        if (StringUtils.isBlank(path)) {
-            return null;
-        }
-        String method = request.getMethod();
-        return Optional.ofNullable(findExact(path, method))
-                .orElseGet(() -> findPattern(path, method));
+    public CommonLogProperties.LogProperties findLogProperties(HttpServletRequest request) {
+        return findPathPropertiesAndSetReqAttr(request)
+                .map(CommonLogProperties.HttpPathProperties::getLog)
+                .orElse(null);
     }
 
-    private CommonLogProperties.CommonLogHttpProperties findExact(String path, String method) {
+    public CommonLogProperties.SensitizationProperties findSensitizationProperties(HttpServletRequest request) {
+        return findPathPropertiesAndSetReqAttr(request)
+                .map(CommonLogProperties.HttpPathProperties::getSensitization)
+                .orElse(null);
+    }
+
+    private Optional<CommonLogProperties.HttpPathProperties> findPathPropertiesAndSetReqAttr(HttpServletRequest request) {
+
+        String path = request.getRequestURI();
+        if (StringUtils.isBlank(path)) {
+            return Optional.empty();
+        }
+        Optional<CommonLogProperties.HttpPathProperties> propertiesOpt = (Optional<CommonLogProperties.HttpPathProperties>) request.getAttribute(HTTP_PATH_PROPERTIES_ATTR_KEY);
+        if (propertiesOpt != null) {
+            return propertiesOpt;
+        }
+
+        String method = request.getMethod();
+
+        CommonLogProperties.HttpPathProperties properties = findExact(path, method);
+        if (properties == null) {
+            properties = findPattern(path, method);
+        }
+        propertiesOpt = Optional.ofNullable(properties);
+        request.setAttribute(HTTP_PATH_PROPERTIES_ATTR_KEY, propertiesOpt);
+        return propertiesOpt;
+    }
+
+    private CommonLogProperties.HttpPathProperties findExact(String path, String method) {
         return methodPathExactProperties.get(exactKey(path, method));
     }
 
@@ -87,7 +92,7 @@ public class MvcPathMappingOperator {
         return path.toUpperCase() + "_" + method.toUpperCase();
     }
 
-    private CommonLogProperties.CommonLogHttpProperties findPattern(String path, String method) {
+    private CommonLogProperties.HttpPathProperties findPattern(String path, String method) {
         return Optional.ofNullable(methodPatternProperties.get(method.toUpperCase()))
                 .flatMap(s -> s.stream()
                         .filter(p -> HttpRequestUtils.isMatchPath(p.getPath(), path))
@@ -96,30 +101,54 @@ public class MvcPathMappingOperator {
     }
 
 
-    private void init(CommonLogProperties commonLogProperties) {
-        Map<Boolean, List<CommonLogProperties.CommonLogHttpProperties>> booleanListMap = Optional.ofNullable(commonLogProperties.getHttpPath())
-                .map(l -> l.stream()
-                        .collect(Collectors.groupingBy(e -> e.getPath().indexOf('*') != -1)))
-                .orElse(Collections.emptyMap());
+    private void init(List<CommonLogProperties.HttpPathProperties> propertiesConfig, List<CommonLogProperties.HttpPathProperties> codeConfig) {
 
-        List<CommonLogProperties.CommonLogHttpProperties> exactPathLogHttpProperties
+        if (CollectionUtils.isEmpty(propertiesConfig)) {
+            propertiesConfig = Collections.emptyList();
+        }
+        if (CollectionUtils.isEmpty(codeConfig)) {
+            codeConfig = Collections.emptyList();
+        }
+
+        Map<Boolean, List<CommonLogProperties.HttpPathProperties>> propertiesBooleanListMap =
+                propertiesConfig.stream()
+                        .collect(Collectors.groupingBy(e -> e.getPath().indexOf('*') != -1));
+
+        Map<Boolean, List<CommonLogProperties.HttpPathProperties>> codeBooleanListMap =
+                codeConfig.stream()
+                        .collect(Collectors.groupingBy(e -> e.getPath().indexOf('*') != -1));
+
+        putExactPath(codeBooleanListMap);
+        putExactPath(propertiesBooleanListMap);
+
+        putMethodPattern(propertiesBooleanListMap);
+        putMethodPattern(codeBooleanListMap);
+
+    }
+
+
+    private void putExactPath(Map<Boolean, List<CommonLogProperties.HttpPathProperties>> booleanListMap) {
+        List<CommonLogProperties.HttpPathProperties> exactPathConfig
                 = Optional.ofNullable(booleanListMap.get(false))
                 .orElse(Collections.emptyList());
 
-        for (CommonLogProperties.CommonLogHttpProperties properties : exactPathLogHttpProperties) {
-            for (String method : properties.getMethod()) {
-                methodPathExactProperties.put(exactKey(properties.getPath(), method), properties);
+        for (CommonLogProperties.HttpPathProperties properties : exactPathConfig) {
+            for (HttpMethod method : properties.getMethods()) {
+                String key = exactKey(properties.getPath(), method.toString());
+                methodPathExactProperties.put(key, properties);
             }
         }
+    }
 
-        List<CommonLogProperties.CommonLogHttpProperties> patternPathLogHttpProperties
+    private void putMethodPattern(Map<Boolean, List<CommonLogProperties.HttpPathProperties>> booleanListMap) {
+        List<CommonLogProperties.HttpPathProperties> patternPathLogHttpProperties
                 = Optional.ofNullable(booleanListMap.get(true))
                 .orElse(Collections.emptyList());
 
-        for (CommonLogProperties.CommonLogHttpProperties properties : exactPathLogHttpProperties) {
-            for (String method : properties.getMethod()) {
-                String methodKey = method.toUpperCase();
-                List<CommonLogProperties.CommonLogHttpProperties> propertiesList = methodPatternProperties.get(methodKey);
+        for (CommonLogProperties.HttpPathProperties properties : patternPathLogHttpProperties) {
+            for (HttpMethod method : properties.getMethods()) {
+                String methodKey = method.toString();
+                List<CommonLogProperties.HttpPathProperties> propertiesList = methodPatternProperties.get(methodKey);
                 if (propertiesList == null) {
                     propertiesList = new ArrayList<>();
                     propertiesList.add(properties);
@@ -129,7 +158,6 @@ public class MvcPathMappingOperator {
                     if (!match) {
                         propertiesList.add(properties);
                     }
-
                 }
                 methodPatternProperties.put(methodKey, propertiesList);
             }

@@ -14,6 +14,6 @@ import java.util.List;
 public class CustomDisablePathConfig implements HttpLogConfigurer {
 
     @Override
-    public void addHttpLogConfig(List<CommonLogProperties.CommonLogHttpProperties> logHttpProperties) {
+    public void addHttpLogConfig(List<CommonLogProperties.HttpPathProperties> logHttpProperties) {
     }
 }

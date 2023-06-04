@@ -2,6 +2,7 @@ package com.weweibuy.framework.common.log.config;
 
 import com.weweibuy.framework.common.log.mvc.*;
 import com.weweibuy.framework.common.log.support.HttpLogConfigurer;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
@@ -10,7 +11,9 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * 日志相关配置
@@ -55,7 +58,12 @@ public class CommonLogConfig {
 
     @Bean
     public MvcPathMappingOperator mvcPathMappingOperator() {
-        return new MvcPathMappingOperator(commonLogProperties, logDisableConfigurer);
+        List<CommonLogProperties.HttpPathProperties> codeLogHttpProperties = new ArrayList<>();
+        if (CollectionUtils.isNotEmpty(logDisableConfigurer)) {
+            logDisableConfigurer.forEach(l -> l.addHttpLogConfig(codeLogHttpProperties));
+        }
+        List<CommonLogProperties.HttpPathProperties> httpPath = commonLogProperties.getHttpPath();
+        return new MvcPathMappingOperator(httpPath, codeLogHttpProperties);
     }
 
 }
