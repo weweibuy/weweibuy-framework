@@ -34,9 +34,12 @@ import java.util.stream.Collectors;
 public class HttpLogger {
 
 
-    public static void logForRequest(HttpServletRequest request, List<String> headerKeyList) {
+    public static void logForRequest(HttpServletRequest request, List<String> headerKeyList, Boolean disableReqBody) {
         Map<String, String> headerMap = headerMap(headerKeyList, request::getHeader);
-        String body = reqBody(request);
+        String body = HttpRequestUtils.BOUNDARY_BODY;
+        if (!Boolean.TRUE.equals(disableReqBody)) {
+            body = reqBody(request);
+        }
         logForRequest(request.getRequestURI(), request.getMethod(), request.getParameterMap(),
                 headerMap, body);
     }
@@ -75,13 +78,16 @@ public class HttpLogger {
     }
 
 
-    public static void logResponseBody(ContentCachingResponseWrapper response, List<String> headerKeyList) {
-        String body = respBody(response);
+    public static void logResponseBody(ContentCachingResponseWrapper response, List<String> headerKeyList, Boolean disableRespBody) {
+        String body = HttpRequestUtils.BOUNDARY_BODY;
+        if (!Boolean.TRUE.equals(disableRespBody)) {
+            body = respBody(response);
+        }
         Map<String, String> headerMap = headerMap(headerKeyList, response::getHeader);
         logResponseBody(body, response.getStatus(), headerMap);
     }
 
-    private static boolean isBoundaryBody(String contentType){
+    private static boolean isBoundaryBody(String contentType) {
         return StringUtils.isNotBlank(contentType)
                 && !HttpRequestUtils.notBoundaryBody(contentType);
     }

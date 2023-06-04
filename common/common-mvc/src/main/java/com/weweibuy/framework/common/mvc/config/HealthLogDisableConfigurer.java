@@ -5,6 +5,7 @@ import com.weweibuy.framework.common.log.support.HttpLogConfigurer;
 import com.weweibuy.framework.common.mvc.constant.HealthCheckConstant;
 import jakarta.servlet.ServletContext;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpMethod;
 
 import java.util.Collections;
 import java.util.List;
@@ -20,17 +21,20 @@ public class HealthLogDisableConfigurer implements HttpLogConfigurer {
     private Optional<ServletContext> servletContext;
 
     @Override
-    public void addHttpLogConfig(List<CommonLogProperties.CommonLogHttpProperties> logHttpPropertiesMap) {
+    public void addHttpLogConfig(List<CommonLogProperties.HttpPathProperties> logHttpPropertiesMap) {
         String contextPath = servletContext
                 .map(ServletContext::getContextPath)
                 .orElse("");
 
-        CommonLogProperties.CommonLogHttpProperties commonLogHttpProperties = new CommonLogProperties.CommonLogHttpProperties();
+        CommonLogProperties.HttpPathProperties commonLogHttpProperties = new CommonLogProperties.HttpPathProperties();
         commonLogHttpProperties.setPath(contextPath + HealthCheckConstant.HEALTH_CHECK_PATH);
-        commonLogHttpProperties.setMethod(Collections.singletonList("GET"));
-        commonLogHttpProperties.setDisableReq(true);
-        commonLogHttpProperties.setDisableResp(true);
+        commonLogHttpProperties.setMethods(Collections.singleton(HttpMethod.GET));
 
+        CommonLogProperties.LogProperties logProperties = new CommonLogProperties.LogProperties();
+        logProperties.setDisableReq(true);
+        logProperties.setDisableResp(true);
+
+        commonLogHttpProperties.setLog(logProperties);
         logHttpPropertiesMap.add(commonLogHttpProperties);
     }
 }

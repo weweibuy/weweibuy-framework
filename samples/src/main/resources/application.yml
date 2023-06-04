@@ -73,12 +73,10 @@ rocket-mq:
       topic: TEST_SAMPLE_BATCH_02
   consumer:
     sample-consumer:
-      trace: false
       customized-trace-topic: qaz
       topic: TEST_SAMPLE_01
       group: TEST_SAMPLE_01_C_GROUP
     batchSampleConsumer:
-      trace: false
       topic: TEST_SAMPLE_BATCH_01
       group: TEST_SAMPLE_BATCH_01_C_GROUP
     batchForeachSampleConsumer:
@@ -120,8 +118,11 @@ common:
   log:
     http-path:
       - path: /hello
-        method: GET
-        log-req-header: Host,Connection
+        methods: GET
+        log:
+          disable-req: true
+          disable-resp-body: true
+
 
   db:
     encrypt:

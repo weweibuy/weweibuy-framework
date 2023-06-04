@@ -40,17 +40,21 @@ public class MvcLogResponseHandler implements ReadableBodyResponseHandler {
 
 
     private void handlerReadableBodyResponse0(HttpServletRequest request, ContentCachingResponseWrapper response) {
-        CommonLogProperties.CommonLogHttpProperties logProperties = mvcPathMappingOperator.findLogProperties(request);
+        CommonLogProperties.LogProperties logProperties = mvcPathMappingOperator.findLogProperties(request);
 
         if (logProperties != null && Boolean.TRUE.equals(logProperties.getDisableResp())) {
             return;
         }
 
         List<String> headerKeyList = Optional.ofNullable(logProperties)
-                .map(CommonLogProperties.CommonLogHttpProperties::getLogReqHeader)
+                .map(CommonLogProperties.LogProperties::getLogReqHeader)
                 .orElse(null);
 
-        HttpLogger.logResponseBody(response, headerKeyList);
+        Boolean disableRespBody = Optional.ofNullable(logProperties)
+                .map(CommonLogProperties.LogProperties::getDisableRespBody)
+                .orElse(false);
+
+        HttpLogger.logResponseBody(response, headerKeyList, disableRespBody);
     }
 
 

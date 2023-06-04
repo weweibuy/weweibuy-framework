@@ -1,11 +1,16 @@
 package com.weweibuy.framework.common.feign.support;
 
+import com.weweibuy.framework.common.feign.config.HttpClientProperties;
 import com.weweibuy.framework.common.feign.log.HttpClientLogger;
+import com.weweibuy.framework.common.log.config.CommonLogProperties;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.*;
 import org.apache.http.protocol.HttpContext;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author durenhao
@@ -16,6 +21,22 @@ public class CustomHttpClientLogInterceptor implements HttpResponseInterceptor, 
 
     private static final String REQ_TIME_KEY = "req_time_key";
 
+    private final HttpClientProperties httpClientProperties;
+
+    /**
+     * 精确匹配
+     */
+    private Map<String, HttpClientProperties.LogHttpProperties> methodPathExactProperties = new HashMap<>();
+
+    /**
+     * 路径匹配
+     */
+    private Map<String, List<HttpClientProperties.LogHttpProperties>> methodPatternProperties = new HashMap<>();
+
+
+    public CustomHttpClientLogInterceptor(HttpClientProperties httpClientProperties) {
+        this.httpClientProperties = httpClientProperties;
+    }
 
     @Override
     public void process(HttpRequest request, HttpContext context) throws HttpException, IOException {
