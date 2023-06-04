@@ -22,7 +22,7 @@ public class HttpClientLogConfig {
 
     @Bean
     public CustomHttpClientLogInterceptor customHttpClientLogInterceptor() {
-        return new CustomHttpClientLogInterceptor(httpClientProperties);
+        return new CustomHttpClientLogInterceptor(httpClientProperties.getHttpReq());
     }
 
     @Bean

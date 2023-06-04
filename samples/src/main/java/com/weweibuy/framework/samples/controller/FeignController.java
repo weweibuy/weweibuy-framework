@@ -50,6 +50,7 @@ public class FeignController {
 
     @GetMapping("/feign")
     public Object sendToFeign() throws IOException {
+        CommonCodeResponse postJson = localFeignClient.postJson(CommonDataResponse.success("postJson"));
 
         CommonDataResponse<String> xx = myFeignClient.helloGet("xx", "1");
 
@@ -59,7 +60,6 @@ public class FeignController {
         Response textReq = localFeignClient.getTextReq(CommonDataResponse.success("querymap"));
 
         CommonCodeResponse json1 = localFeignClient.getJson(CommonDataResponse.success("getJson"));
-        CommonCodeResponse postJson = localFeignClient.postJson(CommonDataResponse.success("postJson"));
         CommonCodeResponse getFrom = localFileFeignClient.getFrom(CommonDataResponse.success("getFrom"));
 
         File file = new File("C:\\Users\\z\\Desktop\\Flowable原生Api问题.txt");
