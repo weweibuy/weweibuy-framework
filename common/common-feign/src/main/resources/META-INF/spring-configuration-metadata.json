@@ -11,7 +11,7 @@
       "name": "common.feign.http-client.useSSL",
       "type": "java.lang.Boolean",
       "sourceType": "com.weweibuy.framework.common.feign.config.HttpClientProperties",
-      "defaultValue": false
+      "defaultValue": true
     },
     {
       "name": "common.feign.http-client.maxTotal",
@@ -50,10 +50,20 @@
       "defaultValue": 60000
     },
     {
-      "name": "common.feign.http-client.maxLifeTime",
+      "name": "common.feign.http-client.max-life-time",
       "type": "java.lang.Integer",
       "sourceType": "com.weweibuy.framework.common.feign.config.HttpClientProperties",
       "defaultValue": -1
+    },
+    {
+      "name": "common.feign.http-client.http-req",
+      "type": "java.util.List<com.weweibuy.framework.common.feign.config.HttpClientProperties$HttpReqProperties>",
+      "sourceType": "com.weweibuy.framework.common.feign.config.HttpClientProperties$HttpReqProperties"
+    },
+    {
+      "name": "common.feign.http-client.http-req.log",
+      "type": "com.weweibuy.framework.common.feign.config.HttpClientProperties$HttpReqProperties",
+      "sourceType": "com.weweibuy.framework.common.feign.config.HttpClientProperties$LogHttpProperties"
     },
     {
       "name": "common.feign.log.position",

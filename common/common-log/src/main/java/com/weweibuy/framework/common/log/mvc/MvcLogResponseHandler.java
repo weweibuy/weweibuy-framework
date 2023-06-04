@@ -10,6 +10,7 @@ import org.springframework.web.util.ContentCachingResponseWrapper;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * 输出MVC 响应日志
@@ -46,7 +47,7 @@ public class MvcLogResponseHandler implements ReadableBodyResponseHandler {
             return;
         }
 
-        List<String> headerKeyList = Optional.ofNullable(logProperties)
+        Set<String> headerKeyList = Optional.ofNullable(logProperties)
                 .map(CommonLogProperties.LogProperties::getLogReqHeader)
                 .orElse(null);
 
