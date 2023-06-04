@@ -34,6 +34,7 @@ public class CommonLogProperties {
 
         private static final Set<HttpMethod> SUPPORT_METHOD =
                 Stream.of(HttpMethod.GET, HttpMethod.POST, HttpMethod.PUT, HttpMethod.DELETE).collect(Collectors.toSet());
+
         /**
          * 请求路径
          */
@@ -63,12 +64,12 @@ public class CommonLogProperties {
         /**
          * 需要输出的请求头
          */
-        private List<String> logReqHeader;
+        private Set<String> logReqHeader;
 
         /**
          * 需要输出的响应请头
          */
-        private List<String> logRespHeader;
+        private Set<String> logRespHeader;
 
         /**
          * 是否禁止请求日志输出
