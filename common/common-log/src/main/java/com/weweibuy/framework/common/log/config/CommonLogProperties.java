@@ -1,13 +1,16 @@
 package com.weweibuy.framework.common.log.config;
 
+import com.weweibuy.framework.common.core.utils.BeanCopyUtils;
 import com.weweibuy.framework.common.log.logger.HttpLogger;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.http.HttpMethod;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author durenhao
@@ -23,13 +26,15 @@ public class CommonLogProperties {
     private Boolean enable = true;
 
     /**
-     * http 路径日志相关配置
+     * http 路径 相关配置
      */
-    private List<CommonLogHttpProperties> httpPath;
+    private List<HttpPathProperties> httpPath;
 
     @Data
-    public static class CommonLogHttpProperties {
+    public static class HttpPathProperties {
 
+        private static final Set<HttpMethod> SUPPORT_METHOD =
+                Stream.of(HttpMethod.GET, HttpMethod.POST, HttpMethod.PUT, HttpMethod.DELETE).collect(Collectors.toSet());
         /**
          * 请求路径
          */
@@ -40,8 +45,22 @@ public class CommonLogProperties {
          * 请求 method
          */
         @NotEmpty(message = "CommonLogHttpProperties.method 不能为空")
-        private List<String> method;
+        private Set<HttpMethod> methods = SUPPORT_METHOD;
 
+        /**
+         * 日志配置
+         */
+        private LogProperties log;
+
+        /**
+         * 脱敏相关配置
+         */
+        private SensitizationProperties sensitization;
+
+    }
+
+    @Data
+    public static class LogProperties {
         /**
          * 需要输出的请求头
          */
@@ -58,19 +77,24 @@ public class CommonLogProperties {
         private Boolean disableReq;
 
         /**
+         * 禁止请求体日志输出
+         */
+        private Boolean disableReqBody;
+
+        /**
          * 是否禁止响应日志输出
          */
         private Boolean disableResp;
 
         /**
-         * 脱敏相关配置
+         * 禁止响应体日志输出
          */
-        private HttpSensitizationProperties sensitization;
-
+        private Boolean disableRespBody;
     }
 
+
     @Data
-    public static class HttpSensitizationProperties {
+    public static class SensitizationProperties {
 
         /**
          * 敏感字段
