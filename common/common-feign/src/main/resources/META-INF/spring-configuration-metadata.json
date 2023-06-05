@@ -61,11 +61,6 @@
       "sourceType": "com.weweibuy.framework.common.feign.config.HttpClientProperties$HttpReqProperties"
     },
     {
-      "name": "common.feign.http-client.http-req.log",
-      "type": "com.weweibuy.framework.common.feign.config.HttpClientProperties$HttpReqProperties",
-      "sourceType": "com.weweibuy.framework.common.feign.config.HttpClientProperties$LogHttpProperties"
-    },
-    {
       "name": "common.feign.log.position",
       "type": "java.lang.String",
       "defaultValue": "httpclient"
