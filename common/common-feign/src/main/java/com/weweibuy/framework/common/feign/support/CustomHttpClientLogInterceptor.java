@@ -62,12 +62,12 @@ public class CustomHttpClientLogInterceptor implements HttpResponseInterceptor, 
     @Override
     public void process(HttpResponse response, HttpContext context) throws HttpException, IOException {
         Long time = (Long) context.getAttribute(REQ_TIME_KEY);
-        long rt = System.currentTimeMillis() - time;
         HttpClientProperties.LogHttpProperties logProperties = (HttpClientProperties.LogHttpProperties) context.getAttribute(REQ_LOG_PROPERTIES_KEY);
         try {
             if (logProperties != null && Boolean.TRUE.equals(logProperties.getDisableResp())) {
                 return;
             }
+            long rt = System.currentTimeMillis() - time;
             logHttpResp(response, logProperties, rt);
         } catch (Exception e) {
             log.error("Httpclient 输出响应日志异常: ", e);
