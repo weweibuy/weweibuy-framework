@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
  * @author durenhao
  * @date 2022/10/14 22:51
  **/
-@FeignClient(name = "localFeignClient", url = "http://localhost:8080/feign-test")
+@FeignClient(name = "localFeignClient", url = "localhost:8080/feign-test")
 public interface LocalFeignClient {
 
 
