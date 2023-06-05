@@ -1,6 +1,5 @@
 package com.weweibuy.framework.common.log.config;
 
-import com.weweibuy.framework.common.core.utils.BeanCopyUtils;
 import com.weweibuy.framework.common.log.logger.HttpLogger;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
@@ -10,6 +9,8 @@ import org.springframework.http.HttpMethod;
 
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author durenhao

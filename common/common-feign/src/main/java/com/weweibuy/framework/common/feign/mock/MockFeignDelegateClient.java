@@ -3,7 +3,6 @@ package com.weweibuy.framework.common.feign.mock;
 import com.weweibuy.framework.common.core.exception.Exceptions;
 import com.weweibuy.framework.common.feign.support.DelegateFeignClient;
 import feign.Client;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.core.annotation.Order;
 
