@@ -15,6 +15,7 @@ import org.springframework.http.HttpMethod;
 
 import java.io.IOException;
 import java.net.URI;
+import java.net.URL;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -46,12 +47,12 @@ public class CustomHttpClientLogInterceptor implements HttpResponseInterceptor, 
 
     @Override
     public void process(HttpRequest request, HttpContext context) throws HttpException, IOException {
-        context.setAttribute(REQ_TIME_KEY, System.currentTimeMillis());
         try {
             URI uri = reqURI(request);
             String method = request.getRequestLine().getMethod();
             HttpClientProperties.LogHttpProperties logProperties = findLogProperties(uri, method);
             context.setAttribute(REQ_LOG_PROPERTIES_KEY, logProperties);
+            context.setAttribute(REQ_TIME_KEY, System.currentTimeMillis());
             logHttpReq(request, uri, method, logProperties);
         } catch (Exception e) {
             log.error("Httpclient 输出请求日志异常: ", e);
@@ -61,12 +62,13 @@ public class CustomHttpClientLogInterceptor implements HttpResponseInterceptor, 
     @Override
     public void process(HttpResponse response, HttpContext context) throws HttpException, IOException {
         Long time = (Long) context.getAttribute(REQ_TIME_KEY);
+        long rt = System.currentTimeMillis() - time;
         HttpClientProperties.LogHttpProperties logProperties = (HttpClientProperties.LogHttpProperties) context.getAttribute(REQ_LOG_PROPERTIES_KEY);
         try {
             if (logProperties != null && Boolean.TRUE.equals(logProperties.getDisableResp())) {
                 return;
             }
-            logHttpResp(response, logProperties, time);
+            logHttpResp(response, logProperties, rt);
         } catch (Exception e) {
             log.error("Httpclient 输出响应日志异常: ", e);
         }
@@ -91,12 +93,18 @@ public class CustomHttpClientLogInterceptor implements HttpResponseInterceptor, 
         if (StringUtils.isBlank(host)) {
             return null;
         }
-        String path = uri.getPath();
+        String path = Optional.ofNullable(uri.getPath())
+                .filter(StringUtils::isNotBlank)
+                .orElse("/");
+        if (uri.getPort() > 0) {
+            host = host + ":" + uri.getPort();
+        }
+        String hostPort = host;
 
-        return Optional.ofNullable(hostPathMethodExactPropertiesMap.get(host))
+        return Optional.ofNullable(hostPathMethodExactPropertiesMap.get(hostPort))
                 .map(m -> m.get(key(path, method)))
-                .orElseGet(() -> Optional.ofNullable(hostMethodPatternPropertiesMap.get(method))
-                        .map(m -> m.get(host))
+                .orElseGet(() -> Optional.ofNullable(hostMethodPatternPropertiesMap.get(hostPort))
+                        .map(m -> m.get(method))
                         .flatMap(l -> l.stream()
                                 .filter(p -> HttpRequestUtils.isMatchPath(p.getPath(), path))
                                 .map(HttpClientProperties.HttpReqProperties::getLog)

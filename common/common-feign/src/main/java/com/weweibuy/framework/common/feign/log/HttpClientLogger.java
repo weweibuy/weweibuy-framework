@@ -35,7 +35,8 @@ public final class HttpClientLogger {
                 .orElse(Collections.emptySet());
 
         Map<String, String> headerMap = logHeaderMap(request, headerSet);
-        String contentType = headerMap.get(HttpHeaders.CONTENT_TYPE);
+        String contentType = Optional.ofNullable(headerMap.get(HttpHeaders.CONTENT_TYPE))
+                .orElse("");
 
         String body = reqBodyAndReBuffer(request, contentType, logProperties);
         String headerStr = headerMapStr(headerMap);
@@ -89,7 +90,8 @@ public final class HttpClientLogger {
                 .orElse(Collections.emptySet());
 
         Map<String, String> headerMap = logHeaderMap(response, headerList);
-        String contentType = headerMap.get(HttpHeaders.CONTENT_TYPE);
+        String contentType = Optional.ofNullable(headerMap.get(HttpHeaders.CONTENT_TYPE))
+                .orElse("");
 
         String body = respBodyAndReBuffer(response, contentType, logProperties);
         String headerStr = headerMapStr(headerMap);
@@ -99,7 +101,7 @@ public final class HttpClientLogger {
                 statusLine.getStatusCode(),
                 headerStr,
                 body,
-                System.currentTimeMillis() - reqTime);
+                reqTime);
     }
 
     private static String headerMapStr(Map<String, String> headerMap) {
