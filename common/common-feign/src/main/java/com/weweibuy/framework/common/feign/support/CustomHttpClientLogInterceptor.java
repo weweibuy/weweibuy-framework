@@ -3,7 +3,6 @@ package com.weweibuy.framework.common.feign.support;
 import com.weweibuy.framework.common.core.utils.HttpRequestUtils;
 import com.weweibuy.framework.common.feign.config.HttpClientProperties;
 import com.weweibuy.framework.common.feign.log.HttpClientLogger;
-import com.weweibuy.framework.common.log.config.CommonLogProperties;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -15,9 +14,7 @@ import org.springframework.http.HttpMethod;
 
 import java.io.IOException;
 import java.net.URI;
-import java.net.URL;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * @author durenhao
