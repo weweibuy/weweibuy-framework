@@ -13,10 +13,11 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.OAEPParameterSpec;
 import javax.crypto.spec.PSource;
 import java.io.*;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.*;
-import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
@@ -26,7 +27,6 @@ import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
 import java.util.Enumeration;
-import java.util.regex.Pattern;
 
 /**
  * RSA 工具
@@ -229,7 +229,7 @@ public final class RSAUtils {
      * @throws BadPaddingException
      * @throws IllegalBlockSizeException
      */
-    public static String decryptBase64(PrivateKey key, String encryptedBase64) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
+    public static String decryptBase64(PrivateKey key, String encryptedBase64) throws InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
         return new String(decrypt(key, Base64.getDecoder().decode(encryptedBase64)));
     }
 
@@ -291,7 +291,7 @@ public final class RSAUtils {
         return KeyFactory.getInstance(ALGORITHM).generatePrivate(new PKCS8EncodedKeySpec(decode));
     }
 
-    public static PrivateKey getPrivateKeyFromBase64StrP8(String base64Str) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
+    public static PrivateKey getPrivateKeyFromBase64StrP8(String base64Str) throws NoSuchAlgorithmException, InvalidKeySpecException {
         byte[] decode = Base64.getDecoder().decode(base64Str.getBytes());
         return KeyFactory.getInstance(ALGORITHM).generatePrivate(new PKCS8EncodedKeySpec(decode));
     }
@@ -397,9 +397,9 @@ public final class RSAUtils {
      * 证书
      */
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
-    public final static class CertificateUtils {
+    public static final class CertificateUtils {
 
-        public static String CERTIFICATE_TYPE = "X509";
+        public static final String CERTIFICATE_TYPE = "X509";
 
         /**
          * 根据 cer文件流, 读取证书
@@ -409,7 +409,7 @@ public final class RSAUtils {
          * @throws Exception
          */
         public static X509Certificate certificateFromStream(InputStream certificateFileStream) throws Exception {
-            String certificateText = IOUtils.toString(certificateFileStream);
+            String certificateText = IOUtils.toString(certificateFileStream, StandardCharsets.UTF_8);
             return RsaKeyHelper.parseCertificate(certificateText);
         }
 

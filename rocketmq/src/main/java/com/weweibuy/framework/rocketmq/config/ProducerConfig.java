@@ -46,7 +46,7 @@ public class ProducerConfig {
     }
 
     @Bean
-    public ProxyRocketProvider proxyRocketProvider(MessageConverter messageConverter) throws Exception {
+    public ProxyRocketProvider proxyRocketProvider(MessageConverter messageConverter) {
 
         List<MessageSendFilter> sendFilterList = new ArrayList<>();
 

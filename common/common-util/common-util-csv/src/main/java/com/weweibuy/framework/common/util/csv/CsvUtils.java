@@ -76,7 +76,7 @@ public class CsvUtils {
 
 
     public static <T> ReflectCsvContentConverter<T> csvContentConverter(Class<T> clazz) {
-        return CONVERTER_MAP.computeIfAbsent(clazz, key -> new ReflectCsvContentConverter(key));
+        return CONVERTER_MAP.computeIfAbsent(clazz, ReflectCsvContentConverter::new);
     }
 
 

@@ -4,7 +4,6 @@ import com.weweibuy.framework.common.core.validate.annotation.Maximum;
 import com.weweibuy.framework.common.core.validate.annotation.Minimum;
 import com.weweibuy.framework.common.core.validate.annotation.Scale;
 import lombok.Data;
-import org.hibernate.validator.constraints.Length;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;

@@ -62,7 +62,7 @@ public class Exceptions {
     }
 
     public static BusinessException business(ResponseCodeAndMsg codeAndMsg, String msg, Throwable e) {
-        return business(codeAndMsg.getCode(), msg);
+        return business(codeAndMsg.getCode(), msg, e);
     }
 
 
