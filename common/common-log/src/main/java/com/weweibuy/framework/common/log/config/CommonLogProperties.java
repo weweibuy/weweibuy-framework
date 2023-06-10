@@ -1,6 +1,5 @@
 package com.weweibuy.framework.common.log.config;
 
-import com.weweibuy.framework.common.core.utils.BeanCopyUtils;
 import com.weweibuy.framework.common.log.logger.HttpLogger;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;

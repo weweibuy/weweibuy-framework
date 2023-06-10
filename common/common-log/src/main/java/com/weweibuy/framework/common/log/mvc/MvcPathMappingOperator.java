@@ -12,9 +12,7 @@ import org.springframework.http.HttpMethod;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * 脱敏规则映射操作
