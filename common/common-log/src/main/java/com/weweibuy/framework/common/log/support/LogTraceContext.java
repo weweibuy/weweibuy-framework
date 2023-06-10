@@ -1,9 +1,11 @@
 package com.weweibuy.framework.common.log.support;
 
 import com.weweibuy.framework.common.core.exception.Exceptions;
+import com.weweibuy.framework.common.core.utils.IdWorker;
 import com.weweibuy.framework.common.log.constant.LogMdcConstant;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.MDC;
 
 import java.util.Optional;
@@ -23,7 +25,7 @@ public class LogTraceContext {
      * @return
      */
     public static Optional<String> getTraceCode() {
-        return Optional.ofNullable(MDC.get(LogMdcConstant.TID_FIELD_NAME));
+        return Optional.ofNullable(getTraceCode0());
     }
 
     /**
@@ -32,9 +34,23 @@ public class LogTraceContext {
      * @return
      */
     public static String getTraceCodeOrEmpty() {
-        return Optional.ofNullable(MDC.get(LogMdcConstant.TID_FIELD_NAME))
+        return getTraceCode()
                 .orElse("");
     }
+
+    public static String getTraceCodeOrNew() {
+        String code = getTraceCode0();
+        if (StringUtils.isBlank(code)) {
+            code = IdWorker.nextStringId();
+            setTraceCode(code);
+        }
+        return code;
+    }
+
+    private static String getTraceCode0() {
+        return MDC.get(LogMdcConstant.TID_FIELD_NAME);
+    }
+
 
     /**
      * 获取 userCode
@@ -42,11 +58,11 @@ public class LogTraceContext {
      * @return
      */
     public static Optional<String> getUserCode() {
-        return Optional.ofNullable(MDC.get(LogMdcConstant.UID_FIELD_NAME));
+        return Optional.ofNullable(userCode0());
     }
 
     public static String getUserCodeOrThrow() {
-        return Optional.ofNullable(MDC.get(LogMdcConstant.UID_FIELD_NAME))
+        return getUserCode()
                 .orElseThrow(() -> Exceptions.business("用户信息异常"));
     }
 
@@ -56,6 +72,10 @@ public class LogTraceContext {
 
     public static void setUserCode(String userCode) {
         MDC.put(LogMdcConstant.UID_FIELD_NAME, userCode);
+    }
+
+    private static String userCode0() {
+        return MDC.get(LogMdcConstant.UID_FIELD_NAME);
     }
 
     public static void setTraceCodeAndUserCode(String traceCode, String userCode) {
