@@ -16,6 +16,7 @@ import org.bouncycastle.asn1.ASN1Sequence;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
@@ -83,10 +84,8 @@ public class RsaKeyHelper {
             }
 
             return new KeyPair(publicKey, privateKey);
-        } catch (InvalidKeySpecException e) {
+        } catch (InvalidKeySpecException | NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
-        } catch (NoSuchAlgorithmException e) {
-            throw new IllegalStateException(e);
         }
     }
 
@@ -193,7 +192,7 @@ public class RsaKeyHelper {
 
             return createPublicKey(n, e);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new UncheckedIOException(e);
         }
     }
 
@@ -230,7 +229,7 @@ public class RsaKeyHelper {
             System.arraycopy(bytes.array(), 0, bytesCopy, 0, bytes.limit());
             return bytesCopy;
         } catch (CharacterCodingException e) {
-            throw new RuntimeException(e);
+            throw new UncheckedIOException(e);
         }
     }
 

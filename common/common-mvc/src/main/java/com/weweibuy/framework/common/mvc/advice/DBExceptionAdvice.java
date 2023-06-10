@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import javax.servlet.http.HttpServletRequest;
 import java.sql.SQLException;
 
 /**
@@ -23,7 +24,7 @@ import java.sql.SQLException;
 @Slf4j
 @RestControllerAdvice
 @Order(-200)
-public class BdExceptionAdvice {
+public class DBExceptionAdvice {
 
     @ExceptionHandler(DuplicateKeyException.class)
     public ResponseEntity<CommonCodeResponse> handler(HttpServletRequest request, DuplicateKeyException e) {
@@ -39,7 +40,7 @@ public class BdExceptionAdvice {
         log.error("数据库操作异常:", e);
 
         String message = e.getMessage();
-        if (message.indexOf("Data too long") != -1) {
+        if (message != null && message.indexOf("Data too long") != -1) {
             return CommonExceptionAdvice.builderCommonHeader(HttpStatus.BAD_REQUEST)
                     .body(CommonCodeResponse.response(CommonErrorCodeEum.BAD_REQUEST_PARAM.getCode(), "输入数据字段过长"));
         }

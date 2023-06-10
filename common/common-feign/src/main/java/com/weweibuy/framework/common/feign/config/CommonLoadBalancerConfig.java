@@ -32,11 +32,10 @@ public class CommonLoadBalancerConfig {
             LoadBalancerProperties.class, LoadBalancerClientFactory.class})
     public Client feignClient(LoadBalancerClient loadBalancerClient,
                               HttpClient httpClient,
-                              LoadBalancerProperties properties,
                               LoadBalancerClientFactory loadBalancerClientFactory) {
         Client client = new ApacheHttpClient(httpClient);
         client = DelegateFeignClient.delegateChain(delegateFeignClientList, client);
-        return new FeignBlockingLoadBalancerClient(client, loadBalancerClient, properties, loadBalancerClientFactory);
+        return new FeignBlockingLoadBalancerClient(client, loadBalancerClient, loadBalancerClientFactory);
     }
 
 

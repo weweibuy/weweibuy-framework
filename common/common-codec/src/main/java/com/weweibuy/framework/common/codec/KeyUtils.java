@@ -19,8 +19,7 @@ public class KeyUtils {
     public static SecretKey generalHS256Key(String secret) {
         byte[] stringKey = secret.getBytes();
         byte[] encodedKey = Base64.getEncoder().encode(stringKey);
-        SecretKey key = new SecretKeySpec(encodedKey, 0, encodedKey.length, "HS256");
-        return key;
+        return new SecretKeySpec(encodedKey, 0, encodedKey.length, "HS256");
     }
 
 }

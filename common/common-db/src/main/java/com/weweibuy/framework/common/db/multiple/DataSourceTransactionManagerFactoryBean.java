@@ -35,7 +35,7 @@ public class DataSourceTransactionManagerFactoryBean implements FactoryBean<Tran
     public TransactionManager getObject() throws Exception {
         DataSource dataSource = applicationContext.getBean(datasourceName, DataSource.class);
         DataSourceTransactionManager transactionManager = createTransactionManager(environment, dataSource);
-        transactionManagerCustomizers.ifAvailable((customizers) -> customizers.customize(transactionManager));
+        transactionManagerCustomizers.ifAvailable(customizers -> customizers.customize(transactionManager));
         return transactionManager;
     }
 
@@ -45,8 +45,10 @@ public class DataSourceTransactionManagerFactoryBean implements FactoryBean<Tran
     }
 
     private DataSourceTransactionManager createTransactionManager(Environment environment, DataSource dataSource) {
-        return environment.getProperty("spring.dao.exceptiontranslation.enabled", Boolean.class, Boolean.TRUE)
-                ? new JdbcTransactionManager(dataSource) : new DataSourceTransactionManager(dataSource);
+        if (environment.getProperty("spring.dao.exceptiontranslation.enabled", Boolean.class, Boolean.TRUE)) {
+            return new JdbcTransactionManager(dataSource);
+        }
+        return new DataSourceTransactionManager(dataSource);
     }
 
 
