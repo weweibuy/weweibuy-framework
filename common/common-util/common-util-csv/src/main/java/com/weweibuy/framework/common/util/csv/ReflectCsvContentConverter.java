@@ -75,7 +75,9 @@ public class ReflectCsvContentConverter<T> implements CsvContentConverter<T> {
     @Override
     public Collection<String[]> convert(String[] header, List<T> body) {
         List<String[]> content = new ArrayList<>(body.size() + 1);
-        content.add(this.header);
+        if (ArrayUtils.isNotEmpty(header)) {
+            content.add(header);
+        }
         body.stream()
                 .map(this::oneLine)
                 .forEach(content::add);
@@ -92,5 +94,7 @@ public class ReflectCsvContentConverter<T> implements CsvContentConverter<T> {
         return strings;
     }
 
-
+    public String[] getHeader() {
+        return header;
+    }
 }

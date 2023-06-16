@@ -34,6 +34,7 @@ public class CsvUtils {
         OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream, charset);
 
         CsvWriter csvWriter = new CsvWriter();
+        csvWriter.setAlwaysDelimitText(true);
         csvWriter.write(outputStreamWriter, collection);
     }
 
@@ -48,7 +49,7 @@ public class CsvUtils {
 
     public static <T> void export(List<T> body, Class<T> clazz, OutputStream outputStream, Charset charset) throws IOException {
         ReflectCsvContentConverter<T> converter = csvContentConverter(clazz);
-        export(null, body, converter, outputStream, charset);
+        export(converter.getHeader(), body, converter, outputStream, charset);
     }
 
     public static <T> void export(String[] header, List<T> body, CsvContentConverter<T> converter, File file, Charset charset) throws IOException {
@@ -97,7 +98,7 @@ public class CsvUtils {
         Map<String, Integer> headIndexMap = headIndexMap(header);
 
         return rowList.stream()
-                .map(row -> csvBeanConverter.convert(headIndexMap, row))
+                .map(row -> csvBeanConverter.convert(header, row))
                 .collect(Collectors.toList());
     }
 
@@ -146,12 +147,10 @@ public class CsvUtils {
             return Collections.emptyList();
         }
 
-        Map<String, Integer> headIndexMap = headIndexMap(header);
-
-        ReflectCsvBeanConverter<T> beanConverter = new ReflectCsvBeanConverter<>(clazz, csvReadListener, headIndexMap);
+        ReflectCsvBeanConverter<T> beanConverter = new ReflectCsvBeanConverter<>(clazz, csvReadListener, header);
 
         return rowList.stream()
-                .map(row -> beanConverter.convert(headIndexMap, row))
+                .map(row -> beanConverter.convert(header, row))
                 .collect(Collectors.toList());
     }
 
@@ -163,7 +162,7 @@ public class CsvUtils {
     }
 
 
-    private static Map<String, Integer> headIndexMap(List<String> header) {
+    static Map<String, Integer> headIndexMap(List<String> header) {
         Map<String, Integer> headIndexMap = new HashMap<>();
         if (CollectionUtils.isEmpty(header)) {
             return headIndexMap;

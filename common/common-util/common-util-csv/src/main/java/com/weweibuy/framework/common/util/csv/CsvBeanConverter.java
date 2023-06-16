@@ -2,7 +2,7 @@ package com.weweibuy.framework.common.util.csv;
 
 import de.siegmar.fastcsv.reader.CsvRow;
 
-import java.util.Map;
+import java.util.List;
 
 /**
  * @author durenhao
@@ -14,11 +14,11 @@ public interface CsvBeanConverter<T> {
     /**
      * csv 内容转化
      *
-     * @param nameIndexMap header
+     * @param header header
      * @param csvRow       csvRow
      * @return
      */
-    T convert(Map<String, Integer> nameIndexMap, CsvRow csvRow);
+    T convert(List<String> header, CsvRow csvRow);
 
 
 }

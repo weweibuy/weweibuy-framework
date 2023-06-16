@@ -24,9 +24,11 @@ import java.util.stream.Collectors;
  **/
 public class ReflectCsvBeanConverter<T> implements CsvBeanConverter<T> {
 
+    private boolean hasInit = false;
+
     private final Class<? extends T> type;
 
-    private CsvReadListener<T> listener;
+    private List<CsvReadListener<T>> listener;
 
     private BulkBean bulkBean;
 
@@ -38,17 +40,24 @@ public class ReflectCsvBeanConverter<T> implements CsvBeanConverter<T> {
 
     private Class[] types;
 
-    public ReflectCsvBeanConverter(Class<? extends T> type, Map<String, Integer> headIndexMap) {
-        this(type, null, headIndexMap);
+    public ReflectCsvBeanConverter(Class<? extends T> type) {
+        this(type, null);
     }
 
-    public ReflectCsvBeanConverter(Class<? extends T> type, CsvReadListener<T> listener, Map<String, Integer> headIndexMap) {
+    public ReflectCsvBeanConverter(Class<? extends T> type, List<CsvReadListener<T>> listener) {
         this.type = type;
         this.listener = listener;
-        init(headIndexMap);
     }
 
-    private void init(Map<String, Integer> headIndexMap) {
+    public ReflectCsvBeanConverter(Class<? extends T> type, List<CsvReadListener<T>> listener, List<String> header) {
+        this.type = type;
+        this.listener = listener;
+        init(header);
+    }
+
+
+    private void init(List<String> header) {
+        Map<String, Integer> headIndexMap = CsvUtils.headIndexMap(header);
         Field[] fieldsWithAnnotation = FieldUtils.getFieldsWithAnnotation(type, CsvProperty.class);
         validate(fieldsWithAnnotation);
 
@@ -92,6 +101,7 @@ public class ReflectCsvBeanConverter<T> implements CsvBeanConverter<T> {
                         .filter(Objects::nonNull)
                         .forEach(index -> fieldIndex[indexAtomicInteger.getAndIncrement()] = index));
         bulkBean = BulkBean.create(type, getters, setters, types);
+        hasInit = true;
     }
 
 
@@ -129,7 +139,11 @@ public class ReflectCsvBeanConverter<T> implements CsvBeanConverter<T> {
 
 
     @Override
-    public T convert(Map<String, Integer> nameIndexMap, CsvRow csvRow) {
+    public T convert(List<String> header, CsvRow csvRow) {
+        if (!hasInit) {
+            init(header);
+        }
+
         T instance = newInstance();
         if (fieldIndex.length == 0) {
             return instance;
@@ -148,8 +162,8 @@ public class ReflectCsvBeanConverter<T> implements CsvBeanConverter<T> {
             values[i] = value;
         }
         bulkBean.setPropertyValues(instance, values);
-        if (listener != null) {
-            listener.onOneLineRead(instance, csvRow);
+        if (CollectionUtils.isNotEmpty(listener)) {
+            listener.forEach(l -> l.onOneLineRead(header, instance, csvRow));
         }
         return instance;
     }
