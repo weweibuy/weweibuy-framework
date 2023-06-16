@@ -16,14 +16,14 @@ public class LocalTimeCsvTypeConverter implements CsvTypeConverter<LocalTime> {
     private String pattern;
 
     @Override
-    public String convert(LocalTime localTime) {
+    public String writeConvert(LocalTime localTime) {
         return Optional.ofNullable(localTime)
                 .map(d -> DateTimeUtils.toStringDate(d, pattern))
                 .orElse(StringUtils.EMPTY);
     }
 
     @Override
-    public LocalTime convert(String value, Class<LocalTime> fieldType, int typeIndex) {
+    public LocalTime readConvert(String value, Class<LocalTime> fieldType, int typeIndex) {
         if (StringUtils.EMPTY.equals(value)) {
             return null;
         }

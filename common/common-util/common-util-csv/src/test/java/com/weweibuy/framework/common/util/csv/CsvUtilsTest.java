@@ -2,6 +2,7 @@ package com.weweibuy.framework.common.util.csv;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.weweibuy.framework.common.core.model.constant.CommonConstant;
+import com.weweibuy.framework.common.core.utils.ClassPathFileUtils;
 import lombok.Data;
 import org.junit.Test;
 
@@ -18,6 +19,8 @@ public class CsvUtilsTest {
 
     @Test
     public void export() throws Exception {
+        String classPath = ClassPathFileUtils.getClassPath();
+        String file = classPath + "/test.csv";
         Student student1 = new Student("1班", "清华");
         student1.setName("tom");
         student1.setBirthday(LocalDate.now());
@@ -29,15 +32,17 @@ public class CsvUtilsTest {
         student2.setBirthday(LocalDate.now());
 
         List<Student> students = Arrays.asList(student1, student2);
-        FileOutputStream fileOutputStream = new FileOutputStream("C:/Users/z/Desktop/tmp/test.csv");
+        FileOutputStream fileOutputStream = new FileOutputStream(file);
         CsvUtils.export( students, Student.class, fileOutputStream, Charset.forName("GBK"));
 
     }
 
     @Test
     public void read() throws Exception {
+        String classPath = ClassPathFileUtils.getClassPath();
+        String file = classPath + "/test.csv";
         FileInputStream fileOutputStream =
-                new FileInputStream("C:/Users/z/Desktop/tmp/test.csv");
+                new FileInputStream(file);
         List<Student> read =
                 CsvUtils.read(Student.class, fileOutputStream, CommonConstant.CharsetConstant.GBK,
                         false);

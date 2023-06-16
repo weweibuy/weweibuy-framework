@@ -38,7 +38,7 @@ public class SimpleCsvTypeConverter implements CsvTypeConverter {
     }
 
     @Override
-    public String convert(Object o) {
+    public String writeConvert(Object o) {
         if (o == null) {
             return null;
         }
@@ -46,7 +46,7 @@ public class SimpleCsvTypeConverter implements CsvTypeConverter {
     }
 
     @Override
-    public Object convert(String value, Class fieldType, int typeIndex) {
+    public Object readConvert(String value, Class fieldType, int typeIndex) {
         if (-1 == typeIndex) {
             throw Exceptions.business("不支持的CSV数据类型转化: ", fieldType.getName());
         }
