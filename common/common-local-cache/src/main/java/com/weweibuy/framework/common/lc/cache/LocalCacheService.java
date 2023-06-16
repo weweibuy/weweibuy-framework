@@ -63,7 +63,7 @@ public class LocalCacheService {
         if (StringUtils.isBlank(name)) {
             cacheNames.stream()
                     .map(cacheName -> (Cache<Object, Object>) ruleMetaCache.getCache(cacheName).getNativeCache())
-                    .forEach(cache -> cache.invalidateAll());
+                    .forEach(Cache::invalidateAll);
             return;
         }
 
@@ -75,7 +75,7 @@ public class LocalCacheService {
         if (CollectionUtils.isEmpty(keySet)) {
             cache.invalidateAll();
         } else {
-            keySet.stream().forEach(k -> cache.invalidate(k));
+            keySet.stream().forEach(cache::invalidate);
         }
     }
 

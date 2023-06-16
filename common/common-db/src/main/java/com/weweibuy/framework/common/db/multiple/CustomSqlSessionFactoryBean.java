@@ -125,8 +125,6 @@ public class CustomSqlSessionFactoryBean implements FactoryBean<SqlSessionFactor
         if (configuration == null && !StringUtils.hasText(this.properties.getConfigLocation())) {
             configuration = new Configuration();
         }
-//        ResolvableType resolvableType = ResolvableType.forClassWithGenerics(List.class, ConfigurationCustomizer.class);
-//        ObjectProvider<Object> beanProvider = applicationContext.getBeanProvider(resolvableType);
 
         List<ConfigurationCustomizer> configurationCustomizers = configurationCustomizersProvider.getIfAvailable();
 

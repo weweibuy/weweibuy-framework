@@ -2,7 +2,6 @@ package com.weweibuy.framework.common.mvc.advice;
 
 import com.weweibuy.framework.common.core.model.dto.CommonCodeResponse;
 import com.weweibuy.framework.common.core.model.eum.CommonErrorCodeEum;
-import com.weweibuy.framework.common.log.logger.HttpLogger;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.annotation.Order;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -24,7 +23,7 @@ import java.sql.SQLException;
 @Slf4j
 @RestControllerAdvice
 @Order(-200)
-public class BdExceptionAdvice {
+public class DBExceptionAdvice {
 
     @ExceptionHandler(DuplicateKeyException.class)
     public ResponseEntity<CommonCodeResponse> handler(HttpServletRequest request, DuplicateKeyException e) {
@@ -40,7 +39,7 @@ public class BdExceptionAdvice {
         log.error("数据库操作异常:", e);
 
         String message = e.getMessage();
-        if (message.indexOf("Data too long") != -1) {
+        if (message != null && message.indexOf("Data too long") != -1) {
             return CommonExceptionAdvice.builderCommonHeader(HttpStatus.BAD_REQUEST)
                     .body(CommonCodeResponse.response(CommonErrorCodeEum.BAD_REQUEST_PARAM.getCode(), "输入数据字段过长"));
         }

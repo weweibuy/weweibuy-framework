@@ -48,7 +48,7 @@ public class ReflectCsvContentConverter<T> implements CsvContentConverter<T> {
 
         // 数组中索引
         Map<Field, String> arrFieldIndexMap = Arrays.stream(fieldsWithAnnotation)
-                .collect(Collectors.toMap(Function.identity(), f -> f.getName()));
+                .collect(Collectors.toMap(Function.identity(), Field::getName));
 
         String[] getters = new String[length];
         String[] setters = new String[length];

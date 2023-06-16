@@ -15,7 +15,7 @@ public interface HttpLogConfigurer {
     /**
      * 增加Http禁止输出配置
      */
-    default void addHttpLogConfig(List<CommonLogProperties.CommonLogHttpProperties> logHttpProperties) {
+    default void addHttpLogConfig(List<CommonLogProperties.HttpPathProperties> logHttpProperties) {
 
     }
 
