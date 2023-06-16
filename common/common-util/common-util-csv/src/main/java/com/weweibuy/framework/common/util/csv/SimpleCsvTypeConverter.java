@@ -48,7 +48,7 @@ public class SimpleCsvTypeConverter implements CsvTypeConverter {
     @Override
     public Object readConvert(String value, Class fieldType, int typeIndex) {
         if (-1 == typeIndex) {
-            throw Exceptions.business("不支持的CSV数据类型转化: ", fieldType.getName());
+            throw Exceptions.business("不支持的CSV数据类型转化: " + fieldType.getName());
         }
         return Optional.ofNullable(typeFunction[typeIndex])
                 .map(f -> f.apply(value))
