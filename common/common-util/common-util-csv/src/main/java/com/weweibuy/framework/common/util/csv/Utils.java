@@ -69,7 +69,7 @@ class Utils {
         try {
             CsvTypeConverter csvTypeConverter = convertType.newInstance();
             csvTypeConverter.setPattern(pattern);
-            return convertType.newInstance();
+            return csvTypeConverter;
         } catch (Exception e) {
             throw new IllegalArgumentException("Can not instance custom converter:" + convertType.getName());
         }

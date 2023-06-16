@@ -16,14 +16,14 @@ public class DataCsvTypeConverter implements CsvTypeConverter<Date> {
     private String pattern;
 
     @Override
-    public String convert(Date date) {
+    public String writeConvert(Date date) {
         return Optional.ofNullable(date)
                 .map(d -> DateTimeUtils.toStringDate(d, pattern))
                 .orElse(StringUtils.EMPTY);
     }
 
     @Override
-    public Date convert(String value, Class<Date> fieldType, int typeIndex) {
+    public Date readConvert(String value, Class<Date> fieldType, int typeIndex) {
         if (StringUtils.EMPTY.equals(value)) {
             return null;
         }

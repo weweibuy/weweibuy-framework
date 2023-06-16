@@ -15,6 +15,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 /**
+ * 读CSV
+ * <p>
  * CSV 数据转 Java bean  非线程安全
  *
  * @author durenhao
@@ -141,7 +143,7 @@ public class ReflectCsvBeanConverter<T> implements CsvBeanConverter<T> {
         for (int i = 0; i < length; i++) {
             csvIndex = fieldIndex[i];
             if (csvIndex < size) {
-                value = converters[i].convert(fieldList.get(csvIndex), types[i], converterTypeIndex[i]);
+                value = converters[i].readConvert(fieldList.get(csvIndex), types[i], converterTypeIndex[i]);
             }
             values[i] = value;
         }

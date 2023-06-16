@@ -13,6 +13,8 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
+ * 写 csv
+ *
  * @author durenhao
  * @date 2021/1/5 22:22
  **/
@@ -85,7 +87,7 @@ public class ReflectCsvContentConverter<T> implements CsvContentConverter<T> {
         Object[] propertyValues = bulkBean.getPropertyValues(t);
         String[] strings = new String[header.length];
         for (int i = 0; i < header.length; i++) {
-            strings[i] = converters[i].convert(propertyValues[i]);
+            strings[i] = converters[i].writeConvert(propertyValues[i]);
         }
         return strings;
     }
