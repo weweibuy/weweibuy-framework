@@ -99,7 +99,7 @@ public class HttpRequestUtils {
     }
 
     public static String readFromRequestWrapper(ContentCachingRequestWrapper requestWrapper) {
-        String charEncoding = requestWrapper.getCharacterEncoding() != null ? requestWrapper.getCharacterEncoding() : CommonConstant.CharsetConstant.UTF8_STR;
+        String charEncoding = requestWrapper.getCharacterEncoding();
         try {
             return new String(requestWrapper.getContentAsByteArray(), charEncoding);
         } catch (UnsupportedEncodingException e) {
@@ -260,29 +260,29 @@ public class HttpRequestUtils {
         if (StringUtils.isBlank(query)) {
             return queryParams;
         }
-        if (query != null) {
-            Matcher matcher = QUERY_PATTERN.matcher(query);
-            while (matcher.find()) {
-                String name = UriUtils.decode(matcher.group(1), StandardCharsets.UTF_8);
-                String eq = matcher.group(2);
-                String value = matcher.group(3);
-                if (value != null) {
-                    value = UriUtils.decode(value, StandardCharsets.UTF_8);
-                } else {
-                    value = (org.springframework.util.StringUtils.hasLength(eq) ? "" : null);
-                }
-                queryParams.add(name, value);
+        Matcher matcher = QUERY_PATTERN.matcher(query);
+        while (matcher.find()) {
+            String name = UriUtils.decode(matcher.group(1), StandardCharsets.UTF_8);
+            String eq = matcher.group(2);
+            String value = matcher.group(3);
+            if (value != null) {
+                value = UriUtils.decode(value, StandardCharsets.UTF_8);
+            } else {
+                value = (org.springframework.util.StringUtils.hasLength(eq) ? "" : null);
             }
+            queryParams.add(name, value);
         }
         return queryParams;
     }
 
 
     public static boolean notBoundaryBody(String contentType) {
+        if (StringUtils.isBlank(contentType)) {
+            return true;
+        }
         Matcher matcher = CAN_LOG_PATTERN.matcher(contentType);
         return matcher.find();
     }
-
 
 
 }

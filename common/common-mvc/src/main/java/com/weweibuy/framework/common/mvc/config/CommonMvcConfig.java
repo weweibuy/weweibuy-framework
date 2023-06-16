@@ -43,8 +43,8 @@ public class CommonMvcConfig {
 
     @Bean
     @ConditionalOnClass(name = {"org.springframework.transaction.TransactionManager"})
-    public BdExceptionAdvice bdExceptionAdvice() {
-        return new BdExceptionAdvice();
+    public DBExceptionAdvice bdExceptionAdvice() {
+        return new DBExceptionAdvice();
     }
 
     @Bean

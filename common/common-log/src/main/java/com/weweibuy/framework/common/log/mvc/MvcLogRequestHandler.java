@@ -1,17 +1,16 @@
 package com.weweibuy.framework.common.log.mvc;
 
 import com.weweibuy.framework.common.core.support.ReadableBodyRequestHandler;
-import com.weweibuy.framework.common.core.utils.HttpRequestUtils;
 import com.weweibuy.framework.common.log.config.CommonLogProperties;
 import com.weweibuy.framework.common.log.logger.HttpLogger;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.annotation.Order;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * 输出MVC 请求日志
@@ -41,18 +40,23 @@ public class MvcLogRequestHandler implements ReadableBodyRequestHandler {
     }
 
     private void handlerReadableBodyRequest0(HttpServletRequest request, HttpServletResponse response) {
-        CommonLogProperties.CommonLogHttpProperties logProperties = mvcPathMappingOperator.findLogProperties(request);
+        CommonLogProperties.LogProperties logProperties = mvcPathMappingOperator.findLogProperties(request);
 
         if (logProperties != null && Boolean.TRUE.equals(logProperties.getDisableReq())) {
             return;
         }
 
-        List<String> headerKeyList = Optional.ofNullable(logProperties)
-                .map(CommonLogProperties.CommonLogHttpProperties::getLogReqHeader)
+        Set<String> headerKeyList = Optional.ofNullable(logProperties)
+                .map(CommonLogProperties.LogProperties::getLogReqHeader)
                 .orElse(null);
 
-        HttpLogger.logForRequest(request, headerKeyList);
+        Boolean disableReqBody = Optional.ofNullable(logProperties)
+                .map(CommonLogProperties.LogProperties::getDisableReqBody)
+                .orElse(false);
+
+        HttpLogger.logForRequest(request, headerKeyList, disableReqBody);
 
     }
+
 
 }

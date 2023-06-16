@@ -3,7 +3,6 @@ package com.weweibuy.framework.common.es.config;
 import com.weweibuy.framework.common.es.converter.LocalDateTimeToStrConverter;
 import com.weweibuy.framework.common.es.converter.LocalDateToStrConverter;
 import lombok.RequiredArgsConstructor;
-import org.elasticsearch.client.ElasticsearchClient;
 import org.elasticsearch.client.RestClientBuilder;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.springframework.boot.autoconfigure.AutoConfiguration;

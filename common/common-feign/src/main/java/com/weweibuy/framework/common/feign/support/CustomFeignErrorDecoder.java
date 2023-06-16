@@ -74,7 +74,6 @@ public class CustomFeignErrorDecoder extends ErrorDecoder.Default {
         String name = target.name();
         String url = target.url();
         URI uri = HttpRequestUtils.uri(request.url());
-        String path = uri.getPath();
         String urlName = null;
         if (StringUtils.isNotBlank(url)) {
             urlName = uri.getHost() + uri.getPath();

@@ -25,18 +25,17 @@ public class SensitizationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        CommonLogProperties.CommonLogHttpProperties logProperties = mvcPathMappingOperator.findLogProperties(request);
+        CommonLogProperties.SensitizationProperties sensitizationProperties = mvcPathMappingOperator.findSensitizationProperties(request);
 
-        if (logProperties == null || logProperties.getSensitization() == null)  {
+        if (sensitizationProperties == null) {
             // 不需要脱敏
             filterChain.doFilter(request, response);
             return;
         }
-        CommonLogProperties.HttpSensitizationProperties sensitization = logProperties.getSensitization();
 
         // 脱敏上下文绑定
-        MvcPathMappingOperator.bindSensitizationContext(sensitization.getSensitizationFields(),
-                sensitization.getLogger());
+        MvcPathMappingOperator.bindSensitizationContext(sensitizationProperties.getSensitizationFields(),
+                sensitizationProperties.getLogger());
         try {
             filterChain.doFilter(request, response);
         } finally {

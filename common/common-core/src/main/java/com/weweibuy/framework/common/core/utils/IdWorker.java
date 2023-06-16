@@ -136,7 +136,7 @@ public final class IdWorker {
 
         try {
             ip = getPrivateIp().getAddress();
-            workerId = (ip[2] << 8 | (int) ip[3]) & ((1 << IP_BITS) - 1);
+            workerId = (ip[2] << 8 | ip[3]) & ((1 << IP_BITS) - 1);
         } catch (SocketException e) {
             throw new SystemException("无法获取本机IP地址", e);
         }
@@ -177,7 +177,6 @@ public final class IdWorker {
         }
         return localAddresses.get(0);
     }
-
 
 
     /**

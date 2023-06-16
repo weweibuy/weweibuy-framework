@@ -16,6 +16,7 @@ import org.bouncycastle.asn1.ASN1Sequence;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
@@ -23,6 +24,7 @@ import java.nio.charset.CharacterCodingException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.security.*;
+import java.security.cert.X509Certificate;
 import java.security.interfaces.RSAPublicKey;
 import java.security.spec.*;
 import java.util.Arrays;
@@ -82,10 +84,8 @@ public class RsaKeyHelper {
             }
 
             return new KeyPair(publicKey, privateKey);
-        } catch (InvalidKeySpecException e) {
+        } catch (InvalidKeySpecException | NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
-        } catch (NoSuchAlgorithmException e) {
-            throw new IllegalStateException(e);
         }
     }
 
@@ -110,6 +110,25 @@ public class RsaKeyHelper {
     }
 
     /**
+     * 从 .cer 文件中读取证书内容, 去除开头与换行
+     *
+     * @return
+     */
+    public static X509Certificate parseCertificate(String cerContent) throws Exception {
+        Matcher m = PEM_DATA.matcher(cerContent.trim());
+        if (!m.matches()) {
+            throw new IllegalArgumentException("String is not PEM encoded data");
+        }
+        String type = m.group(1);
+
+        if (!type.equals("CERTIFICATE")) {
+            throw new IllegalArgumentException(type + " is not a supported format");
+        }
+        byte[] decode = Base64.getMimeDecoder().decode(utf8Encode(m.group(2)));
+        return RSAUtils.CertificateUtils.certificateFromByte(decode);
+    }
+
+    /**
      * 从 pem Pkcs格式 获取私钥
      *
      * @param pemData
@@ -126,7 +145,7 @@ public class RsaKeyHelper {
             throw new IllegalArgumentException(type + " is not a supported format");
         }
         byte[] content = Base64.getMimeDecoder().decode(utf8Encode(m.group(2)));
-        return RSAUtils.getPrivateKey(content);
+        return RSAUtils.getPrivateKeyFromP8(content);
     }
 
     private static final Pattern SSH_PUB_KEY = Pattern.compile("ssh-(rsa|dsa) ([A-Za-z0-9/+]+=*) (.*)");
@@ -173,7 +192,7 @@ public class RsaKeyHelper {
 
             return createPublicKey(n, e);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new UncheckedIOException(e);
         }
     }
 
@@ -210,8 +229,9 @@ public class RsaKeyHelper {
             System.arraycopy(bytes.array(), 0, bytesCopy, 0, bytes.limit());
             return bytesCopy;
         } catch (CharacterCodingException e) {
-            throw new RuntimeException(e);
+            throw new UncheckedIOException(e);
         }
     }
+
 
 }

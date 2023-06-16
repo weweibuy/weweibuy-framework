@@ -1,0 +1,8 @@
+https://www.cnblogs.com/zhangjianqiang/p/10308029.html
+
+1. 生成证书
+openssl req -newkey rsa:2048 -nodes -keyout my.key -x509 -days 36500 -out my.cer
+
+2. 导出私钥
+openssl pkcs12 -export -in my.cer -inkey my.key -out my.pfx
+

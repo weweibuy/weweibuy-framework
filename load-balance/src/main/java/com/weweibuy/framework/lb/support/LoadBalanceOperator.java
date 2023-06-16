@@ -51,7 +51,7 @@ public class LoadBalanceOperator {
 
         return contextNames.stream()
                 .collect(Collectors.toMap(Function.identity(),
-                        name -> listServer(name)));
+                        this::listServer));
     }
 
     public void update(String name) {
