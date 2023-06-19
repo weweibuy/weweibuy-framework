@@ -32,7 +32,7 @@ public class CommonCsvWriter {
     /**
      * 转化器
      */
-    private static final Map<Class, ReflectCsvContentConverter> CONVERTER_MAP = new ConcurrentHashMap<>();
+    private static final Map<Class, ReflectCsvWriterConverter> CONVERTER_MAP = new ConcurrentHashMap<>();
 
     private CsvWriter csvWriter;
 
@@ -130,7 +130,7 @@ public class CommonCsvWriter {
         /**
          * 转化器
          */
-        private CsvContentConverter<T> contentConverter;
+        private CsvWriterConverter<T> contentConverter;
 
 
         public CsvWriterBuilder<T> charset(Charset charset) {
@@ -173,13 +173,13 @@ public class CommonCsvWriter {
             return this;
         }
 
-        public CsvWriterBuilder<T> contentConverter(CsvContentConverter<T> contentConverter) {
+        public CsvWriterBuilder<T> contentConverter(CsvWriterConverter<T> contentConverter) {
             this.contentConverter = contentConverter;
             return this;
         }
 
         public CsvWriterBuilder<T> contentConverter(Class<T> clazz) {
-            this.contentConverter = CONVERTER_MAP.computeIfAbsent(clazz, ReflectCsvContentConverter::new);
+            this.contentConverter = CONVERTER_MAP.computeIfAbsent(clazz, ReflectCsvWriterConverter::new);
             return this;
         }
 
@@ -206,8 +206,8 @@ public class CommonCsvWriter {
             commonCsvWriter.setCsvWriter(csvWriter);
             Optional.ofNullable(charset)
                     .ifPresent(commonCsvWriter::setCharset);
-            if (Boolean.TRUE.equals(writerHeader) && ArrayUtils.isEmpty(header) && contentConverter instanceof ReflectCsvContentConverter) {
-                header = ((ReflectCsvContentConverter) contentConverter).getHeader();
+            if (Boolean.TRUE.equals(writerHeader) && ArrayUtils.isEmpty(header) && contentConverter instanceof ReflectCsvWriterConverter) {
+                header = ((ReflectCsvWriterConverter) contentConverter).getHeader();
             }
 
             Collection<String[]> data = null;

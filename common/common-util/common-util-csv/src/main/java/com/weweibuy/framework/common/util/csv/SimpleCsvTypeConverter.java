@@ -1,13 +1,20 @@
 package com.weweibuy.framework.common.util.csv;
 
-import com.weweibuy.framework.common.core.exception.Exceptions;
+import com.weweibuy.framework.common.core.model.constant.CommonConstant;
+import com.weweibuy.framework.common.core.utils.DateTimeUtils;
+import com.weweibuy.framework.common.util.csv.annotation.CsvProperty;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.Map;
-import java.util.Optional;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAccessor;
+import java.time.temporal.TemporalQuery;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -21,48 +28,38 @@ public class SimpleCsvTypeConverter implements CsvTypeConverter {
 
     private static final String NAME = SimpleCsvTypeConverter.class.getName();
 
-    private static Function<String, Object>[] typeFunction;
 
-    private static Map<String, Integer> typeIndexMap;
+    private static Map<String, CsvPropertyDataConvert<Object, String>> writeFunctionMap;
+
+    private static Map<String, CsvPropertyDataConvert<String, Object>> readFunctionMap;
+
+    private static final CsvPropertyDataConvert<Object, String> SIMPLE_WRITE_FUNCTION = (o, csv) -> simpleWrite(o, csv);
+
 
     static {
         TypeFunctionEum[] functionEnums = TypeFunctionEum.values();
-        typeFunction = new Function[functionEnums.length];
-        typeIndexMap = Arrays.stream(functionEnums)
-                .collect(Collectors.toMap(TypeFunctionEum::getName, TypeFunctionEum::getIndex));
-
+        readFunctionMap = new HashMap<>(functionEnums.length);
+        writeFunctionMap = new HashMap<>(functionEnums.length);
         for (int i = 0; i < functionEnums.length; i++) {
-            typeFunction[i] = functionEnums[i].getFunction();
+            TypeFunctionEum functionEnum = functionEnums[i];
+            String name = functionEnum.getName();
+            readFunctionMap.put(name, functionEnum.getReadFunction());
+            writeFunctionMap.put(name, functionEnum.getWriteFunction());
         }
-
+        readFunctionMap = Collections.unmodifiableMap(readFunctionMap);
+        writeFunctionMap = Collections.unmodifiableMap(writeFunctionMap);
     }
 
-    @Override
-    public String writeConvert(Object o) {
-        if (o == null) {
-            return null;
-        }
-        return o.toString();
+
+    public Function<Object, String> writeConvert(Class fieldType, CsvProperty csvProperty) {
+        CsvPropertyDataConvert<Object, String> dataConvert = writeFunctionMap.get(fieldType.getName());
+        return t -> dataConvert.convert(t, csvProperty);
     }
 
-    @Override
-    public Object readConvert(String value, Class fieldType, int typeIndex) {
-        if (-1 == typeIndex) {
-            throw Exceptions.business("不支持的CSV数据类型转化: " + fieldType.getName());
-        }
-        return Optional.ofNullable(typeFunction[typeIndex])
-                .map(f -> f.apply(value))
-                .orElse(null);
-    }
 
-    @Override
-    public int typeIndex(Class fieldType) {
-        return Optional.ofNullable(typeIndexMap.get(fieldType.getName())).orElse(-1);
-    }
-
-    @Override
-    public void setPattern(String pattern) {
-
+    public Function<String, Object> readConvert(Class fieldType, CsvProperty csvProperty) {
+        CsvPropertyDataConvert<String, Object> dataConvert = readFunctionMap.get(fieldType.getName());
+        return t -> dataConvert.convert(t, csvProperty);
     }
 
 
@@ -71,7 +68,7 @@ public class SimpleCsvTypeConverter implements CsvTypeConverter {
     }
 
 
-    static Object emptyOrDefault(String value, Object defaultValue, Function<String, Object> function) {
+    static Object simpleRead(String value, CsvProperty csv, Object defaultValue, Function<String, Object> function) {
         if (StringUtils.EMPTY.equals(value)) {
             return defaultValue;
         }
@@ -79,58 +76,122 @@ public class SimpleCsvTypeConverter implements CsvTypeConverter {
     }
 
 
+    static String simpleWrite(Object value, CsvProperty csv) {
+        if (value == null) {
+            return null;
+        }
+        return value.toString();
+    }
+
+
+    static String date8Write(TemporalAccessor value, CsvProperty csv, String defaultPattern) {
+        if (value == null) {
+            return null;
+        }
+        String patten = Optional.ofNullable(csv.pattern())
+                .filter(StringUtils::isNotBlank)
+                .orElse(defaultPattern);
+        return DateTimeUtils.toStringDate(value, patten);
+    }
+
+    static <T> T date8Read(String str, CsvProperty csv, TemporalQuery<T> query, String defaultPattern) {
+        if (StringUtils.EMPTY.equals(str)) {
+            return null;
+        }
+        String patten = Optional.ofNullable(csv.pattern())
+                .filter(StringUtils::isNotBlank)
+                .orElse(defaultPattern);
+        DateTimeFormatter dateTimeFormatter = DateTimeUtils.dateTimeFormatter(patten);
+        return dateTimeFormatter.parse(str, query);
+    }
+
+    static String dateWrite(Date date, CsvProperty csv) {
+        if (date == null) {
+            return null;
+        }
+        String patten = Optional.ofNullable(csv.pattern())
+                .filter(StringUtils::isNotBlank)
+                .orElse(CommonConstant.DateConstant.STANDARD_DATE_TIME_FORMAT_STR);
+        return DateTimeUtils.toStringDate(date, patten);
+    }
+
+    static Date dateRead(String str, CsvProperty csv) {
+        if (StringUtils.EMPTY.equals(str)) {
+            return null;
+        }
+        String patten = Optional.ofNullable(csv.pattern())
+                .filter(StringUtils::isNotBlank)
+                .orElse(CommonConstant.DateConstant.STANDARD_DATE_TIME_FORMAT_STR);
+        return DateTimeUtils.strToDate(str, patten);
+    }
+
     @Getter
+    @RequiredArgsConstructor
     static enum TypeFunctionEum {
 
-        INT(0, int.class.getName(), s -> emptyOrDefault(s, 0, Integer::valueOf)),
+        INT(int.class.getName(), (s, csv) -> simpleRead(s, csv, 0, Integer::valueOf), SIMPLE_WRITE_FUNCTION),
 
-        BYTE(1, byte.class.getName(), s -> emptyOrDefault(s, (byte) 0, Byte::valueOf)),
+        BYTE(byte.class.getName(), (s, csv) -> simpleRead(s, csv, (byte) 0, Byte::valueOf), SIMPLE_WRITE_FUNCTION),
 
-        LONG(2, long.class.getName(), s -> emptyOrDefault(s, 0L, Long::valueOf)),
+        LONG(long.class.getName(), (s, csv) -> simpleRead(s, csv, 0L, Long::valueOf), SIMPLE_WRITE_FUNCTION),
 
-        DOUBLE(3, double.class.getName(), s -> emptyOrDefault(s, 0.0d, Double::valueOf)),
+        DOUBLE(double.class.getName(), (s, csv) -> simpleRead(s, csv, 0.0d, Double::valueOf), SIMPLE_WRITE_FUNCTION),
 
-        FLOAT(4, float.class.getName(), s -> emptyOrDefault(s, 0.0f, Float::valueOf)),
+        FLOAT(float.class.getName(), (s, csv) -> simpleRead(s, csv, 0.0f, Float::valueOf), SIMPLE_WRITE_FUNCTION),
 
-        SHORT(5, short.class.getName(), s -> emptyOrDefault(s, (short) 0, Short::valueOf)),
+        SHORT(short.class.getName(), (s, csv) -> simpleRead(s, csv, (short) 0, Short::valueOf), SIMPLE_WRITE_FUNCTION),
 
-        CHAR(6, char.class.getName(), s -> emptyOrDefault(s, '\u0000', s1 -> s1.toCharArray()[0])),
+        CHAR(char.class.getName(), (s, csv) -> simpleRead(s, csv, '\u0000', s1 -> s1.toCharArray()[0]), SIMPLE_WRITE_FUNCTION),
 
-        BOOLEAN(7, boolean.class.getName(), s -> emptyOrDefault(s, false, Boolean::valueOf)),
+        BOOLEAN(boolean.class.getName(), (s, csv) -> simpleRead(s, csv, false, Boolean::valueOf), SIMPLE_WRITE_FUNCTION),
 
-        INTEGER(8, Integer.class.getName(), s -> emptyOrDefault(s, null, Integer::valueOf)),
+        INTEGER(Integer.class.getName(), (s, csv) -> simpleRead(s, csv, null, Integer::valueOf), SIMPLE_WRITE_FUNCTION),
 
-        LONG_BOX(9, Long.class.getName(), s -> emptyOrDefault(s, null, Long::valueOf)),
+        LONG_BOX(Long.class.getName(), (s, csv) -> simpleRead(s, csv, null, Long::valueOf), SIMPLE_WRITE_FUNCTION),
 
-        BYTE_BOX(10, Byte.class.getName(), s -> emptyOrDefault(s, null, Byte::valueOf)),
+        BYTE_BOX(Byte.class.getName(), (s, csv) -> simpleRead(s, csv, null, Byte::valueOf), SIMPLE_WRITE_FUNCTION),
 
-        DOUBLE_BOX(11, Double.class.getName(), s -> emptyOrDefault(s, null, Double::valueOf)),
+        DOUBLE_BOX(Double.class.getName(), (s, csv) -> simpleRead(s, csv, null, Double::valueOf), SIMPLE_WRITE_FUNCTION),
 
-        FLOAT_BOX(12, Float.class.getName(), s -> emptyOrDefault(s, null, Float::valueOf)),
+        FLOAT_BOX(Float.class.getName(), (s, csv) -> simpleRead(s, csv, null, Float::valueOf), SIMPLE_WRITE_FUNCTION),
 
-        CHARACTER(13, Character.class.getName(), s -> emptyOrDefault(s, null, s1 -> s1.toCharArray()[0])),
+        CHARACTER(Character.class.getName(), (s, csv) -> simpleRead(s, csv, null, s1 -> s1.toCharArray()[0]), SIMPLE_WRITE_FUNCTION),
 
-        SHORT_BOX(14, Short.class.getName(), s -> emptyOrDefault(s, null, Short::valueOf)),
+        SHORT_BOX(Short.class.getName(), (s, csv) -> simpleRead(s, csv, null, Short::valueOf), SIMPLE_WRITE_FUNCTION),
 
-        BOOLEAN_BOX(15, Boolean.class.getName(), s -> emptyOrDefault(s, null, Boolean::valueOf)),
+        BOOLEAN_BOX(Boolean.class.getName(), (s, csv) -> simpleRead(s, csv, null, Boolean::valueOf), SIMPLE_WRITE_FUNCTION),
 
-        STRING(16, String.class.getName(), s -> s),
+        STRING(String.class.getName(), (s, csv) -> s, SIMPLE_WRITE_FUNCTION),
 
-        BIG_DECIMAL(17, BigDecimal.class.getName(), s -> emptyOrDefault(s, null, BigDecimal::new)),
+        BIG_DECIMAL(BigDecimal.class.getName(), (s, csv) -> simpleRead(s, csv, null, BigDecimal::new), SIMPLE_WRITE_FUNCTION),
 
-        OBJECT(18, Object.class.getName(), s -> s),;
+        DATE(Date.class.getName(), (s, csv) -> dateRead(s, csv), (s, csv) -> dateWrite((Date) s, csv)),
 
-        private Integer index;
+        LOCAL_DATE(LocalDate.class.getName(), (s, csv) -> date8Read(s, csv, LocalDate::from, CommonConstant.DateConstant.STANDARD_DATE_FORMAT_STR), (s, csv) -> date8Write((LocalDate) s, csv, CommonConstant.DateConstant.STANDARD_DATE_FORMAT_STR)),
 
-        private String name;
+        LOCAL_TIME(LocalTime.class.getName(), (s, csv) -> date8Read(s, csv, LocalTime::from, CommonConstant.DateConstant.STANDARD_TIME_FORMAT_STR), (s, csv) -> date8Write((LocalTime) s, csv, CommonConstant.DateConstant.STANDARD_TIME_FORMAT_STR)),
 
-        private Function<String, Object> function;
+        LOCAL_DATE_TIME(LocalDateTime.class.getName(), (s, csv) -> date8Read(s, csv, LocalDateTime::from, CommonConstant.DateConstant.STANDARD_DATE_TIME_FORMAT_STR), (s, csv) -> date8Write((LocalDateTime) s, csv, CommonConstant.DateConstant.STANDARD_DATE_TIME_FORMAT_STR)),
 
-        TypeFunctionEum(Integer index, String name, Function<String, Object> function) {
-            this.index = index;
-            this.name = name;
-            this.function = function;
-        }
+        OBJECT(Object.class.getName(), (s, csv) -> s, SIMPLE_WRITE_FUNCTION),
+
+        ;
+
+
+        private final String name;
+
+        /**
+         * 读转化
+         */
+        private final CsvPropertyDataConvert<String, Object> readFunction;
+
+        /**
+         * 写转化
+         */
+        private final CsvPropertyDataConvert<Object, String> writeFunction;
+
+
     }
+
 
 }
