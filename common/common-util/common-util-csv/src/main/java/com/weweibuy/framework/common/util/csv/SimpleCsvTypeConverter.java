@@ -52,16 +52,24 @@ public class SimpleCsvTypeConverter implements CsvTypeConverter {
 
 
     public Function<Object, String> writeConvert(Class fieldType, CsvProperty csvProperty) {
-        CsvPropertyDataConvert<Object, String> dataConvert = writeFunctionMap.get(fieldType.getName());
+        String fieldTypeName = fieldType.getName();
+        CsvPropertyDataConvert<Object, String> dataConvert = writeFunctionMap.get(fieldTypeName);
+        if (dataConvert == null) {
+            throw new IllegalArgumentException(fieldTypeName + " 没有匹配到对应的转化器");
+        }
         return t -> dataConvert.convert(t, csvProperty);
     }
 
 
     public Function<String, Object> readConvert(Class fieldType, CsvProperty csvProperty) {
+        String fieldTypeName = fieldType.getName();
         CsvPropertyDataConvert<String, Object> dataConvert = readFunctionMap.get(fieldType.getName());
+        if (dataConvert == null) {
+            throw new IllegalArgumentException(fieldTypeName + " 没有匹配到对应的转化器");
+        }
         return t -> dataConvert.convert(t, csvProperty);
     }
-
+    
 
     static boolean isSimpleCsvTypeConverter(Class<? extends CsvTypeConverter> clazz) {
         return NAME.equals(clazz.getName());
@@ -173,9 +181,7 @@ public class SimpleCsvTypeConverter implements CsvTypeConverter {
 
         LOCAL_DATE_TIME(LocalDateTime.class.getName(), (s, csv) -> date8Read(s, csv, LocalDateTime::from, CommonConstant.DateConstant.STANDARD_DATE_TIME_FORMAT_STR), (s, csv) -> date8Write((LocalDateTime) s, csv, CommonConstant.DateConstant.STANDARD_DATE_TIME_FORMAT_STR)),
 
-        OBJECT(Object.class.getName(), (s, csv) -> s, SIMPLE_WRITE_FUNCTION),
-
-        ;
+        OBJECT(Object.class.getName(), (s, csv) -> s, SIMPLE_WRITE_FUNCTION),;
 
 
         private final String name;
