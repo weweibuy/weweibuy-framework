@@ -12,6 +12,7 @@ import org.springframework.cglib.beans.BulkBean;
 import java.lang.reflect.Field;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -22,7 +23,7 @@ import java.util.stream.Collectors;
  * @author durenhao
  * @date 2021/1/5 22:22
  **/
-public class ReflectCsvBeanConverter<T> implements CsvBeanConverter<T> {
+public class ReflectCsvReaderConverter<T> implements CsvReaderConverter<T> {
 
     private boolean hasInit = false;
 
@@ -34,30 +35,22 @@ public class ReflectCsvBeanConverter<T> implements CsvBeanConverter<T> {
 
     private Integer[] fieldIndex;
 
-    private CsvTypeConverter[] converters;
-
-    private Integer[] converterTypeIndex;
+    private Function<String, Object>[] converters;
 
     private Class[] types;
 
-    public ReflectCsvBeanConverter(Class<? extends T> type) {
+    public ReflectCsvReaderConverter(Class<? extends T> type) {
         this(type, null);
     }
 
-    public ReflectCsvBeanConverter(Class<? extends T> type, List<CsvReadListener<T>> listener) {
+    public ReflectCsvReaderConverter(Class<? extends T> type, List<CsvReadListener<T>> listener) {
         this.type = type;
         this.listener = listener;
-    }
-
-    public ReflectCsvBeanConverter(Class<? extends T> type, List<CsvReadListener<T>> listener, List<String> header) {
-        this.type = type;
-        this.listener = listener;
-        init(header);
     }
 
 
     private void init(List<String> header) {
-        Map<String, Integer> headIndexMap = CsvUtils.headIndexMap(header);
+        Map<String, Integer> headIndexMap = Utils.headIndexMap(header);
         Field[] fieldsWithAnnotation = FieldUtils.getFieldsWithAnnotation(type, CsvProperty.class);
         validate(fieldsWithAnnotation);
 
@@ -72,11 +65,10 @@ public class ReflectCsvBeanConverter<T> implements CsvBeanConverter<T> {
         int length = usedFieldLength(fieldMap, headIndexMap);
 
         fieldIndex = new Integer[length];
-        converters = new CsvTypeConverter[length];
+        converters = new Function[length];
         String[] getters = new String[length];
         String[] setters = new String[length];
         types = new Class[length];
-        converterTypeIndex = new Integer[length];
 
         AtomicInteger indexAtomicInteger = new AtomicInteger(0);
 
@@ -144,6 +136,10 @@ public class ReflectCsvBeanConverter<T> implements CsvBeanConverter<T> {
             init(header);
         }
 
+        if (CollectionUtils.isNotEmpty(listener)) {
+            listener.forEach(l -> l.onOneLineRead(header, csvRow));
+        }
+
         T instance = newInstance();
         if (fieldIndex.length == 0) {
             return instance;
@@ -157,13 +153,13 @@ public class ReflectCsvBeanConverter<T> implements CsvBeanConverter<T> {
         for (int i = 0; i < length; i++) {
             csvIndex = fieldIndex[i];
             if (csvIndex < size) {
-                value = converters[i].readConvert(fieldList.get(csvIndex), types[i], converterTypeIndex[i]);
+                value = converters[i].apply(fieldList.get(csvIndex));
             }
             values[i] = value;
         }
         bulkBean.setPropertyValues(instance, values);
         if (CollectionUtils.isNotEmpty(listener)) {
-            listener.forEach(l -> l.onOneLineRead(header, instance, csvRow));
+            listener.forEach(l -> l.onInstanceCreate(instance, header, csvRow));
         }
         return instance;
     }
@@ -177,14 +173,14 @@ public class ReflectCsvBeanConverter<T> implements CsvBeanConverter<T> {
         }
     }
 
-    private void setBulkBeanInfo(Field field, String[] getters, String[] setters, Class[] types, CsvTypeConverter[] converters,
+    private void setBulkBeanInfo(Field field, String[] getters, String[] setters, Class[] types, Function<String, Object>[] converters,
                                  AtomicInteger indexAtomicInteger) {
         getters[indexAtomicInteger.get()] = Utils.fieldGetter(field);
         setters[indexAtomicInteger.get()] = Utils.fieldSetter(field);
-        types[indexAtomicInteger.get()] = field.getType();
-        converters[indexAtomicInteger.get()] = Utils.typeConverter(field.getAnnotation(CsvProperty.class).converter(), field.getAnnotation(CsvProperty.class).pattern(), field.getType());
-        converterTypeIndex[indexAtomicInteger.get()] = converters[indexAtomicInteger.get()].typeIndex(field.getType());
-
+        Class<?> fieldType = field.getType();
+        types[indexAtomicInteger.get()] = fieldType;
+        CsvProperty annotation = field.getAnnotation(CsvProperty.class);
+        converters[indexAtomicInteger.get()] = Utils.typeConverter(annotation.converter()).readConvert(fieldType, annotation);
     }
 
 

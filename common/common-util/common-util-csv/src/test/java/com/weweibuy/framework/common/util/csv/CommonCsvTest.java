@@ -7,7 +7,7 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 
-public class CommonCsvWriterTest {
+public class CommonCsvTest {
 
 
     @Test
@@ -28,6 +28,17 @@ public class CommonCsvWriterTest {
                 .body(students)
                 .build()
                 .write(file);
+    }
+
+    @Test
+    public void read() throws Exception {
+        String classPath = ClassPathFileUtils.getClassPath();
+        String file = classPath + "/test.csv";
+        List<Student> read = CommonCsvReader.<Student>builder()
+                .contentConverter(Student.class)
+                .build()
+                .read(file);
+        System.err.println(read);
     }
 
 }

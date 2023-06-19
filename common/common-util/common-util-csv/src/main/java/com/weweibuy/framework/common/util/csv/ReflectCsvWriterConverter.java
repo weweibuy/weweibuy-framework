@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
  * @author durenhao
  * @date 2021/1/5 22:22
  **/
-public class ReflectCsvContentConverter<T> implements CsvContentConverter<T> {
+public class ReflectCsvWriterConverter<T> implements CsvWriterConverter<T> {
 
     private final Class<? extends T> type;
 
@@ -26,11 +26,11 @@ public class ReflectCsvContentConverter<T> implements CsvContentConverter<T> {
 
     private String[] header;
 
-    private CsvTypeConverter[] converters;
+    private Function<Object, String>[] converters;
 
     private BulkBean bulkBean;
 
-    public ReflectCsvContentConverter(Class<? extends T> type) {
+    public ReflectCsvWriterConverter(Class<? extends T> type) {
         this.type = type;
         init();
     }
@@ -46,7 +46,7 @@ public class ReflectCsvContentConverter<T> implements CsvContentConverter<T> {
         int length = fieldsWithAnnotation.length;
         header = new String[length];
         indexName = new String[length];
-        converters = new CsvTypeConverter[length];
+        converters = new Function[length];
 
         // 数组中索引
         Map<Field, String> arrFieldIndexMap = Arrays.stream(fieldsWithAnnotation)
@@ -65,7 +65,11 @@ public class ReflectCsvContentConverter<T> implements CsvContentConverter<T> {
                 .peek(field -> indexName[sortAtomicInteger.get()] = arrFieldIndexMap.get(field))
                 .peek(field -> getters[sortAtomicInteger.get()] = Utils.fieldGetter(field))
                 .peek(field -> setters[sortAtomicInteger.get()] = Utils.fieldSetter(field))
-                .peek(field -> converters[sortAtomicInteger.get()] = Utils.typeConverter(field.getAnnotation(CsvProperty.class).converter(), field.getAnnotation(CsvProperty.class).pattern(), field.getType()))
+                .peek(field -> {
+                    CsvProperty annotation = field.getAnnotation(CsvProperty.class);
+                    converters[sortAtomicInteger.get()] =
+                            Utils.typeConverter(annotation.converter()).writeConvert(field.getType(), field.getAnnotation(CsvProperty.class));
+                })
                 .forEach(field -> types[sortAtomicInteger.getAndIncrement()] = field.getType());
 
         bulkBean = BulkBean.create(type, getters, setters, types);
@@ -89,7 +93,7 @@ public class ReflectCsvContentConverter<T> implements CsvContentConverter<T> {
         Object[] propertyValues = bulkBean.getPropertyValues(t);
         String[] strings = new String[header.length];
         for (int i = 0; i < header.length; i++) {
-            strings[i] = converters[i].writeConvert(propertyValues[i]);
+            strings[i] = converters[i].apply(propertyValues[i]);
         }
         return strings;
     }

@@ -2,16 +2,21 @@ package com.weweibuy.framework.common.util.csv;
 
 import com.weweibuy.framework.common.core.exception.Exceptions;
 import com.weweibuy.framework.common.core.model.constant.CommonConstant;
+import de.siegmar.fastcsv.reader.CsvContainer;
 import de.siegmar.fastcsv.reader.CsvReader;
+import de.siegmar.fastcsv.reader.CsvRow;
 import lombok.Data;
+import org.apache.commons.collections4.CollectionUtils;
 
-import java.io.IOException;
+import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 /**
  * csv 读取类
@@ -27,23 +32,50 @@ public class CommonCsvReader<T> {
     /**
      * 转化器
      */
-    private static final Map<Class, ReflectCsvContentConverter> CONVERTER_MAP = new ConcurrentHashMap<>();
+    private static final Map<Class, ReflectCsvWriterConverter> CONVERTER_MAP = new ConcurrentHashMap<>();
 
     private CsvReader csvReader;
 
     private Charset charset = CommonConstant.CharsetConstant.UT8;
 
-    private CsvBeanConverter<T> contentConverter;
+    private CsvReaderConverter<T> contentConverter;
 
     public static <T> CsvReaderBuilder<T> builder() {
         return new CsvReaderBuilder<>();
     }
 
 
-    public void read(Path path) throws IOException {
+    public List<T> read(Path path) throws IOException {
+        CsvContainer csvContainer = csvReader.read(path, charset);
+        return convertData(csvContainer);
     }
 
+    public List<T> read(String filePath) throws IOException {
+        return read(new File(filePath));
+    }
 
+    public List<T> read(File file) throws IOException {
+        CsvContainer csvContainer = csvReader.read(file, charset);
+        return convertData(csvContainer);
+    }
+
+    public List<T> read(InputStream inputStream) throws IOException {
+        InputStreamReader streamReader = new InputStreamReader(inputStream, charset);
+        CsvContainer csvContainer = csvReader.read(streamReader);
+        return convertData(csvContainer);
+    }
+
+    private List<T> convertData(CsvContainer csvContainer) {
+        List<CsvRow> rowList = csvContainer.getRows();
+        if (CollectionUtils.isEmpty(rowList)) {
+            return Collections.emptyList();
+        }
+        List<String> header = csvContainer.getHeader();
+
+        return rowList.stream()
+                .map(row -> contentConverter.convert(header, row))
+                .collect(Collectors.toList());
+    }
 
 
     public static class CsvReaderBuilder<T> {
@@ -62,11 +94,6 @@ public class CommonCsvReader<T> {
          * 单个字段左右的符号
          */
         private Character textDelimiter;
-
-        /**
-         * 单个字段左右的符号 是否生效
-         */
-        private Boolean alwaysDelimitText;
 
         /**
          * 跳过空行 默认 true
@@ -88,14 +115,7 @@ public class CommonCsvReader<T> {
         /**
          * 转化器
          */
-        private CsvBeanConverter<T> contentConverter;
-
-        /**
-         * Java类
-         */
-        private Class<T> clazz;
-
-        private List<CsvReadListener<T>> readListenerList;
+        private CsvReaderConverter<T> contentConverter;
 
 
         public CsvReaderBuilder<T> charset(Charset charset) {
@@ -118,19 +138,28 @@ public class CommonCsvReader<T> {
             return this;
         }
 
-        public CsvReaderBuilder<T> alwaysDelimitText(Boolean alwaysDelimitText) {
-            this.alwaysDelimitText = alwaysDelimitText;
-            return this;
-        }
-
-
-        public CsvReaderBuilder<T> contentConverter(CsvBeanConverter<T> contentConverter) {
+        public CsvReaderBuilder<T> contentConverter(CsvReaderConverter<T> contentConverter) {
             this.contentConverter = contentConverter;
             return this;
         }
 
+        public CsvReaderBuilder<T> skipEmptyRows(Boolean skipEmptyRows) {
+            this.skipEmptyRows = skipEmptyRows;
+            return this;
+        }
+
+        public CsvReaderBuilder<T> errorOnDifferentFieldCount(Boolean errorOnDifferentFieldCount) {
+            this.errorOnDifferentFieldCount = errorOnDifferentFieldCount;
+            return this;
+        }
+
         public CsvReaderBuilder<T> contentConverter(Class<T> clazz) {
-            this.clazz = clazz;
+            return contentConverter(clazz, null);
+        }
+
+        public CsvReaderBuilder<T> contentConverter(Class<T> clazz, List<CsvReadListener> csvReadListenerList) {
+            this.contentConverter =
+                    new ReflectCsvReaderConverter(clazz, csvReadListenerList);
             return this;
         }
 
@@ -139,12 +168,10 @@ public class CommonCsvReader<T> {
             return this;
         }
 
-        public CommonCsvReader build() {
+        public CommonCsvReader<T> build() {
             if (contentConverter == null) {
-                throw Exceptions.business("写CSV时, 必须指定contentConverter");
+                throw Exceptions.business("读CSV时, 必须指定contentConverter");
             }
-
-            ReflectCsvBeanConverter<T> beanConverter = new ReflectCsvBeanConverter<>(clazz, csvReadListener);
 
             CsvReader csvReader = new CsvReader();
 
@@ -163,8 +190,10 @@ public class CommonCsvReader<T> {
             Optional.ofNullable(skipEmptyRows)
                     .ifPresent(csvReader::setSkipEmptyRows);
 
-            CommonCsvReader commonCsvReader = new CommonCsvReader();
+
+            CommonCsvReader<T> commonCsvReader = new CommonCsvReader<>();
             commonCsvReader.setCsvReader(csvReader);
+            commonCsvReader.setContentConverter(contentConverter);
 
             Optional.ofNullable(charset)
                     .ifPresent(commonCsvReader::setCharset);
