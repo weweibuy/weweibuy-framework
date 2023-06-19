@@ -10,7 +10,6 @@ import java.lang.reflect.Field;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 /**
  * 写 csv
@@ -21,8 +20,6 @@ import java.util.stream.Collectors;
 public class ReflectCsvWriterConverter<T> implements CsvWriterConverter<T> {
 
     private final Class<? extends T> type;
-
-    private String[] indexName;
 
     private String[] header;
 
@@ -45,12 +42,7 @@ public class ReflectCsvWriterConverter<T> implements CsvWriterConverter<T> {
         AtomicInteger sortAtomicInteger = new AtomicInteger(0);
         int length = fieldsWithAnnotation.length;
         header = new String[length];
-        indexName = new String[length];
         converters = new Function[length];
-
-        // 数组中索引
-        Map<Field, String> arrFieldIndexMap = Arrays.stream(fieldsWithAnnotation)
-                .collect(Collectors.toMap(Function.identity(), Field::getName));
 
         String[] getters = new String[length];
         String[] setters = new String[length];
@@ -62,7 +54,6 @@ public class ReflectCsvWriterConverter<T> implements CsvWriterConverter<T> {
                         Optional.ofNullable(field.getAnnotation(CsvProperty.class).name())
                                 .filter(StringUtils::isNotBlank)
                                 .orElse(field.getName()))
-                .peek(field -> indexName[sortAtomicInteger.get()] = arrFieldIndexMap.get(field))
                 .peek(field -> getters[sortAtomicInteger.get()] = Utils.fieldGetter(field))
                 .peek(field -> setters[sortAtomicInteger.get()] = Utils.fieldSetter(field))
                 .peek(field -> {

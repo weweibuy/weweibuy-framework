@@ -80,6 +80,7 @@ public class ReflectCsvReaderConverter<T> implements CsvReaderConverter<T> {
                         .map(field -> field.getAnnotation(CsvProperty.class))
                         .forEach(annotation -> fieldIndex[indexAtomicInteger.getAndIncrement()] = annotation.index()));
 
+        // 使用名称的字段
         PredicateEnhance.of(userNameList)
                 .withPredicate(CollectionUtils::isNotEmpty)
                 .trueThenConsumer(list -> list.stream()
