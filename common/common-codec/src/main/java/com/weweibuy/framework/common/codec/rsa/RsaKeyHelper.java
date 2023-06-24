@@ -110,7 +110,7 @@ public class RsaKeyHelper {
     }
 
     /**
-     * 从 .cer 文件中读取证书内容, 去除开头与换行
+     * 从 .cer 文件中读取证书内容
      *
      * @return
      */

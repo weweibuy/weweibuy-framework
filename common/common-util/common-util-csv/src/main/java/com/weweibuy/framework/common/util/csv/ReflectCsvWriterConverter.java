@@ -80,7 +80,7 @@ public class ReflectCsvWriterConverter<T> implements CsvWriterConverter<T> {
     }
 
 
-    private String[] oneLine(T t) {
+    protected String[] oneLine(T t) {
         Object[] propertyValues = bulkBean.getPropertyValues(t);
         String[] strings = new String[header.length];
         for (int i = 0; i < header.length; i++) {

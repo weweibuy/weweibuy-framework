@@ -51,6 +51,7 @@
         <itext.html2pdf.version>3.0.4</itext.html2pdf.version>
         <nacos.verion>2021.1</nacos.verion>
         <knife4j-spring-boot-starter.verion>3.0.3</knife4j-spring-boot-starter.verion>
+        <sshd-sftp.version>2.10.0</sshd-sftp.version>
     </properties>
 
     <dependencyManagement>
@@ -243,6 +244,18 @@
             </dependency>
 
             <dependency>
+                <groupId>com.weweibuy.framework</groupId>
+                <artifactId>common-util-zip</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.weweibuy.framework</groupId>
+                <artifactId>common-util-sftp</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
                 <version>${guava.version}</version>
@@ -387,6 +400,12 @@
                 <artifactId>lombok</artifactId>
                 <version>${lombok.version}</version>
                 <scope>provided</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.sshd</groupId>
+                <artifactId>sshd-sftp</artifactId>
+                <version>${sshd-sftp.version}</version>
             </dependency>
 
         </dependencies>

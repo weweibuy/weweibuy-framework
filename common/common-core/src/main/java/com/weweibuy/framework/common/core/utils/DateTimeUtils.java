@@ -170,16 +170,6 @@ public class DateTimeUtils {
         return date.format(formatter);
     }
 
-    /**
-     * 转为日期 String
-     *
-     * @param date
-     * @param formatter 日期格式
-     * @return
-     */
-    public static String toStringDate(ChronoLocalDate date, DateTimeFormatter formatter) {
-        return date.format(formatter);
-    }
 
     /**
      * 转为日期 String
