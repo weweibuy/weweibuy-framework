@@ -56,6 +56,12 @@ public final class RSAUtils {
         generateBinaryKey(publicKeyOutput, privateKeyOutput, 2048);
     }
 
+    public static KeyPair generateKeyPair(Integer keySize) throws NoSuchAlgorithmException {
+        final KeyPairGenerator keyGen = KeyPairGenerator.getInstance(ALGORITHM);
+        keyGen.initialize(keySize);
+        return keyGen.generateKeyPair();
+    }
+
     /**
      * 生成一份二进制的秘钥
      *
