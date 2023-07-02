@@ -42,6 +42,41 @@ import java.util.regex.Pattern;
 /**
  * Reads RSA key pairs using BC provider classes but without the
  * need to specify a crypto provider or have BC added as one.
+ * <p>
+ * RSA 工具
+ * <p>
+ * RSA 密钥格式
+ * 1. PKCS1
+ * 格式:
+ * -----BEGIN RSA PRIVATE KEY-----
+ * .... (base64内容, 可以提取RSA公钥 + 私钥)
+ * -----END RSA PRIVATE KEY-----
+ * 常见生成方式:
+ * 1.1 ssh-keygen  生成的 id_rsa
+ * 1.2 openssl genrsa -out rsa_private_key.pem 2048
+ * <p>
+ * 2. PKCS8 填充  自己生成的密钥, base64格式,  .pem文件
+ * 格式:
+ * -----BEGIN PUBLIC KEY-----
+ * .... (base64内容, 中可以提取RSA公钥)
+ * -----END PUBLIC KEY-----
+ * -----BEGIN PRIVATE KEY-----
+ * .... (base64内容, 中可以提取RSA私钥)
+ * -----END PRIVATE KEY-----
+ * <p>
+ * 2.1 常见生成方式:  对PKCS1的秘钥导出私钥
+ * openssl pkcs8 -topk8 -inform PEM -in rsa_private_key.pem  -outform PEM -out rsa_private_key.p8.pem  -nocrypt
+ * openssl rsa -in rsa_private_key_pkcs.pem -pubout -out rsa_public_key.pem
+ * 2.2 java  KeyPairGenerator 可以直接生成 被PKCS8填充的内容
+ * <p>
+ * 3. PKCS12  证书私钥文件, 可以带密码
+ * 常见: .pfx 文件
+ * <p>
+ * 4. cer 证书公钥文件  常见: .cer文件
+ * 格式:
+ * -----BEGIN CERTIFICATE-----
+ * .... (base64内容, 中可以提取证书私钥)
+ * -----END CERTIFICATE-----
  *
  * @author Luke Taylor
  */

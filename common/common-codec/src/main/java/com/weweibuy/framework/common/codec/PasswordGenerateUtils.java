@@ -29,7 +29,7 @@ public class PasswordGenerateUtils {
         StringBuilder pwd = new StringBuilder();
         Random r = new Random();
         while (count < pwdLen) {
-            //生成随机数，取绝对值，防止生成负数，
+            // 生成随机数，取绝对值，防止生成负数，
             i = Math.abs(r.nextInt(maxNum));  //生成的数最大为36-1
 
             if (i >= 0 && i < str.length) {
