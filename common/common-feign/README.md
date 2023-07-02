@@ -70,12 +70,9 @@ common.feign.http-client.http-req[0].log.disable-resp-body = true  // 禁止输�
 ### 1.4 FeignFilter:
    1. 由于feign提供的RequestInterceptor,只能对feign的请求做处理,无法处理响应, 因此我们提供了 [FeignFilter](src/main/java/com/weweibuy/framework/common/feign/support/FeignFilter.java), 既可以处理请求也可以处理响应
    2. 适用场景:
-    <p>
+     </p>
       - 请求/响应 签名/验签
-    </p>
-    <p>
-     - 请求体/响应体转换 (如mock请求/响应)
-    </p>
+      - 请求体/响应体转换 (如mock请求/响应)
    3. 示例: [MockFeignLogFilter](src/main/java/com/weweibuy/framework/common/feign/mock/MockFeignLogFilter.java)
 
 ### 1.5 Mock接口：
