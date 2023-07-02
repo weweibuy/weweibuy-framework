@@ -37,3 +37,14 @@
    [CommonExceptionAdvice](src/main/java/com/weweibuy/framework/common/mvc/advice/CommonExceptionAdvice.java)
   3. 上抛Feign调用异常  
    [FeignExceptionAdvice](src/main/java/com/weweibuy/framework/common/mvc/advice/FeignExceptionAdvice.java)
+
+### 5 可读取的请求响应处理:
+  1. 说明
+    正常情况,springMvc的请求与响应body体只能进行一次读取, 多次读取会报错, 因此我们提供了可以进行多次读取的接口
+  2. 可读取请求体的接口
+    [ReadableBodyRequestHandler](../common-core/src/main/java/com/weweibuy/framework/common/core/support/ReadableBodyRequestHandler)
+  3. 可读取响应体的接口
+    [ReadableBodyResponseHandler](../common-core/src/main/java/com/weweibuy/framework/common/core/support/ReadableBodyRequestHandler)
+  4. 适用场景:
+     - 请求/响应日志输出
+     - 请求/响应签约/验签

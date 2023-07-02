@@ -1,6 +1,7 @@
 package com.weweibuy.framework.common.core.support;
 
 import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.web.util.ContentCachingResponseWrapper;
 
 /**
@@ -15,6 +16,7 @@ public interface ReadableBodyResponseHandler {
      * 处理可读请求体的请求
      *
      * @param response
+     * @return 是否继续执行下一个 heandler
      */
     boolean handlerReadableBodyResponse(HttpServletRequest request, ContentCachingResponseWrapper response);
 
