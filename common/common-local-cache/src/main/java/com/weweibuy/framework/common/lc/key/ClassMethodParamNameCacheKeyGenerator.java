@@ -20,8 +20,6 @@ public class ClassMethodParamNameCacheKeyGenerator implements KeyGenerator {
 
     public static Object generateKey(Object target, Method method, Object... params) {
         if (params.length == 0) {
-            String simpleName = target.getClass().getSimpleName();
-            String name = method.getName();
             return new CacheSimpleKey(target.getClass(), method, null);
         }
         return new CacheSimpleKey(target.getClass(), method, params);

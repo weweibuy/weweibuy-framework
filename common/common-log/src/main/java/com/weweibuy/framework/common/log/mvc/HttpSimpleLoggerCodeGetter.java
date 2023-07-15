@@ -55,24 +55,24 @@ public class HttpSimpleLoggerCodeGetter implements LogTraceCodeGetter<HttpServle
 
     private String getIp(HttpServletRequest request) {
         String ip = "";
-        if (!StringUtils.isEmpty(ip = request.getHeader("X-Forwarded-For"))) {
+        if (StringUtils.isNotBlank(ip = request.getHeader("X-Forwarded-For"))) {
             // X-FORWARDED-FOR 的第一个ip为真实ip
             return ip.split(",")[0];
         }
 
-        if (!StringUtils.isEmpty(ip = request.getHeader("Proxy-Client-IP"))) {
+        if (StringUtils.isNotBlank(ip = request.getHeader("Proxy-Client-IP"))) {
             return ip;
         }
 
-        if (!StringUtils.isEmpty(ip = request.getHeader("WL-Proxy-Client-IP"))) {
+        if (StringUtils.isNotBlank(ip = request.getHeader("WL-Proxy-Client-IP"))) {
             return ip;
         }
 
-        if (!StringUtils.isEmpty(ip = request.getHeader("HTTP_CLIENT_IP"))) {
+        if (StringUtils.isNotBlank(ip = request.getHeader("HTTP_CLIENT_IP"))) {
             return ip;
         }
 
-        if (!StringUtils.isEmpty(ip = request.getHeader("HTTP_X_FORWARDED_FOR"))) {
+        if (StringUtils.isNotBlank(ip = request.getHeader("HTTP_X_FORWARDED_FOR"))) {
             return ip;
         }
         return request.getRemoteAddr();

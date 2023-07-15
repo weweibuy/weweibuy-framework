@@ -408,6 +408,9 @@
       <if test="record.tag != null">
         tag = #{record.tag,jdbcType=LONGVARCHAR},
       </if>
+      <if test="example.updateSql != null">
+        ${example.updateSql} ,
+      </if>
     </set>
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />

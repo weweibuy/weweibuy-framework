@@ -2,6 +2,7 @@ package com.weweibuy.framework.samples.controller;
 
 import com.weweibuy.framework.common.core.validate.annotation.Maximum;
 import com.weweibuy.framework.common.core.validate.annotation.Minimum;
+import com.weweibuy.framework.common.core.validate.annotation.Scale;
 import lombok.Data;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.math.BigDecimal;
 
 /**
  * @author durenhao
@@ -33,6 +35,8 @@ public class ValidateController {
         @Maximum(value = 10, message = "数量必须小于10")
         private Long maxQty;
 
+        @Scale(max = 2, message = "最大精度为两位")
+        private BigDecimal amount;
 
     }
 

@@ -2,7 +2,7 @@
   {
     "host": "localhost:9000",
     "path": "/hello",
-    "method": "post",
+    "method": "get",
     "target": "hello.json",
     "enable": true
   },

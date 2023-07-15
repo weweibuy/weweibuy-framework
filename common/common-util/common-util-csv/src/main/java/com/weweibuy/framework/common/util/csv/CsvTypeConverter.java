@@ -1,5 +1,9 @@
 package com.weweibuy.framework.common.util.csv;
 
+import com.weweibuy.framework.common.util.csv.annotation.CsvProperty;
+
+import java.util.function.Function;
+
 /**
  * 类型转化
  *
@@ -8,37 +12,11 @@ package com.weweibuy.framework.common.util.csv;
  **/
 public interface CsvTypeConverter<T> {
 
-    /**
-     * 转CSV单元格内容
-     *
-     * @param t
-     * @return
-     */
-    String convert(T t);
 
-    /**
-     * 转字段
-     *
-     * @param value
-     * @param fieldType
-     * @return
-     */
-    T convert(String value, Class<T> fieldType, int typeIndex);
+    Function<Object, String> writeConvert(Class fieldType, CsvProperty csvProperty);
 
-    /**
-     * converter 对应的类型索引; 如果不支持索引返回-1
-     *
-     * @param fieldType
-     * @return
-     */
-    int typeIndex(Class<T> fieldType);
 
-    /**
-     * 设置时间格式
-     *
-     * @param pattern
-     */
-    void setPattern(String pattern);
+    Function<String, Object> readConvert(Class fieldType, CsvProperty csvProperty);
 
 
 }

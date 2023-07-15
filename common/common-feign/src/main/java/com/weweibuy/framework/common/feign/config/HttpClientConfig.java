@@ -1,10 +1,13 @@
 package com.weweibuy.framework.common.feign.config;
 
 import com.weweibuy.framework.common.core.concurrent.LogExceptionThreadFactory;
+import com.weweibuy.framework.common.feign.support.CustomHttpClientLogInterceptor;
 import com.weweibuy.framework.common.feign.support.DelegateFeignClient;
 import com.weweibuy.framework.common.feign.support.NoSwitchHttpClientConnectionOperator;
 import feign.Client;
 import feign.httpclient.ApacheHttpClient;
+import org.apache.http.HttpRequestInterceptor;
+import org.apache.http.HttpResponseInterceptor;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.config.Registry;
@@ -27,7 +30,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplicat
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.ExtractingResponseErrorHandler;
 import org.springframework.web.client.RestTemplate;
@@ -60,6 +62,9 @@ public class HttpClientConfig {
     @Autowired(required = false)
     private List<DelegateFeignClient> delegateFeignClientList;
 
+    @Autowired(required = false)
+    private CustomHttpClientLogInterceptor customHttpClientLogInterceptor;
+
     private ScheduledExecutorService schedule;
 
     /**
@@ -84,6 +89,12 @@ public class HttpClientConfig {
                 .setConnectionManager(httpClientConnectionManager())
                 .disableAutomaticRetries()
                 .setDefaultRequestConfig(requestConfig());
+        // 日志
+        if (customHttpClientLogInterceptor != null) {
+            httpClientBuilder = httpClientBuilder
+                    .addInterceptorLast((HttpRequestInterceptor) customHttpClientLogInterceptor)
+                    .addInterceptorLast((HttpResponseInterceptor) customHttpClientLogInterceptor);
+        }
 
         if (httpClientProperties.isUseSSL()) {
             TrustStrategy acceptingTrustStrategy = (X509Certificate[] chain, String authType) -> true;
@@ -96,6 +107,7 @@ public class HttpClientConfig {
         }
         return httpClientBuilder.build();
     }
+
 
     /**
      * feign 的 超时配置会作为每次请求的 option,

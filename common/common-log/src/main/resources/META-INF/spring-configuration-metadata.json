@@ -14,14 +14,9 @@
       "defaultValue":true
     },
     {
-      "name": "common.log.http",
-      "type": "com.weweibuy.framework.common.log.config.CommonLogProperties$CommonLogHttpProperties",
-      "sourceType": "com.weweibuy.framework.common.log.config.CommonLogProperties$CommonLogHttpProperties"
-    },
-    {
-      "name": "common.log.http.disablePath",
-      "type": "java.util.Set<java.lang.String>",
-      "sourceType": "com.weweibuy.framework.common.log.config.CommonLogProperties$CommonLogHttpProperties"
+      "name": "common.log.httpPath",
+      "type": "java.util.List<com.weweibuy.framework.common.log.config.CommonLogProperties$HttpPathProperties>",
+      "sourceType": "com.weweibuy.framework.common.log.config.CommonLogProperties$HttpPathProperties"
     }
 
   ],

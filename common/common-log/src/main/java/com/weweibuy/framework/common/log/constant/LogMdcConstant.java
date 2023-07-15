@@ -36,10 +36,6 @@ public interface LogMdcConstant {
 
     String UID_FIELD_NAME = "uid";
 
-    /**
-     * 是否已经输出过请求日志
-     */
-    String HAS_LOG_REQ_FIELD_NAME = "uid";
 
 
 }

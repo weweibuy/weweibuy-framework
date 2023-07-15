@@ -17,7 +17,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class FeignFilterDelegateClient implements DelegateFeignClient {
 
-    @Autowired
+    @Autowired(required = false)
     private List<FeignFilter> feignFilterList;
 
     @Override

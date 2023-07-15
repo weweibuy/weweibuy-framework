@@ -43,47 +43,46 @@ public class MockClient implements Client {
     @Override
     public Response execute(Request request, Request.Options options) throws IOException {
 
-        String name = lbName(request);
-
-        MockConfig mockConfig = matchMockConfig(name, request);
-
-        if (mockConfig != null) {
-            // 读取mock数据
-            String target = mockConfig.getTarget();
-            String dataFile = mockDataDir + target;
-            MockData mockData = JackJsonUtils.readValueWithMvc(new File(dataFile), MockData.class);
-            Map<String, String> mcoKHeader = mockData.getHeader();
-            Map<String, List<String>> header = Optional.ofNullable(mcoKHeader)
-                    .map(h -> h.entrySet().stream()
-                            .collect(Collectors.groupingBy(Map.Entry::getKey,
-                                    Collectors.mapping(Map.Entry::getValue,
-                                            Collectors.toList()))))
-                    .orElseGet(() -> new HashMap<>());
-
-            if (header.get(HttpHeaders.CONTENT_TYPE) == null) {
-                header.put(HttpHeaders.CONTENT_TYPE, Collections.singletonList(MediaType.APPLICATION_JSON_VALUE));
-            }
-
-            byte[] body = Optional.ofNullable(mockData.getBody())
-                    .map(o -> JackJsonUtils.writeAsByteWithMvc(o))
-                    .orElse("".getBytes());
-
-            Integer status = Optional.ofNullable(mockData.getStatus())
-                    .orElse(HttpStatus.OK.value());
-
-            return Response.builder()
-                    .request(request)
-                    .status(status)
-                    .headers((Map<String, Collection<String>>) (Object) header)
-                    .body(body)
-                    .build();
+        MockConfig mockConfig = matchMockConfig(request);
+        if (mockConfig == null) {
+            return delegate.execute(request, options);
         }
 
-        return delegate.execute(request, options);
+        // 读取mock数据
+        String target = mockConfig.getTarget();
+        String dataFile = mockDataDir + target;
+        MockData mockData = JackJsonUtils.readValueWithMvc(new File(dataFile), MockData.class);
+        Map<String, String> mcoKHeader = mockData.getHeader();
+        Map<String, List<String>> header = Optional.ofNullable(mcoKHeader)
+                .map(h -> h.entrySet().stream()
+                        .collect(Collectors.groupingBy(Map.Entry::getKey,
+                                Collectors.mapping(Map.Entry::getValue,
+                                        Collectors.toList()))))
+                .orElseGet(() -> new HashMap<>());
+
+        if (header.get(HttpHeaders.CONTENT_TYPE) == null) {
+            header.put(HttpHeaders.CONTENT_TYPE, Collections.singletonList(MediaType.APPLICATION_JSON_VALUE));
+        }
+
+        byte[] body = Optional.ofNullable(mockData.getBody())
+                .map(o -> JackJsonUtils.writeAsByteWithMvc(o))
+                .orElse("".getBytes());
+
+        Integer status = Optional.ofNullable(mockData.getStatus())
+                .orElse(HttpStatus.OK.value());
+
+        return Response.builder()
+                .request(request)
+                .status(status)
+                .headers((Map<String, Collection<String>>) (Object) header)
+                .body(body)
+                .build();
     }
 
 
-    private MockConfig matchMockConfig(String lbName, Request request) {
+    public MockConfig matchMockConfig(Request request) {
+        String lbName = lbName(request);
+
         String url = request.url();
         Request.HttpMethod httpMethod = request.httpMethod();
         List<MockConfig> configList = JackJsonUtils.readValueWithMvc(new File(configFile), configJavaType);

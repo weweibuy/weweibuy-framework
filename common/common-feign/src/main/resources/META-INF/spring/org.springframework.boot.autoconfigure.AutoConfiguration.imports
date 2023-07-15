@@ -1,3 +1,5 @@
 com.weweibuy.framework.common.feign.config.CommonFeignConfig
 com.weweibuy.framework.common.feign.config.HttpClientConfig
 com.weweibuy.framework.common.feign.config.CommonLoadBalancerConfig
+com.weweibuy.framework.common.feign.config.HttpClientLogConfig
+com.weweibuy.framework.common.feign.config.FeignLogConfig

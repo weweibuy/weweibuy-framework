@@ -1,5 +1,6 @@
 package com.weweibuy.framework.samples.mybatis.plugin.model.example;
 
+import com.weweibuy.framework.common.db.utils.SqlUtils;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,12 +16,14 @@ public class DBEncryptExample {
 
     protected Integer rows;
 
+    protected String updateSql;
+
     public DBEncryptExample() {
         oredCriteria = new ArrayList<Criteria>();
     }
 
     public void setOrderByClause(String orderByClause) {
-        this.orderByClause = orderByClause;
+         this.orderByClause = SqlUtils.containsSqlInjectionAndThrow(orderByClause);
     }
 
     public String getOrderByClause() {
@@ -138,6 +141,31 @@ public class DBEncryptExample {
     public DBEncryptExample page(Integer page, Integer pageSize) {
         this.offset = page * pageSize;
         this.rows = pageSize;
+        return this;
+    }
+
+    public void setUpdateSql(String updateSql) {
+        this.updateSql = SqlUtils.containsSqlInjectionAndThrow(updateSql);
+    }
+
+    public String getUpdateSql() {
+        return this.updateSql;
+    }
+
+    public DBEncryptExample updateSql(String updateSqlClause) {
+        this.setUpdateSql(updateSqlClause);
+        return this;
+    }
+
+    public DBEncryptExample updateSql(String ... updateSqlClauses) {
+        StringBuffer sb = new StringBuffer();
+        for (int i = 0; i < updateSqlClauses.length; i++) {
+            sb.append(updateSqlClauses[i]);
+            if (i < updateSqlClauses.length - 1) {
+                sb.append(" , ");
+            }
+        }
+        this.setUpdateSql(sb.toString());
         return this;
     }
 

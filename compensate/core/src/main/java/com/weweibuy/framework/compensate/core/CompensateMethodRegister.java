@@ -49,11 +49,9 @@ public class CompensateMethodRegister implements SmartInitializingSingleton {
         if (StringUtils.hasLength(recoverBeanName) && StringUtils.hasLength(recoverMethodName)) {
             Object recoverBean = applicationContext.getBean(recoverBeanName);
             Method[] declaredMethods = ReflectionUtils.getAllDeclaredMethods(recoverBean.getClass());
-            boolean hashMethod = false;
             for (Method recoverMethod : declaredMethods) {
                 if (recoverMethod.getName().equals(recoverMethodName)) {
                     compensateHandlerMethod.setRecoverMethod(BridgeMethodResolver.findBridgedMethod(recoverMethod));
-                    hashMethod = true;
                     break;
                 }
             }

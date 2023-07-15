@@ -29,6 +29,8 @@ public class JackJsonUtils {
 
     private static ObjectMapper MVC_OBJECT_MAPPER;
 
+    private static ObjectMapper UPPER_CAMEL_CASE_MAPPER;
+
     /***
      * MVC 使用的名称风格
      */
@@ -55,6 +57,9 @@ public class JackJsonUtils {
         }
     }
 
+    public static ObjectMapper createObjectMapper(String dataTimeFormat, String dataFormat, PropertyNamingStrategy propertyNamingStrategy) {
+        return createObjectMapper(dataTimeFormat, dataFormat, CommonConstant.DateConstant.STANDARD_TIME_FORMAT_STR, propertyNamingStrategy);
+    }
 
     /**
      * 创建 objectMapper
@@ -64,16 +69,16 @@ public class JackJsonUtils {
      * @param propertyNamingStrategy
      * @return
      */
-    public static ObjectMapper createObjectMapper(String dataTimeFormat, String dataFormat, PropertyNamingStrategy propertyNamingStrategy) {
+    public static ObjectMapper createObjectMapper(String dataTimeFormat, String dataFormat, String timeFormat, PropertyNamingStrategy propertyNamingStrategy) {
         Jackson2ObjectMapperBuilder objectMapperBuilder =
                 JacksonBuilderHelper.objectMapperBuilder(dataTimeFormat,
-                        dataFormat);
-        if (propertyNamingStrategy.getClass().isAssignableFrom(PropertyNamingStrategies.SNAKE_CASE.getClass())) {
+                        dataFormat, timeFormat);
+        if (propertyNamingStrategy != null) {
             return objectMapperBuilder.createXmlMapper(false)
-                    .propertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE)
+                    .propertyNamingStrategy(propertyNamingStrategy)
                     .build();
         }
-        return CAMEL_CASE_MAPPER = objectMapperBuilder.createXmlMapper(false)
+        return objectMapperBuilder.createXmlMapper(false)
                 .build();
     }
 
@@ -86,6 +91,11 @@ public class JackJsonUtils {
         SNAKE_CASE_MAPPER = objectMapperBuilder.createXmlMapper(false)
                 .propertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE)
                 .build();
+
+        UPPER_CAMEL_CASE_MAPPER = objectMapperBuilder.createXmlMapper(false)
+                .propertyNamingStrategy(PropertyNamingStrategies.UPPER_CAMEL_CASE)
+                .build();
+
     }
 
     public static <T> T readSnakeCaseValue(String json, Class<? extends T> clazz) {
@@ -555,6 +565,10 @@ public class JackJsonUtils {
 
     public static ObjectMapper getMvcObjectMapper() {
         return MVC_OBJECT_MAPPER;
+    }
+
+    public static ObjectMapper getUpperCamelCaseMapper() {
+        return UPPER_CAMEL_CASE_MAPPER;
     }
 
     public static JavaType javaType(ObjectMapper objectMapper, Class<?> clazz, Class<?>... typeClazz) {

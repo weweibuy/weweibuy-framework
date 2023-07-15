@@ -8,8 +8,10 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalTimeSerializer;
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 import com.weweibuy.framework.common.core.model.constant.CommonConstant;
 import com.weweibuy.framework.common.core.utils.DateTimeUtils;
@@ -25,6 +27,7 @@ import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.*;
 
 /**
@@ -47,17 +50,23 @@ public class JacksonBuilderHelper {
         MODULE_LIST.add(new JsonComponentModule());
     }
 
-
     public static Jackson2ObjectMapperBuilder objectMapperBuilder(String dateTimeFormat, String dataFormat) {
-        JacksonBuilderHelper.StandardJackson2ObjectMapperBuilderCustomizer standardJackson2ObjectMapperBuilderCustomizer =
-                new JacksonBuilderHelper.StandardJackson2ObjectMapperBuilderCustomizer();
+        return objectMapperBuilder(dateTimeFormat, dataFormat, CommonConstant.DateConstant.STANDARD_TIME_FORMAT_STR);
+    }
+
+
+    public static Jackson2ObjectMapperBuilder objectMapperBuilder(String dateTimeFormat, String dataFormat, String timeFormat) {
+        StandardJackson2ObjectMapperBuilderCustomizer standardJackson2ObjectMapperBuilderCustomizer =
+                new StandardJackson2ObjectMapperBuilderCustomizer();
         Jackson2ObjectMapperBuilder objectMapperBuilder = new Jackson2ObjectMapperBuilder();
         List<Jackson2ObjectMapperBuilderCustomizer> customizers = new ArrayList<>();
         Jackson2ObjectMapperBuilderCustomizer localDateCustomizer = localDateCustomizer(dataFormat);
         Jackson2ObjectMapperBuilderCustomizer localDateTimeCustomizer = localDateTimeCustomizer(dateTimeFormat);
+        Jackson2ObjectMapperBuilderCustomizer localTimeCustomizer = localTimeCustomizer(timeFormat);
         customizers.add(standardJackson2ObjectMapperBuilderCustomizer);
         customizers.add(localDateCustomizer);
         customizers.add(localDateTimeCustomizer);
+        customizers.add(localTimeCustomizer);
         // 加载自定义配置信息
         ServiceLoader<Jackson2ObjectMapperBuilderCustomizer> LOADER = ServiceLoader.load(Jackson2ObjectMapperBuilderCustomizer.class);
         Iterator<Jackson2ObjectMapperBuilderCustomizer> iterator = LOADER.iterator();
@@ -160,6 +169,12 @@ public class JacksonBuilderHelper {
                         .deserializerByType(LocalDate.class, localDateDeserializer(format));
     }
 
+    public static Jackson2ObjectMapperBuilderCustomizer localTimeCustomizer(String format) {
+        return builder ->
+                builder.serializerByType(LocalTime.class, localTimeSerializer(format))
+                        .deserializerByType(LocalTime.class, localTimeDeserializer(format));
+    }
+
     public static LocalDateTimeSerializer localDateTimeSerializer(String format) {
         return new LocalDateTimeSerializer(DateTimeUtils.dateTimeFormatter(format));
     }
@@ -176,5 +191,12 @@ public class JacksonBuilderHelper {
         return new LocalDateDeserializer(DateTimeUtils.dateTimeFormatter(format));
     }
 
+    public static LocalTimeSerializer localTimeSerializer(String format) {
+        return new LocalTimeSerializer(DateTimeUtils.dateTimeFormatter(format));
+    }
+
+    public static LocalTimeDeserializer localTimeDeserializer(String format) {
+        return new LocalTimeDeserializer(DateTimeUtils.dateTimeFormatter(format));
+    }
 
 }

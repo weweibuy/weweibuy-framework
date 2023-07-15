@@ -43,9 +43,39 @@
 spring.jackson.property-naming-strategy = xxxx
 ```
   没有配置, 默认是 DTO对象的命名风格
-  
 
-### 1.3 Mock接口：
+### 1.3 请求/响应日志输出:
+   1. 默认通过httpClient输出日志
+   2. 修改日志输出位置
+`application.properites:`
+```
+common.feign.log.position = httpclient  // httpclient侧输出日志
+common.feign.log.position = feign   // feign 输出日志
+```
+   3. 日志输出配置:
+`application.properites:`
+```
+common.feign.log.position = httpclient // httpclient侧输出日志时生效
+common.feign.http-client.http-req[0].host = localhost:9000  // 指定host
+common.feign.http-client.http-req[0].path = /**  // 指定路径, 默认/**
+common.feign.http-client.http-req[0].methods = GET,POST // 指定请求method
+common.feign.http-client.http-req[0].log.log-req-header = headerKey1,headerKey2 // 输出指定请求httpHeader
+common.feign.http-client.http-req[0].log.log-resp-header = headerKey1,headerKey2 // 输出指定响应httpHeader
+common.feign.http-client.http-req[0].log.disable-req = true  // 禁止输入请求日志
+common.feign.http-client.http-req[0].log.disable-req-body = true  // 禁止输入请求体
+common.feign.http-client.http-req[0].log.disable-req = true  // 禁止输入请求日志
+common.feign.http-client.http-req[0].log.disable-resp-body = true  // 禁止输入响应体
+```
+
+### 1.4 FeignFilter:
+   1. 由于feign提供的RequestInterceptor,只能对feign的请求做处理,无法处理响应, 因此我们提供了 [FeignFilter](src/main/java/com/weweibuy/framework/common/feign/support/FeignFilter.java), 既可以处理请求也可以处理响应
+   2. 适用场景:
+     </p>
+      - 请求/响应 签名/验签
+      - 请求体/响应体转换 (如mock请求/响应)
+   3. 示例: [MockFeignLogFilter](src/main/java/com/weweibuy/framework/common/feign/mock/MockFeignLogFilter.java)
+
+### 1.5 Mock接口：
    1. 添加启动命令或配置
   添加启动命令:  
 `启动命令`
@@ -96,13 +126,13 @@ spring.profiles.active = mock
   提示: 更改 mock.json 与 mock文件夹的文件都是实时生效的无需重启
 ```
 
-### 1.4 APM:
+### 1.6 APM:
    我们为Feign默认配置了请求拦截器,拦截器会取出MDC中的traceCode,并将其中以HttpHeader的形式传递给下游  
    结合 common-mvc 与 common-log 可以实现全链路的日志追踪
     [TraceContextFeignInterceptor](src/main/java/com/weweibuy/framework/common/feign/log/TraceContextFeignInterceptor.java) 
 
 
-### 1.5 异常信息跨应用上抛:
+### 1.7 异常信息跨应用上抛:
    我们遵循SpringCloudFeign基于Rest的思想,通过配置Feign的ErrorEncoder,重新封装异常信息到
    [MethodKeyFeignException](../common-core/src/main/java/com/weweibuy/framework/common/core/exception/MethodKeyFeignException.java)
     中,在通过SpringMvc全局异常捕获,响应对应的Http状态码,可以将异常信息再抛给上层信息来处理.

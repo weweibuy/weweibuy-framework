@@ -18,7 +18,7 @@ spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     type: com.zaxxer.hikari.HikariDataSource
-    url: jdbc:mysql://106.12.208.53:3306/webuy_learning?useUnicode=true&characterEncoding=UTF-8&allowMutiQueries=true&serverTimezone=Asia/Shanghai
+    url: jdbc:mysql://223.247.141.69:3306/webuy_learning?useUnicode=true&characterEncoding=UTF-8&allowMutiQueries=true&serverTimezone=Asia/Shanghai
     username: user01
     password: ak402507979
     hikari:
@@ -65,7 +65,7 @@ idempotent:
 
 
 rocket-mq:
-  name-server: 122.51.171.126:9876
+  name-server: 223.247.141.69:9876
   producer:
     group: TEST_SAMPLE_01_P_GROUP
     sample-provider:
@@ -77,12 +77,10 @@ rocket-mq:
       topic: TEST_SAMPLE_BATCH_02
   consumer:
     sample-consumer:
-      trace: false
       customized-trace-topic: qaz
       topic: TEST_SAMPLE_01
       group: TEST_SAMPLE_01_C_GROUP
     batchSampleConsumer:
-      trace: false
       topic: TEST_SAMPLE_BATCH_01
       group: TEST_SAMPLE_BATCH_01_C_GROUP
     batchForeachSampleConsumer:
@@ -122,8 +120,12 @@ common:
       host: 106.12.208.53:8086
       database: java_metric
   log:
-    http:
-      disablePath: REQ_/hello1/**
+    http-path:
+      - path: /hello
+        methods: GET
+        log:
+          disable-req: true
+          disable-resp-body: true
   db:
     encrypt:
       enable: true
@@ -142,6 +144,16 @@ common:
       enable: false
       topic: COMMON_SERVER_UPDATE_TOPIC
       group: COMMON_SERVER_UPDATE_C_GROUP
+  feign:
+    http-client:
+      http-req:
+        - host: localhost:8080
+          path: /**
+          log:
+            disable-req-body: true
+            disable-resp: true
+
+
 
 management:
   endpoints:

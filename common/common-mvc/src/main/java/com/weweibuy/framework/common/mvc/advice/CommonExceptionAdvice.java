@@ -18,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindException;
+import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
@@ -58,8 +59,6 @@ public class CommonExceptionAdvice implements InitializingBean {
      */
     @ExceptionHandler(BusinessException.class)
     public ResponseEntity<CommonCodeResponse> handler(HttpServletRequest request, BusinessException e) {
-        HttpLogger.determineAndLogForJsonRequest(request);
-
         log.warn("业务异常: ", e);
         return builderCommonHeader(HttpStatus.BAD_REQUEST)
                 .body(CommonCodeResponse.response(e.getCodeAndMsg()));
@@ -76,7 +75,6 @@ public class CommonExceptionAdvice implements InitializingBean {
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<CommonCodeResponse> handler(HttpServletRequest request, MethodArgumentNotValidException e) {
-        HttpLogger.determineAndLogForJsonRequest(request);
 
         log.warn("输入参数错误: ", e.getMessage());
         String defaultMessage = e.getBindingResult().getFieldError().getDefaultMessage();
@@ -95,7 +93,6 @@ public class CommonExceptionAdvice implements InitializingBean {
      */
     @ExceptionHandler(BindException.class)
     public ResponseEntity<CommonCodeResponse> handler(HttpServletRequest request, BindException e) {
-        HttpLogger.determineAndLogForJsonRequest(request);
 
         log.warn("输入参数错误: {}", e.getMessage());
         String defaultMessage = e.getFieldError().getDefaultMessage();
@@ -105,12 +102,22 @@ public class CommonExceptionAdvice implements InitializingBean {
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResponseEntity<CommonCodeResponse> handler(HttpServletRequest request, MethodArgumentTypeMismatchException e) {
-        HttpLogger.determineAndLogForJsonRequest(request);
 
         log.warn("输入参数字段类型错误:", e);
         return builderCommonHeader(HttpStatus.BAD_REQUEST)
                 .body(CommonCodeResponse.response(CommonErrorCodeEum.BAD_REQUEST_PARAM.getCode(), "输入参数字段:[" + e.getName() + "]类型错误"));
     }
+
+    @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
+    public ResponseEntity<CommonCodeResponse> handler(HttpServletRequest request, HttpMediaTypeNotSupportedException e) {
+
+        log.warn("接口输入Content-Type错误: {}", e.getMessage());
+        return builderCommonHeader(HttpStatus.BAD_REQUEST)
+                .body(CommonCodeResponse.response(CommonErrorCodeEum.BAD_REQUEST_PARAM.getCode(),
+                        "不支持的请求Content-Type: " + e.getContentType()));
+    }
+
+
 
     /**
      * 无法读取请求报文
@@ -122,7 +129,6 @@ public class CommonExceptionAdvice implements InitializingBean {
      */
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<CommonCodeResponse> handler(HttpServletRequest request, HttpMessageNotReadableException e) {
-        HttpLogger.determineAndLogForJsonRequest(request);
 
         log.warn("输入参数格式错误: {}", e.getMessage());
         return builderCommonHeader(HttpStatus.BAD_REQUEST)
@@ -139,8 +145,6 @@ public class CommonExceptionAdvice implements InitializingBean {
      */
     @ExceptionHandler(SystemException.class)
     public ResponseEntity<CommonCodeResponse> handler(HttpServletRequest request, SystemException e) {
-        HttpLogger.determineAndLogForJsonRequest(request);
-
         log.error("系统异常: ", e);
         return builderCommonHeader(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(CommonCodeResponse.response(e.getCodeAndMsg()));
@@ -156,7 +160,6 @@ public class CommonExceptionAdvice implements InitializingBean {
      */
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public ResponseEntity<CommonCodeResponse> handler(HttpServletRequest request, HttpRequestMethodNotSupportedException e) {
-        HttpLogger.determineAndLogForJsonRequest(request);
 
         log.warn("请求 HttpMethod 错误: {}", e.getMessage());
         return builderCommonHeader(HttpStatus.BAD_REQUEST)
@@ -173,7 +176,6 @@ public class CommonExceptionAdvice implements InitializingBean {
      */
     @ExceptionHandler(MissingServletRequestParameterException.class)
     public ResponseEntity<CommonCodeResponse> handler(HttpServletRequest request, MissingServletRequestParameterException e) {
-        HttpLogger.determineAndLogForJsonRequest(request);
 
         log.warn("缺少请求参数: {}", e.getMessage());
         return builderCommonHeader(HttpStatus.BAD_REQUEST)
@@ -190,7 +192,6 @@ public class CommonExceptionAdvice implements InitializingBean {
      */
     @ExceptionHandler(MaxUploadSizeExceededException.class)
     public ResponseEntity<CommonCodeResponse> handler(HttpServletRequest request, MaxUploadSizeExceededException e) {
-        HttpLogger.determineAndLogForJsonRequest(request);
 
         log.warn("上传文件或请求报文过大, 请设置: spring.servlet.multipart.max-request-size 与 spring.servlet.multipart.max-file-size.", e);
         return builderCommonHeader(HttpStatus.PAYLOAD_TOO_LARGE)
@@ -207,7 +208,6 @@ public class CommonExceptionAdvice implements InitializingBean {
      */
     @ExceptionHandler(CustomResponseStatusException.class)
     public ResponseEntity<CommonCodeResponse> handler(HttpServletRequest request, CustomResponseStatusException e) {
-        HttpLogger.determineAndLogForJsonRequest(request);
 
         log.warn("请求异常: {}", e.getMessage());
         return builderCommonHeader(e.getStatus())
@@ -225,7 +225,6 @@ public class CommonExceptionAdvice implements InitializingBean {
      */
     @ExceptionHandler(IdempotentNoLockException.class)
     public ResponseEntity<CommonCodeResponse> handler(HttpServletRequest request, IdempotentNoLockException e) {
-        HttpLogger.determineAndLogForJsonRequest(request);
 
         log.warn("幂等异常: ", e.getMessage());
         return builderCommonHeader(HttpStatus.TOO_MANY_REQUESTS)
@@ -242,7 +241,6 @@ public class CommonExceptionAdvice implements InitializingBean {
      */
     @ExceptionHandler(Exception.class)
     public ResponseEntity<CommonCodeResponse> handler(HttpServletRequest request, Exception e) {
-        HttpLogger.determineAndLogForJsonRequest(request);
 
         if (unknownExceptionHandler != null) {
             return unknownExceptionHandler.handlerException(request, e);

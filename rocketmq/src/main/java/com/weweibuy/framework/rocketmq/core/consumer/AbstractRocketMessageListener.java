@@ -24,7 +24,7 @@ public abstract class AbstractRocketMessageListener<R> implements RocketMessageL
 
     private RocketHandlerMethod rocketHandlerMethod;
 
-    public AbstractRocketMessageListener(MethodRocketListenerEndpoint endpoint, RocketHandlerMethod handlerMethod) {
+    protected AbstractRocketMessageListener(MethodRocketListenerEndpoint endpoint, RocketHandlerMethod handlerMethod) {
         this.batchSize = endpoint.getConsumeMessageBatchMaxSize();
         this.errorHandler = endpoint.getErrorHandler();
         this.rocketHandlerMethod = handlerMethod;

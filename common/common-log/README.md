@@ -29,9 +29,11 @@ common.log.enable = false
    方法一: 配置:   
 `application.properites:`
 ```
-common.log.http.disablePath[0] = REQ_/image/**  ## 屏蔽 /image/** 全部请求日志
-common.log.http.disablePath[1] = RESP_/image    ## 屏蔽 /image 响应日志
-```    
+common.log.http-path[0].path = /**          ##  对指定路径进行配置
+common.log.http-path[0].methods = GET,POST   ##  对指定请求Method进行配置, 默认全部
+common.log.http-path[0].log.disable-req = true   ##  对日志进行配置, 禁止输出请求日志
+common.log.http-path[0].log.disable-resp-body = true   ##  对日志进行配置, 禁止输出响应body
+```
    方法二: 代码:    
    实现[LogDisableConfigurer](src/main/java/com/weweibuy/framework/common/log/support/LogDisableConfigurer.java)接口,增加配置,并将Bean交给Spring管理  
    eg:  [CustomPatternReplaceConfig](../../samples/src/main/java/com/weweibuy/framework/samples/log/CustomDisablePathConfig.java)
@@ -47,8 +49,14 @@ common.log.http.disablePath[1] = RESP_/image    ## 屏蔽 /image 响应日志
     mobile,phone,phoneNo,certId,idCard,idNo,password,pwd,appSecret,fullName,address
 如果这些不满足要求可以通过addPatternReplace方法增加或者替换
 ```
-   3. 通过 PatternReplaceConfig.addDesensitizationRule 配置脱敏信息  
-   eg: [CustomPatternReplaceConfig](../../samples/src/main/java/com/weweibuy/framework/samples/log/CustomPatternReplaceConfig.java)
+   3. 通过配置敏感字段:
+`application.properites:`
+```
+common.log.http-path[0].path = /**          ##  对指定路径进行配置
+common.log.http-path[0].methods = GET,POST   ##  对指定请求Method进行配置, 默认全部
+common.log.http-path[0].sensitization.sensitization-fields = password,idNo   ##  需要脱敏的敏感字段
+common.log.http-path[0].sensitization.logger = com.weweibuy.framework.common.log.logger.HttpLogger   ##  对指定logger输出的日志脱敏
+```
 
 
 ### 4 日志链路追踪

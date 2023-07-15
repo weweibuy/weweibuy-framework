@@ -15,7 +15,7 @@ import java.lang.annotation.*;
 public @interface CsvProperty {
 
     /**
-     * 标题名称
+     * csv头, 标题名称
      *
      * @return
      */
@@ -29,7 +29,7 @@ public @interface CsvProperty {
     int index() default Integer.MAX_VALUE;
 
     /**
-     * 写出顺序
+     * 写出顺序 数值越小约优先写出
      *
      * @return
      */
@@ -44,6 +44,12 @@ public @interface CsvProperty {
 
     /**
      * 时间格式
+     * 默认:  {@link SimpleCsvTypeConverter}
+     * <p>
+     * Date: yyyy-MM-dd HH:mm:ss
+     * LocalDate: yyyy-MM-dd
+     * LocalTime: HH:mm:ss
+     * LocalDateTime: yyyy-MM-dd HH:mm:ss
      *
      * @return
      */

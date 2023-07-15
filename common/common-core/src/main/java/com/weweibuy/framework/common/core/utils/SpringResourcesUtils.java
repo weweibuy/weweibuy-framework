@@ -4,6 +4,7 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.context.properties.bind.BindResult;
+import org.springframework.boot.context.properties.bind.Bindable;
 import org.springframework.boot.context.properties.bind.Binder;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.env.Environment;
@@ -47,6 +48,21 @@ public class SpringResourcesUtils {
         BindResult<T> restServiceBindResult = Binder.get(environment)
                 .bind(name, clazz);
         return restServiceBindResult.get();
+    }
+
+
+    /**
+     * 绑定配置文件 到对象
+     *
+     * @param name 配置name (前缀)
+     * @param object
+     * @param environment
+     * @return
+     */
+    public static Object bindConfig(String name, Object object, Environment environment) {
+        BindResult<Object> bind = Binder.get(environment)
+                .bind(name, Bindable.ofInstance(object));
+        return bind.get();
     }
 
 }

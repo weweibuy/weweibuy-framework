@@ -29,13 +29,9 @@ import java.util.Optional;
  * @date 2021/7/18 10:32
  **/
 @Slf4j
-public class MultipleDatasourceRegister implements BeanDefinitionRegistryPostProcessor, EnvironmentAware, ApplicationContextAware {
-
-    private BeanNameGenerator beanNameGenerator = AnnotationBeanNameGenerator.INSTANCE;
+public class MultipleDatasourceRegister implements BeanDefinitionRegistryPostProcessor, EnvironmentAware {
 
     private Environment environment;
-
-    private ApplicationContext applicationContext;
 
     @Override
     public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry) throws BeansException {
@@ -77,6 +73,7 @@ public class MultipleDatasourceRegister implements BeanDefinitionRegistryPostPro
                 .genericBeanDefinition(DatasourceFactoryBean.class)
                 .addPropertyValue("dataSourceProperties", dataSourceProperties)
                 .addPropertyValue("name", beanName)
+                .addPropertyValue("environment", environment)
                 .setPrimary(Optional.ofNullable(dataSourceProperties.getPrimary()).orElse(false));
         AbstractBeanDefinition definition = definitionBuilder.getBeanDefinition();
         BeanDefinitionHolder holder = new BeanDefinitionHolder(definition, beanName);
@@ -152,11 +149,6 @@ public class MultipleDatasourceRegister implements BeanDefinitionRegistryPostPro
 
     }
 
-
-    @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        this.applicationContext = applicationContext;
-    }
 
     @Override
     public void setEnvironment(Environment environment) {

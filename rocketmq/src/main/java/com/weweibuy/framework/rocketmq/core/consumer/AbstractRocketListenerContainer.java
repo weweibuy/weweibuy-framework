@@ -39,7 +39,7 @@ public abstract class AbstractRocketListenerContainer<T, R> implements RocketLis
 
     private R fail;
 
-    public AbstractRocketListenerContainer(DefaultMQPushConsumer mqPushConsumer,
+    protected AbstractRocketListenerContainer(DefaultMQPushConsumer mqPushConsumer,
                                            MethodRocketListenerEndpoint endpoint, R success, R fail) {
         this.mqPushConsumer = mqPushConsumer;
         this.mqPushConsumer.setMessageListener(getMessageListener());

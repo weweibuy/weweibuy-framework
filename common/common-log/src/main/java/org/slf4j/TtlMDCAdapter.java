@@ -6,27 +6,32 @@ import org.slf4j.spi.MDCAdapter;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 /**
- * @author durenhao
- * @date 2020/3/14 13:31
- **/
+ * Created by wuwen on 15/7/31.
+ * Copy from ch.qos.logback.classic.util.LogbackMDCAdapter
+ * <p>
+ * https://github.com/ofpay/logback-mdc-ttl
+ *
+ * @see ch.qos.logback.classic.util.LogbackMDCAdapter
+ */
 public class TtlMDCAdapter implements MDCAdapter {
 
-    final ThreadLocal<Map<String, String>> copyOnThreadLocal = new TransmittableThreadLocal<>();
+    /**
+     * use com.alibaba.ttl.TransmittableThreadLocal
+     */
+    final ThreadLocal<Map<String, String>> copyOnInheritThreadLocal = new TransmittableThreadLocal<>();
 
     private static final int WRITE_OPERATION = 1;
-    private static final int MAP_COPY_OPERATION = 2;
+    private static final int READ_OPERATION = 2;
 
     private static TtlMDCAdapter mtcMDCAdapter;
 
     // keeps track of the last operation performed
-    final ThreadLocal<Integer> lastOperation = new ThreadLocal<Integer>();
+    final ThreadLocal<Integer> lastOperation = new ThreadLocal<>();
 
     static {
         mtcMDCAdapter = new TtlMDCAdapter();
-        // 替换MDC实现
         MDC.mdcAdapter = mtcMDCAdapter;
     }
 
@@ -40,8 +45,8 @@ public class TtlMDCAdapter implements MDCAdapter {
         return lastOp;
     }
 
-    private boolean wasLastOpReadOrNull(Integer lastOp) {
-        return lastOp == null || lastOp.intValue() == MAP_COPY_OPERATION;
+    private static boolean wasLastOpReadOrNull(Integer lastOp) {
+        return lastOp == null || lastOp == READ_OPERATION;
     }
 
     private Map<String, String> duplicateAndInsertNewMap(Map<String, String> oldMap) {
@@ -54,7 +59,7 @@ public class TtlMDCAdapter implements MDCAdapter {
             }
         }
 
-        copyOnThreadLocal.set(newMap);
+        copyOnInheritThreadLocal.set(newMap);
         return newMap;
     }
 
@@ -70,12 +75,12 @@ public class TtlMDCAdapter implements MDCAdapter {
      * @throws IllegalArgumentException in case the "key" parameter is null
      */
     @Override
-    public void put(String key, String val) throws IllegalArgumentException {
+    public void put(String key, String val) {
         if (key == null) {
             throw new IllegalArgumentException("key cannot be null");
         }
 
-        Map<String, String> oldMap = copyOnThreadLocal.get();
+        Map<String, String> oldMap = copyOnInheritThreadLocal.get();
         Integer lastOp = getAndSetLastOperation(WRITE_OPERATION);
 
         if (wasLastOpReadOrNull(lastOp) || oldMap == null) {
@@ -95,8 +100,8 @@ public class TtlMDCAdapter implements MDCAdapter {
         if (key == null) {
             return;
         }
-        Map<String, String> oldMap = copyOnThreadLocal.get();
-        if (oldMap == null){
+        Map<String, String> oldMap = copyOnInheritThreadLocal.get();
+        if (oldMap == null) {
             return;
         }
 
@@ -108,7 +113,9 @@ public class TtlMDCAdapter implements MDCAdapter {
         } else {
             oldMap.remove(key);
         }
+
     }
+
 
     /**
      * Clear all entries in the MDC.
@@ -116,7 +123,7 @@ public class TtlMDCAdapter implements MDCAdapter {
     @Override
     public void clear() {
         lastOperation.set(WRITE_OPERATION);
-        copyOnThreadLocal.remove();
+        copyOnInheritThreadLocal.remove();
     }
 
     /**
@@ -125,7 +132,7 @@ public class TtlMDCAdapter implements MDCAdapter {
      */
     @Override
     public String get(String key) {
-        final Map<String, String> map = copyOnThreadLocal.get();
+        Map<String, String> map = getPropertyMap();
         if ((map != null) && (key != null)) {
             return map.get(key);
         } else {
@@ -138,47 +145,37 @@ public class TtlMDCAdapter implements MDCAdapter {
      * internally.
      */
     public Map<String, String> getPropertyMap() {
-        lastOperation.set(MAP_COPY_OPERATION);
-        return copyOnThreadLocal.get();
+        lastOperation.set(READ_OPERATION);
+        return copyOnInheritThreadLocal.get();
     }
 
-    /**
-     * Returns the keys in the MDC as a {@link Set}. The returned value can be
-     * null.
-     */
-    public Set<String> getKeys() {
-        Map<String, String> map = getPropertyMap();
-
-        if (map != null) {
-            return map.keySet();
-        } else {
-            return null;
-        }
-    }
 
     /**
      * Return a copy of the current thread's context map. Returned value may be
      * null.
      */
     @Override
-    public Map<String, String> getCopyOfContextMap() {
-        Map<String, String> hashMap = copyOnThreadLocal.get();
+    public Map getCopyOfContextMap() {
+        lastOperation.set(READ_OPERATION);
+        Map<String, String> hashMap = copyOnInheritThreadLocal.get();
         if (hashMap == null) {
             return null;
         } else {
-            return new HashMap(hashMap);
+            return new HashMap<>(hashMap);
         }
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    public void setContextMap(Map<String, String> contextMap) {
+    public void setContextMap(Map contextMap) {
         lastOperation.set(WRITE_OPERATION);
 
         Map<String, String> newMap = Collections.synchronizedMap(new HashMap<String, String>());
         newMap.putAll(contextMap);
 
         // the newMap replaces the old one for serialisation's sake
-        copyOnThreadLocal.set(newMap);
-    }
+        copyOnInheritThreadLocal.set(newMap);
 
+
+    }
 }

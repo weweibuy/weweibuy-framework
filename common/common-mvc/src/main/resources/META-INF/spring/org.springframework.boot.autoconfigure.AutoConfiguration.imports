@@ -1,2 +1,3 @@
 com.weweibuy.framework.common.mvc.config.CommonMvcConfig
 com.weweibuy.framework.common.mvc.config.SnakeCaseRequestModelConfig
+com.weweibuy.framework.common.mvc.config.CommonMvcLogConfig

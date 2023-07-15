@@ -6,6 +6,7 @@ import org.junit.Test;
 import javax.crypto.SecretKey;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.net.URL;
 
 public class FileEncryptUtilsTest {
 
@@ -41,6 +42,14 @@ public class FileEncryptUtilsTest {
         FileEncryptUtils.decrypt(secretKey, AESUtils.ALGORITHM, file, byteArrayOutputStream);
         String str = byteArrayOutputStream.toString();
         System.err.println(str);
+    }
+
+    @Test
+    public void crc32() throws Exception {
+        URL resource = RSAUtilsTest.class.getClassLoader().getResource("key/socialnetwork.cer");
+        String path = resource.getPath();
+        Long aLong = FileEncryptUtils.loadCRC32(path);
+        System.err.println(aLong);
     }
 
 }

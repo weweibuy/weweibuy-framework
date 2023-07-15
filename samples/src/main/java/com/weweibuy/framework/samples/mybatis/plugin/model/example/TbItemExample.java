@@ -1,5 +1,6 @@
 package com.weweibuy.framework.samples.mybatis.plugin.model.example;
 
+import com.weweibuy.framework.common.db.utils.SqlUtils;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -16,12 +17,14 @@ public class TbItemExample {
 
     protected Integer rows;
 
+    protected String updateSql;
+
     public TbItemExample() {
         oredCriteria = new ArrayList<Criteria>();
     }
 
     public void setOrderByClause(String orderByClause) {
-        this.orderByClause = orderByClause;
+         this.orderByClause = SqlUtils.containsSqlInjectionAndThrow(orderByClause);
     }
 
     public String getOrderByClause() {
@@ -139,6 +142,31 @@ public class TbItemExample {
     public TbItemExample page(Integer page, Integer pageSize) {
         this.offset = page * pageSize;
         this.rows = pageSize;
+        return this;
+    }
+
+    public void setUpdateSql(String updateSql) {
+        this.updateSql = SqlUtils.containsSqlInjectionAndThrow(updateSql);
+    }
+
+    public String getUpdateSql() {
+        return this.updateSql;
+    }
+
+    public TbItemExample updateSql(String updateSqlClause) {
+        this.setUpdateSql(updateSqlClause);
+        return this;
+    }
+
+    public TbItemExample updateSql(String ... updateSqlClauses) {
+        StringBuffer sb = new StringBuffer();
+        for (int i = 0; i < updateSqlClauses.length; i++) {
+            sb.append(updateSqlClauses[i]);
+            if (i < updateSqlClauses.length - 1) {
+                sb.append(" , ");
+            }
+        }
+        this.setUpdateSql(sb.toString());
         return this;
     }
 

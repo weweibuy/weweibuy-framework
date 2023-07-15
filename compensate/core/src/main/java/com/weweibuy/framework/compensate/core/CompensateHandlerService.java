@@ -274,7 +274,7 @@ public class CompensateHandlerService {
         try {
             compensateHandlerMethod.invokeRecover(objects);
         } catch (InvocationTargetException e) {
-            Throwable throwable = e instanceof InvocationTargetException ? ((InvocationTargetException) e).getTargetException() : e;
+            Throwable throwable = e instanceof InvocationTargetException ? e.getTargetException() : e;
             if (asyncRecover(compensateHandlerMethod)) {
                 logRecoverExcept(compensateInfo, throwable);
             }
