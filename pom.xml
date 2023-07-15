@@ -23,7 +23,6 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-        <lombok.version>1.18.20</lombok.version>
         <spring-boot.version>2.7.12</spring-boot.version>
         <spring-cloud-version>2021.0.8</spring-cloud-version>
         <rocketmq-client-version>4.6.0</rocketmq-client-version>
@@ -52,7 +51,6 @@
         <nacos.verion>2021.1</nacos.verion>
         <knife4j-spring-boot-starter.verion>3.0.3</knife4j-spring-boot-starter.verion>
         <sshd-sftp.version>2.10.0</sshd-sftp.version>
-        <mysql-connector-java.version>8.0.33</mysql-connector-java.version>
     </properties>
 
     <dependencyManagement>
@@ -399,7 +397,6 @@
             <dependency>
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
-                <version>${lombok.version}</version>
                 <scope>provided</scope>
             </dependency>
 
@@ -407,12 +404,6 @@
                 <groupId>org.apache.sshd</groupId>
                 <artifactId>sshd-sftp</artifactId>
                 <version>${sshd-sftp.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>mysql</groupId>
-                <artifactId>mysql-connector-java</artifactId>
-                <version>${mysql-connector-java.version}</version>
             </dependency>
 
         </dependencies>
