@@ -3,7 +3,6 @@ package com.weweibuy.framework.common.mvc.advice;
 import com.weweibuy.framework.common.core.model.constant.CommonConstant;
 import com.weweibuy.framework.common.core.model.eum.CommonErrorCodeEum;
 import com.weweibuy.framework.common.core.utils.HttpRequestUtils;
-import com.weweibuy.framework.common.log.logger.HttpLogger;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.web.error.ErrorAttributeOptions;
@@ -34,19 +33,7 @@ public class CommonErrorAttributes extends DefaultErrorAttributes {
 
     @Override
     public Map<String, Object> getErrorAttributes(WebRequest webRequest, ErrorAttributeOptions options) {
-        String contentType = HttpRequestUtils.getRequestAttribute(webRequest, CommonConstant.HttpServletConstant.REQUEST_CONTENT_TYPE);
-
         Integer status = HttpRequestUtils.getRequestAttribute(webRequest, "javax.servlet.error.status_code");
-
-        String path = HttpRequestUtils.getRequestAttribute(webRequest, "javax.servlet.error.request_uri");
-
-        String method = HttpRequestUtils.getRequestAttribute(webRequest, CommonConstant.HttpServletConstant.REQUEST_METHOD);
-
-        Map<String, String[]> parameterMap = HttpRequestUtils.getRequestAttribute(webRequest, CommonConstant.HttpServletConstant.REQUEST_PARAMETER_MAP);
-
-        if (HttpRequestUtils.isJsonRequest(contentType)) {
-            HttpLogger.logForJsonRequest(path, method, parameterMap, StringUtils.EMPTY);
-        }
 
         if (status == null) {
             return unKnownAttributes;

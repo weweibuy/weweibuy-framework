@@ -1,35 +1,18 @@
 package com.weweibuy.framework.common.feign.config;
 
 import com.weweibuy.framework.common.core.support.SystemIdGetter;
-import com.weweibuy.framework.common.feign.log.FeignLogger;
 import com.weweibuy.framework.common.feign.log.TraceContextFeignInterceptor;
 import com.weweibuy.framework.common.feign.mock.MockFeignDelegateClient;
 import com.weweibuy.framework.common.feign.support.CustomFeignErrorDecoder;
 import com.weweibuy.framework.common.feign.support.DelegateFeignClient;
-import com.weweibuy.framework.common.feign.support.FeignFilter;
 import com.weweibuy.framework.common.feign.support.FeignFilterDelegateClient;
-import com.weweibuy.framework.common.feign.support.FeignLogConfigurer;
-import com.weweibuy.framework.common.feign.support.FeignLogSetting;
-import com.weweibuy.framework.common.feign.support.LogFeignFilter;
-import feign.Feign;
-import feign.Logger;
-import feign.Request;
-import feign.RequestInterceptor;
-import feign.Retryer;
+import feign.*;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.DependsOn;
-import org.springframework.context.annotation.Profile;
-import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 /**
  * feign配置
@@ -43,8 +26,6 @@ public class CommonFeignConfig {
 
     private final SystemIdGetter systemIdGetter;
 
-    @Autowired(required = false)
-    private List<FeignLogConfigurer> feignLogConfigurerList;
 
 
     /**
@@ -73,16 +54,6 @@ public class CommonFeignConfig {
         return new TraceContextFeignInterceptor();
     }
 
-    @Bean
-    public FeignLogger feignLogger() {
-        List<FeignLogSetting> arrayList = new ArrayList<>();
-        Optional.ofNullable(feignLogConfigurerList)
-                .ifPresent(l -> l.forEach(f -> f.configurer(arrayList)));
-        List<FeignLogSetting> settings = arrayList.stream()
-                .collect(Collectors.toList());
-
-        return new FeignLogger(settings);
-    }
 
     @Bean
     public Retryer feignRetryer() {
@@ -94,10 +65,6 @@ public class CommonFeignConfig {
         return new FeignFilterDelegateClient();
     }
 
-    @Bean
-    public FeignFilter logFeignFilter() {
-        return new LogFeignFilter();
-    }
 
     @Bean
     @DependsOn("jackJsonUtils")

@@ -5,7 +5,9 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 import java.time.*;
+import java.time.chrono.ChronoLocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAccessor;
 import java.util.Date;
 import java.util.Map;
 import java.util.Objects;
@@ -168,6 +170,17 @@ public class DateTimeUtils {
         return date.format(formatter);
     }
 
+
+    /**
+     * 转为日期 String
+     *
+     * @param date
+     * @return
+     */
+    public static String toStringDate(TemporalAccessor date, String pattern) {
+        DateTimeFormatter dateTimeFormatter = dateTimeFormatter(pattern);
+        return dateTimeFormatter.format(date);
+    }
 
     /**
      * 转为时间日期 String

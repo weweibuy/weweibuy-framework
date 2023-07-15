@@ -3,122 +3,71 @@ package com.weweibuy.framework.common.codec.rsa;
 import com.weweibuy.framework.common.codec.HexUtils;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import javax.crypto.spec.OAEPParameterSpec;
+import javax.crypto.spec.PSource;
 import java.security.*;
-import java.security.spec.InvalidKeySpecException;
-import java.security.spec.PKCS8EncodedKeySpec;
-import java.security.spec.X509EncodedKeySpec;
+import java.security.spec.MGF1ParameterSpec;
 import java.util.Base64;
 
 /**
- * A simple utility class for easily encrypting and decrypting data using the RSA algorithm.
+ * RSA 工具
+ * <p>
+ * RSA 密钥格式
+ * 1. PKCS1
+ * 格式:
+ * -----BEGIN RSA PRIVATE KEY-----
+ * .... (base64内容, 可以提取RSA公钥 + 私钥)
+ * -----END RSA PRIVATE KEY-----
+ * 常见生成方式:
+ * 1.1 ssh-keygen  生成的 id_rsa
+ * 1.2 openssl genrsa -out rsa_private_key.pem 2048
+ * <p>
+ * 2. PKCS8 填充  自己生成的密钥, base64格式,  .pem文件
+ * 格式:
+ * -----BEGIN PUBLIC KEY-----
+ * .... (base64内容, 中可以提取RSA公钥)
+ * -----END PUBLIC KEY-----
+ * -----BEGIN PRIVATE KEY-----
+ * .... (base64内容, 中可以提取RSA私钥)
+ * -----END PRIVATE KEY-----
+ * <p>
+ * 2.1 常见生成方式:  对PKCS1的秘钥导出私钥
+ * openssl pkcs8 -topk8 -inform PEM -in rsa_private_key.pem  -outform PEM -out rsa_private_key.p8.pem  -nocrypt
+ * openssl rsa -in rsa_private_key_pkcs.pem -pubout -out rsa_public_key.pem
+ * 2.2 java  KeyPairGenerator 可以直接生成 被PKCS8填充的内容
+ * <p>
+ * 3. PKCS12  证书私钥文件, 可以带密码
+ * 常见: .pfx 文件
+ * <p>
+ * 4. cer 证书公钥文件  常见: .cer文件
+ * 格式:
+ * -----BEGIN CERTIFICATE-----
+ * .... (base64内容, 中可以提取证书私钥)
+ * -----END CERTIFICATE-----
  *
  * @author Chad Adams
+ * 参考: https://github.com/cadamsdev/crypto-utils
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class RSAUtils {
+public final class RSAUtils {
 
     /**
      * The constant that denotes the algorithm being used.
      */
-    private static final String ALGORITHM = "RSA";
+    public static final String ALGORITHM = "RSA";
+
+    public static final String DEFAULT_ALGORITHM_WITH_MODE_PADDING = "RSA/ECB/OAEPWithSHA-256AndMGF1Padding";
 
     public static final String SIGN_ALGORITHM_SHA256_WITH_RSA = "SHA256withRSA";
 
     public static final String SIGN_ALGORITHM_SHA1_WITH_RSA = "SHA1withRSA";
-
-
-    /**
-     * 生成一份二进制的秘钥
-     *
-     * @param publicKeyOutput
-     * @param privateKeyOutput
-     * @throws NoSuchAlgorithmException
-     * @throws IOException
-     */
-    public static void generateBinaryKey(String publicKeyOutput, String privateKeyOutput) throws NoSuchAlgorithmException, IOException {
-        final KeyPairGenerator keyGen = KeyPairGenerator.getInstance(ALGORITHM);
-        keyGen.initialize(2048);
-
-        final KeyPair key = keyGen.generateKeyPair();
-        checkAndMkdir(publicKeyOutput, privateKeyOutput);
-        try (DataOutputStream dos = new DataOutputStream(new FileOutputStream(new File(publicKeyOutput)))) {
-            dos.write(key.getPublic().getEncoded());
-        }
-
-        try (DataOutputStream dos = new DataOutputStream(new FileOutputStream(new File(privateKeyOutput)))) {
-            dos.write(key.getPrivate().getEncoded());
-        }
-    }
-
-
-    /**
-     * 创建文件夹
-     *
-     * @param publicKeyOutput
-     * @param privateKeyOutput
-     */
-    private static void checkAndMkdir(String publicKeyOutput, String privateKeyOutput) {
-        File publicKeyFile = new File(publicKeyOutput);
-        File publicKeyParentFile = publicKeyFile.getParentFile();
-        if (publicKeyParentFile != null && !publicKeyParentFile.exists()) {
-            publicKeyParentFile.mkdirs();
-        }
-
-        File privateKeyFile = new File(privateKeyOutput);
-
-        File privateKeyParentFile = publicKeyFile.getParentFile();
-        if (privateKeyParentFile != null && !privateKeyParentFile.exists()) {
-            privateKeyParentFile.mkdirs();
-        }
-    }
-
-    /**
-     * 生成base64的秘钥
-     *
-     * @param publicKeyOutput
-     * @param privateKeyOutput
-     * @throws NoSuchAlgorithmException
-     * @throws IOException
-     */
-    public static void generateBase64Key(String publicKeyOutput, String privateKeyOutput) throws NoSuchAlgorithmException, IOException {
-        final KeyPairGenerator keyGen = KeyPairGenerator.getInstance(ALGORITHM);
-        keyGen.initialize(2048);
-        final KeyPair key = keyGen.generateKeyPair();
-        checkAndMkdir(publicKeyOutput, privateKeyOutput);
-        try (DataOutputStream dos = new DataOutputStream(new FileOutputStream(new File(publicKeyOutput)))) {
-            dos.write(Base64.getEncoder().encode(key.getPublic().getEncoded()));
-        }
-        try (DataOutputStream dos = new DataOutputStream(new FileOutputStream(new File(privateKeyOutput)))) {
-            dos.write(Base64.getEncoder().encode(key.getPrivate().getEncoded()));
-        }
-    }
-
-    /**
-     * 生成 base64 key
-     *
-     * @return 数组0:  公钥;  数组1: 私钥
-     * @throws NoSuchAlgorithmException
-     * @throws IOException
-     */
-    public static String[] generateKeyToBase64Str() throws NoSuchAlgorithmException, IOException {
-        final KeyPairGenerator keyGen = KeyPairGenerator.getInstance(ALGORITHM);
-        keyGen.initialize(2048);
-        final KeyPair key = keyGen.generateKeyPair();
-        byte[] publicKey = Base64.getEncoder().encode(key.getPublic().getEncoded());
-        byte[] privateKey = Base64.getEncoder().encode(key.getPrivate().getEncoded());
-        return new String[]{new String(publicKey), new String(privateKey)};
-    }
 
 
     /**
@@ -128,174 +77,136 @@ public class RSAUtils {
      * @param data The data in the form of bytes.
      * @return The encrypted bytes, otherwise {@code null} if encryption could not be performed.
      */
-    public static byte[] encrypt(PublicKey key, byte[] data) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
-        final Cipher cipher = Cipher.getInstance(ALGORITHM);
-        cipher.init(Cipher.ENCRYPT_MODE, key);
-        return cipher.doFinal(data);
+    public static byte[] encrypt(PublicKey key, byte[] data) throws InvalidKeyException {
+        final Cipher cipher;
+        try {
+            cipher = Cipher.getInstance(DEFAULT_ALGORITHM_WITH_MODE_PADDING);
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException e) {
+            throw new IllegalStateException(e);
+        }
+        OAEPParameterSpec parameterSpec = new OAEPParameterSpec("SHA-256", "MGF1",
+                new MGF1ParameterSpec("SHA-1"), PSource.PSpecified.DEFAULT);
+        try {
+            cipher.init(Cipher.ENCRYPT_MODE, key, parameterSpec);
+        } catch (InvalidAlgorithmParameterException e) {
+            throw new IllegalStateException(e);
+        }
+        try {
+            return cipher.doFinal(data);
+        } catch (IllegalBlockSizeException | BadPaddingException e) {
+            throw new IllegalArgumentException("RSA加密参数错误", e);
+        }
     }
 
     /**
-     * 加密成16进制数据
+     * 加密后转 16进制
      *
      * @param key
      * @param data
      * @return
-     * @throws NoSuchPaddingException
-     * @throws NoSuchAlgorithmException
-     * @throws InvalidKeyException
-     * @throws BadPaddingException
      * @throws IllegalBlockSizeException
+     * @throws BadPaddingException
+     * @throws InvalidKeyException
      */
-    public static String encrypt(PublicKey key, String data) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
-        final Cipher cipher = Cipher.getInstance(ALGORITHM);
-        cipher.init(Cipher.ENCRYPT_MODE, key);
-        return HexUtils.toHexString(cipher.doFinal(data.getBytes()));
-    }
-
-
-    /**
-     * The method that will decrypt an array of bytes.
-     *
-     * @param key           The {@link PrivateKey} used to decrypt the data.
-     * @param encryptedData The encrypted byte array.
-     * @return The decrypted data, otherwise {@code null} if decryption could not be performed.
-     */
-    public static byte[] decrypt(PrivateKey key, byte[] encryptedData) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
-        final Cipher cipher = Cipher.getInstance(ALGORITHM);
-        cipher.init(Cipher.DECRYPT_MODE, key);
-        return cipher.doFinal(encryptedData);
+    public static String encryptToHex(PublicKey key, String data) throws InvalidKeyException {
+        return encryptToHex(key, data.getBytes());
     }
 
     /**
-     * 解密
+     * 加密后转 16进制
      *
      * @param key
-     * @param encryptedHex
+     * @param data
      * @return
-     * @throws NoSuchPaddingException
-     * @throws NoSuchAlgorithmException
      * @throws InvalidKeyException
-     * @throws BadPaddingException
-     * @throws IllegalBlockSizeException
      */
-    public static byte[] decrypt(PrivateKey key, String encryptedHex) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
-        final Cipher cipher = Cipher.getInstance(ALGORITHM);
-        cipher.init(Cipher.DECRYPT_MODE, key);
-        return cipher.doFinal(HexUtils.fromHexString(encryptedHex));
+    public static String encryptToHex(PublicKey key, byte[] data) throws InvalidKeyException {
+        return HexUtils.toHexString(encrypt(key, data));
     }
 
     /**
-     * 解密成 string
+     * 加密后转 base64
      *
      * @param key
-     * @param encryptedHex
+     * @param data
      * @return
-     * @throws NoSuchPaddingException
-     * @throws NoSuchAlgorithmException
-     * @throws InvalidKeyException
-     * @throws BadPaddingException
      * @throws IllegalBlockSizeException
+     * @throws BadPaddingException
+     * @throws InvalidKeyException
      */
-    public static String decryptToStr(PrivateKey key, String encryptedHex) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
-        return new String(decrypt(key, encryptedHex));
+    public static String encryptToBase64(PublicKey key, String data) throws InvalidKeyException {
+        return encryptToBase64(key, data.getBytes());
     }
 
     /**
-     * 获取公钥(二进制公钥)
-     *
-     * @param publicKeyPath The path of the public key file.
-     * @return The {@link PublicKey} object.
-     * @throws Exception If there was an issue reading the file.
-     */
-    public static PublicKey getPublicKeyFromBinary(String publicKeyPath) throws Exception {
-        return KeyFactory.getInstance(ALGORITHM).generatePublic(new X509EncodedKeySpec(Files.readAllBytes(Paths.get(publicKeyPath))));
-    }
-
-
-    /**
-     * 获取base64 后的key
+     * 加密后转 base64
      *
      * @param key
+     * @param data
      * @return
+     * @throws InvalidKeyException
      */
-    public static String getKeyBase64(Key key) {
-        byte[] encode = Base64.getEncoder().encode(key.getEncoded());
+    public static String encryptToBase64(PublicKey key, byte[] data) throws InvalidKeyException {
+        byte[] encode = Base64.getEncoder().encode(encrypt(key, data));
         return new String(encode);
     }
 
 
     /**
-     * 获取base64 公钥(公钥为 一行base64的文本, 没有换行)
+     * 加密
      *
-     * @param publicKeyPath
+     * @param key           The {@link PrivateKey} used to decrypt the data.
+     * @param encryptedData The encrypted byte array.
+     * @return The decrypted data, otherwise {@code null} if decryption could not be performed.
+     */
+    public static byte[] decrypt(PrivateKey key, byte[] encryptedData) throws InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
+        final Cipher cipher;
+        try {
+            cipher = Cipher.getInstance(DEFAULT_ALGORITHM_WITH_MODE_PADDING);
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException e) {
+            throw new IllegalStateException(e);
+        }
+        OAEPParameterSpec parameterSpec = new OAEPParameterSpec("SHA-256", "MGF1",
+                new MGF1ParameterSpec("SHA-1"), PSource.PSpecified.DEFAULT);
+        try {
+            cipher.init(Cipher.DECRYPT_MODE, key, parameterSpec);
+        } catch (InvalidAlgorithmParameterException e) {
+            throw new IllegalStateException(e);
+        }
+        return cipher.doFinal(encryptedData);
+    }
+
+    /**
+     * 解密  16进制数据
+     *
+     * @param key
+     * @param encryptedHex
      * @return
-     * @throws Exception
+     * @throws IllegalBlockSizeException
+     * @throws BadPaddingException
+     * @throws InvalidKeyException
      */
-    public static PublicKey getPublicKeyFromBase64(String publicKeyPath) throws Exception {
-        byte[] allBytes = Files.readAllBytes(Paths.get(publicKeyPath));
-        byte[] decode = Base64.getDecoder().decode(allBytes);
-        return KeyFactory.getInstance(ALGORITHM).generatePublic(new X509EncodedKeySpec(decode));
-    }
-
-    public static PublicKey getPublicKeyFromBase64Str(String publicKeyBase64Str) throws Exception {
-        byte[] decode = Base64.getDecoder().decode(publicKeyBase64Str);
-        return KeyFactory.getInstance(ALGORITHM).generatePublic(new X509EncodedKeySpec(decode));
-    }
-
-    public static PublicKey getPublicKeyFromBase64(byte[] decode) throws Exception {
-        return KeyFactory.getInstance(ALGORITHM).generatePublic(new X509EncodedKeySpec(decode));
+    public static String decryptHex(PrivateKey key, String encryptedHex) throws IllegalBlockSizeException, BadPaddingException, InvalidKeyException {
+        byte[] decrypt = decrypt(key, HexUtils.fromHexString(encryptedHex));
+        return new String(decrypt);
     }
 
     /**
-     * 获取 私钥(二进制)
+     * 解密 base64内容
      *
-     * @param privateKeyPath The path of the private key file.
-     * @return The {@link PrivateKey} object.
-     * @throws Exception If there was an issue reading the file.
-     */
-    public static PrivateKey getPrivateKeyFromBinary(String privateKeyPath) throws Exception {
-        return KeyFactory.getInstance(ALGORITHM).generatePrivate(new PKCS8EncodedKeySpec(Files.readAllBytes(Paths.get(privateKeyPath))));
-    }
-
-    /**
-     * 获取 base64 私钥
-     *
-     * @param privateKeyPath
+     * @param key
+     * @param encryptedBase64
      * @return
-     * @throws Exception
+     * @throws NoSuchPaddingException
+     * @throws NoSuchAlgorithmException
+     * @throws InvalidKeyException
+     * @throws BadPaddingException
+     * @throws IllegalBlockSizeException
      */
-    public static PrivateKey getPrivateKeyFromBase64(String privateKeyPath) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
-        byte[] bytes = Files.readAllBytes(Paths.get(privateKeyPath));
-        byte[] decode = Base64.getDecoder().decode(bytes);
-        return KeyFactory.getInstance(ALGORITHM).generatePrivate(new PKCS8EncodedKeySpec(decode));
+    public static String decryptBase64(PrivateKey key, String encryptedBase64) throws InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
+        return new String(decrypt(key, Base64.getDecoder().decode(encryptedBase64)));
     }
 
-    public static PrivateKey getPrivateKeyFromBase64Str(String base64Str) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
-        byte[] decode = Base64.getDecoder().decode(base64Str.getBytes());
-        return KeyFactory.getInstance(ALGORITHM).generatePrivate(new PKCS8EncodedKeySpec(decode));
-    }
-
-    /**
-     * The method that will re-create a {@link PublicKey} from a public key byte array.
-     *
-     * @param encryptedPublicKey The byte array of a public key.
-     * @return The {@link PublicKey} object.
-     * @throws Exception If there was an issue reading the byte array.
-     */
-    public static PublicKey getPublicKey(byte[] encryptedPublicKey) throws Exception {
-        return KeyFactory.getInstance(ALGORITHM).generatePublic(new X509EncodedKeySpec(encryptedPublicKey));
-    }
-
-    /**
-     * The method that will re-create a {@link PrivateKey} from a private key byte array.
-     *
-     * @param encryptedPrivateKey The array of bytes of a private key.
-     * @return The {@link PrivateKey} object.
-     * @throws Exception If there was an issue reading the byte array.
-     */
-    public static PrivateKey getPrivateKey(byte[] encryptedPrivateKey) throws Exception {
-        return KeyFactory.getInstance(ALGORITHM).generatePrivate(new PKCS8EncodedKeySpec(encryptedPrivateKey));
-    }
 
     /**
      * 签名
@@ -307,18 +218,33 @@ public class RSAUtils {
      * @throws InvalidKeyException
      * @throws SignatureException
      */
-    public static String sign(PrivateKey privateKey, String data, String signAlgorithm) throws NoSuchAlgorithmException, InvalidKeyException, SignatureException {
+    public static String signToHex(PrivateKey privateKey, String data, String signAlgorithm) throws NoSuchAlgorithmException, InvalidKeyException, SignatureException {
+        return HexUtils.toHexString(signToByte(privateKey, data, signAlgorithm));
+    }
+
+    public static String signToHexSha256WithRsa(PrivateKey privateKey, String data) throws NoSuchAlgorithmException, InvalidKeyException, SignatureException {
+        return HexUtils.toHexString(signToByte(privateKey, data, SIGN_ALGORITHM_SHA256_WITH_RSA));
+    }
+
+    public static byte[] signToByte(PrivateKey privateKey, String data, String signAlgorithm) throws NoSuchAlgorithmException, InvalidKeyException, SignatureException {
+        return sign(privateKey, data.getBytes(), signAlgorithm);
+    }
+
+    public static byte[] sign(PrivateKey privateKey, byte[] data, String signAlgorithm) throws NoSuchAlgorithmException, InvalidKeyException, SignatureException {
         Signature signature = Signature.getInstance(signAlgorithm);
         signature.initSign(privateKey);
-        signature.update(data.getBytes());
-        return HexUtils.toHexString(signature.sign());
+        signature.update(data);
+        return signature.sign();
     }
 
     public static String signToBase64(PrivateKey privateKey, String data, String signAlgorithm) throws NoSuchAlgorithmException, InvalidKeyException, SignatureException {
-        Signature signature = Signature.getInstance(signAlgorithm);
-        signature.initSign(privateKey);
-        signature.update(data.getBytes());
-        return new String(Base64.getEncoder().encode(signature.sign()));
+        byte[] bytes = signToByte(privateKey, data, signAlgorithm);
+        return new String(Base64.getEncoder().encode(bytes));
+    }
+
+    public static String signToBase64Sha256WithRsa(PrivateKey privateKey, String data) throws NoSuchAlgorithmException, InvalidKeyException, SignatureException {
+        byte[] bytes = signToByte(privateKey, data, SIGN_ALGORITHM_SHA256_WITH_RSA);
+        return new String(Base64.getEncoder().encode(bytes));
     }
 
     /**
@@ -326,18 +252,36 @@ public class RSAUtils {
      *
      * @param publicKey
      * @param data
-     * @param sign
+     * @param sign          hex签名
+     * @param signAlgorithm 算法
      * @return
      */
-    public static boolean verifySign(PublicKey publicKey, String data, String sign, String signAlgorithm) {
+    public static boolean verifyHexSign(PublicKey publicKey, String data, String sign, String signAlgorithm) {
+        return verifySign(publicKey, data.getBytes(), HexUtils.fromHexString(sign), signAlgorithm);
+    }
+
+    public static boolean verifyHexSignSha256WithRsa(PublicKey publicKey, String data, String sign, String signAlgorithm) {
+        return verifySign(publicKey, data.getBytes(), HexUtils.fromHexString(sign), SIGN_ALGORITHM_SHA256_WITH_RSA);
+    }
+
+    public static boolean verifyBase64Sign(PublicKey publicKey, String data, String sign, String signAlgorithm) {
+        return verifySign(publicKey, data.getBytes(), Base64.getDecoder().decode(sign), signAlgorithm);
+    }
+
+    public static boolean verifyBase64SignSha256WithRsa(PublicKey publicKey, String data, String sign, String signAlgorithm) {
+        return verifySign(publicKey, data.getBytes(), Base64.getDecoder().decode(sign), SIGN_ALGORITHM_SHA256_WITH_RSA);
+    }
+
+    public static boolean verifySign(PublicKey publicKey, byte[] data, byte[] sign, String signAlgorithm) {
         try {
             Signature signature = Signature.getInstance(signAlgorithm);
             signature.initVerify(publicKey);
-            signature.update(data.getBytes());
-            return signature.verify(HexUtils.fromHexString(sign));
+            signature.update(data);
+            return signature.verify(sign);
         } catch (Exception e) {
             return false;
         }
     }
+
 
 }

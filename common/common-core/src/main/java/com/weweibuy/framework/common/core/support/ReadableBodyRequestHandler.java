@@ -17,8 +17,8 @@ public interface ReadableBodyRequestHandler {
      * 处理可读请求体的请求
      *
      * @param request
+     * @return 是否继续执行下一个 heandler
      */
-    void handlerReadableBodyRequest(HttpServletRequest request, HttpServletResponse response, boolean servletLevel);
-
+    boolean handlerReadableBodyRequest(HttpServletRequest request, HttpServletResponse response);
 
 }

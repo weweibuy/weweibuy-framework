@@ -8,6 +8,7 @@ import java.nio.charset.Charset;
 import java.security.KeyPair;
 import java.security.PrivateKey;
 import java.security.PublicKey;
+import java.security.interfaces.RSAPublicKey;
 
 public class RsaKeyHelperTest {
     @Test
@@ -18,8 +19,8 @@ public class RsaKeyHelperTest {
         InputStream resourceAsStream2 = RsaKeyHelperTest.class.getClassLoader().getResourceAsStream("key/rsa_private_key_pkcs.pem");
         String string2 = IOUtils.toString(resourceAsStream2, Charset.forName("UTF-8"));
         PrivateKey privateKey = RsaKeyHelper.parsePrivateKeyPemPkcs(string2);
-        String toStr = RSAUtils.encrypt(publicKey, "123");
-        String s = RSAUtils.decryptToStr(privateKey, toStr);
+        String toStr = RSAUtils.encryptToHex(publicKey, "123");
+        String s = RSAUtils.decryptHex(privateKey, toStr);
         System.err.println(s);
     }
 
@@ -31,6 +32,20 @@ public class RsaKeyHelperTest {
         KeyPair keyPair = RsaKeyHelper.parseKeyPair(string);
         PrivateKey privateKey = keyPair.getPrivate();
         PublicKey publicKey = keyPair.getPublic();
+    }
+
+    @Test
+    public void parseSshKeyPair() throws Exception {
+        InputStream resourceAsStream = RsaKeyHelperTest.class.getClassLoader().getResourceAsStream("key/id_rsa");
+        String string = IOUtils.toString(resourceAsStream, Charset.forName("UTF-8"));
+        KeyPair keyPair = RsaKeyHelper.parseKeyPair(string);
+        PrivateKey privateKey = keyPair.getPrivate();
+        PublicKey publicKey = keyPair.getPublic();
+
+        InputStream resourceAsStreamPub = RsaKeyHelperTest.class.getClassLoader().getResourceAsStream("key/id_rsa.pub");
+        String pubString = IOUtils.toString(resourceAsStreamPub, Charset.forName("UTF-8"));
+        RSAPublicKey rsaPublicKey = RsaKeyHelper.parseSSHPublicKey(pubString);
+
     }
 
 }

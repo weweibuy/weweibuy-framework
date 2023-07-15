@@ -13,7 +13,6 @@ import org.springframework.cloud.client.loadbalancer.LoadBalancerProperties;
 import org.springframework.cloud.loadbalancer.support.LoadBalancerClientFactory;
 import org.springframework.cloud.openfeign.loadbalancer.FeignBlockingLoadBalancerClient;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
 import java.util.List;
 
@@ -33,11 +32,10 @@ public class CommonLoadBalancerConfig {
             LoadBalancerProperties.class, LoadBalancerClientFactory.class})
     public Client feignClient(LoadBalancerClient loadBalancerClient,
                               HttpClient httpClient,
-                              LoadBalancerProperties properties,
                               LoadBalancerClientFactory loadBalancerClientFactory) {
         Client client = new ApacheHttpClient(httpClient);
         client = DelegateFeignClient.delegateChain(delegateFeignClientList, client);
-        return new FeignBlockingLoadBalancerClient(client, loadBalancerClient, properties, loadBalancerClientFactory);
+        return new FeignBlockingLoadBalancerClient(client, loadBalancerClient, loadBalancerClientFactory);
     }
 
 

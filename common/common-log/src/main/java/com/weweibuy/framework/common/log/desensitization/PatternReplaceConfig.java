@@ -14,16 +14,10 @@ public interface PatternReplaceConfig {
     /**
      * 增加 字段处方式  {@link DesensitizationLogMessageConverter}
      *
-     * @param patternReplaceMap
+     * @param patternReplaceMap key是要脱敏的字段, 值是正则匹配替换
      */
     default void addPatternReplace(Map<String, DesensitizationLogMessageConverter.PatternReplace> patternReplaceMap) {
         // do nothing
     }
 
-    /**
-     * 增加脱敏规则配置
-     *
-     * @param configurer {@link  DesensitizationLogMessageConverter}  内置部分字段处理方式
-     */
-    void addDesensitizationRule(SensitizationMappingConfigurer configurer);
 }

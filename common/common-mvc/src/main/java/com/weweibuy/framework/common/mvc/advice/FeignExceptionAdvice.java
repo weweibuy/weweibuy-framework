@@ -6,7 +6,6 @@ import com.weweibuy.framework.common.core.model.constant.CommonConstant;
 import com.weweibuy.framework.common.core.model.dto.CommonCodeResponse;
 import com.weweibuy.framework.common.core.model.eum.CommonErrorCodeEum;
 import com.weweibuy.framework.common.feign.support.CustomFeignErrorDecoder;
-import com.weweibuy.framework.common.log.logger.HttpLogger;
 import feign.FeignException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,12 +42,10 @@ public class FeignExceptionAdvice {
      */
     @ExceptionHandler(FeignException.class)
     public ResponseEntity<CommonCodeResponse> handler(HttpServletRequest request, FeignException e) {
-        HttpLogger.determineAndLogForJsonRequest(request);
 
         log.warn("调用接口异常: ", e);
         Throwable cause = e.getCause();
         if (cause instanceof IOException) {
-            String message = cause.getMessage();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .header(CommonConstant.HttpResponseConstant.RESPONSE_HEADER_FIELD_SYSTEM_ID,
                             CustomFeignErrorDecoder.defaultFeignSystemId(e.request()))
@@ -59,7 +56,7 @@ public class FeignExceptionAdvice {
         }
 
         ResponseCodeAndMsg codeAndMsg = null;
-        if (e.status() < 500) {
+        if (e.status() >= 300 && e.status() < 500) {
             codeAndMsg = CommonErrorCodeEum.REQUEST_EXCEPTION;
         } else {
             codeAndMsg = CommonErrorCodeEum.UNKNOWN_SERVER_EXCEPTION;

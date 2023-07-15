@@ -3,6 +3,7 @@ package com.weweibuy.framework.common.codec.aes;
 import com.weweibuy.framework.common.codec.HexUtils;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import org.apache.commons.io.Charsets;
 
 import javax.crypto.*;
 import javax.crypto.spec.SecretKeySpec;
@@ -80,13 +81,13 @@ public class AESUtils {
      */
     public static SecretKey createKey(byte[] salt, String password) {
         try {
-            byte[] key = (salt + password).getBytes("UTF-8");
+            byte[] key = (salt + password).getBytes(Charsets.UTF_8);
             MessageDigest sha = MessageDigest.getInstance("SHA-1");
             key = sha.digest(key);
             key = Arrays.copyOf(key, 16); // use only first 128 bit
 
             return new SecretKeySpec(key, ALGORITHM);
-        } catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
+        } catch (NoSuchAlgorithmException e) {
             throw new IllegalStateException(e);
         }
 
@@ -195,7 +196,7 @@ public class AESUtils {
      * 解密
      *
      * @param secretKey 秘钥
-     * @param encrypt   16进制密文
+     * @param hexContent   16进制密文
      * @return
      * @throws NoSuchPaddingException
      * @throws NoSuchAlgorithmException
