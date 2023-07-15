@@ -24,8 +24,8 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <lombok.version>1.18.20</lombok.version>
-        <spring-boot.version>2.7.1</spring-boot.version>
-        <spring-cloud-version>2021.0.3</spring-cloud-version>
+        <spring-boot.version>2.7.12</spring-boot.version>
+        <spring-cloud-version>2021.0.8</spring-cloud-version>
         <rocketmq-client-version>4.6.0</rocketmq-client-version>
         <guava.version>32.0.0-jre</guava.version>
         <apache.common.lang.version>3.9</apache.common.lang.version>
@@ -52,6 +52,7 @@
         <nacos.verion>2021.1</nacos.verion>
         <knife4j-spring-boot-starter.verion>3.0.3</knife4j-spring-boot-starter.verion>
         <sshd-sftp.version>2.10.0</sshd-sftp.version>
+        <mysql-connector-java.version>8.0.33</mysql-connector-java.version>
     </properties>
 
     <dependencyManagement>
@@ -68,7 +69,7 @@
 
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
-                    <artifactId>spring-cloud-dependencies</artifactId>
+                <artifactId>spring-cloud-dependencies</artifactId>
                 <version>${spring-cloud-version}</version>
                 <type>pom</type>
                 <scope>import</scope>
@@ -406,6 +407,12 @@
                 <groupId>org.apache.sshd</groupId>
                 <artifactId>sshd-sftp</artifactId>
                 <version>${sshd-sftp.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>mysql</groupId>
+                <artifactId>mysql-connector-java</artifactId>
+                <version>${mysql-connector-java.version}</version>
             </dependency>
 
         </dependencies>
