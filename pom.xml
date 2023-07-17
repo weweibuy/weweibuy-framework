@@ -23,12 +23,13 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
+        <lombok.version>1.18.26</lombok.version>
         <spring-boot.version>2.7.12</spring-boot.version>
         <spring-cloud-version>2021.0.8</spring-cloud-version>
         <rocketmq-client-version>4.6.0</rocketmq-client-version>
         <guava.version>32.0.0-jre</guava.version>
         <apache.common.lang.version>3.9</apache.common.lang.version>
-        <mybatis.version>2.2.2</mybatis.version>
+        <mybatis-spring-boot-starter.version>2.3.1</mybatis-spring-boot-starter.version>
         <ttl.version>2.11.4</ttl.version>
         <commons-collections4.version>4.1</commons-collections4.version>
         <mybatis.generator.version>1.3.7</mybatis.generator.version>
@@ -40,7 +41,7 @@
         <java-jwt.version>4.4.0</java-jwt.version>
         <itfsw-mybatis-generator-plugin.version>1.3.2</itfsw-mybatis-generator-plugin.version>
         <fastjson.version>1.2.61</fastjson.version>
-        <bcprov-jdk15on.version>1.67</bcprov-jdk15on.version>
+        <bcprov-jdk18on.version>1.75</bcprov-jdk18on.version>
         <mybatis-generator-maven-plugin.version>1.3.7</mybatis-generator-maven-plugin.version>
         <state-machine>2.2.0.RELEASE</state-machine>
         <apollo-client.version>1.3.0</apollo-client.version>
@@ -263,7 +264,7 @@
             <dependency>
                 <groupId>org.mybatis.spring.boot</groupId>
                 <artifactId>mybatis-spring-boot-starter</artifactId>
-                <version>${mybatis.version}</version>
+                <version>${mybatis-spring-boot-starter.version}</version>
             </dependency>
 
             <dependency>
@@ -341,8 +342,8 @@
 
             <dependency>
                 <groupId>org.bouncycastle</groupId>
-                <artifactId>bcprov-jdk15on</artifactId>
-                <version>${bcprov-jdk15on.version}</version>
+                <artifactId>bcprov-jdk18on</artifactId>
+                <version>${bcprov-jdk18on.version}</version>
             </dependency>
 
             <dependency>
@@ -397,6 +398,7 @@
             <dependency>
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
+                <version>${lombok.version}</version>
                 <scope>provided</scope>
             </dependency>
 
