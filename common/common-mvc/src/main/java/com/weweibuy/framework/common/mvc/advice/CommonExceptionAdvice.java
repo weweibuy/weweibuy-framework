@@ -18,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindException;
+import org.springframework.validation.FieldError;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -95,9 +96,15 @@ public class CommonExceptionAdvice implements InitializingBean {
     public ResponseEntity<CommonCodeResponse> handler(HttpServletRequest request, BindException e) {
 
         log.warn("输入参数错误: {}", e.getMessage());
-        String defaultMessage = e.getFieldError().getDefaultMessage();
+        FieldError fieldError = e.getFieldError();
+        String msg = "";
+        if (fieldError.isBindingFailure()) {
+            msg = "输入参数错误格式错误";
+        } else {
+            msg = e.getFieldError().getDefaultMessage();
+        }
         return builderCommonHeader(HttpStatus.BAD_REQUEST)
-                .body(CommonCodeResponse.response(CommonErrorCodeEum.BAD_REQUEST_PARAM.getCode(), defaultMessage));
+                .body(CommonCodeResponse.response(CommonErrorCodeEum.BAD_REQUEST_PARAM.getCode(), msg));
     }
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
@@ -116,7 +123,6 @@ public class CommonExceptionAdvice implements InitializingBean {
                 .body(CommonCodeResponse.response(CommonErrorCodeEum.BAD_REQUEST_PARAM.getCode(),
                         "不支持的请求Content-Type: " + e.getContentType()));
     }
-
 
 
     /**
