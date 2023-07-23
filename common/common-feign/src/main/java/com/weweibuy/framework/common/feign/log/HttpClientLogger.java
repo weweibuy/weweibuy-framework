@@ -107,7 +107,7 @@ public final class HttpClientLogger {
     private static String headerMapStr(Map<String, String> headerMap) {
         return headerMap.entrySet().stream()
                 .map(e -> e.getKey() + "=" + e.getValue())
-                .collect(Collectors.joining(",", "[", "]"));
+                .collect(Collectors.joining(", ", "[", "]"));
     }
 
     private static String respBodyAndReBuffer(HttpResponse response, String contentType, HttpClientProperties.LogHttpProperties logProperties) throws IOException {
