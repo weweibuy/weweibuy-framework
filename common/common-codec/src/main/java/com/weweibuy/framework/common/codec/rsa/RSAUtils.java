@@ -256,31 +256,27 @@ public final class RSAUtils {
      * @param signAlgorithm 算法
      * @return
      */
-    public static boolean verifyHexSign(PublicKey publicKey, String data, String sign, String signAlgorithm) {
+    public static boolean verifyHexSign(PublicKey publicKey, String data, String sign, String signAlgorithm) throws NoSuchAlgorithmException, SignatureException, InvalidKeyException {
         return verifySign(publicKey, data.getBytes(), HexUtils.fromHexString(sign), signAlgorithm);
     }
 
-    public static boolean verifyHexSignSha256WithRsa(PublicKey publicKey, String data, String sign, String signAlgorithm) {
-        return verifySign(publicKey, data.getBytes(), HexUtils.fromHexString(sign), SIGN_ALGORITHM_SHA256_WITH_RSA);
+    public static boolean verifyHexSignSha256WithRsa(PublicKey publicKey, String data, String sign, String signAlgorithm) throws NoSuchAlgorithmException, SignatureException, InvalidKeyException {
+        return verifyHexSign(publicKey, data, data, SIGN_ALGORITHM_SHA256_WITH_RSA);
     }
 
-    public static boolean verifyBase64Sign(PublicKey publicKey, String data, String sign, String signAlgorithm) {
-        return verifySign(publicKey, data.getBytes(), Base64.getDecoder().decode(sign), signAlgorithm);
+    public static boolean verifyBase64Sign(PublicKey publicKey, String data, String sign, String signAlgorithm) throws NoSuchAlgorithmException, SignatureException, InvalidKeyException {
+        return verifySign(publicKey, data.getBytes(), Base64.getDecoder().decode(sign.getBytes()), signAlgorithm);
     }
 
-    public static boolean verifyBase64SignSha256WithRsa(PublicKey publicKey, String data, String sign, String signAlgorithm) {
-        return verifySign(publicKey, data.getBytes(), Base64.getDecoder().decode(sign), SIGN_ALGORITHM_SHA256_WITH_RSA);
+    public static boolean verifyBase64SignSha256WithRsa(PublicKey publicKey, String data, String sign, String signAlgorithm) throws NoSuchAlgorithmException, SignatureException, InvalidKeyException {
+        return verifyBase64Sign(publicKey, data, sign, SIGN_ALGORITHM_SHA256_WITH_RSA);
     }
 
-    public static boolean verifySign(PublicKey publicKey, byte[] data, byte[] sign, String signAlgorithm) {
-        try {
-            Signature signature = Signature.getInstance(signAlgorithm);
-            signature.initVerify(publicKey);
-            signature.update(data);
-            return signature.verify(sign);
-        } catch (Exception e) {
-            return false;
-        }
+    public static boolean verifySign(PublicKey publicKey, byte[] data, byte[] sign, String signAlgorithm) throws NoSuchAlgorithmException, InvalidKeyException, SignatureException {
+        Signature signature = Signature.getInstance(signAlgorithm);
+        signature.initVerify(publicKey);
+        signature.update(data);
+        return signature.verify(sign);
     }
 
 
