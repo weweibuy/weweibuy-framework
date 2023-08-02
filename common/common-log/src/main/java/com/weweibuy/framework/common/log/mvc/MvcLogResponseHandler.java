@@ -1,10 +1,13 @@
 package com.weweibuy.framework.common.log.mvc;
 
+import com.weweibuy.framework.common.core.model.constant.CommonConstant;
 import com.weweibuy.framework.common.core.support.ReadableBodyResponseHandler;
+import com.weweibuy.framework.common.core.utils.HttpRequestUtils;
 import com.weweibuy.framework.common.log.config.CommonLogProperties;
 import com.weweibuy.framework.common.log.logger.HttpLogger;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.annotation.Order;
+import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.util.ContentCachingResponseWrapper;
 
 import javax.servlet.http.HttpServletRequest;
@@ -54,8 +57,9 @@ public class MvcLogResponseHandler implements ReadableBodyResponseHandler {
         Boolean disableRespBody = Optional.ofNullable(logProperties)
                 .map(CommonLogProperties.LogProperties::getDisableRespBody)
                 .orElse(false);
-
-        HttpLogger.logResponseBody(response, headerKeyList, disableRespBody);
+        Long reqTime = (Long) Optional.ofNullable(HttpRequestUtils.getRequestAttribute(RequestContextHolder.getRequestAttributes(), CommonConstant.HttpServletConstant.REQUEST_TIMESTAMP))
+                .orElseGet(() -> request.getAttribute(CommonConstant.HttpServletConstant.REQUEST_TIMESTAMP));
+        HttpLogger.logResponseBody(response, headerKeyList, disableRespBody, reqTime);
     }
 
 

@@ -16,7 +16,7 @@ public interface ReadableBodyResponseHandler {
      * 处理可读请求体的请求
      *
      * @param response
-     * @return 是否继续执行下一个 heandler
+     * @return 是否继续执行下一个 handler
      */
     boolean handlerReadableBodyResponse(HttpServletRequest request, ContentCachingResponseWrapper response);
 
