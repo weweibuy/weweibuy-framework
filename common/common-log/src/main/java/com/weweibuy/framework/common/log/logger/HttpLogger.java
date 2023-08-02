@@ -75,13 +75,13 @@ public class HttpLogger {
     }
 
 
-    public static void logResponseBody(ContentCachingResponseWrapper response, Set<String> headerKeyList, Boolean disableRespBody) {
+    public static void logResponseBody(ContentCachingResponseWrapper response, Set<String> headerKeyList, Boolean disableRespBody, Long reqTime) {
         String body = HttpRequestUtils.BOUNDARY_BODY;
         if (!Boolean.TRUE.equals(disableRespBody)) {
             body = respBody(response);
         }
         Map<String, String> headerMap = headerMap(headerKeyList, response::getHeader);
-        logResponseBody(body, response.getStatus(), headerMap);
+        logResponseBody(body, response.getStatus(), headerMap, reqTime);
     }
 
     private static boolean isBoundaryBody(String contentType) {
@@ -103,8 +103,7 @@ public class HttpLogger {
     }
 
 
-    public static void logResponseBody(String body, int status, Map<String, String> headerMap) {
-        Long timestamp = HttpRequestUtils.getRequestAttribute(RequestContextHolder.getRequestAttributes(), CommonConstant.HttpServletConstant.REQUEST_TIMESTAMP);
+    public static void logResponseBody(String body, int status, Map<String, String> headerMap, Long timestamp) {
         if (headerMap == null) {
             log.info("Http响应 Status: {}, Body: {}, 请求耗时: {}",
                     status,
