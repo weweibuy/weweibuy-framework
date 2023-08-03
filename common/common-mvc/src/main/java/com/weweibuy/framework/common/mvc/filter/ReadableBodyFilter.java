@@ -7,8 +7,6 @@ import com.weweibuy.framework.common.core.support.ReadableBodyResponseHandler;
 import com.weweibuy.framework.common.core.utils.HttpRequestUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.annotation.Order;
-import org.springframework.web.context.request.RequestAttributes;
-import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.util.ContentCachingResponseWrapper;
 
@@ -87,12 +85,7 @@ public class ReadableBodyFilter extends OncePerRequestFilter {
 
 
     private void setRequestAttributes(HttpServletRequest request) {
-        RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
-        if (requestAttributes != null) {
-            requestAttributes.setAttribute(CommonConstant.HttpServletConstant.REQUEST_TIMESTAMP, System.currentTimeMillis(), RequestAttributes.SCOPE_REQUEST);
-        } else {
-            request.setAttribute(CommonConstant.HttpServletConstant.REQUEST_TIMESTAMP, System.currentTimeMillis());
-        }
+        request.setAttribute(CommonConstant.HttpServletConstant.REQUEST_TIMESTAMP, System.currentTimeMillis());
     }
 
 }
