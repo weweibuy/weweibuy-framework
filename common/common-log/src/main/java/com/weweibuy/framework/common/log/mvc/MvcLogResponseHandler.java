@@ -11,7 +11,6 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.util.ContentCachingResponseWrapper;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -57,8 +56,12 @@ public class MvcLogResponseHandler implements ReadableBodyResponseHandler {
         Boolean disableRespBody = Optional.ofNullable(logProperties)
                 .map(CommonLogProperties.LogProperties::getDisableRespBody)
                 .orElse(false);
-        Long reqTime = (Long) Optional.ofNullable(HttpRequestUtils.getRequestAttribute(RequestContextHolder.getRequestAttributes(), CommonConstant.HttpServletConstant.REQUEST_TIMESTAMP))
+        Long reqTime = (Long) Optional.ofNullable(RequestContextHolder.getRequestAttributes())
+                .map(a -> HttpRequestUtils.getRequestAttribute(a, CommonConstant.HttpServletConstant.REQUEST_TIMESTAMP))
                 .orElseGet(() -> request.getAttribute(CommonConstant.HttpServletConstant.REQUEST_TIMESTAMP));
+        if (reqTime == null) {
+            reqTime = 0L;
+        }
         HttpLogger.logResponseBody(response, headerKeyList, disableRespBody, reqTime);
     }
 
