@@ -2,8 +2,8 @@ package com.weweibuy.framework.common.feign.support;
 
 import com.weweibuy.framework.common.core.utils.HttpRequestUtils;
 import com.weweibuy.framework.common.feign.config.HttpClientProperties;
-import com.weweibuy.framework.common.feign.log.HttpClientLogger;
-import com.weweibuy.framework.common.log.config.CommonLogProperties;
+import com.weweibuy.framework.common.feign.log.HttpReqClientLogger;
+import com.weweibuy.framework.common.feign.log.HttpRespClientLogger;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -80,11 +80,11 @@ public class CustomHttpClientLogInterceptor implements HttpResponseInterceptor, 
             return;
         }
 
-        HttpClientLogger.logReq(request, uri, method, logProperties);
+        HttpReqClientLogger.logReq(request, uri, method, logProperties);
     }
 
     private void logHttpResp(HttpResponse response, HttpClientProperties.LogHttpProperties logProperties, Long time) throws IOException {
-        HttpClientLogger.logResp(response, logProperties, time);
+        HttpRespClientLogger.logResp(response, logProperties, time);
     }
 
 

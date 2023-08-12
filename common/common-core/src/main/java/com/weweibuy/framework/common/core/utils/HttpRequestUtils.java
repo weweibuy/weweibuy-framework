@@ -284,5 +284,14 @@ public class HttpRequestUtils {
         return matcher.find();
     }
 
+    public static boolean isBoundaryBody(String contentType) {
+        return !notBoundaryBody(contentType);
+    }
+
+    public static String headerMapStr(Map<String, String> headerMap) {
+        return headerMap.entrySet().stream()
+                .map(e -> e.getKey() + "=" + e.getValue())
+                .collect(Collectors.joining(", ", "[", "]"));
+    }
 
 }

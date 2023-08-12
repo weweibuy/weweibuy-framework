@@ -1,6 +1,5 @@
 package com.weweibuy.framework.common.log.config;
 
-import com.weweibuy.framework.common.log.logger.HttpLogger;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.http.HttpMethod;
@@ -104,7 +103,7 @@ public class CommonLogProperties {
         /**
          * Logger 用于精确匹配
          */
-        private String logger = HttpLogger.class.getName();
+        private String logger;
     }
 
 

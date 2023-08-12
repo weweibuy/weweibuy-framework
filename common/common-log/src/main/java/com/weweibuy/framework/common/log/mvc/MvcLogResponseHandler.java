@@ -3,7 +3,7 @@ package com.weweibuy.framework.common.log.mvc;
 import com.weweibuy.framework.common.core.model.constant.CommonConstant;
 import com.weweibuy.framework.common.core.support.ReadableBodyResponseHandler;
 import com.weweibuy.framework.common.log.config.CommonLogProperties;
-import com.weweibuy.framework.common.log.logger.HttpLogger;
+import com.weweibuy.framework.common.log.logger.HttpRespLogger;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.annotation.Order;
 import org.springframework.web.util.ContentCachingResponseWrapper;
@@ -56,7 +56,7 @@ public class MvcLogResponseHandler implements ReadableBodyResponseHandler {
                 .orElse(false);
         Long reqTime = (Long) Optional.ofNullable(request.getAttribute(CommonConstant.HttpServletConstant.REQUEST_TIMESTAMP))
                 .orElse(0L);
-        HttpLogger.logResponseBody(response, headerKeyList, disableRespBody, reqTime);
+        HttpRespLogger.logResponseBody(response, headerKeyList, disableRespBody, reqTime);
     }
 
 
