@@ -77,8 +77,7 @@ public class HttpClientConfig {
     @ConditionalOnMissingClass(value = {"org.springframework.cloud.loadbalancer.support.LoadBalancerClientFactory"})
     public Client feignClient(HttpClient httpClient) {
         Client client = new ApacheHttpClient(httpClient);
-        client = DelegateFeignClient.delegateChain(delegateFeignClientList, client);
-        return client;
+        return DelegateFeignClient.delegateChain(delegateFeignClientList, client);
     }
 
 
