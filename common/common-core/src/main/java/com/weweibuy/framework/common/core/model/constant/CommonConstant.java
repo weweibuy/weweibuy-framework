@@ -44,7 +44,7 @@ public interface CommonConstant {
      */
     String NULL_STR = "null";
 
-    public interface DateConstant {
+    interface DateConstant {
 
         String TIME_OFFSET_ID = "+8";
 
@@ -68,12 +68,12 @@ public interface CommonConstant {
         /**
          * 时区id
          */
-        ZoneId ZONE_ID  = ZoneId.systemDefault();
+        ZoneId ZONE_ID = ZoneId.systemDefault();
 
     }
 
 
-    public interface CharsetConstant {
+    interface CharsetConstant {
 
         String UTF8_STR = "UTF-8";
 
@@ -84,13 +84,13 @@ public interface CommonConstant {
 
     }
 
-    public interface SignConstant {
+    interface SignConstant {
 
         public static final String HMAC_SHA256 = "HmacSHA256";
 
     }
 
-    public interface LogTraceConstant {
+    interface LogTraceConstant {
 
         public static final String HTTP_TRACE_CODE_HEADER = "X-Tid";
 
@@ -101,7 +101,7 @@ public interface CommonConstant {
     /**
      * Http常量
      */
-    public interface HttpServletConstant {
+    interface HttpServletConstant {
 
         String REQUEST_PATH = "http_request_path";
 
@@ -135,7 +135,7 @@ public interface CommonConstant {
     }
 
 
-    public interface HttpResponseConstant {
+    interface HttpResponseConstant {
 
         /**
          * 响应报文 code字段
