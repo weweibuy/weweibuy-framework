@@ -3,7 +3,6 @@ package com.weweibuy.framework.common.core.concurrent;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections4.CollectionUtils;
 
 import java.util.concurrent.Callable;
 
@@ -16,7 +15,7 @@ import java.util.concurrent.Callable;
  **/
 @Slf4j
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class TaskExceptionWarp {
+public class ScheduleExceptionWarp {
 
     public static Runnable warpRunnable(Runnable runnable) {
         return () -> {
