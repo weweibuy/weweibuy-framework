@@ -1,6 +1,7 @@
 package com.weweibuy.framework.common.swagger;
 
 import com.weweibuy.framework.common.swagger.properties.SwaggerProperties;
+import com.weweibuy.framework.common.swagger.support.AnnotationSelectors;
 import com.weweibuy.framework.common.swagger.support.CustomBasePackageSelectors;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -56,10 +57,12 @@ public class SwaggerConfig {
                 .collect(Collectors.toList());
 
         ApiSelectorBuilder select = new Docket(DocumentationType.OAS_30)
-
                 .select();
         if (!CollectionUtils.isEmpty(swaggerProperties.getBasePackage())) {
             select.apis(CustomBasePackageSelectors.basePackage(swaggerProperties.getBasePackage()));
+        }
+        if (Boolean.FALSE.equals(swaggerProperties.getShowNoAnnotationApi())) {
+            select.apis(AnnotationSelectors.hasSwaggerAnnotation());
         }
         return select.paths(PathSelectors.any())
                 .build();

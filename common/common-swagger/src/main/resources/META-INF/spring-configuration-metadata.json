@@ -25,6 +25,12 @@
       "sourceType": "com.weweibuy.framework.common.swagger.properties.SwaggerProperties"
     },
     {
+      "name": "common.swagger.showNoAnnotationApi",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.weweibuy.framework.common.swagger.properties.SwaggerProperties",
+      "defaultValue":"false"
+    },
+    {
       "name": "common.swagger.headers",
       "type": "java.util.List<com.weweibuy.framework.common.swagger.properties.SwaggerProperties.SwaggerHeaderProperties>",
       "sourceType": "com.weweibuy.framework.common.swagger.properties.SwaggerProperties.SwaggerHeaderProperties"

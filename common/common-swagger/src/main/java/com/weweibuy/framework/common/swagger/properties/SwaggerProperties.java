@@ -22,6 +22,11 @@ public class SwaggerProperties {
 
     private Set<String> basePackage = Collections.emptySet();
 
+    /**
+     * 是否展示没有注解的接口
+     */
+    private Boolean showNoAnnotationApi = false;
+
     private List<SwaggerHeaderProperties> headers = new ArrayList<>();
 
     private List<HttpStatusDescProperties> response = new ArrayList<>();
