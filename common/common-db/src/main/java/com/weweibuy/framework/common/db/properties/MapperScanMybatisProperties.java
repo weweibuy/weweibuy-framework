@@ -15,14 +15,34 @@ import java.util.List;
 public class MapperScanMybatisProperties extends MybatisProperties {
 
     /**
-     * 是否是主要
+     * 对应的 sqlSessionFactory 是否是主要
      */
     private Boolean primary;
+
+    /**
+     * 数据源名称
+     */
+    private List<RefDatasource> datasource;
 
     /**
      * 包扫描
      */
     private List<String> mapperScanPackages;
 
+
+    @Data
+    public static class RefDatasource {
+
+        /**
+         * 数据源名称
+         */
+        private String datasourceName;
+
+        /**
+         * 当有多个数据源时,是否是默认的数据源
+         */
+        private Boolean defaultDatasource;
+
+    }
 
 }

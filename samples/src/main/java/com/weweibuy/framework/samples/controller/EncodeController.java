@@ -6,6 +6,8 @@ import com.weweibuy.framework.samples.mybatis.plugin.mapper.DBEncryptMapper;
 import com.weweibuy.framework.samples.mybatis.plugin.model.example.DBEncryptExample;
 import com.weweibuy.framework.samples.mybatis.plugin.model.po.DBEncrypt;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,13 +18,14 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Map;
 
 /**
  * @author durenhao
  * @date 2020/9/5 11:33
  **/
 @RestController
-@RequestMapping("/encode")
+    @RequestMapping("/encode")
 public class EncodeController {
 
     private final DBEncryptMapper dbEncryptMapper;
@@ -50,7 +53,10 @@ public class EncodeController {
     }
 
     @GetMapping("/db/insert")
+    @Transactional
     public Object insert(String phone, String idNo) {
+        Map<Object, Object> resourceMap = TransactionSynchronizationManager.getResourceMap();
+        String currentTransactionName = TransactionSynchronizationManager.getCurrentTransactionName();
         DBEncrypt dbEncrypt = new DBEncrypt();
         dbEncrypt.setIdNo(idNo);
         dbEncrypt.setPhone(phone);

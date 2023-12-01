@@ -4,6 +4,7 @@ import com.weweibuy.framework.compensate.core.CompensateTrigger;
 import com.weweibuy.framework.samples.compensate.service.CompensateSimpleService;
 import com.weweibuy.framework.samples.model.Dog;
 import com.weweibuy.framework.samples.model.User;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -17,16 +18,11 @@ import java.util.Set;
  * @date 2020/2/14 14:29
  **/
 @RestController
+@RequiredArgsConstructor
 public class CompensateController {
 
     private final CompensateSimpleService simpleService;
 
-    private final CompensateTrigger compensateTrigger;
-
-    public CompensateController(CompensateSimpleService simpleService, CompensateTrigger compensateTrigger) {
-        this.simpleService = simpleService;
-        this.compensateTrigger = compensateTrigger;
-    }
 
     @GetMapping("/compensate")
     public String run(String args) {
@@ -131,10 +127,4 @@ public class CompensateController {
     }
 
 
-    @GetMapping("/forceTrigger")
-    public Object forceTrigger(String id) {
-        Set<String> hashSet = new HashSet<>();
-        hashSet.add(id);
-        return compensateTrigger.forceTrigger(hashSet);
-    }
 }

@@ -28,7 +28,7 @@ public class DatasourceFactoryBean implements FactoryBean<DataSource> {
     private String name;
 
     @Override
-    public DataSource getObject() throws Exception {
+    public DataSource getObject() {
         dataSourceProperties.setType(HikariDataSource.class);
         return hikariDataSource();
     }
