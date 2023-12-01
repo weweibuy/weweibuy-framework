@@ -3,6 +3,7 @@ package com.weweibuy.framework.common.db.properties;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -20,5 +21,9 @@ public class MultipleDataSourceProperties {
 
     private Map<String, DataSourceWithMybatisProperties> multipleDatasource;
 
+    /**
+     * mybatis 配置
+     */
+    private List<MapperScanMybatisProperties> mybatis;
 
 }

@@ -2,6 +2,7 @@ package com.weweibuy.framework.common.db.encrypt;
 
 import com.weweibuy.framework.common.codec.aes.AESUtils;
 import com.weweibuy.framework.common.core.exception.Exceptions;
+import com.weweibuy.framework.common.core.utils.ClassPathFileUtils;
 import com.weweibuy.framework.common.db.properties.DBEncryptProperties;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,12 +10,11 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.crypto.SecretKey;
-import java.io.File;
 import java.io.IOException;
+import java.util.Optional;
 
 /**
  * AES 加密
- * TODO 可扩展性秘钥获取方式
  *
  * @author durenhao
  * @date 2020/9/5 12:10
@@ -31,22 +31,19 @@ public class AESEncryptHelper {
 
 
     @PostConstruct
-    public void init() throws IOException {
+    public void init() {
         dbEncryptProperties.validate();
         enable = dbEncryptProperties.getEnable();
-        String password = dbEncryptProperties.getPassword();
-        if (StringUtils.isNotBlank(password)) {
-            secretKey = AESUtils.createKey(password);
-        } else {
-            String passwordFile = dbEncryptProperties.getPasswordFile();
-            String cl = "classpath:";
-            if (passwordFile.startsWith(cl)) {
-                File classPathFile = new File(AESEncryptHelper.class.getResource("/").getPath());
-                String classPath = classPathFile.getCanonicalPath();
-                passwordFile = classPath + File.separator + passwordFile.substring(cl.length(), passwordFile.length());
-            }
-            secretKey = AESUtils.getSecretKey(new File(passwordFile));
+        String password = Optional.ofNullable(dbEncryptProperties.getPassword())
+                .filter(StringUtils::isNotBlank)
+                .orElseGet(() -> Optional.ofNullable(dbEncryptProperties.getPasswordFile())
+                        .filter(StringUtils::isNotBlank)
+                        .map(ClassPathFileUtils::classPathFileContentOrOther)
+                        .orElse(null));
+        if (enable && StringUtils.isBlank(password)) {
+            throw new IllegalArgumentException("开启数据库加密后没有配置秘钥");
         }
+        secretKey = AESUtils.createKey(password);
     }
 
 

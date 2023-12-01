@@ -11,11 +11,9 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanDefinitionHolder;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.support.*;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.EnvironmentAware;
-import org.springframework.context.annotation.AnnotationBeanNameGenerator;
 import org.springframework.core.env.Environment;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.util.StringUtils;
 
 import java.util.Map;
@@ -135,6 +133,7 @@ public class MultipleDatasourceRegister implements BeanDefinitionRegistryPostPro
         String transactionManagerName = Optional.ofNullable(properties.getTransactionManagerName())
                 .orElseGet(() -> datasourceName + "TransactionManager");
         registry.registerBeanDefinition(transactionManagerName, builder.getBeanDefinition());
+
 
     }
 

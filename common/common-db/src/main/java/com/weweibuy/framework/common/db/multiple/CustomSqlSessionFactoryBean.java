@@ -118,6 +118,9 @@ public class CustomSqlSessionFactoryBean implements FactoryBean<SqlSessionFactor
             factoryBean.setDefaultScriptingLanguageDriver(defaultLanguageDriver);
         }
 
+        // TODO 指定数据源 + 数据源事务上下文 支持
+//        factoryBean.setTransactionFactory();
+
     }
 
     private void applyConfiguration(SqlSessionFactoryBean factory) {

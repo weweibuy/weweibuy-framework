@@ -5,6 +5,7 @@ import com.weweibuy.framework.samples.mybatis.plugin.model.example.DBEncryptExam
 import com.weweibuy.framework.samples.mybatis.plugin.model.po.DBEncrypt;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringEscapeUtils;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -37,13 +38,6 @@ public class MybatisController {
         return i + "";
     }
 
-    public static void main(String[] args) {
-
-
-        String s = StringEscapeUtils.unescapeHtml4("update db_encrypt set update_time = 1;");
-        System.err.println(s);
-
-    }
 
 
 }
