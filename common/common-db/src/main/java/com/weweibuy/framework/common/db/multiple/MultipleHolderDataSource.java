@@ -1,5 +1,6 @@
 package com.weweibuy.framework.common.db.multiple;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.jdbc.datasource.AbstractDataSource;
 
 import javax.sql.DataSource;
@@ -9,6 +10,7 @@ import java.util.Map;
 import java.util.Optional;
 
 /**
+ *
  * @author durenhao
  * @date 2023/12/2 15:32
  **/
@@ -25,30 +27,36 @@ public class MultipleHolderDataSource extends AbstractDataSource {
 
     @Override
     public Connection getConnection() throws SQLException {
-        return findSpecDataSourceOrDefault().getConnection();
+        return findSpecDataSourceOrThrow().getConnection();
     }
 
     @Override
     public Connection getConnection(String username, String password) throws SQLException {
-        return findSpecDataSourceOrDefault().getConnection(username, password);
+        return findSpecDataSourceOrThrow().getConnection(username, password);
     }
 
     public Optional<DataSource> findDataSource(String datasourceName) {
         return Optional.ofNullable(dataSourceMap.get(datasourceName));
     }
 
-    public DataSource getDefaultDataSource() {
-        return defaultDataSource;
-    }
 
     public DataSource findDataSourceOrDefault(String datasourceName) {
         return findDataSource(datasourceName)
-                .orElseGet(() -> getDefaultDataSource());
+                .orElse(defaultDataSource);
     }
 
 
     public DataSource findSpecDataSourceOrDefault() {
         return findDataSourceOrDefault(SpecDataSourceContext.getSpecDatasource());
+    }
+
+    public DataSource findSpecDataSourceOrThrow() {
+        String specDatasource = SpecDataSourceContext.getSpecDatasource();
+        if (StringUtils.isBlank(specDatasource)) {
+            return defaultDataSource;
+        }
+        return findDataSource(specDatasource)
+                .orElseThrow(() -> new IllegalArgumentException("指定数据源: " + specDatasource + " 不存在"));
     }
 
 }

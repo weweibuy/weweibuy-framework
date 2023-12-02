@@ -10,7 +10,7 @@ import org.springframework.aop.support.StaticMethodMatcherPointcut;
  * @author durenhao
  * @date 2023/12/02 14:53
  **/
-public class SpecDataSourceBeanFactoryPointcutAdvisor extends AbstractBeanFactoryPointcutAdvisor {
+public class SpecDatasourceBeanFactoryPointcutAdvisor extends AbstractBeanFactoryPointcutAdvisor {
 
     private StaticMethodMatcherPointcut pc;
 

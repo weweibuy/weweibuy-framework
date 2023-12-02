@@ -1,8 +1,8 @@
 package com.weweibuy.framework.common.db.config;
 
-import com.weweibuy.framework.common.db.aspect.SpecDataSourceAspect;
-import com.weweibuy.framework.common.db.aspect.SpecDataSourceBeanFactoryPointcutAdvisor;
-import com.weweibuy.framework.common.db.aspect.SpecDataSourcePointcut;
+import com.weweibuy.framework.common.db.aspect.SpecDatasourceAspect;
+import com.weweibuy.framework.common.db.aspect.SpecDatasourceBeanFactoryPointcutAdvisor;
+import com.weweibuy.framework.common.db.aspect.SpecDatasourcePointcut;
 import com.weweibuy.framework.common.db.encrypt.AESEncryptHelper;
 import com.weweibuy.framework.common.db.properties.DBEncryptProperties;
 import com.weweibuy.framework.common.db.properties.MultipleDatasourceAndMybatisProperties;
@@ -34,13 +34,13 @@ public class CommonDBConfig {
 
     @Bean
     @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
-    @ConditionalOnProperty(name = "common.db.enable-spec-datasource", havingValue = "true", matchIfMissing = true)
-    public SpecDataSourceBeanFactoryPointcutAdvisor compensateBeanFactoryPointcutAdvisor() {
+    @ConditionalOnProperty(name = "common.db.multiple.enable-spec-datasource", havingValue = "true", matchIfMissing = true)
+    public SpecDatasourceBeanFactoryPointcutAdvisor compensateBeanFactoryPointcutAdvisor() {
         Integer order = properties.getSpecDatasourceAspectOrder();
-        SpecDataSourceBeanFactoryPointcutAdvisor advisor = new SpecDataSourceBeanFactoryPointcutAdvisor();
-        advisor.setPc(new SpecDataSourcePointcut());
+        SpecDatasourceBeanFactoryPointcutAdvisor advisor = new SpecDatasourceBeanFactoryPointcutAdvisor();
+        advisor.setPc(new SpecDatasourcePointcut());
         advisor.setOrder(order);
-        advisor.setAdvice(new SpecDataSourceAspect());
+        advisor.setAdvice(new SpecDatasourceAspect());
         return advisor;
     }
 

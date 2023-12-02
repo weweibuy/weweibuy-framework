@@ -1,5 +1,6 @@
 package com.weweibuy.framework.common.db.multiple;
 
+import org.apache.commons.lang3.StringUtils;
 import org.mybatis.spring.transaction.SpringManagedTransaction;
 
 import javax.sql.DataSource;
@@ -16,7 +17,7 @@ public class MultipleDatasourceSpringManagedTransaction extends SpringManagedTra
 
     private static DataSource findDataSource(DataSource dataSource) {
         if (dataSource instanceof MultipleHolderDataSource) {
-            return ((MultipleHolderDataSource) dataSource).findSpecDataSourceOrDefault();
+            return ((MultipleHolderDataSource) dataSource).findSpecDataSourceOrThrow();
         }
         return dataSource;
     }
