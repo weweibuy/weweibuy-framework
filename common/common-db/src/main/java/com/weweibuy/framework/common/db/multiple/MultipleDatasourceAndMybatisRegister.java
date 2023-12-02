@@ -5,6 +5,7 @@ import com.weweibuy.framework.common.db.properties.DataSourceConfigProperties;
 import com.weweibuy.framework.common.db.properties.MybatisAndDatasourceProperties;
 import com.weweibuy.framework.common.db.properties.MultipleDatasourceAndMybatisProperties;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import org.mybatis.spring.mapper.MapperScannerConfigurer;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanDefinitionHolder;
@@ -39,11 +40,15 @@ public class MultipleDatasourceAndMybatisRegister implements BeanDefinitionRegis
             log.debug("绑定多数据源配置文件: {}", dataSourceAndMybatisProperties);
         }
 
-        List<DataSourceConfigProperties> datasourceList = dataSourceAndMybatisProperties.getMultipleDatasource();
-        registryDatasource(datasourceList, registry);
+        List<DataSourceConfigProperties> datasourceList = dataSourceAndMybatisProperties.getDatasource();
+        if (CollectionUtils.isNotEmpty(datasourceList)) {
+            registryDatasource(datasourceList, registry);
+        }
 
         List<MybatisAndDatasourceProperties> mybatis = dataSourceAndMybatisProperties.getMybatis();
-        registryMybatis(mybatis, registry);
+        if (CollectionUtils.isNotEmpty(mybatis)) {
+            registryMybatis(mybatis, registry);
+        }
     }
 
     private void registryMybatis(List<MybatisAndDatasourceProperties> mybatis, BeanDefinitionRegistry registry) {
@@ -55,31 +60,35 @@ public class MultipleDatasourceAndMybatisRegister implements BeanDefinitionRegis
     }
 
     private void registryDatasource(List<DataSourceConfigProperties> datasourceList, BeanDefinitionRegistry registry) {
-        datasourceList.stream()
-                // 注册数据源
-                .peek(e -> registryDatasourceFactoryBean(e.getDatasourceName(), e, registry))
-                .filter(e -> Boolean.TRUE.equals(e.getCreateTransactionManager()))
+        for (int i = 0; i < datasourceList.size(); i++) {
+            DataSourceConfigProperties properties = datasourceList.get(i);
+            // 注册数据源
+            registryDatasourceFactoryBean(properties, registry, i);
+            if (Boolean.TRUE.equals(properties.getCreateTransactionManager())) {
                 // 注册事务管理器
-                .forEach(e -> registerTransactionManager(e.getDatasourceName(), e, registry));
+                registerTransactionManager(properties, registry);
+            }
+        }
+
     }
 
 
     /**
      * 注册 Datasource
      *
-     * @param beanName
      * @param dataSourceProperties
      * @param registry
+     * @param num
      */
-    private void registryDatasourceFactoryBean(String beanName, DataSourceConfigProperties dataSourceProperties, BeanDefinitionRegistry registry) {
+    private void registryDatasourceFactoryBean(DataSourceConfigProperties dataSourceProperties, BeanDefinitionRegistry registry, int num) {
         BeanDefinitionBuilder definitionBuilder = BeanDefinitionBuilder
                 .genericBeanDefinition(DatasourceFactoryBean.class)
                 .addPropertyValue("dataSourceProperties", dataSourceProperties)
-                .addPropertyValue("name", beanName)
                 .addPropertyValue("environment", environment)
+                .addPropertyValue("num", num)
                 .setPrimary(Optional.ofNullable(dataSourceProperties.getPrimary()).orElse(false));
         AbstractBeanDefinition definition = definitionBuilder.getBeanDefinition();
-        BeanDefinitionHolder holder = new BeanDefinitionHolder(definition, beanName);
+        BeanDefinitionHolder holder = new BeanDefinitionHolder(definition, dataSourceProperties.getDatasourceName());
         BeanDefinitionReaderUtils.registerBeanDefinition(holder, registry);
     }
 
@@ -89,9 +98,9 @@ public class MultipleDatasourceAndMybatisRegister implements BeanDefinitionRegis
      *
      * @param mybatisProperties
      * @param registry
-     * @param i
+     * @param num
      */
-    public void registrySqlSessionFactoryBean(MybatisAndDatasourceProperties mybatisProperties, BeanDefinitionRegistry registry, int i) {
+    public void registrySqlSessionFactoryBean(MybatisAndDatasourceProperties mybatisProperties, BeanDefinitionRegistry registry, int num) {
 
         BeanDefinitionBuilder definitionBuilder = BeanDefinitionBuilder
                 .genericBeanDefinition(CustomSqlSessionFactoryBean.class)
@@ -99,7 +108,7 @@ public class MultipleDatasourceAndMybatisRegister implements BeanDefinitionRegis
                 .setPrimary(Optional.ofNullable(mybatisProperties.getPrimary()).orElse(false))
                 .setAutowireMode(AbstractBeanDefinition.AUTOWIRE_BY_TYPE);
         AbstractBeanDefinition definition = definitionBuilder.getBeanDefinition();
-        BeanDefinitionHolder holder = new BeanDefinitionHolder(definition, sqlSessionFactoryBeanName(i));
+        BeanDefinitionHolder holder = new BeanDefinitionHolder(definition, sqlSessionFactoryBeanName(num));
         BeanDefinitionReaderUtils.registerBeanDefinition(holder, registry);
     }
 
@@ -109,7 +118,7 @@ public class MultipleDatasourceAndMybatisRegister implements BeanDefinitionRegis
      *
      * @param properties
      * @param registry
-     * @param i
+     * @param num
      */
     public void registerMapperScan(MybatisAndDatasourceProperties properties, BeanDefinitionRegistry registry, int num) {
 
@@ -125,11 +134,11 @@ public class MultipleDatasourceAndMybatisRegister implements BeanDefinitionRegis
     /**
      * 注册事务管理器
      *
-     * @param datasourceName
      * @param properties
      * @param registry
      */
-    public void registerTransactionManager(String datasourceName, DataSourceConfigProperties properties, BeanDefinitionRegistry registry) {
+    public void registerTransactionManager(DataSourceConfigProperties properties, BeanDefinitionRegistry registry) {
+        String datasourceName = properties.getDatasourceName();
         BeanDefinitionBuilder builder = BeanDefinitionBuilder.genericBeanDefinition(DataSourceTransactionManagerFactoryBean.class)
                 .addPropertyValue("datasourceName", datasourceName)
                 .setPrimary(Optional.ofNullable(properties.getPrimary()).orElse(false))

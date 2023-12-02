@@ -1,6 +1,6 @@
 package com.weweibuy.framework.common.db.aspect;
 
-import com.weweibuy.framework.common.db.annotation.SpecDataSource;
+import com.weweibuy.framework.common.db.annotation.SpecDatasource;
 import com.weweibuy.framework.common.db.multiple.SpecDataSourceContext;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
@@ -23,7 +23,7 @@ public class SpecDataSourceAspect implements MethodInterceptor {
      */
     @Override
     public Object invoke(MethodInvocation methodInvocation) throws Throwable {
-        SpecDataSource annotation = methodInvocation.getMethod().getAnnotation(SpecDataSource.class);
+        SpecDatasource annotation = methodInvocation.getMethod().getAnnotation(SpecDatasource.class);
         String datasourceName = annotation.value();
         SpecDataSourceContext.setSpecDatasource(datasourceName);
         try {

@@ -16,7 +16,7 @@ import java.util.List;
 @ConfigurationProperties(prefix = MultipleDatasourceAndMybatisProperties.PREFIX)
 public class MultipleDatasourceAndMybatisProperties {
 
-    public static final String PREFIX = "common.db";
+    public static final String PREFIX = "common.db.multiple";
 
     /**
      * 是否开启指定数据源功能
@@ -31,7 +31,7 @@ public class MultipleDatasourceAndMybatisProperties {
     /**
      * 数据源配置
      */
-    private List<DataSourceConfigProperties> multipleDatasource;
+    private List<DataSourceConfigProperties> datasource;
 
     /**
      * mybatis 配置

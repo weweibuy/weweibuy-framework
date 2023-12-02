@@ -1,6 +1,6 @@
 package com.weweibuy.framework.common.db.aspect;
 
-import com.weweibuy.framework.common.db.annotation.SpecDataSource;
+import com.weweibuy.framework.common.db.annotation.SpecDatasource;
 import org.springframework.aop.support.StaticMethodMatcherPointcut;
 
 import java.lang.reflect.Method;
@@ -16,6 +16,6 @@ public class SpecDataSourcePointcut extends StaticMethodMatcherPointcut {
 
     @Override
     public boolean matches(Method method, Class<?> aClass) {
-        return method.getAnnotation(SpecDataSource.class) != null;
+        return method.getAnnotation(SpecDatasource.class) != null;
     }
 }

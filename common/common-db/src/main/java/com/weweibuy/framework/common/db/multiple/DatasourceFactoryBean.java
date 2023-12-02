@@ -23,9 +23,9 @@ public class DatasourceFactoryBean implements FactoryBean<DataSource> {
 
     private DataSourceConfigProperties dataSourceProperties;
 
-    private Environment environment;
+    private Integer num;
 
-    private String name;
+    private Environment environment;
 
     @Override
     public DataSource getObject() {
@@ -50,8 +50,8 @@ public class DatasourceFactoryBean implements FactoryBean<DataSource> {
         HikariConfig hikari = dataSourceProperties.getHikari();
         if (hikari != null) {
             // 配置文件绑定
-            SpringResourcesUtils.bindConfig(MultipleDatasourceAndMybatisProperties.PREFIX +
-                            ".multiple-datasource." + name + ".hikari",
+            SpringResourcesUtils.bindConfig(MultipleDatasourceAndMybatisProperties.PREFIX
+                            + ".datasource[" + num + "].hikari",
                     dataSource, environment);
         }
         return dataSource;
