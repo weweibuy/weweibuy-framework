@@ -11,7 +11,7 @@ import org.aopalliance.intercept.MethodInvocation;
  * @author durenhao
  * @date 2023/12/02 14:53
  **/
-public class SpecDataSourceAspect implements MethodInterceptor {
+public class SpecDatasourceAspect implements MethodInterceptor {
 
 
     /**

@@ -1,21 +1,13 @@
 package com.weweibuy.framework.common.db.config;
 
-import com.weweibuy.framework.common.db.aspect.SpecDataSourceAspect;
-import com.weweibuy.framework.common.db.aspect.SpecDataSourceBeanFactoryPointcutAdvisor;
-import com.weweibuy.framework.common.db.aspect.SpecDataSourcePointcut;
 import com.weweibuy.framework.common.db.multiple.MultipleDatasourceAndMybatisRegister;
 import com.weweibuy.framework.common.db.properties.MultipleDatasourceAndMybatisProperties;
-import lombok.RequiredArgsConstructor;
 import org.mybatis.spring.boot.autoconfigure.MybatisAutoConfiguration;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Role;
 
 /**
  * 多数据源配置

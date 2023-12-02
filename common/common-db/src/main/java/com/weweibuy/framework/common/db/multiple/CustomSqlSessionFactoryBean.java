@@ -13,11 +13,8 @@ import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.boot.autoconfigure.ConfigurationCustomizer;
 import org.mybatis.spring.boot.autoconfigure.SpringBootVFS;
 import org.springframework.beans.BeanWrapperImpl;
-import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.ObjectProvider;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ResourceLoaderAware;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.util.CollectionUtils;
@@ -39,11 +36,9 @@ import java.util.stream.Stream;
  **/
 @Getter
 @Setter
-public class CustomSqlSessionFactoryBean implements FactoryBean<SqlSessionFactory>, ApplicationContextAware, ResourceLoaderAware {
+public class CustomSqlSessionFactoryBean implements FactoryBean<SqlSessionFactory>,  ResourceLoaderAware {
 
     private MybatisAndDatasourceProperties properties;
-
-    private ApplicationContext applicationContext;
 
     private ResourceLoader resourceLoader;
 
@@ -56,6 +51,8 @@ public class CustomSqlSessionFactoryBean implements FactoryBean<SqlSessionFactor
     private ObjectProvider<DatabaseIdProvider> databaseIdProvider;
 
     private ObjectProvider<List<ConfigurationCustomizer>> configurationCustomizersProvider;
+
+    private ObjectProvider<Map<String, DataSource>> datasourceMapProvider;
 
 
     @Override
@@ -130,8 +127,7 @@ public class CustomSqlSessionFactoryBean implements FactoryBean<SqlSessionFactor
         if (CollectionUtils.isEmpty(datasourceList)) {
             throw new IllegalStateException("必须配置Mybatis的数据源");
         }
-
-        Map<String, DataSource> dataSourceMap = applicationContext.getBeansOfType(DataSource.class);
+        Map<String, DataSource> dataSourceMap = datasourceMapProvider.getObject();
         Map<String, DataSource> refDataSourceMap = datasourceList.stream()
                 .collect(Collectors.toMap(MybatisAndDatasourceProperties.RefDatasource::getDatasourceName,
                         p -> Optional.ofNullable(dataSourceMap.get(p.getDatasourceName()))
@@ -166,10 +162,6 @@ public class CustomSqlSessionFactoryBean implements FactoryBean<SqlSessionFactor
         factory.setConfiguration(configuration);
     }
 
-    @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        this.applicationContext = applicationContext;
-    }
 
     @Override
     public void setResourceLoader(ResourceLoader resourceLoader) {

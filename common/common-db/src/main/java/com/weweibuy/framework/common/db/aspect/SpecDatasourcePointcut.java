@@ -11,7 +11,7 @@ import java.lang.reflect.Method;
  * @author durenhao
  * @date 2023/12/02 14:53
  **/
-public class SpecDataSourcePointcut extends StaticMethodMatcherPointcut {
+public class SpecDatasourcePointcut extends StaticMethodMatcherPointcut {
 
 
     @Override
