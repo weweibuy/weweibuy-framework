@@ -20,6 +20,7 @@ spring:
     password: ak402507979
     hikari:
       maximum-pool-size: 20
+    name: ds1
 
   jackson:
     property-naming-strategy: SNAKE_CASE

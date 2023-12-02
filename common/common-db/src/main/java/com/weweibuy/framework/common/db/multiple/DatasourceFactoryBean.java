@@ -1,8 +1,8 @@
 package com.weweibuy.framework.common.db.multiple;
 
 import com.weweibuy.framework.common.core.utils.SpringResourcesUtils;
-import com.weweibuy.framework.common.db.properties.DataSourceWithMybatisProperties;
-import com.weweibuy.framework.common.db.properties.MultipleDataSourceProperties;
+import com.weweibuy.framework.common.db.properties.DataSourceConfigProperties;
+import com.weweibuy.framework.common.db.properties.MultipleDatasourceAndMybatisProperties;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import lombok.Getter;
@@ -21,7 +21,7 @@ import javax.sql.DataSource;
 @Setter
 public class DatasourceFactoryBean implements FactoryBean<DataSource> {
 
-    private DataSourceWithMybatisProperties dataSourceProperties;
+    private DataSourceConfigProperties dataSourceProperties;
 
     private Environment environment;
 
@@ -50,7 +50,7 @@ public class DatasourceFactoryBean implements FactoryBean<DataSource> {
         HikariConfig hikari = dataSourceProperties.getHikari();
         if (hikari != null) {
             // 配置文件绑定
-            SpringResourcesUtils.bindConfig(MultipleDataSourceProperties.PREFIX +
+            SpringResourcesUtils.bindConfig(MultipleDatasourceAndMybatisProperties.PREFIX +
                             ".multiple-datasource." + name + ".hikari",
                     dataSource, environment);
         }

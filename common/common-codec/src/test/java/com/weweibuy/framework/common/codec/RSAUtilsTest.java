@@ -33,16 +33,15 @@ public class RSAUtilsTest {
     public void encryptTest() throws Exception {
         byte[] data = "hello cryptography".getBytes();
         PublicKey publicKey = RsaKeyHelper.getPublicKeyFromBinaryFile("tmp/key/rsa/public.key");
-        byte[] encrypted = RSAUtils.encrypt(publicKey, data);
-        String hexString = HexUtils.toHexString(encrypted);
+        String hexString  = RSAUtils.encryptToHex(publicKey, data);
 
         PrivateKey privateKey = RsaKeyHelper.getPrivateKeyFromBinaryFile("tmp/key/rsa/private.key");
+        String decrypted = RSAUtils.decryptHex(privateKey, hexString);
 
-        byte[] decrypted = RSAUtils.decrypt(privateKey, HexUtils.fromHexString(hexString));
 
         System.out.println("original: " + new String(data));
         System.out.println("encrypted: " + hexString);
-        System.out.println("decrypted: " + new String(decrypted));
+        System.out.println("decrypted: " + decrypted);
     }
 
     @Test

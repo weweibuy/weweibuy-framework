@@ -5,13 +5,16 @@ import com.weweibuy.framework.common.core.utils.IdWorker;
 import com.weweibuy.framework.samples.message.SampleDog;
 import com.weweibuy.framework.samples.message.SampleUser;
 import com.weweibuy.framework.samples.mq.provider.*;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.client.producer.SendCallback;
 import org.apache.rocketmq.client.producer.SendResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.sql.DataSource;
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -20,22 +23,18 @@ import java.util.UUID;
  **/
 @Slf4j
 @RestController
+@RequiredArgsConstructor
 public class HelloController {
 
-    private SampleProvider sampleProvider;
+    private final SampleProvider sampleProvider;
 
-    private BatchSampleProvider batchSampleProvider;
+    private final BatchSampleProvider batchSampleProvider;
 
-    private lbServiceChangeProvider lbServiceChangeProvider;
+    private final lbServiceChangeProvider lbServiceChangeProvider;
 
-    private BatchSampleProvider2 batchSampleProvider2;
+    private final BatchSampleProvider2 batchSampleProvider2;
 
-    public HelloController(SampleProvider sampleProvider, BatchSampleProvider batchSampleProvider, com.weweibuy.framework.samples.mq.provider.lbServiceChangeProvider lbServiceChangeProvider, BatchSampleProvider2 batchSampleProvider2) {
-        this.sampleProvider = sampleProvider;
-        this.batchSampleProvider = batchSampleProvider;
-        this.lbServiceChangeProvider = lbServiceChangeProvider;
-        this.batchSampleProvider2 = batchSampleProvider2;
-    }
+
 
     @GetMapping("/hello")
     public Object hello(String msg, String tag, String key) {

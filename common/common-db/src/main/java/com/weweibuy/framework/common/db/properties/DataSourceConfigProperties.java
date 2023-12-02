@@ -13,7 +13,12 @@ import java.util.List;
  * @date 2021/7/18 15:30
  **/
 @Data
-public class DataSourceWithMybatisProperties extends DataSourceProperties {
+public class DataSourceConfigProperties extends DataSourceProperties {
+
+    /**
+     * 数据源名称, 注册到spring的bean名称
+     */
+    private String datasourceName;
 
     /**
      * 是否是主要
@@ -35,9 +40,5 @@ public class DataSourceWithMybatisProperties extends DataSourceProperties {
      */
     private HikariConfig hikari;
 
-    /**
-     * mybatis 配置
-     */
-    private List<MapperScanMybatisProperties> mybatis;
 
 }

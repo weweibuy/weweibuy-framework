@@ -25,8 +25,8 @@
     },
     {
       "name": "common.db.multiple-datasource",
-      "type": "java.util.Map<java.lang.String,com.weweibuy.framework.common.db.properties.DataSourceWithMybatisProperties>",
-      "sourceType": "com.weweibuy.framework.common.db.properties.DataSourceWithMybatisProperties"
+      "type": "java.util.Map<java.lang.String,com.weweibuy.framework.common.db.properties.DataSourceConfigProperties>",
+      "sourceType": "com.weweibuy.framework.common.db.properties.DataSourceConfigProperties"
     }
   ],
   "hints": []
