@@ -2,7 +2,7 @@ package com.weweibuy.framework.common.db.config;
 
 import com.github.pagehelper.PageInterceptor;
 import com.github.pagehelper.autoconfigure.PageHelperProperties;
-import com.weweibuy.framework.common.db.multiple.MultipleDatasourceRegister;
+import com.weweibuy.framework.common.db.multiple.MultipleDatasourceAndMybatisRegister;
 import org.apache.ibatis.plugin.Interceptor;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -19,7 +19,7 @@ import java.util.List;
  * @date 2021/7/18 21:14
  **/
 @AutoConfiguration(after = MultipleDatasourceConfig.class)
-@ConditionalOnBean({MultipleDatasourceRegister.class})
+@ConditionalOnBean({MultipleDatasourceAndMybatisRegister.class})
 @EnableConfigurationProperties(PageHelperProperties.class)
 public class MultipleDatasourcePageHelperConfig implements InitializingBean {
 

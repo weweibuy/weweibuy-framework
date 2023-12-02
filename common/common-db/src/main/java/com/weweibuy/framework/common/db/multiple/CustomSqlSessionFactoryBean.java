@@ -1,5 +1,6 @@
 package com.weweibuy.framework.common.db.multiple;
 
+import com.weweibuy.framework.common.db.properties.MybatisAndDatasourceProperties;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.ibatis.mapping.DatabaseIdProvider;
@@ -10,7 +11,6 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.type.TypeHandler;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.boot.autoconfigure.ConfigurationCustomizer;
-import org.mybatis.spring.boot.autoconfigure.MybatisProperties;
 import org.mybatis.spring.boot.autoconfigure.SpringBootVFS;
 import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.BeansException;
@@ -27,6 +27,8 @@ import org.springframework.util.StringUtils;
 import javax.sql.DataSource;
 import java.beans.PropertyDescriptor;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -39,9 +41,7 @@ import java.util.stream.Stream;
 @Setter
 public class CustomSqlSessionFactoryBean implements FactoryBean<SqlSessionFactory>, ApplicationContextAware, ResourceLoaderAware {
 
-    private String datasourceName;
-
-    private MybatisProperties properties;
+    private MybatisAndDatasourceProperties properties;
 
     private ApplicationContext applicationContext;
 
@@ -71,7 +71,6 @@ public class CustomSqlSessionFactoryBean implements FactoryBean<SqlSessionFactor
     }
 
     public void init(SqlSessionFactoryBean factoryBean) {
-        factoryBean.setDataSource(applicationContext.getBean(datasourceName, DataSource.class));
         factoryBean.setVfs(SpringBootVFS.class);
         if (StringUtils.hasText(this.properties.getConfigLocation())) {
             factoryBean.setConfigLocation(this.resourceLoader.getResource(this.properties.getConfigLocation()));
@@ -117,10 +116,38 @@ public class CustomSqlSessionFactoryBean implements FactoryBean<SqlSessionFactor
             // Need to mybatis-spring 2.0.2+
             factoryBean.setDefaultScriptingLanguageDriver(defaultLanguageDriver);
         }
+        DataSource dataSource = buildDatasource();
+        factoryBean.setDataSource(dataSource);
 
-        // TODO 指定数据源 + 数据源事务上下文 支持
-//        factoryBean.setTransactionFactory();
+        if (dataSource instanceof MultipleHolderDataSource) {
+            //   指定数据源 + 数据源事务上下文 支持
+            factoryBean.setTransactionFactory(new MultipleDatasourceTransactionFactory());
+        }
+    }
 
+    private DataSource buildDatasource() {
+        List<MybatisAndDatasourceProperties.RefDatasource> datasourceList = properties.getDatasource();
+        if (CollectionUtils.isEmpty(datasourceList)) {
+            throw new IllegalStateException("必须配置Mybatis的数据源");
+        }
+
+        Map<String, DataSource> dataSourceMap = applicationContext.getBeansOfType(DataSource.class);
+        Map<String, DataSource> refDataSourceMap = datasourceList.stream()
+                .collect(Collectors.toMap(MybatisAndDatasourceProperties.RefDatasource::getDatasourceName,
+                        p -> Optional.ofNullable(dataSourceMap.get(p.getDatasourceName()))
+                                .orElseThrow(() -> new IllegalStateException("数据源: " + p.getDatasourceName() + " 不存在"))));
+
+        if (refDataSourceMap.size() == 1) {
+            return refDataSourceMap.values().iterator().next();
+        }
+        List<DataSource> defaultDatasourceList = datasourceList.stream()
+                .filter(p -> Boolean.TRUE.equals(p.getDefaultDatasource()))
+                .map(p -> dataSourceMap.get(p.getDatasourceName()))
+                .collect(Collectors.toList());
+        if (CollectionUtils.isEmpty(defaultDatasourceList) || defaultDatasourceList.size() > 1) {
+            throw new IllegalStateException("必须指定一个默认的数据源");
+        }
+        return new MultipleHolderDataSource(refDataSourceMap, defaultDatasourceList.get(0));
     }
 
     private void applyConfiguration(SqlSessionFactoryBean factory) {

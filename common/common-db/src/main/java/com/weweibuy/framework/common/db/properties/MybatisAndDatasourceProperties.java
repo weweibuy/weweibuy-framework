@@ -1,9 +1,12 @@
 package com.weweibuy.framework.common.db.properties;
 
+import com.weweibuy.framework.common.db.annotation.SpecDataSource;
 import lombok.Data;
 import org.mybatis.spring.boot.autoconfigure.MybatisProperties;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import java.util.List;
+
 
 /**
  * mybatis 配置, 增加了包扫描配置项
@@ -12,7 +15,8 @@ import java.util.List;
  * @date 2021/7/18 19:57
  **/
 @Data
-public class MapperScanMybatisProperties extends MybatisProperties {
+@EnableTransactionManagement
+public class MybatisAndDatasourceProperties extends MybatisProperties {
 
     /**
      * 对应的 sqlSessionFactory 是否是主要
@@ -20,7 +24,8 @@ public class MapperScanMybatisProperties extends MybatisProperties {
     private Boolean primary;
 
     /**
-     * 数据源名称
+     * 数据源名称, 单使用多个数据源时支持通过 {@link SpecDataSource} 指定使用的数据源
+     * 指定的数据源在spring事务上下中,受使用相同数据源的事务管理器影像
      */
     private List<RefDatasource> datasource;
 
