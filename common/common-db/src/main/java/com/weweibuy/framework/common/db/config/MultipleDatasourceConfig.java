@@ -7,6 +7,7 @@ import com.weweibuy.framework.common.db.multiple.MultipleDatasourceAndMybatisReg
 import com.weweibuy.framework.common.db.properties.MultipleDatasourceAndMybatisProperties;
 import lombok.RequiredArgsConstructor;
 import org.mybatis.spring.boot.autoconfigure.MybatisAutoConfiguration;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -26,10 +27,8 @@ import org.springframework.context.annotation.Role;
  **/
 @AutoConfiguration
 @EnableConfigurationProperties({MultipleDatasourceAndMybatisProperties.class})
-@RequiredArgsConstructor
 public class MultipleDatasourceConfig {
 
-    private final MultipleDatasourceAndMybatisProperties properties;
 
     @Bean
     @ConditionalOnMissingBean({DataSourceAutoConfiguration.class, MybatisAutoConfiguration.class})
@@ -37,16 +36,5 @@ public class MultipleDatasourceConfig {
         return new MultipleDatasourceAndMybatisRegister();
     }
 
-    @Bean
-    @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
-    @ConditionalOnProperty(name = "common.db.enable-spec-datasource", havingValue = "true", matchIfMissing = true)
-    public SpecDataSourceBeanFactoryPointcutAdvisor compensateBeanFactoryPointcutAdvisor() {
-        Integer order = properties.getSpecDatasourceAspectOrder();
-        SpecDataSourceBeanFactoryPointcutAdvisor advisor = new SpecDataSourceBeanFactoryPointcutAdvisor();
-        advisor.setPc(new SpecDataSourcePointcut());
-        advisor.setOrder(order);
-        advisor.setAdvice(new SpecDataSourceAspect());
-        return advisor;
-    }
 
 }
