@@ -39,4 +39,10 @@ public class JackJsonConfig {
     }
 
 
+    @Bean
+    public Jackson2ObjectMapperBuilderCustomizer localTimeJackson2ObjectMapperBuilderCustomizer() {
+        return JacksonBuilderHelper.localTimeCustomizer(commonJacksonProperties.getLocalTimeFormat());
+    }
+
+
 }
