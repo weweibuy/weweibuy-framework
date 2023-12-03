@@ -370,11 +370,13 @@ public class DBEncryptExample {
         }
 
         public Criteria andPhoneLike(String value) {
+            value = SqlUtils.containsSqlInjectionForLikeAndThrow(value);
             addPhoneCriterion("phone like", value, "phone");
             return (Criteria) this;
         }
 
         public Criteria andPhoneNotLike(String value) {
+            value = SqlUtils.containsSqlInjectionForLikeAndThrow(value);
             addPhoneCriterion("phone not like", value, "phone");
             return (Criteria) this;
         }
@@ -440,11 +442,13 @@ public class DBEncryptExample {
         }
 
         public Criteria andIdNoLike(String value) {
+            value = SqlUtils.containsSqlInjectionForLikeAndThrow(value);
             addIdNoCriterion("id_no like", value, "idNo");
             return (Criteria) this;
         }
 
         public Criteria andIdNoNotLike(String value) {
+            value = SqlUtils.containsSqlInjectionForLikeAndThrow(value);
             addIdNoCriterion("id_no not like", value, "idNo");
             return (Criteria) this;
         }
@@ -510,11 +514,13 @@ public class DBEncryptExample {
         }
 
         public Criteria andOrderNoLike(String value) {
+            value = SqlUtils.containsSqlInjectionForLikeAndThrow(value);
             addCriterion("order_no like", value, "orderNo");
             return (Criteria) this;
         }
 
         public Criteria andOrderNoNotLike(String value) {
+            value = SqlUtils.containsSqlInjectionForLikeAndThrow(value);
             addCriterion("order_no not like", value, "orderNo");
             return (Criteria) this;
         }

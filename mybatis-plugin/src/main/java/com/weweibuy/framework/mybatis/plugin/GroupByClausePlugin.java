@@ -13,14 +13,13 @@ import org.mybatis.generator.api.dom.xml.XmlElement;
 import java.util.List;
 
 /**
- * 增加一个自定义的更新
- * 如:   create_time = now()
- * amount = amount + 1
+ * 增加 group by 插件
  *
  * @author durenhao
- * @date 2023/2/25 20:51
+ * @date 2023/12/3 21:34
  **/
-public class CustomerUpdatePlugin extends BasePlugin {
+public class GroupByClausePlugin extends BasePlugin {
+
 
     @Override
     public boolean sqlMapUpdateByExampleSelectiveElementGenerated(XmlElement element, IntrospectedTable introspectedTable) {
@@ -35,57 +34,57 @@ public class CustomerUpdatePlugin extends BasePlugin {
 
     @Override
     public boolean modelExampleClassGenerated(TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
-        updateSqlField(topLevelClass, introspectedTable);
-        addCustomerUpdateMethodToExample(topLevelClass, introspectedTable);
+        groupByCaseSqlField(topLevelClass, introspectedTable);
+        addCustomerGroupByMethodToExample(topLevelClass, introspectedTable);
         return true;
     }
 
-    private void addCustomerUpdateMethodToExample(TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
+    private void addCustomerGroupByMethodToExample(TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
 
         // 添加updateSql
-        Method updateSqlMethod = JavaElementGeneratorTools.generateMethod(
-                "updateSql",
+        Method groupBySqlMethod = JavaElementGeneratorTools.generateMethod(
+                "groupBy",
                 JavaVisibility.PUBLIC,
                 topLevelClass.getType(),
-                new Parameter(FullyQualifiedJavaType.getStringInstance(), "updateSqlClause")
+                new Parameter(FullyQualifiedJavaType.getStringInstance(), "groupByClause")
         );
-        commentGenerator.addGeneralMethodComment(updateSqlMethod, introspectedTable);
+        commentGenerator.addGeneralMethodComment(groupBySqlMethod, introspectedTable);
 
-        updateSqlMethod = JavaElementGeneratorTools.generateMethodBody(
-                updateSqlMethod,
-                "this.setUpdateSql(updateSqlClause);",
+        groupBySqlMethod = JavaElementGeneratorTools.generateMethodBody(
+                groupBySqlMethod,
+                "this.setGroupByClause(groupByClause);",
                 "return this;"
         );
-        FormatTools.addMethodWithBestPosition(topLevelClass, updateSqlMethod);
-        logger.debug("itfsw(Example增强插件):" + topLevelClass.getType().getShortName() + "增加方法updateSqlClause");
+        FormatTools.addMethodWithBestPosition(topLevelClass, groupBySqlMethod);
+        logger.debug("itfsw(Example增强插件):" + topLevelClass.getType().getShortName() + "增加方法groupByClause");
 
         // 添加orderBy
         Method orderByMethod1 = JavaElementGeneratorTools.generateMethod(
-                "updateSql",
+                "groupBy",
                 JavaVisibility.PUBLIC,
                 topLevelClass.getType(),
-                new Parameter(FullyQualifiedJavaType.getStringInstance(), "updateSqlClauses", true)
+                new Parameter(FullyQualifiedJavaType.getStringInstance(), "groupByClauses", true)
         );
         commentGenerator.addGeneralMethodComment(orderByMethod1, introspectedTable);
         orderByMethod1 = JavaElementGeneratorTools.generateMethodBody(
                 orderByMethod1,
                 "StringBuffer sb = new StringBuffer();",
-                "for (int i = 0; i < updateSqlClauses.length; i++) {",
-                "sb.append(updateSqlClauses[i]);",
-                "if (i < updateSqlClauses.length - 1) {",
+                "for (int i = 0; i < groupByClauses.length; i++) {",
+                "sb.append(groupByClauses[i]);",
+                "if (i < groupByClauses.length - 1) {",
                 "sb.append(\" , \");",
                 "}",
                 "}",
-                "this.setUpdateSql(sb.toString());",
+                "this.setGroupBy(sb.toString());",
                 "return this;"
         );
 
         FormatTools.addMethodWithBestPosition(topLevelClass, orderByMethod1);
-        logger.debug("itfsw(Example增强插件):" + topLevelClass.getType().getShortName() + "增加方法updateSqlClauses(String ... updateSqlClauses)");
+        logger.debug("itfsw(Example增强插件):" + topLevelClass.getType().getShortName() + "增加方法groupByClauses(String ... groupByClauses)");
     }
 
 
-    private void updateSqlField(TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
+    private void groupByCaseSqlField(TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
         boolean match = topLevelClass.getImportedTypes().stream()
                 .anyMatch(f -> f.getFullyQualifiedName().equals("com.weweibuy.framework.common.db.utils.SqlUtils"));
         if (!match) {
@@ -93,26 +92,26 @@ public class CustomerUpdatePlugin extends BasePlugin {
         }
 
 
-        // 添加offset和rows字段
-        Field offsetField = JavaElementGeneratorTools.generateField(
-                "updateSql",
+        // 添加groupBy字段
+        Field groupByField = JavaElementGeneratorTools.generateField(
+                "groupByClause",
                 JavaVisibility.PROTECTED,
                 FullyQualifiedJavaType.getStringInstance(),
                 null
         );
-        commentGenerator.addFieldComment(offsetField, introspectedTable);
-        topLevelClass.addField(offsetField);
+        commentGenerator.addFieldComment(groupByField, introspectedTable);
+        topLevelClass.addField(groupByField);
 
-        Method getterMethod = JavaElementGeneratorTools.generateGetterMethod(offsetField);
+        Method getterMethod = JavaElementGeneratorTools.generateGetterMethod(groupByField);
 
         Method setterMethod = JavaElementGeneratorTools.generateMethod(
-                "set" + FormatTools.upFirstChar(offsetField.getName()),
+                "set" + FormatTools.upFirstChar(groupByField.getName()),
                 JavaVisibility.PUBLIC,
                 null,
-                new Parameter(offsetField.getType(), offsetField.getName())
+                new Parameter(groupByField.getType(), groupByField.getName())
         );
-        JavaElementGeneratorTools.generateMethodBody(setterMethod, "this." + offsetField.getName() + " = "
-                + "SqlUtils.containsSqlInjectionAndThrow(" + offsetField.getName() + ");");
+        JavaElementGeneratorTools.generateMethodBody(setterMethod, "this." + groupByField.getName() + " = "
+                + "SqlUtils.containsSqlInjectionAndThrow(" + groupByField.getName() + ");");
 
 
         commentGenerator.addGeneralMethodComment(setterMethod, introspectedTable);
