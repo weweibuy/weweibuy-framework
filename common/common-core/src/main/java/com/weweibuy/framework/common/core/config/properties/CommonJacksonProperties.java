@@ -13,9 +13,15 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class CommonJacksonProperties {
 
     /**
-     * 时间格式化
+     * 日期格式化
      */
     private String localDateFormat = CommonConstant.DateConstant.STANDARD_DATE_FORMAT_STR;
+
+    /**
+     * 时间格式化
+     */
+    private String localTimeFormat = CommonConstant.DateConstant.STANDARD_TIME_FORMAT_STR;
+
 
     /**
      * 时间日期格式化

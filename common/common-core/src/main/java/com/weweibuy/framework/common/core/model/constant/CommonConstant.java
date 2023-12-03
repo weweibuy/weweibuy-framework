@@ -2,8 +2,7 @@ package com.weweibuy.framework.common.core.model.constant;
 
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 
 /**
@@ -46,7 +45,6 @@ public interface CommonConstant {
 
     interface DateConstant {
 
-        String TIME_OFFSET_ID = "+8";
 
         String STANDARD_DATE_TIME_FORMAT_STR = "yyyy-MM-dd HH:mm:ss";
 
@@ -61,14 +59,15 @@ public interface CommonConstant {
         DateTimeFormatter STANDARD_TIME_FORMATTER = DateTimeFormatter.ofPattern(STANDARD_TIME_FORMAT_STR);
 
         /**
-         * 时区
-         */
-        ZoneOffset ZONE_OFFSET = ZoneOffset.of(CommonConstant.DateConstant.TIME_OFFSET_ID);
-
-        /**
          * 时区id
          */
         ZoneId ZONE_ID = ZoneId.systemDefault();
+
+        /**
+         * 时区
+         */
+        ZoneOffset ZONE_OFFSET = ZONE_ID.getRules().getOffset(Instant.now());
+
 
     }
 
