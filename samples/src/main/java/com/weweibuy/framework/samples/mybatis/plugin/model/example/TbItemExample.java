@@ -312,11 +312,13 @@ public class TbItemExample {
         }
 
         public Criteria andTitleLike(String value) {
+            value = SqlUtils.containsSqlInjectionForLikeAndThrow(value);
             addCriterion("title like", value, "title");
             return (Criteria) this;
         }
 
         public Criteria andTitleNotLike(String value) {
+            value = SqlUtils.containsSqlInjectionForLikeAndThrow(value);
             addCriterion("title not like", value, "title");
             return (Criteria) this;
         }
@@ -382,11 +384,13 @@ public class TbItemExample {
         }
 
         public Criteria andSellPointLike(String value) {
+            value = SqlUtils.containsSqlInjectionForLikeAndThrow(value);
             addCriterion("sell_point like", value, "sellPoint");
             return (Criteria) this;
         }
 
         public Criteria andSellPointNotLike(String value) {
+            value = SqlUtils.containsSqlInjectionForLikeAndThrow(value);
             addCriterion("sell_point not like", value, "sellPoint");
             return (Criteria) this;
         }
@@ -632,11 +636,13 @@ public class TbItemExample {
         }
 
         public Criteria andBarcodeLike(String value) {
+            value = SqlUtils.containsSqlInjectionForLikeAndThrow(value);
             addCriterion("barcode like", value, "barcode");
             return (Criteria) this;
         }
 
         public Criteria andBarcodeNotLike(String value) {
+            value = SqlUtils.containsSqlInjectionForLikeAndThrow(value);
             addCriterion("barcode not like", value, "barcode");
             return (Criteria) this;
         }
@@ -702,11 +708,13 @@ public class TbItemExample {
         }
 
         public Criteria andImageLike(String value) {
+            value = SqlUtils.containsSqlInjectionForLikeAndThrow(value);
             addCriterion("image like", value, "image");
             return (Criteria) this;
         }
 
         public Criteria andImageNotLike(String value) {
+            value = SqlUtils.containsSqlInjectionForLikeAndThrow(value);
             addCriterion("image not like", value, "image");
             return (Criteria) this;
         }
@@ -832,11 +840,13 @@ public class TbItemExample {
         }
 
         public Criteria andStatusLike(String value) {
+            value = SqlUtils.containsSqlInjectionForLikeAndThrow(value);
             addCriterion("status like", value, "status");
             return (Criteria) this;
         }
 
         public Criteria andStatusNotLike(String value) {
+            value = SqlUtils.containsSqlInjectionForLikeAndThrow(value);
             addCriterion("status not like", value, "status");
             return (Criteria) this;
         }
@@ -1022,11 +1032,13 @@ public class TbItemExample {
         }
 
         public Criteria andItemSnLike(String value) {
+            value = SqlUtils.containsSqlInjectionForLikeAndThrow(value);
             addCriterion("item_sn like", value, "itemSn");
             return (Criteria) this;
         }
 
         public Criteria andItemSnNotLike(String value) {
+            value = SqlUtils.containsSqlInjectionForLikeAndThrow(value);
             addCriterion("item_sn not like", value, "itemSn");
             return (Criteria) this;
         }
@@ -1212,11 +1224,13 @@ public class TbItemExample {
         }
 
         public Criteria andIsDefaultLike(String value) {
+            value = SqlUtils.containsSqlInjectionForLikeAndThrow(value);
             addCriterion("is_default like", value, "isDefault");
             return (Criteria) this;
         }
 
         public Criteria andIsDefaultNotLike(String value) {
+            value = SqlUtils.containsSqlInjectionForLikeAndThrow(value);
             addCriterion("is_default not like", value, "isDefault");
             return (Criteria) this;
         }
@@ -1342,11 +1356,13 @@ public class TbItemExample {
         }
 
         public Criteria andSellerIdLike(String value) {
+            value = SqlUtils.containsSqlInjectionForLikeAndThrow(value);
             addCriterion("seller_id like", value, "sellerId");
             return (Criteria) this;
         }
 
         public Criteria andSellerIdNotLike(String value) {
+            value = SqlUtils.containsSqlInjectionForLikeAndThrow(value);
             addCriterion("seller_id not like", value, "sellerId");
             return (Criteria) this;
         }
@@ -1412,11 +1428,13 @@ public class TbItemExample {
         }
 
         public Criteria andCartThumbnailLike(String value) {
+            value = SqlUtils.containsSqlInjectionForLikeAndThrow(value);
             addCriterion("cart_thumbnail like", value, "cartThumbnail");
             return (Criteria) this;
         }
 
         public Criteria andCartThumbnailNotLike(String value) {
+            value = SqlUtils.containsSqlInjectionForLikeAndThrow(value);
             addCriterion("cart_thumbnail not like", value, "cartThumbnail");
             return (Criteria) this;
         }
@@ -1482,11 +1500,13 @@ public class TbItemExample {
         }
 
         public Criteria andCategoryLike(String value) {
+            value = SqlUtils.containsSqlInjectionForLikeAndThrow(value);
             addCriterion("category like", value, "category");
             return (Criteria) this;
         }
 
         public Criteria andCategoryNotLike(String value) {
+            value = SqlUtils.containsSqlInjectionForLikeAndThrow(value);
             addCriterion("category not like", value, "category");
             return (Criteria) this;
         }
@@ -1552,11 +1572,13 @@ public class TbItemExample {
         }
 
         public Criteria andBrandLike(String value) {
+            value = SqlUtils.containsSqlInjectionForLikeAndThrow(value);
             addCriterion("brand like", value, "brand");
             return (Criteria) this;
         }
 
         public Criteria andBrandNotLike(String value) {
+            value = SqlUtils.containsSqlInjectionForLikeAndThrow(value);
             addCriterion("brand not like", value, "brand");
             return (Criteria) this;
         }
@@ -1622,11 +1644,13 @@ public class TbItemExample {
         }
 
         public Criteria andSpecLike(String value) {
+            value = SqlUtils.containsSqlInjectionForLikeAndThrow(value);
             addCriterion("spec like", value, "spec");
             return (Criteria) this;
         }
 
         public Criteria andSpecNotLike(String value) {
+            value = SqlUtils.containsSqlInjectionForLikeAndThrow(value);
             addCriterion("spec not like", value, "spec");
             return (Criteria) this;
         }
@@ -1692,11 +1716,13 @@ public class TbItemExample {
         }
 
         public Criteria andSellerLike(String value) {
+            value = SqlUtils.containsSqlInjectionForLikeAndThrow(value);
             addCriterion("seller like", value, "seller");
             return (Criteria) this;
         }
 
         public Criteria andSellerNotLike(String value) {
+            value = SqlUtils.containsSqlInjectionForLikeAndThrow(value);
             addCriterion("seller not like", value, "seller");
             return (Criteria) this;
         }
