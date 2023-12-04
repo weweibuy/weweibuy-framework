@@ -19,6 +19,8 @@ public class TbItemExample {
 
     protected String updateSql;
 
+    protected String groupByClause;
+
     public TbItemExample() {
         oredCriteria = new ArrayList<Criteria>();
     }
@@ -167,6 +169,31 @@ public class TbItemExample {
             }
         }
         this.setUpdateSql(sb.toString());
+        return this;
+    }
+
+    public void setGroupByClause(String groupByClause) {
+        this.groupByClause = SqlUtils.containsSqlInjectionAndThrow(groupByClause);
+    }
+
+    public String getGroupByClause() {
+        return this.groupByClause;
+    }
+
+    public TbItemExample groupBy(String groupByClause) {
+        this.setGroupByClause(groupByClause);
+        return this;
+    }
+
+    public TbItemExample groupBy(String ... groupByClauses) {
+        StringBuffer sb = new StringBuffer();
+        for (int i = 0; i < groupByClauses.length; i++) {
+            sb.append(groupByClauses[i]);
+            if (i < groupByClauses.length - 1) {
+                sb.append(" , ");
+            }
+        }
+        this.setGroupByClause(sb.toString());
         return this;
     }
 
