@@ -1,8 +1,12 @@
 package com.weweibuy.framework.samples.controller;
 
+import com.github.pagehelper.PageHelper;
 import com.weweibuy.framework.samples.mybatis.plugin.mapper.DBEncryptMapper;
+import com.weweibuy.framework.samples.mybatis.plugin.mapper.TbItemMapper;
 import com.weweibuy.framework.samples.mybatis.plugin.model.example.DBEncryptExample;
+import com.weweibuy.framework.samples.mybatis.plugin.model.example.TbItemExample;
 import com.weweibuy.framework.samples.mybatis.plugin.model.po.DBEncrypt;
+import com.weweibuy.framework.samples.mybatis.plugin.model.po.TbItem;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,25 +23,32 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class MybatisController {
 
-    private final DBEncryptMapper dbEncryptMapper;
+    private final TbItemMapper tbItemMapper;
 
     @GetMapping("/updatesql")
     public String updateSql() {
-        DBEncrypt dbEncrypt = new DBEncrypt();
-        DBEncryptExample example = DBEncryptExample
+        TbItem tbItem = new TbItem();
+        tbItem.setItemSn("item_sn_x");
+        TbItemExample example = TbItemExample
                 .newAndCreateCriteria()
-                .andIdEqualTo(1L)
-                .andPhoneLike("%%")
-                .example()
-                .updateSql("create_time = now(); " +
-                                "update db_encrypt set update_time = '2022-12-11 00:00:00'"
-                        );
+                .andIdEqualTo(536563L)
+                .andTitleLike("%xxx%")
+                .example().orderBy();
 
 
-        int i = dbEncryptMapper.updateByExampleSelective(dbEncrypt, example);
+        int i = tbItemMapper.updateByExampleSelective(tbItem, example);
         return i + "";
     }
 
+    @GetMapping("/query")
+    public Object query() {
+        TbItemExample example = TbItemExample
+                .newAndCreateCriteria()
+                .andIdEqualTo(536563L)
+                .andTitleLike("%卡xx%")
+                .example();
 
+        return tbItemMapper.selectByExample(example);
+    }
 
 }
