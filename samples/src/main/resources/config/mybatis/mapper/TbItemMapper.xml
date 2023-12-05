@@ -524,6 +524,9 @@
       <if test="seller != null">
         seller = #{seller,jdbcType=VARCHAR},
       </if>
+      <if test="example.updateSql != null">
+        ${example.updateSql} ,
+      </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
