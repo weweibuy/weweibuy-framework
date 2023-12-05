@@ -473,6 +473,9 @@
       <if test="tag != null">
         tag = #{tag,jdbcType=LONGVARCHAR},
       </if>
+      <if test="example.updateSql != null">
+        ${example.updateSql} ,
+      </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
