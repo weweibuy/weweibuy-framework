@@ -2,7 +2,6 @@ package com.weweibuy.framework.common.mvc.advice;
 
 import com.weweibuy.framework.common.core.model.dto.CommonCodeResponse;
 import com.weweibuy.framework.common.core.model.eum.CommonErrorCodeEum;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.annotation.Order;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -12,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import javax.servlet.http.HttpServletRequest;
 import java.sql.SQLException;
 
 /**

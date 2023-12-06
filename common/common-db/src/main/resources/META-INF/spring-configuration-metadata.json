@@ -4,6 +4,11 @@
       "name": "common.db.encrypt",
       "type": "com.weweibuy.framework.common.db.properties.DBEncryptProperties",
       "sourceType": "com.weweibuy.framework.common.db.properties.DBEncryptProperties"
+    },
+    {
+      "name": "common.db.multiple",
+      "type": "com.weweibuy.framework.common.db.properties.MultipleDatasourceAndMybatisProperties",
+      "sourceType": "com.weweibuy.framework.common.db.properties.MultipleDatasourceAndMybatisProperties"
     }
   ],
   "properties": [
@@ -19,14 +24,41 @@
       "sourceType": "com.weweibuy.framework.common.db.properties.DBEncryptProperties"
     },
     {
-      "name": "common.db.encrypt.passwordFile",
+      "name": "common.db.encrypt.password-file",
       "type": "java.lang.String",
       "sourceType": "com.weweibuy.framework.common.db.properties.DBEncryptProperties"
     },
     {
-      "name": "common.db.multiple-datasource",
-      "type": "java.util.Map<java.lang.String,com.weweibuy.framework.common.db.properties.DataSourceWithMybatisProperties>",
-      "sourceType": "com.weweibuy.framework.common.db.properties.DataSourceWithMybatisProperties"
+      "name": "common.db.multiple.enable-spec-datasource",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.weweibuy.framework.common.db.properties.MultipleDatasourceAndMybatisProperties",
+      "description": "是否开启指定数据源功能",
+      "defaultValue": true
+    },
+    {
+      "name": "common.db.multiple.spec-datasource-aspect-order",
+      "type": "java.lang.Integer",
+      "sourceType": "com.weweibuy.framework.common.db.properties.MultipleDatasourceAndMybatisProperties",
+      "description": "指定数据源切面顺序",
+      "defaultValue": "Integer.MAX_VALUE"
+    },
+    {
+      "name": "common.db.multiple.datasource",
+      "type": "java.util.List<com.weweibuy.framework.common.db.properties.DataSourceConfigProperties>",
+      "sourceType": "com.weweibuy.framework.common.db.properties.MultipleDatasourceAndMybatisProperties",
+      "description": "数据源配置"
+    },
+    {
+      "name": "common.db.multiple.mybatis",
+      "type": "java.util.List<com.weweibuy.framework.common.db.properties.MybatisAndDatasourceProperties>",
+      "sourceType": "com.weweibuy.framework.common.db.properties.MultipleDatasourceAndMybatisProperties",
+      "description": "数据源配置"
+    },
+    {
+      "name": "common.db.multiple.mybatis.primary",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.weweibuy.framework.common.db.properties.MybatisAndDatasourceProperties",
+      "description": "是否是主要"
     }
   ],
   "hints": []

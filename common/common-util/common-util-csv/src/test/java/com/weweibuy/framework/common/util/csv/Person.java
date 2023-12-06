@@ -18,7 +18,7 @@ public class Person {
     @CsvProperty(name = "姓名")
     private String name;
 
-    @CsvProperty(name = "生日", converter = LocalDateCsvTypeConverter.class)
+    @CsvProperty(name = "生日")
     private LocalDate birthday;
 
 }

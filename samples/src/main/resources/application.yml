@@ -20,12 +20,15 @@ spring:
     password: ak402507979
     hikari:
       maximum-pool-size: 20
-      max-lifetime: 30000
+    name: ds1
 
   jackson:
     property-naming-strategy: SNAKE_CASE
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: GMT+8
+  redis:
+    host: 122.51.171.126
+    password: ak402507979
   cloud:
     nacos:
       discovery:
@@ -34,10 +37,10 @@ spring:
         password: nacos
         enabled: false
   elasticsearch:
-    uris: https://223.247.141.69:9200
-    username: elastic
-    password: ak402507979
-
+    rest:
+      uris: 106.12.208.53:9200
+      username: elastic
+      password: ak402507979
   mail:
    default-encoding: UTF-8
    host: smtp.126.com
@@ -45,7 +48,6 @@ spring:
    protocol: smtp
    username: ak40250@126.com
    password: xxx
-
 
 
 mybatis:

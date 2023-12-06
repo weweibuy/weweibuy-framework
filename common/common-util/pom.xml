@@ -17,6 +17,7 @@
         <module>common-util-pdf</module>
         <module>common-util-email</module>
         <module>common-util-zip</module>
+        <module>common-util-sftp</module>
     </modules>
 
 

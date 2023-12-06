@@ -8,6 +8,7 @@ import java.nio.charset.Charset;
 import java.security.KeyPair;
 import java.security.PrivateKey;
 import java.security.PublicKey;
+import java.security.interfaces.RSAPublicKey;
 
 public class RsaKeyHelperTest {
     @Test
@@ -31,6 +32,20 @@ public class RsaKeyHelperTest {
         KeyPair keyPair = RsaKeyHelper.parseKeyPair(string);
         PrivateKey privateKey = keyPair.getPrivate();
         PublicKey publicKey = keyPair.getPublic();
+    }
+
+    @Test
+    public void parseSshKeyPair() throws Exception {
+        InputStream resourceAsStream = RsaKeyHelperTest.class.getClassLoader().getResourceAsStream("key/id_rsa");
+        String string = IOUtils.toString(resourceAsStream, Charset.forName("UTF-8"));
+        KeyPair keyPair = RsaKeyHelper.parseKeyPair(string);
+        PrivateKey privateKey = keyPair.getPrivate();
+        PublicKey publicKey = keyPair.getPublic();
+
+        InputStream resourceAsStreamPub = RsaKeyHelperTest.class.getClassLoader().getResourceAsStream("key/id_rsa.pub");
+        String pubString = IOUtils.toString(resourceAsStreamPub, Charset.forName("UTF-8"));
+        RSAPublicKey rsaPublicKey = RsaKeyHelper.parseSSHPublicKey(pubString);
+
     }
 
 }

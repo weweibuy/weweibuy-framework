@@ -24,6 +24,9 @@
             <property name="startPage" value="0"/>
         </plugin>
         <plugin type="com.weweibuy.framework.mybatis.plugin.SelectForUpdatePlugin"/>
+        <plugin type="com.weweibuy.framework.mybatis.plugin.SqlInjectionCheckPlugin"/>
+        <plugin type="com.weweibuy.framework.mybatis.plugin.CustomerInputUpdatePlugin"/>
+        <plugin type="com.weweibuy.framework.mybatis.plugin.GroupByClausePlugin"/>
 
         <!--<plugin type="com.weweibuy.framework.mybatis.plugin.ImplementsInterfacePlugin">-->
             <!--<property name="interfaces" value="java.io.Serializable,com.weweibuy.framework.common.db.model.CommonPo"/>-->

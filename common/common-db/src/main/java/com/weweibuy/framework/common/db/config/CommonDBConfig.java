@@ -1,11 +1,21 @@
 package com.weweibuy.framework.common.db.config;
 
+import com.weweibuy.framework.common.db.aspect.SpecDatasourceAspect;
+import com.weweibuy.framework.common.db.aspect.SpecDatasourceBeanFactoryPointcutAdvisor;
+import com.weweibuy.framework.common.db.aspect.SpecDatasourcePointcut;
 import com.weweibuy.framework.common.db.encrypt.AESEncryptHelper;
+import com.weweibuy.framework.common.db.multiple.MultipleDatasourceAndMybatisRegister;
 import com.weweibuy.framework.common.db.properties.DBEncryptProperties;
+import com.weweibuy.framework.common.db.properties.MultipleDatasourceAndMybatisProperties;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Role;
 
 /**
  * @author durenhao
@@ -21,5 +31,7 @@ public class CommonDBConfig {
     public AESEncryptHelper aesEncryptHelper() {
         return new AESEncryptHelper();
     }
+
+
 
 }

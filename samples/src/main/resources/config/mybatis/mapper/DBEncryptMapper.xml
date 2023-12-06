@@ -165,6 +165,9 @@
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
+    <if test="groupByClause != null">
+      group by ${groupByClause}
+    </if>
     <if test="orderByClause != null">
       order by ${orderByClause}
     </if>
@@ -186,6 +189,9 @@
     from db_encrypt
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
+    </if>
+    <if test="groupByClause != null">
+      group by ${groupByClause}
     </if>
     <if test="orderByClause != null">
       order by ${orderByClause}
@@ -466,6 +472,9 @@
       </if>
       <if test="tag != null">
         tag = #{tag,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="example.updateSql != null">
+        ${example.updateSql} ,
       </if>
     </set>
     where id = #{id,jdbcType=BIGINT}

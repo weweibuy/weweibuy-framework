@@ -3,10 +3,10 @@ package com.weweibuy.framework.common.mvc.config;
 import com.weweibuy.framework.common.log.config.CommonLogProperties;
 import com.weweibuy.framework.common.log.support.HttpLogConfigurer;
 import com.weweibuy.framework.common.mvc.constant.HealthCheckConstant;
-import jakarta.servlet.ServletContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 
+import javax.servlet.ServletContext;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;

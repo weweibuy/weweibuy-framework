@@ -2,8 +2,7 @@ package com.weweibuy.framework.common.core.model.constant;
 
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 
 /**
@@ -44,9 +43,8 @@ public interface CommonConstant {
      */
     String NULL_STR = "null";
 
-    public interface DateConstant {
+    interface DateConstant {
 
-        String TIME_OFFSET_ID = "+8";
 
         String STANDARD_DATE_TIME_FORMAT_STR = "yyyy-MM-dd HH:mm:ss";
 
@@ -61,19 +59,20 @@ public interface CommonConstant {
         DateTimeFormatter STANDARD_TIME_FORMATTER = DateTimeFormatter.ofPattern(STANDARD_TIME_FORMAT_STR);
 
         /**
-         * 时区
-         */
-        ZoneOffset ZONE_OFFSET = ZoneOffset.of(CommonConstant.DateConstant.TIME_OFFSET_ID);
-
-        /**
          * 时区id
          */
-        ZoneId ZONE_ID  = ZoneId.systemDefault();
+        ZoneId ZONE_ID = ZoneId.systemDefault();
+
+        /**
+         * 时区
+         */
+        ZoneOffset ZONE_OFFSET = ZONE_ID.getRules().getOffset(Instant.now());
+
 
     }
 
 
-    public interface CharsetConstant {
+    interface CharsetConstant {
 
         String UTF8_STR = "UTF-8";
 
@@ -84,13 +83,13 @@ public interface CommonConstant {
 
     }
 
-    public interface SignConstant {
+    interface SignConstant {
 
         public static final String HMAC_SHA256 = "HmacSHA256";
 
     }
 
-    public interface LogTraceConstant {
+    interface LogTraceConstant {
 
         public static final String HTTP_TRACE_CODE_HEADER = "X-Tid";
 
@@ -101,7 +100,7 @@ public interface CommonConstant {
     /**
      * Http常量
      */
-    public interface HttpServletConstant {
+    interface HttpServletConstant {
 
         String REQUEST_PATH = "http_request_path";
 
@@ -135,7 +134,7 @@ public interface CommonConstant {
     }
 
 
-    public interface HttpResponseConstant {
+    interface HttpResponseConstant {
 
         /**
          * 响应报文 code字段

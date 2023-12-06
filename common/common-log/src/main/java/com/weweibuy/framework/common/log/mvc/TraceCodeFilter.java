@@ -25,11 +25,11 @@ public class TraceCodeFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-
+        String traceCode = logTraceCodeGetter.getTraceCode(request);
+        LogTraceContext.setTraceCodeAndUserCode(traceCode,
+                logTraceCodeGetter.getUserCode(request));
         try {
-            LogTraceContext.setTraceCodeAndUserCode(logTraceCodeGetter.getTraceCode(request),
-                    logTraceCodeGetter.getUserCode(request));
-            response.addHeader(CommonConstant.LogTraceConstant.HTTP_TRACE_CODE_HEADER, LogTraceContext.getTraceCode().orElse(""));
+            response.addHeader(CommonConstant.LogTraceConstant.HTTP_TRACE_CODE_HEADER, traceCode);
             filterChain.doFilter(request, response);
         } finally {
             LogTraceContext.clear();

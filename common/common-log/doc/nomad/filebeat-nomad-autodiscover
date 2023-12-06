@@ -1,0 +1,41 @@
+
+1. 增加的字段nomad字段:
+    filebeat配置:
+
+filebeat.autodiscover:
+  providers:
+    - type: nomad
+      address: http://192.168.1.137:4646
+      hints.enabled: true
+      hints.default_config:
+        enabled: false
+        type: log
+        paths:
+          - /nomad/alloc/${data.nomad.allocation.id}/${data.nomad.task.name}/local/*/application.log
+        processors:
+          - add_fields:
+              target: nomad
+              fields:
+                allocation.id: ${data.nomad.allocation.id}
+
+增加的字段示例:
+{
+  "nomad": {
+    "allocation": {
+      "name": "nomad-sample-application.nomad-sample-application[0]",
+      "status": "running"
+    },
+    "job": {
+      "name": "nomad-sample-application",
+      "type": "service"
+    },
+    "task": {
+      "name": "nomad-sample-application"
+    },
+    "namespace": "default",
+    "datacenter": [
+      "dc1"
+    ],
+    "region": "global"
+  }
+}

@@ -32,7 +32,7 @@ public class DataSourceTransactionManagerFactoryBean implements FactoryBean<Tran
 
 
     @Override
-    public TransactionManager getObject() throws Exception {
+    public TransactionManager getObject() {
         DataSource dataSource = applicationContext.getBean(datasourceName, DataSource.class);
         DataSourceTransactionManager transactionManager = createTransactionManager(environment, dataSource);
         transactionManagerCustomizers.ifAvailable(customizers -> customizers.customize(transactionManager));

@@ -1,12 +1,13 @@
 package com.weweibuy.framework.common.log.mvc;
 
 import com.weweibuy.framework.common.log.config.CommonLogProperties;
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.core.annotation.Order;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
@@ -15,6 +16,7 @@ import java.io.IOException;
  * @author durenhao
  * @date 2023/2/18 23:19
  **/
+@Order(-104)
 public class SensitizationFilter extends OncePerRequestFilter {
 
     private MvcPathMappingOperator mvcPathMappingOperator;

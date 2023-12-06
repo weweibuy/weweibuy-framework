@@ -13,7 +13,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- * 实现接口插件
+ * 实现接口插件, 可以上成的数据源对象实现指定的接口
  *
  * @author durenhao
  * @date 2021/5/17 21:16

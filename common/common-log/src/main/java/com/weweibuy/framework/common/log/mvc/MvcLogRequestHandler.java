@@ -2,12 +2,13 @@ package com.weweibuy.framework.common.log.mvc;
 
 import com.weweibuy.framework.common.core.support.ReadableBodyRequestHandler;
 import com.weweibuy.framework.common.log.config.CommonLogProperties;
-import com.weweibuy.framework.common.log.logger.HttpLogger;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import com.weweibuy.framework.common.log.logger.HttpReqLogger;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.annotation.Order;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -53,7 +54,7 @@ public class MvcLogRequestHandler implements ReadableBodyRequestHandler {
                 .map(CommonLogProperties.LogProperties::getDisableReqBody)
                 .orElse(false);
 
-        HttpLogger.logForRequest(request, headerKeyList, disableReqBody);
+        HttpReqLogger.logForRequest(request, headerKeyList, disableReqBody);
 
     }
 

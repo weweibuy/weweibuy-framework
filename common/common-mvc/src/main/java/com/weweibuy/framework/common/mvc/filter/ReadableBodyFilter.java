@@ -5,17 +5,15 @@ import com.weweibuy.framework.common.core.support.CopyContentCachingRequestWrapp
 import com.weweibuy.framework.common.core.support.ReadableBodyRequestHandler;
 import com.weweibuy.framework.common.core.support.ReadableBodyResponseHandler;
 import com.weweibuy.framework.common.core.utils.HttpRequestUtils;
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.annotation.Order;
-import org.springframework.web.context.request.RequestAttributes;
-import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.util.ContentCachingResponseWrapper;
 
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
@@ -87,12 +85,7 @@ public class ReadableBodyFilter extends OncePerRequestFilter {
 
 
     private void setRequestAttributes(HttpServletRequest request) {
-        RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
-        requestAttributes.setAttribute(CommonConstant.HttpServletConstant.REQUEST_METHOD, request.getMethod(), RequestAttributes.SCOPE_REQUEST);
-        requestAttributes.setAttribute(CommonConstant.HttpServletConstant.REQUEST_PATH, request.getRequestURI(), RequestAttributes.SCOPE_REQUEST);
-        requestAttributes.setAttribute(CommonConstant.HttpServletConstant.REQUEST_CONTENT_TYPE, request.getContentType(), RequestAttributes.SCOPE_REQUEST);
-        requestAttributes.setAttribute(CommonConstant.HttpServletConstant.REQUEST_PARAMETER_MAP, request.getParameterMap(), RequestAttributes.SCOPE_REQUEST);
-        requestAttributes.setAttribute(CommonConstant.HttpServletConstant.REQUEST_TIMESTAMP, System.currentTimeMillis(), RequestAttributes.SCOPE_REQUEST);
+        request.setAttribute(CommonConstant.HttpServletConstant.REQUEST_TIMESTAMP, System.currentTimeMillis());
     }
 
 }

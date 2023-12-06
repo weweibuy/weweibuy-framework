@@ -18,6 +18,8 @@ public class DBEncryptExample {
 
     protected String updateSql;
 
+    protected String groupByClause;
+
     public DBEncryptExample() {
         oredCriteria = new ArrayList<Criteria>();
     }
@@ -166,6 +168,31 @@ public class DBEncryptExample {
             }
         }
         this.setUpdateSql(sb.toString());
+        return this;
+    }
+
+    public void setGroupByClause(String groupByClause) {
+        this.groupByClause = SqlUtils.containsSqlInjectionAndThrow(groupByClause);
+    }
+
+    public String getGroupByClause() {
+        return this.groupByClause;
+    }
+
+    public DBEncryptExample groupBy(String groupByClause) {
+        this.setGroupByClause(groupByClause);
+        return this;
+    }
+
+    public DBEncryptExample groupBy(String ... groupByClauses) {
+        StringBuffer sb = new StringBuffer();
+        for (int i = 0; i < groupByClauses.length; i++) {
+            sb.append(groupByClauses[i]);
+            if (i < groupByClauses.length - 1) {
+                sb.append(" , ");
+            }
+        }
+        this.setGroupByClause(sb.toString());
         return this;
     }
 
@@ -370,11 +397,13 @@ public class DBEncryptExample {
         }
 
         public Criteria andPhoneLike(String value) {
+            value = SqlUtils.containsSqlInjectionForLikeAndThrow(value);
             addPhoneCriterion("phone like", value, "phone");
             return (Criteria) this;
         }
 
         public Criteria andPhoneNotLike(String value) {
+            value = SqlUtils.containsSqlInjectionForLikeAndThrow(value);
             addPhoneCriterion("phone not like", value, "phone");
             return (Criteria) this;
         }
@@ -440,11 +469,13 @@ public class DBEncryptExample {
         }
 
         public Criteria andIdNoLike(String value) {
+            value = SqlUtils.containsSqlInjectionForLikeAndThrow(value);
             addIdNoCriterion("id_no like", value, "idNo");
             return (Criteria) this;
         }
 
         public Criteria andIdNoNotLike(String value) {
+            value = SqlUtils.containsSqlInjectionForLikeAndThrow(value);
             addIdNoCriterion("id_no not like", value, "idNo");
             return (Criteria) this;
         }
@@ -510,11 +541,13 @@ public class DBEncryptExample {
         }
 
         public Criteria andOrderNoLike(String value) {
+            value = SqlUtils.containsSqlInjectionForLikeAndThrow(value);
             addCriterion("order_no like", value, "orderNo");
             return (Criteria) this;
         }
 
         public Criteria andOrderNoNotLike(String value) {
+            value = SqlUtils.containsSqlInjectionForLikeAndThrow(value);
             addCriterion("order_no not like", value, "orderNo");
             return (Criteria) this;
         }

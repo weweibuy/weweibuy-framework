@@ -1,14 +1,12 @@
 package com.weweibuy.framework.common.log.config;
 
-import com.weweibuy.framework.common.log.logger.HttpLogger;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.http.HttpMethod;
 
-import java.util.List;
-import java.util.Set;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -105,7 +103,7 @@ public class CommonLogProperties {
         /**
          * Logger 用于精确匹配
          */
-        private String logger = HttpLogger.class.getName();
+        private String logger;
     }
 
 

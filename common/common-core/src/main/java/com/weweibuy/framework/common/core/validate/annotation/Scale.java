@@ -1,20 +1,19 @@
 package com.weweibuy.framework.common.core.validate.annotation;
 
-import com.weweibuy.framework.common.core.validate.*;
-import jakarta.validation.Constraint;
-import jakarta.validation.Payload;
+import com.weweibuy.framework.common.core.validate.ScaleValidatorForBigDecimal;
 
+import javax.validation.Constraint;
+import javax.validation.Payload;
 import java.lang.annotation.Documented;
 import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 import static java.lang.annotation.ElementType.*;
-import static java.lang.annotation.ElementType.TYPE_USE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * 校验 BigDecimal 的精度
+ * 校验 BigDecimal 精度
  *
  * @author durenhao
  * @date 2023/4/16 10:12
@@ -31,11 +30,18 @@ public @interface Scale {
     Class<?>[] groups() default {};
 
     /**
-     * 精度
+     * 最大精度 (包含等于)
      *
      * @return
      */
-    int value() default 0;
+    int max() default Integer.MAX_VALUE;
+
+    /**
+     * 最小精度 (包含等于)
+     *
+     * @return
+     */
+    int min() default 0;
 
     Class<? extends Payload>[] payload() default {};
 

@@ -31,11 +31,6 @@ public class JackJsonUtils {
 
     private static ObjectMapper UPPER_CAMEL_CASE_MAPPER;
 
-    /***
-     * MVC 使用的名称风格
-     */
-    private static String mvcNamingStrategy;
-
     @Autowired
     private ObjectMapper objectMapper;
 
@@ -48,13 +43,6 @@ public class JackJsonUtils {
     @PostConstruct
     public void initMvc() {
         MVC_OBJECT_MAPPER = objectMapper;
-        PropertyNamingStrategy propertyNamingStrategy = objectMapper.getPropertyNamingStrategy();
-        if (propertyNamingStrategy == null ||
-                propertyNamingStrategy.getClass().isAssignableFrom(PropertyNamingStrategies.LOWER_CAMEL_CASE.getClass())) {
-            mvcNamingStrategy = "LOWER_CAMEL_CASE";
-        } else if (propertyNamingStrategy.getClass().isAssignableFrom(PropertyNamingStrategies.SNAKE_CASE.getClass())) {
-            mvcNamingStrategy = "SNAKE_CASE";
-        }
     }
 
     public static ObjectMapper createObjectMapper(String dataTimeFormat, String dataFormat, PropertyNamingStrategy propertyNamingStrategy) {

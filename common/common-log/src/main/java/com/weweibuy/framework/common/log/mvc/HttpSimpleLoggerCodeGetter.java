@@ -21,14 +21,14 @@ public class HttpSimpleLoggerCodeGetter implements LogTraceCodeGetter<HttpServle
     public String getUserCode(HttpServletRequest request) {
         return tryGetFromUserHeader(request)
                 .filter(StringUtils::isNotBlank)
-                .orElse(getUserIp(request));
+                .orElseGet(() -> getUserIp(request));
     }
 
     @Override
     public String getTraceCode(HttpServletRequest request) {
         return Optional.ofNullable(request.getHeader(CommonConstant.LogTraceConstant.HTTP_TRACE_CODE_HEADER))
                 .filter(StringUtils::isNotBlank)
-                .orElse(IdWorker.nextStringId());
+                .orElseGet(() -> IdWorker.nextStringId());
     }
 
     /**

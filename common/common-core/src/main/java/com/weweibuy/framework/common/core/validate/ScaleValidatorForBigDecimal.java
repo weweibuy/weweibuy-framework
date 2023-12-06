@@ -1,9 +1,9 @@
 package com.weweibuy.framework.common.core.validate;
 
 import com.weweibuy.framework.common.core.validate.annotation.Scale;
-import jakarta.validation.ConstraintValidator;
-import jakarta.validation.ConstraintValidatorContext;
 
+import javax.validation.ConstraintValidator;
+import javax.validation.ConstraintValidatorContext;
 import java.math.BigDecimal;
 
 /**
@@ -12,12 +12,15 @@ import java.math.BigDecimal;
  **/
 public class ScaleValidatorForBigDecimal implements ConstraintValidator<Scale, BigDecimal> {
 
-    protected Integer scale;
+    protected int scaleMax;
+
+    protected int scaleMin;
 
 
     @Override
     public void initialize(Scale constraintAnnotation) {
-        this.scale = constraintAnnotation.value();
+        this.scaleMax = constraintAnnotation.max();
+        this.scaleMin = constraintAnnotation.min();
     }
 
     @Override
@@ -25,8 +28,8 @@ public class ScaleValidatorForBigDecimal implements ConstraintValidator<Scale, B
         if (value == null) {
             return true;
         }
-        int scale1 = value.scale();
-        return false;
+        int scale = value.scale();
+        return scaleMin <= scale && scale <= scaleMax;
     }
 
 

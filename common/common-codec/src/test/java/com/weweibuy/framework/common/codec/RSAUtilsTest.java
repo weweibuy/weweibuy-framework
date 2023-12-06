@@ -1,6 +1,7 @@
 package com.weweibuy.framework.common.codec;
 
 import com.weweibuy.framework.common.codec.rsa.RSAUtils;
+import com.weweibuy.framework.common.codec.rsa.RsaKeyHelper;
 import org.junit.Test;
 
 import java.io.BufferedReader;
@@ -18,37 +19,36 @@ public class RSAUtilsTest {
 
     @Test
     public void generateBinaryKey() throws Exception {
-        RSAUtils.generateBinaryKey("C:/Users/z/Desktop/tmp/key/rsa/public.key",
-                "C:/Users/z/Desktop/tmp/key/rsa/private.key");
+        RsaKeyHelper.generateBinaryKeyToFile("tmp/key/rsa/public.key",
+                "tmp/key/rsa/private.key");
     }
 
     @Test
     public void generateBase64Key() throws Exception {
-        RSAUtils.generateBase64Key("C:/Users/z/Desktop/tmp/key/rsa/public64.key",
-                "C:/Users/z/Desktop/tmp/key/rsa/private64.key");
+        RsaKeyHelper.generateBase64KeyToFile("tmp/key/rsa/public64.key",
+                "tmp/key/rsa/private64.key");
     }
 
     @Test
     public void encryptTest() throws Exception {
         byte[] data = "hello cryptography".getBytes();
-        PublicKey publicKey = RSAUtils.getPublicKeyFromBinary("C:/Users/z/Desktop/tmp/key/rsa/public.key");
-        byte[] encrypted = RSAUtils.encrypt(publicKey, data);
-        String hexString = HexUtils.toHexString(encrypted);
+        PublicKey publicKey = RsaKeyHelper.getPublicKeyFromBinaryFile("tmp/key/rsa/public.key");
+        String hexString  = RSAUtils.encryptToHex(publicKey, data);
 
-        PrivateKey privateKey = RSAUtils.getPrivateKeyFromBinaryP8("C:/Users/z/Desktop/tmp/key/rsa/private.key");
+        PrivateKey privateKey = RsaKeyHelper.getPrivateKeyFromBinaryFile("tmp/key/rsa/private.key");
+        String decrypted = RSAUtils.decryptHex(privateKey, hexString);
 
-        byte[] decrypted = RSAUtils.decrypt(privateKey, HexUtils.fromHexString(hexString));
 
         System.out.println("original: " + new String(data));
         System.out.println("encrypted: " + hexString);
-        System.out.println("decrypted: " + new String(decrypted));
+        System.out.println("decrypted: " + decrypted);
     }
 
     @Test
     public void encrypt64Test() throws Exception {
         String dataStr = "hello cryptography";
-        PublicKey publicKey = RSAUtils.getPublicKeyFromBase64("E:/tmp/key/rsa/public64.key");
-        PrivateKey privateKey = RSAUtils.getPrivateKeyFromBase64P8("E:/tmp/key/rsa/private64.key");
+        PublicKey publicKey = RsaKeyHelper.getPublicKeyFromBase64File("tmp/key/rsa/public64.key");
+        PrivateKey privateKey = RsaKeyHelper.getPrivateKeyFromBase64File("tmp/key/rsa/private64.key");
 
         String encrypt = RSAUtils.encryptToHex(publicKey, dataStr);
         String decryptToStr = RSAUtils.decryptHex(privateKey, encrypt);
@@ -61,8 +61,8 @@ public class RSAUtilsTest {
     @Test
     public void signTest() throws Exception {
         String dataStr = "hello cryptography";
-        PublicKey publicKey = RSAUtils.getPublicKeyFromBase64("E:/tmp/key/rsa/public64.key");
-        PrivateKey privateKey = RSAUtils.getPrivateKeyFromBase64P8("E:/tmp/key/rsa/private64.key");
+        PublicKey publicKey = RsaKeyHelper.getPublicKeyFromBase64File("tmp/key/rsa/public64.key");
+        PrivateKey privateKey = RsaKeyHelper.getPrivateKeyFromBase64File("tmp/key/rsa/private64.key");
         String sign = RSAUtils.signToHex(privateKey, dataStr, RSAUtils.SIGN_ALGORITHM_SHA256_WITH_RSA);
         System.err.println(sign);
         boolean verifySign = RSAUtils.verifyHexSign(publicKey, dataStr, sign, RSAUtils.SIGN_ALGORITHM_SHA256_WITH_RSA);
@@ -75,14 +75,14 @@ public class RSAUtilsTest {
         URL resource = RSAUtilsTest.class.getClassLoader().getResource("key/socialnetwork.cer");
         String path = resource.getPath();
         System.err.println(path);
-        X509Certificate x509Certificate = RSAUtils.CertificateUtils.certificateFromFile(path);
+        X509Certificate x509Certificate = RsaKeyHelper.CertificateHelper.certificateFromFile(path);
         BigInteger serialNumber = x509Certificate.getSerialNumber();
         System.err.println(serialNumber);
 
         URL resource2 = RSAUtilsTest.class.getClassLoader().getResource("key/socialnetwork.pfx");
         String path2 = resource2.getPath();
 
-        PrivateKey privateKey = RSAUtils.CertificateUtils.privateKeyFromFile(path2, "");
+        PrivateKey privateKey = RsaKeyHelper.CertificateHelper.privateKeyFromFile(path2, "");
         byte[] encoded = privateKey.getEncoded();
         System.err.println(new String(encoded));
     }
@@ -101,7 +101,7 @@ public class RSAUtilsTest {
         }
         String str = keyBuffer.toString();
         System.err.println(str);
-        X509Certificate x509Certificate = RSAUtils.CertificateUtils.certificateFromBase64Text(str);
+        X509Certificate x509Certificate = RsaKeyHelper.CertificateHelper.certificateFromBase64Text(str);
         System.err.println(x509Certificate.getSerialNumber());
     }
 

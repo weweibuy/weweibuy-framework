@@ -4,14 +4,13 @@ import com.weweibuy.framework.common.core.model.constant.CommonConstant;
 import com.weweibuy.framework.common.core.utils.HttpRequestUtils;
 import com.weweibuy.framework.common.log.config.CommonLogProperties;
 import com.weweibuy.framework.common.log.constant.LogMdcConstant;
-import com.weweibuy.framework.common.log.support.HttpLogConfigurer;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.MDC;
 import org.springframework.http.HttpMethod;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 import java.util.stream.Collectors;
 

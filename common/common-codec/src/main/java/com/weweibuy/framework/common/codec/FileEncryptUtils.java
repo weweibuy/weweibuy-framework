@@ -15,6 +15,8 @@ import java.io.*;
 import java.security.GeneralSecurityException;
 import java.security.Key;
 import java.util.Base64;
+import java.util.zip.CRC32;
+import java.util.zip.CheckedInputStream;
 
 /**
  * 文件加密工具
@@ -114,6 +116,20 @@ public class FileEncryptUtils {
         try (InputStream in = new FileInputStream(file)) {
             return md5Base64(in);
         }
+    }
+
+
+    public static Long loadCRC32(String filePath) {
+        CRC32 crc32 = new CRC32();
+        try (FileInputStream fileinputstream = new FileInputStream(new File(filePath));
+             CheckedInputStream checkedinputstream = new CheckedInputStream(fileinputstream, crc32)) {
+            while (checkedinputstream.read() != -1) {
+            }
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+
+        return crc32.getValue();
     }
 
 }

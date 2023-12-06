@@ -1,6 +1,7 @@
 package com.weweibuy.framework.common.swagger;
 
 import com.weweibuy.framework.common.swagger.properties.SwaggerProperties;
+import com.weweibuy.framework.common.swagger.support.AnnotationSelectors;
 import com.weweibuy.framework.common.swagger.support.CustomBasePackageSelectors;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -47,49 +48,18 @@ public class SwaggerConfig {
     @Bean
     public Docket createRestApi() {
 
-        List<RequestParameter> parameters = swaggerProperties.getHeaders().stream()
-                .map(this::buildParameter)
-                .collect(Collectors.toList());
-
-        List<Response> responseMessageList = swaggerProperties.getResponse().stream()
-                .map(this::buildResponseMessage)
-                .collect(Collectors.toList());
-
         ApiSelectorBuilder select = new Docket(DocumentationType.OAS_30)
-
                 .select();
         if (!CollectionUtils.isEmpty(swaggerProperties.getBasePackage())) {
             select.apis(CustomBasePackageSelectors.basePackage(swaggerProperties.getBasePackage()));
+        }
+        if (Boolean.FALSE.equals(swaggerProperties.getShowNoAnnotationApi())) {
+            select.apis(AnnotationSelectors.hasSwaggerAnnotation());
         }
         return select.paths(PathSelectors.any())
                 .build();
     }
 
-
-    private Response buildResponseMessage(SwaggerProperties.HttpStatusDescProperties statusDescProperties) {
-        return new ResponseBuilder()
-                .code(statusDescProperties.getStatus() + "")
-                .build();
-    }
-
-    private RequestParameter buildParameter(SwaggerProperties.SwaggerHeaderProperties headerProperties) {
-        RequestParameter build = new RequestParameterBuilder()
-                .name(headerProperties.getName())
-                .description(headerProperties.getDesc())
-                .required(headerProperties.getRequired())
-                .build();
-        return build;
-    }
-
-    //构建 api文档的详细信息函数
-    private ApiInfo apiInfo() {
-        return new ApiInfoBuilder()
-                //页面标题
-                .title(environment.getProperty("spring.application.name") + " 项目 Restful Apis")
-                //版本号
-                .version(swaggerProperties.getVersion())
-                .build();
-    }
 
 
 }
