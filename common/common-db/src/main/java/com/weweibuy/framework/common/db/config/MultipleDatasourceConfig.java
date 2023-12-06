@@ -27,6 +27,7 @@ import org.springframework.context.annotation.Role;
 @AutoConfiguration
 @EnableConfigurationProperties({MultipleDatasourceAndMybatisProperties.class})
 @ConditionalOnMissingBean({DataSourceAutoConfiguration.class, MybatisAutoConfiguration.class})
+@ConditionalOnProperty(name = "common.db.multiple")
 public class MultipleDatasourceConfig {
 
 
