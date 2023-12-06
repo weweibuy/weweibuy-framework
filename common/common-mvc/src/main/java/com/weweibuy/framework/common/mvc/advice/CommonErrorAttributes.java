@@ -33,7 +33,7 @@ public class CommonErrorAttributes extends DefaultErrorAttributes {
 
     @Override
     public Map<String, Object> getErrorAttributes(WebRequest webRequest, ErrorAttributeOptions options) {
-        Integer status = HttpRequestUtils.getRequestAttribute(webRequest, "javax.servlet.error.status_code");
+        Integer status = HttpRequestUtils.getRequestAttribute(webRequest, "jakarta.servlet.error.status_code");
 
         if (status == null) {
             return unKnownAttributes;

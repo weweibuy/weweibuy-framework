@@ -1,17 +1,11 @@
 package com.weweibuy.framework.common.es.config;
 
-import com.weweibuy.framework.common.es.converter.LocalDateTimeToStrConverter;
-import com.weweibuy.framework.common.es.converter.LocalDateToStrConverter;
-import lombok.RequiredArgsConstructor;
-import org.elasticsearch.client.RestClientBuilder;
-import org.elasticsearch.client.RestHighLevelClient;
+import com.weweibuy.framework.common.es.converter.*;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.context.annotation.Bean;
 import org.springframework.core.convert.converter.Converter;
-import org.springframework.data.elasticsearch.config.AbstractElasticsearchConfiguration;
+import org.springframework.data.elasticsearch.config.ElasticsearchConfigurationSupport;
 import org.springframework.data.elasticsearch.core.convert.ElasticsearchCustomConversions;
-import org.springframework.data.elasticsearch.core.convert.MappingElasticsearchConverter;
-import org.springframework.data.elasticsearch.core.mapping.ElasticsearchPersistentEntity;
-import org.springframework.data.elasticsearch.core.mapping.SimpleElasticsearchMappingContext;
 import org.springframework.data.mapping.model.FieldNamingStrategy;
 import org.springframework.data.mapping.model.SnakeCaseFieldNamingStrategy;
 
@@ -19,29 +13,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * ES 配置
- * <p>
- * springBoot 2.3+ 版本使用的 ES 文档与Java对象的转化器是 {@link  MappingElasticsearchConverter}
- * 使用 {@link MappingElasticsearchConverter#readProperties(ElasticsearchPersistentEntity, Object, MappingElasticsearchConverter.ElasticsearchPropertyValueProvider)}
- * 进行转化
- * 自动配置 {@link ElasticsearchDataConfiguration.BaseConfiguration#elasticsearchConverter(SimpleElasticsearchMappingContext)}
- * <p>
- * <p>
- * springBoot 2.3 版本之前使用的是  EntityMapper
+ * ES 配置;
+ * 1. client ssl
+ * 2. 字段风格
+ * 3. 时间日期格式转化
  *
  * @author durenhao
- * @date 2019/8/12 20:35
+ * @date 2022/12/28 22:40
  **/
 @AutoConfiguration
-@RequiredArgsConstructor
-public class CommonElasticsearchConfig extends AbstractElasticsearchConfiguration {
-
-    private final RestClientBuilder restClientBuilder;
+public class CommonElasticsearchConfig extends ElasticsearchConfigurationSupport {
 
 
-    @Override
-    public RestHighLevelClient elasticsearchClient() {
-        return new RestHighLevelClient(restClientBuilder);
+    @Bean
+    public EsRestClientBuilderCustomizer esRestClientBuilderCustomizer(){
+        return new EsRestClientBuilderCustomizer();
     }
 
     @Override
@@ -52,11 +38,24 @@ public class CommonElasticsearchConfig extends AbstractElasticsearchConfiguratio
     @Override
     public ElasticsearchCustomConversions elasticsearchCustomConversions() {
         LocalDateTimeToStrConverter localDateTimeToStrConverter = new LocalDateTimeToStrConverter();
+        StrToLocalDateTimeConverter strToLocalDateTimeConverter = new StrToLocalDateTimeConverter();
+
         LocalDateToStrConverter localDateToStrConverter = new LocalDateToStrConverter();
+        StrToLocalDateConverter strToLocalDateConverter = new StrToLocalDateConverter();
+
+        LocalTimeToStrConverter localTimeToStrConverter = new LocalTimeToStrConverter();
+        StrToLocalTimeConverter strToLocalTimeConverter = new StrToLocalTimeConverter();
 
         List<Converter> converterList = new ArrayList<>();
         converterList.add(localDateTimeToStrConverter);
         converterList.add(localDateToStrConverter);
+        converterList.add(localTimeToStrConverter);
+        converterList.add(strToLocalDateTimeConverter);
+        converterList.add(strToLocalDateConverter);
+        converterList.add(strToLocalTimeConverter);
         return new ElasticsearchCustomConversions(converterList);
     }
+
+
+
 }

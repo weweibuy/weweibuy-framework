@@ -2,8 +2,8 @@ package com.weweibuy.framework.common.core.validate;
 
 import com.weweibuy.framework.common.core.validate.annotation.Scale;
 
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
 import java.math.BigDecimal;
 
 /**

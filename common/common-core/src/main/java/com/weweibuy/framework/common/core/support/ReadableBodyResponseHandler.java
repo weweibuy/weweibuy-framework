@@ -1,6 +1,6 @@
 package com.weweibuy.framework.common.core.support;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.springframework.web.util.ContentCachingResponseWrapper;
 

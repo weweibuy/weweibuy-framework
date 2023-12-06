@@ -6,7 +6,7 @@ import com.weweibuy.framework.common.mvc.constant.HealthCheckConstant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;

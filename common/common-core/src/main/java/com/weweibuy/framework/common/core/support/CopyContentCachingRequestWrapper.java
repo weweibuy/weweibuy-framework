@@ -5,10 +5,10 @@ import org.springframework.http.MediaType;
 import org.springframework.util.FastByteArrayOutputStream;
 import org.springframework.web.util.WebUtils;
 
-import javax.servlet.ReadListener;
-import javax.servlet.ServletInputStream;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletRequestWrapper;
+import jakarta.servlet.ReadListener;
+import jakarta.servlet.ServletInputStream;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequestWrapper;
 import java.io.*;
 import java.net.URLEncoder;
 import java.util.*;
