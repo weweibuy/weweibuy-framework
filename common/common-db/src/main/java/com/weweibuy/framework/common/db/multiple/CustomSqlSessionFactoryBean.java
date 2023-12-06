@@ -11,6 +11,8 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.type.TypeHandler;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.boot.autoconfigure.ConfigurationCustomizer;
+import org.mybatis.spring.boot.autoconfigure.MybatisProperties;
+import org.mybatis.spring.boot.autoconfigure.CustomMybatisPropertiesConvert;
 import org.mybatis.spring.boot.autoconfigure.SpringBootVFS;
 import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.factory.FactoryBean;
@@ -147,9 +149,17 @@ public class CustomSqlSessionFactoryBean implements FactoryBean<SqlSessionFactor
     }
 
     private void applyConfiguration(SqlSessionFactoryBean factory) {
-        Configuration configuration = this.properties.getConfiguration();
-        if (configuration == null && !StringUtils.hasText(this.properties.getConfigLocation())) {
+        if (StringUtils.hasText(this.properties.getConfigLocation())) {
+            factory.setConfigLocation(this.resourceLoader.getResource(this.properties.getConfigLocation()));
+        }
+
+        MybatisProperties.CoreConfiguration coreConfiguration = this.properties.getConfiguration();
+        Configuration configuration = null;
+        if (coreConfiguration != null || !StringUtils.hasText(this.properties.getConfigLocation())) {
             configuration = new Configuration();
+        }
+        if (configuration != null && coreConfiguration != null) {
+            CustomMybatisPropertiesConvert.applyTo(coreConfiguration, configuration);
         }
 
         List<ConfigurationCustomizer> configurationCustomizers = configurationCustomizersProvider.getIfAvailable();
