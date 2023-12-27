@@ -225,7 +225,7 @@ public class HttpRequestUtils {
         try {
             return new URI(url);
         } catch (URISyntaxException e) {
-            throw Exceptions.business("错误的url: " + url);
+            throw new IllegalArgumentException("错误的url: " + url, e);
         }
     }
 

@@ -82,7 +82,7 @@ public final class IdWorker {
     private IdWorker() {
         long id = getWorkerId();
         if (id > MAX_WORKER_ID || id < 0) {
-            throw new SystemException(String.format("worker Id can't be greater than %d or less than 0",
+            throw new IllegalStateException(String.format("worker Id can't be greater than %d or less than 0",
                     MAX_WORKER_ID));
         }
         this.workerId = id;
@@ -138,7 +138,7 @@ public final class IdWorker {
             ip = getPrivateIp().getAddress();
             workerId = (ip[2] << 8 | ip[3]) & ((1 << IP_BITS) - 1);
         } catch (SocketException e) {
-            throw new SystemException("无法获取本机IP地址", e);
+            throw new IllegalStateException("无法获取本机IP地址", e);
         }
 
         long pid = getPid() & ((1 << PID_BITS) - 1);
@@ -155,7 +155,7 @@ public final class IdWorker {
     private static InetAddress getPrivateIp() throws SocketException {
         List<InetAddress> addresses = getAllIPs();
         if (CollectionUtils.isEmpty(addresses)) {
-            throw new SystemException("无法获取本机IP地址");
+            throw new IllegalStateException("无法获取本机IP地址");
         }
         List<InetAddress> localAddresses = new ArrayList<>();
         for (InetAddress address : addresses) {
@@ -165,7 +165,7 @@ public final class IdWorker {
         }
 
         if (CollectionUtils.isEmpty(localAddresses)) {
-            throw new SystemException("无法获取本机内网IP地址");
+            throw new IllegalStateException("无法获取本机内网IP地址");
         }
 
         if (1 != localAddresses.size()) {
@@ -209,7 +209,7 @@ public final class IdWorker {
         log.info("当前进程的标识为：" + name);
         int index = name.indexOf('@');
         if (index == -1) {
-            throw new SystemException("获取PID错误, name=" + name);
+            throw new IllegalStateException("获取PID错误, name=" + name);
         }
 
         try {
@@ -217,7 +217,7 @@ public final class IdWorker {
             log.info("当前进程的PID为：" + pid);
             return pid;
         } catch (NumberFormatException e) {
-            throw new SystemException("获取PID错误, name=" + name, e);
+            throw new IllegalStateException("获取PID错误, name=" + name, e);
         }
     }
 

@@ -1,5 +1,12 @@
 package com.weweibuy.framework.common.core.utils;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.collections4.CollectionUtils;
+import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 import java.util.zip.CRC32;
 
 /**
@@ -21,6 +28,13 @@ public class HashUtil {
             hash += key.charAt(i);
         return (hash % prime);
     }
+
+
+
+
+
+
+
 
     /**
      * 旋转hash
