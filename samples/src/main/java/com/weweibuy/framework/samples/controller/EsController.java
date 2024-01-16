@@ -9,7 +9,6 @@ import com.weweibuy.framework.samples.mybatis.plugin.model.po.TbItem;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.elasticsearch.client.elc.ElasticsearchTemplate;
-import org.springframework.data.elasticsearch.client.erhlc.NativeSearchQueryBuilder;
 import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.data.elasticsearch.core.query.BaseQuery;
 import org.springframework.data.elasticsearch.core.query.Criteria;
@@ -38,20 +37,20 @@ public class EsController {
     private final ElasticsearchTemplate elasticsearchTemplate;
 
 
-    @GetMapping("/query")
-    public Object query() {
-        PageRequest of = PageRequest.of(1, 10);
-        NativeSearchQueryBuilder queryBuilder = new NativeSearchQueryBuilder();
-        queryBuilder.withPageable(of);
-        BaseQuery baseQuery = new BaseQuery();
-        Criteria and = Criteria.and();
-        CriteriaQueryBuilder criteriaQueryBuilder = new CriteriaQueryBuilder(and);
-        criteriaQueryBuilder.withPageable(of);
-        baseQuery.setPageable(of);
-
-        SearchHits<Item> search = elasticsearchTemplate.search(criteriaQueryBuilder.build(), Item.class);
-        return search.getSearchHits();
-    }
+//    @GetMapping("/query")
+//    public Object query() {
+//        PageRequest of = PageRequest.of(1, 10);
+//        NativeSearchQueryBuilder queryBuilder = new NativeSearchQueryBuilder();
+//        queryBuilder.withPageable(of);
+//        BaseQuery baseQuery = new BaseQuery();
+//        Criteria and = Criteria.and();
+//        CriteriaQueryBuilder criteriaQueryBuilder = new CriteriaQueryBuilder(and);
+//        criteriaQueryBuilder.withPageable(of);
+//        baseQuery.setPageable(of);
+//
+//        SearchHits<Item> search = elasticsearchTemplate.search(criteriaQueryBuilder.build(), Item.class);
+//        return search.getSearchHits();
+//    }
 
 
     @GetMapping("/sync")
