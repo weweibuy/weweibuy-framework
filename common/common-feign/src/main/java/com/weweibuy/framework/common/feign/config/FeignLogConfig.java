@@ -57,41 +57,5 @@ public class FeignLogConfig {
     }
 
 
-    public static void main(String[] args) {
-
-        try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
-            IntStream.range(0, 10000).forEach(i -> {
-                executor.submit(() -> {
-                    Thread.sleep(Duration.ofSeconds(1));
-                    log.info(Thread.currentThread().getName() + " : xxx");
-                    return i;
-                });
-            });
-        }
-
-
-        String result = get("http://httpbin.org/get");
-        System.out.println(result);
-    }
-
-    public static String get(String url) {
-
-        String resultContent = null;
-        HttpGet httpGet = new HttpGet(url);
-        try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
-            try (CloseableHttpResponse response = httpclient.execute(httpGet)) {
-                // 获取状态码
-                System.out.println(response.getVersion()); // HTTP/1.1
-                System.out.println(response.getCode()); // 200
-                System.out.println(response.getReasonPhrase()); // OK
-                HttpEntity entity = response.getEntity();
-                // 获取响应信息
-                resultContent = EntityUtils.toString(entity);
-            }
-        } catch (IOException | ParseException e) {
-            e.printStackTrace();
-        }
-        return resultContent;
-    }
 
 }

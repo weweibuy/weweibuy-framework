@@ -142,14 +142,14 @@ common:
       enable: false
       topic: COMMON_SERVER_UPDATE_TOPIC
       group: COMMON_SERVER_UPDATE_C_GROUP
-  feign:
-    http-client:
-      http-req:
-        - host: localhost:8080
-          path: /**
-          log:
-            disable-req-body: true
-            disable-resp: true
+#  feign:
+#    http-client:
+#      http-req:
+#        - host: localhost:8080
+#          path: /**
+#          log:
+#            disable-req-body: true
+#            disable-resp: true
 
 
 

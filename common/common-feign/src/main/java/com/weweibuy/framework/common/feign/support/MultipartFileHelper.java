@@ -39,7 +39,6 @@ public class MultipartFileHelper {
              OutputStream outputStream = fileItem.getOutputStream()) {
             IOUtils.copy(fileInputStream, outputStream);
         }
-//        return new CommonsMultipartFile(fileItem);
         //TODO 3.0 删除了 CommonsMultipartFile
         return null;
     }

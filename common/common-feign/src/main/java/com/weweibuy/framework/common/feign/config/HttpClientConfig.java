@@ -135,7 +135,7 @@ public class HttpClientConfig {
 
     private ConnectionConfig connectionConfig() {
         return ConnectionConfig.custom()
-                .setTimeToLive(Timeout.of(httpClientProperties.getMaxLifeTime(), TimeUnit.MILLISECONDS))
+//                .setTimeToLive(Timeout.of(httpClientProperties.getMaxLifeTime(), TimeUnit.MILLISECONDS))
                 .setValidateAfterInactivity(Timeout.of(httpClientProperties.getValidateAfterInactivitySec(), TimeUnit.SECONDS))
                 .build();
     }

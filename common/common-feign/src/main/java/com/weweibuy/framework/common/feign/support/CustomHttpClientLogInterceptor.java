@@ -14,6 +14,7 @@ import org.springframework.http.HttpMethod;
 
 import java.io.IOException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.*;
 
 /**
@@ -132,18 +133,11 @@ public class CustomHttpClientLogInterceptor implements HttpResponseInterceptor, 
     }
 
     private static URI reqURI(HttpRequest request) {
-        if (request instanceof HttpRequestWrapper) {
-            HttpRequest original = ((HttpRequestWrapper) request).getOriginal();
-            if (original instanceof HttpRequestBase) {
-                return ((HttpRequestBase) original).getURI();
-            }
-            HttpHost target = ((HttpRequestWrapper) request).getTarget();
-            URI uri = ((HttpRequestWrapper) request).getURI();
-            String url = target.toString() + uri.toString();
-            return URI.create(url);
+        try {
+            return request.getUri();
+        } catch (URISyntaxException e) {
+            throw new IllegalArgumentException(e);
         }
-
-        return request.getUri();
     }
 
 

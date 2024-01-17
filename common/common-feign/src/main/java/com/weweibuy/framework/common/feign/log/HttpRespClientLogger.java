@@ -7,7 +7,10 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.hc.core5.http.ContentType;
+import org.apache.hc.core5.http.HttpEntity;
+import org.apache.hc.core5.http.HttpHeaders;
 import org.apache.hc.core5.http.io.entity.ByteArrayEntity;
+import org.apache.hc.core5.http.message.BasicClassicHttpResponse;
 import org.apache.hc.core5.http.message.StatusLine;
 
 import java.io.ByteArrayOutputStream;
@@ -40,9 +43,9 @@ public final class HttpRespClientLogger {
         String body = respBodyAndReBuffer(response, contentType, logProperties);
         String headerStr = HttpRequestUtils.headerMapStr(headerMap);
 
-        StatusLine statusLine = response.getStatusLine();
+
         log.info("Httpclient 响应 Status: {}, Header: {}, Body: {}, 耗时: {}",
-                statusLine.getStatusCode(),
+                response.getCode(),
                 headerStr,
                 body,
                 reqTime);
@@ -60,13 +63,16 @@ public final class HttpRespClientLogger {
         if (!HttpRequestUtils.notBoundaryBody(contentType)) {
             return HttpRequestUtils.BOUNDARY_BODY;
         }
-        HttpEntity entity = response.getEntity();
-        if (entity != null) {
+        if (response instanceof BasicClassicHttpResponse basicClassicHttpResponse && basicClassicHttpResponse.getEntity() != null) {
+            HttpEntity entity = basicClassicHttpResponse.getEntity();
             ByteArrayOutputStream buffer = new ByteArrayOutputStream();
             entity.writeTo(buffer);
             Charset charset = parseCharset(contentType);
             if (!entity.isRepeatable()) {
-                response.setEntity(new ByteArrayEntity(buffer.toByteArray()));
+                basicClassicHttpResponse.setEntity(new ByteArrayEntity(buffer.toByteArray(),
+                        Optional.ofNullable(entity.getContentType())
+                                .map(ContentType::parse)
+                                .orElse(null)));
             }
             return new String(buffer.toByteArray(), charset);
         }

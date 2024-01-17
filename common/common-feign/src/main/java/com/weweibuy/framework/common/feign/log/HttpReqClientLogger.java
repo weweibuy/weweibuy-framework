@@ -6,10 +6,9 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ArrayUtils;
-import org.apache.hc.core5.http.HttpHeaders;
-import org.apache.hc.core5.http.HttpMessage;
-import org.apache.hc.core5.http.HttpRequest;
+import org.apache.hc.core5.http.*;
 import org.apache.hc.core5.http.io.entity.ByteArrayEntity;
+import org.apache.hc.core5.http.message.BasicClassicHttpRequest;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -67,13 +66,16 @@ public final class HttpReqClientLogger {
             // 上传文件
             return HttpRequestUtils.BOUNDARY_BODY;
         }
-        if (request instanceof HttpEntityEnclosingRequest && ((HttpEntityEnclosingRequest) request).getEntity() != null) {
-            HttpEntityEnclosingRequest entityRequest = (HttpEntityEnclosingRequest) request;
-            HttpEntity entity = ((HttpEntityEnclosingRequest) request).getEntity();
+        if (request instanceof BasicClassicHttpRequest classicHttpRequest && classicHttpRequest.getEntity() != null) {
+            HttpEntity entity = classicHttpRequest.getEntity();
             ByteArrayOutputStream buffer = new ByteArrayOutputStream();
             entity.writeTo(buffer);
+
             if (!entity.isRepeatable()) {
-                entityRequest.setEntity(new ByteArrayEntity(buffer.toByteArray()));
+                classicHttpRequest.setEntity(new ByteArrayEntity(buffer.toByteArray(),
+                        Optional.ofNullable(entity.getContentType())
+                                .map(ContentType::parse)
+                                .orElse(null)));
             }
             return new String(buffer.toByteArray());
         }

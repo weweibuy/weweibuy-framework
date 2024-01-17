@@ -11,8 +11,13 @@ import com.weweibuy.framework.samples.client.MyFeignClient;
 import feign.Response;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.io.IOUtils;
-import org.apache.http.entity.ContentType;
-import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.hc.client5.http.classic.methods.HttpGet;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
+import org.apache.hc.client5.http.impl.classic.HttpClients;
+import org.apache.hc.core5.http.ContentType;
+import org.apache.hc.core5.http.HttpEntity;
+import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -49,10 +54,9 @@ public class FeignController {
 
 
     @GetMapping("/feign")
-    public Object sendToFeign() throws IOException {
-        CommonCodeResponse postJson = localFeignClient.postJson(CommonDataResponse.success("postJson"));
+    public Object sendToFeign() throws Exception {
 
-        CommonDataResponse<String> xx = myFeignClient.helloGet("xx", "1");
+        CommonCodeResponse postJson = localFeignClient.postJson(CommonDataResponse.success("postJson"));
 
         CommonCodeResponse json = localFeignClient.getReq();
 
@@ -66,24 +70,6 @@ public class FeignController {
         MultipartFile multipartFile = MultipartFileHelper.createMultipartFile(file);
         Response response = localFileFeignClient.uploadFile(multipartFile, file.getName());
 
-//        MultipartEntityBuilder builder = MultipartEntityBuilder.create()
-//                .setCharset(CommonConstant.CharsetConstant.UT8);
-//        builder.addTextBody("key", "value", TEXT_HTML_UTF8_CONTENT_TYPE);
-//        builder.addBinaryBody("file", file);
-//        HttpEntity entity = builder.build();
-//        HttpPost httpPost = new HttpPost("https://www.baidu.com");
-//        httpPost.setEntity(entity);
-//
-//        try (CloseableHttpResponse execute = httpClient.execute(httpPost)) {
-//        }
-//        HttpGet httpGet = new HttpGet("https://imgcps.jd.com/ling4/100032149194/5Lqs6YCJ5aW96LSn/5L2g5YC85b6X5oul5pyJ/p-5f3a47329785549f6bc7a6ec/996c3f09/cr/s/q.jpg");
-//        try (CloseableHttpResponse execute = httpClient.execute(httpGet)) {
-//
-//        }
-//        httpPost = new HttpPost("https://www.baidu.com");
-//        try (CloseableHttpResponse execute = httpClient.execute(httpPost)) {
-//
-//        }
         return CommonCodeResponse.success();
     }
 
