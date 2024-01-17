@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
 
 /**
  * @author durenhao
- * @date 2020/2/17 21:23
+ * @date 2020/2/17 22:23
  **/
 @Configuration
 public class BizIdCompensateConfigurer implements CompensateConfigurer {
