@@ -6,13 +6,14 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ArrayUtils;
-import org.apache.http.*;
-import org.apache.http.entity.ByteArrayEntity;
+import org.apache.hc.core5.http.HttpHeaders;
+import org.apache.hc.core5.http.HttpMessage;
+import org.apache.hc.core5.http.HttpRequest;
+import org.apache.hc.core5.http.io.entity.ByteArrayEntity;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.URI;
-import java.nio.charset.Charset;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -46,7 +47,7 @@ public final class HttpReqClientLogger {
 
 
     static Map<String, String> logHeaderMap(HttpMessage httpMessage, Set<String> headerSet) {
-        return Optional.ofNullable(httpMessage.getAllHeaders())
+        return Optional.ofNullable(httpMessage.getHeaders())
                 .filter(ArrayUtils::isNotEmpty)
                 .map(a -> Arrays.stream(a)
                         .filter(h -> headerSet.contains(h.getName()) || HttpHeaders.CONTENT_TYPE.equals(h.getName()))

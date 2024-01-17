@@ -17,8 +17,6 @@ import java.util.stream.Stream;
 @Data
 public class HttpClientProperties {
 
-    private boolean useSSL = true;
-
     /**
      * 最大连接个数
      */
@@ -58,6 +56,12 @@ public class HttpClientProperties {
      * 连接的最大生命时间毫秒
      */
     private Long maxLifeTime = -1L;
+
+    /**
+     * 当获取连接时, 如果连接在配置时间内未活跃过, 则重新验证连接的有效性. 然后在返回连接
+     * 单位秒
+     */
+    private Long validateAfterInactivitySec = 2L;
 
 
     /**

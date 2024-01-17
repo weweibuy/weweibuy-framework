@@ -68,7 +68,7 @@
 
         <dependency>
             <groupId>io.github.openfeign</groupId>
-            <artifactId>feign-httpclient</artifactId>
+            <artifactId>feign-hc5</artifactId>
         </dependency>
 
         <dependency>

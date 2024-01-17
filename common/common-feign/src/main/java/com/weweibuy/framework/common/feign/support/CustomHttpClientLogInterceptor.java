@@ -7,17 +7,14 @@ import com.weweibuy.framework.common.feign.log.HttpRespClientLogger;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.*;
-import org.apache.http.client.methods.HttpRequestBase;
-import org.apache.http.client.methods.HttpRequestWrapper;
-import org.apache.http.protocol.HttpContext;
+import org.apache.hc.core5.http.*;
+import org.apache.hc.core5.http.message.HttpRequestWrapper;
+import org.apache.hc.core5.http.protocol.HttpContext;
 import org.springframework.http.HttpMethod;
 
 import java.io.IOException;
 import java.net.URI;
-import java.net.URL;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * @author durenhao
@@ -46,10 +43,10 @@ public class CustomHttpClientLogInterceptor implements HttpResponseInterceptor, 
     }
 
     @Override
-    public void process(HttpRequest request, HttpContext context) throws HttpException, IOException {
+    public void process(HttpRequest request, EntityDetails entity, HttpContext context) throws HttpException, IOException {
         try {
             URI uri = reqURI(request);
-            String method = request.getRequestLine().getMethod();
+            String method = request.getMethod();
             HttpClientProperties.LogHttpProperties logProperties = findLogProperties(uri, method);
             context.setAttribute(REQ_LOG_PROPERTIES_KEY, logProperties);
             context.setAttribute(REQ_TIME_KEY, System.currentTimeMillis());
@@ -60,7 +57,7 @@ public class CustomHttpClientLogInterceptor implements HttpResponseInterceptor, 
     }
 
     @Override
-    public void process(HttpResponse response, HttpContext context) throws HttpException, IOException {
+    public void process(HttpResponse response, EntityDetails entity, HttpContext context) throws HttpException, IOException {
         Long time = (Long) context.getAttribute(REQ_TIME_KEY);
         HttpClientProperties.LogHttpProperties logProperties = (HttpClientProperties.LogHttpProperties) context.getAttribute(REQ_LOG_PROPERTIES_KEY);
         try {
@@ -145,7 +142,8 @@ public class CustomHttpClientLogInterceptor implements HttpResponseInterceptor, 
             String url = target.toString() + uri.toString();
             return URI.create(url);
         }
-        return URI.create(request.getRequestLine().getUri());
+
+        return request.getUri();
     }
 
 

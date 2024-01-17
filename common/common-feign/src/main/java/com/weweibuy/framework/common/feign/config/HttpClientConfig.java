@@ -3,25 +3,20 @@ package com.weweibuy.framework.common.feign.config;
 import com.weweibuy.framework.common.core.concurrent.LogExceptionThreadFactory;
 import com.weweibuy.framework.common.feign.support.CustomHttpClientLogInterceptor;
 import com.weweibuy.framework.common.feign.support.DelegateFeignClient;
-import com.weweibuy.framework.common.feign.support.NoSwitchHttpClientConnectionOperator;
 import feign.Client;
-import feign.httpclient.ApacheHttpClient;
-import org.apache.http.HttpRequestInterceptor;
-import org.apache.http.HttpResponseInterceptor;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.config.RequestConfig;
-import org.apache.http.config.Registry;
-import org.apache.http.config.RegistryBuilder;
-import org.apache.http.conn.HttpClientConnectionManager;
-import org.apache.http.conn.socket.ConnectionSocketFactory;
-import org.apache.http.conn.socket.PlainConnectionSocketFactory;
-import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.impl.conn.DefaultHttpClientConnectionOperator;
-import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
-import org.apache.http.ssl.TrustStrategy;
+import feign.hc5.ApacheHttp5Client;
+import org.apache.hc.client5.http.classic.HttpClient;
+import org.apache.hc.client5.http.config.ConnectionConfig;
+import org.apache.hc.client5.http.config.RequestConfig;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
+import org.apache.hc.client5.http.impl.classic.HttpClients;
+import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManager;
+import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManagerBuilder;
+import org.apache.hc.client5.http.io.HttpClientConnectionManager;
+import org.apache.hc.core5.http.HttpRequestInterceptor;
+import org.apache.hc.core5.http.HttpResponseInterceptor;
+import org.apache.hc.core5.util.Timeout;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingClass;
@@ -29,11 +24,9 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplicat
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 
-import javax.net.ssl.SSLContext;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
-import java.security.cert.X509Certificate;
 import java.util.List;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
@@ -71,7 +64,7 @@ public class HttpClientConfig {
     @Bean
     @ConditionalOnMissingClass(value = {"org.springframework.cloud.loadbalancer.support.LoadBalancerClientFactory"})
     public Client feignClient(HttpClient httpClient) {
-        Client client = new ApacheHttpClient(httpClient);
+        Client client = new ApacheHttp5Client(httpClient);
         return DelegateFeignClient.delegateChain(delegateFeignClientList, client);
     }
 
@@ -86,19 +79,10 @@ public class HttpClientConfig {
         // 日志
         if (customHttpClientLogInterceptor != null) {
             httpClientBuilder = httpClientBuilder
-                    .addInterceptorLast((HttpRequestInterceptor) customHttpClientLogInterceptor)
-                    .addInterceptorLast((HttpResponseInterceptor) customHttpClientLogInterceptor);
+                    .addRequestInterceptorLast((HttpRequestInterceptor) customHttpClientLogInterceptor)
+                    .addResponseInterceptorLast((HttpResponseInterceptor) customHttpClientLogInterceptor);
         }
 
-        if (httpClientProperties.isUseSSL()) {
-            TrustStrategy acceptingTrustStrategy = (X509Certificate[] chain, String authType) -> true;
-            SSLContext sslContext = org.apache.http.ssl.SSLContexts.custom()
-                    .loadTrustMaterial(null, acceptingTrustStrategy)
-                    .build();
-            SSLConnectionSocketFactory csf = new SSLConnectionSocketFactory(sslContext);
-            httpClientBuilder.setSSLSocketFactory(csf);
-
-        }
         return httpClientBuilder.build();
     }
 
@@ -110,14 +94,15 @@ public class HttpClientConfig {
      * @return
      */
     public RequestConfig requestConfig() {
-        return RequestConfig.custom().setConnectTimeout(httpClientProperties.getConnectTimeout())
-                .setConnectionRequestTimeout(httpClientProperties.getConnectionRequestTimeout())
-                .setSocketTimeout(httpClientProperties.getSocketTimeout())
+        return RequestConfig.custom().setConnectTimeout(Timeout.of(httpClientProperties.getConnectTimeout(), TimeUnit.MILLISECONDS))
+                .setConnectionRequestTimeout(Timeout.of(httpClientProperties.getConnectionRequestTimeout(), TimeUnit.MILLISECONDS))
+                .setResponseTimeout(Timeout.of(httpClientProperties.getSocketTimeout(), TimeUnit.MILLISECONDS))
                 .build();
     }
 
 
     private synchronized HttpClientConnectionManager httpClientConnectionManager() {
+
         PoolingHttpClientConnectionManager connectionManager = poolingHttpClientConnectionManager();
         connectionManager.setMaxTotal(httpClientProperties.getMaxTotal());
         connectionManager.setDefaultMaxPerRoute(httpClientProperties.getDefaultMaxPerRoute());
@@ -125,32 +110,33 @@ public class HttpClientConfig {
             this.schedule = new ScheduledThreadPoolExecutor(1,
                     new LogExceptionThreadFactory("close-expired-schedule-"),
                     new ThreadPoolExecutor.DiscardPolicy());
-            this.schedule.scheduleWithFixedDelay(connectionManager::closeExpiredConnections,
+            this.schedule.scheduleWithFixedDelay(connectionManager::closeExpired,
                     30000, httpClientProperties.getCheckExpiredConnectionInterval(), TimeUnit.MILLISECONDS);
         }
         return connectionManager;
     }
 
     private PoolingHttpClientConnectionManager poolingHttpClientConnectionManager() {
-        if (!httpClientProperties.getSwitchNodeWhenConnectionTimeout()) {
-            // 控制httpclient connection-timeout 时不切换节点重试
-            return new PoolingHttpClientConnectionManager(
-                    new NoSwitchHttpClientConnectionOperator(getDefaultRegistry(), null, null),
-                    null,
-                    httpClientProperties.getMaxLifeTime(),
-                    TimeUnit.MICROSECONDS);
-        }
-        return new PoolingHttpClientConnectionManager(
-                new DefaultHttpClientConnectionOperator(getDefaultRegistry(), null, null),
-                null,
-                httpClientProperties.getMaxLifeTime(),
-                TimeUnit.MICROSECONDS);
+//        if (!httpClientProperties.getSwitchNodeWhenConnectionTimeout()) {
+//            // 控制httpclient connection-timeout 时不切换节点重试
+//            return new PoolingHttpClientConnectionManager(
+//                    new NoSwitchHttpClientConnectionOperator(getDefaultRegistry(), null, null),
+//                    null,
+//                    httpClientProperties.getMaxLifeTime(),
+//                    TimeUnit.MICROSECONDS);
+//        }
+        return PoolingHttpClientConnectionManagerBuilder.create()
+                .setMaxConnPerRoute(httpClientProperties.getDefaultMaxPerRoute())
+                .setMaxConnTotal(httpClientProperties.getMaxTotal())
+                .setDefaultConnectionConfig(connectionConfig())
+                .build();
     }
 
-    private static Registry<ConnectionSocketFactory> getDefaultRegistry() {
-        return RegistryBuilder.<ConnectionSocketFactory>create()
-                .register("http", PlainConnectionSocketFactory.getSocketFactory())
-                .register("https", SSLConnectionSocketFactory.getSocketFactory())
+
+    private ConnectionConfig connectionConfig() {
+        return ConnectionConfig.custom()
+                .setTimeToLive(Timeout.of(httpClientProperties.getMaxLifeTime(), TimeUnit.MILLISECONDS))
+                .setValidateAfterInactivity(Timeout.of(httpClientProperties.getValidateAfterInactivitySec(), TimeUnit.SECONDS))
                 .build();
     }
 

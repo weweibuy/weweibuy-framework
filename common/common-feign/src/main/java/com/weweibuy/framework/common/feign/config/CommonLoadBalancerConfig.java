@@ -2,8 +2,8 @@ package com.weweibuy.framework.common.feign.config;
 
 import com.weweibuy.framework.common.feign.support.DelegateFeignClient;
 import feign.Client;
-import feign.httpclient.ApacheHttpClient;
-import org.apache.http.client.HttpClient;
+import feign.hc5.ApacheHttp5Client;
+import org.apache.hc.client5.http.classic.HttpClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -33,7 +33,7 @@ public class CommonLoadBalancerConfig {
     public Client feignClient(LoadBalancerClient loadBalancerClient,
                               HttpClient httpClient,
                               LoadBalancerClientFactory loadBalancerClientFactory) {
-        Client client = new ApacheHttpClient(httpClient);
+        Client client = new ApacheHttp5Client(httpClient);
         client = DelegateFeignClient.delegateChain(delegateFeignClientList, client);
         return new FeignBlockingLoadBalancerClient(client, loadBalancerClient, loadBalancerClientFactory);
     }

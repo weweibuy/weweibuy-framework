@@ -6,14 +6,19 @@ import com.weweibuy.framework.common.feign.config.HttpClientProperties;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.http.*;
-import org.apache.http.entity.ByteArrayEntity;
-import org.apache.http.entity.ContentType;
+import org.apache.hc.core5.http.ContentType;
+import org.apache.hc.core5.http.io.entity.ByteArrayEntity;
+import org.apache.hc.core5.http.message.StatusLine;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.util.*;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+
+import org.apache.hc.core5.http.HttpResponse;
 
 /**
  * @author durenhao
