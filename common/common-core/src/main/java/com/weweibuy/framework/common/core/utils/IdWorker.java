@@ -12,6 +12,7 @@ import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.concurrent.locks.ReentrantLock;
 
 
 @Slf4j
@@ -77,7 +78,10 @@ public final class IdWorker {
      */
     private long sequence = 0L;
 
+    private ReentrantLock lock = new ReentrantLock();
+
     private static final IdWorker WORKER = new IdWorker();
+
 
     private IdWorker() {
         long id = getWorkerId();
@@ -90,7 +94,8 @@ public final class IdWorker {
 
     private long getNextId() {
         long timestamp = currentTimestamp();
-        synchronized (this) {
+        lock.lock();
+        try {
             if (this.lastTimestamp == timestamp) {
                 this.sequence = (this.sequence + 1) & MAX_SEQUENCE;
                 if (this.sequence == 0) {
@@ -106,6 +111,8 @@ public final class IdWorker {
 
             this.lastTimestamp = timestamp;
             return ((timestamp - START_TIMESTAMP) << TIMESTAMP_SHIFT) | (this.sequence << SEQUENCE_SHIFT) | this.workerId;
+        } finally {
+            lock.unlock();
         }
     }
 
