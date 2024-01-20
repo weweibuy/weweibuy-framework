@@ -17,6 +17,7 @@
         <module>mybatis-plugin</module>
         <module>http-client</module>
         <module>load-balance</module>
+        <module>biz-task</module>
     </modules>
 
     <properties>
@@ -25,7 +26,7 @@
         <maven.compiler.target>1.8</maven.compiler.target>
         <lombok.version>1.18.26</lombok.version>
         <spring-boot.version>2.7.12</spring-boot.version>
-        <spring-cloud-version>2021.0.8</spring-cloud-version>
+        <spring-cloud-version>2021.0.9</spring-cloud-version>
         <rocketmq-client-version>4.6.0</rocketmq-client-version>
         <guava.version>32.0.0-jre</guava.version>
         <apache.common.lang.version>3.9</apache.common.lang.version>
@@ -209,6 +210,12 @@
             <dependency>
                 <groupId>com.weweibuy.framework</groupId>
                 <artifactId>common-util</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.weweibuy.framework</groupId>
+                <artifactId>biz-task</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
