@@ -8,7 +8,6 @@ import com.weweibuy.framework.common.db.properties.MultipleDatasourceAndMybatisP
 import org.mybatis.spring.boot.autoconfigure.MybatisAutoConfiguration;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
@@ -27,7 +26,6 @@ import org.springframework.context.annotation.Role;
 @AutoConfiguration
 @EnableConfigurationProperties({MultipleDatasourceAndMybatisProperties.class})
 @ConditionalOnMissingBean({DataSourceAutoConfiguration.class, MybatisAutoConfiguration.class})
-@ConditionalOnProperty(name = "common.db.multiple")
 public class MultipleDatasourceConfig {
 
 
