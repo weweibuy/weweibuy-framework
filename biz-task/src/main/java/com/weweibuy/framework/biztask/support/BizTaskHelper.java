@@ -95,6 +95,14 @@ public class BizTaskHelper {
         return updateTask(bizTask.getId(), bizTaskUpdate, bizTask.getTaskStatus(), bizTask.getBizStatus());
     }
 
+    public static int delayTask(BizTask bizTask) {
+        BizTaskConfigure taskConfigure = bizTaskExecConfigure.getOrDefault(bizTask.getTaskType());
+        String rule = Optional.ofNullable(taskConfigure.getRule())
+                .orElse(BizTaskExecConfigure.DEFAULT_RULE);
+        long time = ExecRuleParser.parser(bizTask.getTriggerCount(), rule);
+        return delayTask(bizTask, time, ChronoUnit.MILLIS);
+    }
+
 
     public static void alarmTaskIfNecessity(BizTask task, Throwable e) {
         BizTaskConfigure taskConfigure = bizTaskExecConfigure.getOrDefault(task.getTaskType());
