@@ -30,9 +30,16 @@ public class BizTaskHandlerMethodHolder {
         bizTaskHandlerMethod.setBizStatus(bizStatus);
         bizTaskHandlerMethod.setBean(bean);
         bizTaskHandlerMethod.setBridgedMethod(BridgeMethodResolver.findBridgedMethod(method));
+        String key = mapKey(type, bizStatus);
 
-        handlerMethodMap.put(mapKey(type, bizStatus), bizTaskHandlerMethod);
+        BizTaskHandlerMethod exist = handlerMethodMap.get(key);
+        if (exist != null) {
+            throw new IllegalArgumentException("一个任务类型 + 一个业务状态只能有一个执行方法");
+        }
+
+        handlerMethodMap.put(key, bizTaskHandlerMethod);
     }
+
 
     private String mapKey(String type, int bizStatus) {
         return type + "_" + bizStatus;

@@ -7,23 +7,18 @@ import com.weweibuy.framework.biztask.db.repository.BizTaskRepository;
 import com.weweibuy.framework.biztask.eum.BizTaskStatusEum;
 import com.weweibuy.framework.common.core.support.AlarmService;
 import com.weweibuy.framework.common.core.support.ExecRuleParser;
-import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.Optional;
 
 /**
+ * 业务任务操作, 只能在spring启动后使用
+ *
  * @author durenhao
  * @date 2024/1/20 14:11
  **/
-@RequiredArgsConstructor
 public class BizTaskHelper {
-
-    private BizTaskRepository repository;
-
-    private BizTaskExecConfigure configure;
-
-    private AlarmService alarm;
 
     private static BizTaskRepository bizTaskRepository;
 
@@ -36,6 +31,16 @@ public class BizTaskHelper {
     private static final String ALARM_FORMAT = "【业务任务】id: %s, 任务类型: %s, 业务id: %s, 业务状态: %s, 第: %s 次执行失败" +
             "\r\n原因: %s";
 
+    public BizTaskHelper(BizTaskRepository repository, BizTaskExecConfigure configure, AlarmService alarm) {
+        bizTaskRepository = repository;
+        bizTaskExecConfigure = configure;
+        alarmService = alarm;
+    }
+
+
+    public static Optional<BizTask> query(Long id) {
+        return bizTaskRepository.select(id);
+    }
 
     public static BizTask createAndSaveTask(Long bizId, BizTaskStatusEum taskStatus, String taskType,
                                             Integer bizStatus, String taskParam,
@@ -58,14 +63,15 @@ public class BizTaskHelper {
         BizTask bizTaskUpdate = new BizTask();
         bizTaskUpdate.setTaskStatus(BizTaskStatusEum.SUCCESS.getCode());
         bizTaskUpdate.setTriggerCount(bizTask.getTriggerCount() + 1);
-        return updateTask(bizTask.getId(), bizTaskUpdate, bizTask.getBizStatus(), bizTask.getBizStatus());
+        return updateTask(bizTask.getId(), bizTaskUpdate, bizTask.getTaskStatus(), bizTask.getBizStatus());
     }
 
-    public static int failTask(BizTask bizTask) {
+    public static int failTask(BizTask bizTask, String remark) {
         BizTask bizTaskUpdate = new BizTask();
         bizTaskUpdate.setTaskStatus(BizTaskStatusEum.FAIL.getCode());
         bizTaskUpdate.setTriggerCount(bizTask.getTriggerCount() + 1);
-        return updateTask(bizTask.getId(), bizTaskUpdate, bizTask.getBizStatus(), bizTask.getBizStatus());
+        bizTaskUpdate.setRemark(remark);
+        return updateTask(bizTask.getId(), bizTaskUpdate, bizTask.getTaskStatus(), bizTask.getBizStatus());
     }
 
     public static int updateTask(Long id, BizTask update, Integer taskStatus, Integer bizStatus) {
@@ -90,22 +96,30 @@ public class BizTaskHelper {
     }
 
 
-    public static void alarmTaskIfNecessity(BizTask task, Exception e) {
+    public static void alarmTaskIfNecessity(BizTask task, Throwable e) {
         BizTaskConfigure taskConfigure = bizTaskExecConfigure.getOrDefault(task.getTaskType());
+        Integer alarmAtCount = Optional.ofNullable(taskConfigure.getAlarmAtCount())
+                .orElse(BizTaskExecConfigure.DEFAULT_ALARM_AT_COUNT);
 
-        Integer alarmAtCount = taskConfigure.getAlarmAtCount();
-        if (alarmAtCount != null && task.getTriggerCount() >= alarmAtCount) {
+        Integer triggerCount = task.getTriggerCount() + 1;
+        if (alarmAtCount != null && triggerCount >= alarmAtCount) {
             alarmService.sendAlarmFormatMsg(AlarmService.AlarmLevel.WARN, ALARM_BIZ_TYPE, ALARM_FORMAT,
-                    task.getId(), task.getTaskType(), task.getBizId(), task.getBizStatus(), task.getTriggerCount() + 1,
+                    task.getId(), task.getTaskType(), task.getBizId(), task.getBizStatus(), triggerCount,
                     e.getMessage());
         }
     }
 
     public static void failOrDelayTask(BizTask task) {
         BizTaskConfigure taskConfigure = bizTaskExecConfigure.getOrDefault(task.getTaskType());
-        long time = ExecRuleParser.parser(task.getTriggerCount(), taskConfigure.getRule());
-        if (time < 0) {
-            failTask(task);
+        Integer maxCount = Optional.ofNullable(taskConfigure.getMaxExecCount())
+                .orElse(BizTaskExecConfigure.DEFAULT_MAX_EXEC_COUNT);
+
+        String rule = Optional.ofNullable(taskConfigure.getRule())
+                .orElse(BizTaskExecConfigure.DEFAULT_RULE);
+
+        long time = ExecRuleParser.parser(task.getTriggerCount(), rule);
+        if (time < 0 || task.getTriggerCount() + 1 >= maxCount) {
+            failTask(task, null);
         } else {
             delayTask(task, time, ChronoUnit.MILLIS);
         }
@@ -168,7 +182,10 @@ public class BizTaskHelper {
                 throw new NullPointerException("taskType为空");
             }
             BizTaskConfigure taskConfigure = bizTaskExecConfigure.getOrDefault(taskType);
-            long delay = ExecRuleParser.parser(0, taskConfigure.getRule());
+            String rule = Optional.ofNullable(taskConfigure.getRule())
+                    .orElse(BizTaskExecConfigure.DEFAULT_RULE);
+
+            long delay = ExecRuleParser.parser(0, rule);
             this.execDelay = delay;
             this.delayTimeUnit = ChronoUnit.MILLIS;
             return this;
@@ -186,7 +203,12 @@ public class BizTaskHelper {
         }
 
         public BizTask buildAndSave() {
-            return createAndSaveTask(bizId, taskStatus, taskType,
+            BizTaskStatusEum bizTaskStatusEum = Optional.ofNullable(taskStatus)
+                    .orElse(BizTaskStatusEum.EXEC_ING);
+            if (execDelay == null || delayTimeUnit == null) {
+                delayByConfigure();
+            }
+            return createAndSaveTask(bizId, bizTaskStatusEum, taskType,
                     bizStatus, taskParam, execDelay, delayTimeUnit);
         }
 
@@ -286,7 +308,9 @@ public class BizTaskHelper {
                 nextTriggerTime = LocalDateTime.now().plus(execDelay, delayTimeUnit);
             } else {
                 BizTaskConfigure taskConfigure = bizTaskExecConfigure.getOrDefault(newTaskType);
-                long delay = ExecRuleParser.parser(0, taskConfigure.getRule());
+                String rule = Optional.ofNullable(taskConfigure.getRule())
+                        .orElse(BizTaskExecConfigure.DEFAULT_RULE);
+                long delay = ExecRuleParser.parser(0, rule);
                 nextTriggerTime = LocalDateTime.now().plus(delay, ChronoUnit.MILLIS);
             }
 

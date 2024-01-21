@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author durenhao
@@ -22,14 +23,14 @@ public class BizTaskRepository {
     public List<BizTask> selectExecIngTask(Integer taskPartition, Integer totalPartition, Integer limit, Long startId) {
         BizTaskExample example = BizTaskExample.newAndCreateCriteria()
                 .andDeletedEqualTo(false)
-                .andBizStatusEqualTo(BizTaskStatusEum.EXEC_ING.getCode())
+                .andTaskStatusEqualTo(BizTaskStatusEum.EXEC_ING.getCode())
                 .andNextTriggerTimeLessThan(LocalDateTime.now())
                 .when(startId != null, c -> c.andIdGreaterThan(startId))
                 .when(taskPartition != null && totalPartition != null,
-                        c -> c.addCustomerCriterion(String.format("id / %s = %s", totalPartition, taskPartition)))
+                        c -> c.addCustomerCriterion(String.format(" mod(id, %s) = %s", totalPartition, taskPartition)))
                 .example()
                 .limit(limit)
-                .orderBy("id aes");
+                .orderBy("id asc");
         return bizTaskMapper.selectByExample(example);
     }
 
@@ -47,5 +48,24 @@ public class BizTaskRepository {
                 .when(bizStatus != null,
                         criteria -> criteria.andBizStatusEqualTo(bizStatus))
                 .example());
+    }
+
+    public Optional<BizTask> select(Long id) {
+        return Optional.ofNullable(bizTaskMapper.selectOneByExample(
+                BizTaskExample.newAndCreateCriteria()
+                        .andIdEqualTo(id)
+                        .andDeletedEqualTo(false)
+                        .example()
+        ));
+    }
+
+    public Optional<BizTask> select(String taskType, Long bizId) {
+        return Optional.ofNullable(bizTaskMapper.selectOneByExample(
+                BizTaskExample.newAndCreateCriteria()
+                        .andTaskTypeEqualTo(taskType)
+                        .andBizIdEqualTo(bizId)
+                        .andDeletedEqualTo(false)
+                        .example()
+        ));
     }
 }
