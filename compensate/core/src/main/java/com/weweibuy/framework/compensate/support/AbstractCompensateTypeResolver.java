@@ -1,5 +1,6 @@
 package com.weweibuy.framework.compensate.support;
 
+import com.weweibuy.framework.common.core.support.ExecRuleParser;
 import com.weweibuy.framework.compensate.annotation.Compensate;
 import com.weweibuy.framework.compensate.core.CompensateTypeResolver;
 import com.weweibuy.framework.compensate.core.RuleParser;
@@ -25,7 +26,7 @@ public abstract class AbstractCompensateTypeResolver implements CompensateTypeRe
                 .bizId(resolverBizId(annotation, target, method, args))
                 .nextTriggerTime(
                         LocalDateTime.now().plus(
-                                RuleParser.parser(0, configProperties.getRetryRule()), ChronoUnit.MILLIS))
+                                ExecRuleParser.parser(0, configProperties.getRetryRule()), ChronoUnit.MILLIS))
                 .build();
     }
 
@@ -33,7 +34,7 @@ public abstract class AbstractCompensateTypeResolver implements CompensateTypeRe
     public abstract CompensateInfo.CompensateInfoBuilder resolverCustom(Compensate annotation, Object target, Method method, Object[] args, CompensateConfigProperties configProperties);
 
 
-    private String resolverBizId(Compensate annotation, Object target, Method method, Object[] args){
+    private String resolverBizId(Compensate annotation, Object target, Method method, Object[] args) {
         return expressionEvaluator.evaluatorBizId(annotation, target, method, args);
     }
 }

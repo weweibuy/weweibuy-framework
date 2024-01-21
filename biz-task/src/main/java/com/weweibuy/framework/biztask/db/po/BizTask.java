@@ -18,12 +18,12 @@ public class BizTask {
     /**
      * 业务类型
      */
-    private String bizType;
+    private String taskType;
 
     /**
      * 业务参数
      */
-    private String bizParam;
+    private String taskParam;
 
     /**
      * 触发次数
@@ -34,11 +34,6 @@ public class BizTask {
      * 下次触发时间
      */
     private LocalDateTime nextTriggerTime;
-
-    /**
-     * 任务分区
-     */
-    private Integer taskPartition;
 
     /**
      * 任务状态(1: 待执行; 2: 执行中;  3: 执行成功;  4: 执行失败)

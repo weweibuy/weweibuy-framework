@@ -22,8 +22,9 @@ public class BizTaskHandlerMethodHolder {
         if (handlerMethodMap == null) {
             handlerMethodMap = new HashMap<>();
         }
-        String type = bizTask.type();
+        String type = bizTask.taskType();
         int bizStatus = bizTask.bizStatus();
+
         BizTaskHandlerMethod bizTaskHandlerMethod = new BizTaskHandlerMethod();
         bizTaskHandlerMethod.setTaskType(type);
         bizTaskHandlerMethod.setBizStatus(bizStatus);
@@ -39,8 +40,8 @@ public class BizTaskHandlerMethodHolder {
 
 
     BizTaskHandlerMethod findHandlerMethod(BizTask bizTask) {
-        String bizType = bizTask.getBizType();
+        String taskType = bizTask.getTaskType();
         Integer bizStatus = bizTask.getBizStatus();
-        return handlerMethodMap.get(mapKey(bizType, bizStatus));
+        return handlerMethodMap.get(mapKey(taskType, bizStatus));
     }
 }

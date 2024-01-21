@@ -303,143 +303,143 @@ public class BizTaskExample {
             return (Criteria) this;
         }
 
-        public Criteria andBizTypeIsNull() {
-            addCriterion("biz_type is null");
+        public Criteria andTaskTypeIsNull() {
+            addCriterion("task_type is null");
             return (Criteria) this;
         }
 
-        public Criteria andBizTypeIsNotNull() {
-            addCriterion("biz_type is not null");
+        public Criteria andTaskTypeIsNotNull() {
+            addCriterion("task_type is not null");
             return (Criteria) this;
         }
 
-        public Criteria andBizTypeEqualTo(String value) {
-            addCriterion("biz_type =", value, "bizType");
+        public Criteria andTaskTypeEqualTo(String value) {
+            addCriterion("task_type =", value, "taskType");
             return (Criteria) this;
         }
 
-        public Criteria andBizTypeNotEqualTo(String value) {
-            addCriterion("biz_type <>", value, "bizType");
+        public Criteria andTaskTypeNotEqualTo(String value) {
+            addCriterion("task_type <>", value, "taskType");
             return (Criteria) this;
         }
 
-        public Criteria andBizTypeGreaterThan(String value) {
-            addCriterion("biz_type >", value, "bizType");
+        public Criteria andTaskTypeGreaterThan(String value) {
+            addCriterion("task_type >", value, "taskType");
             return (Criteria) this;
         }
 
-        public Criteria andBizTypeGreaterThanOrEqualTo(String value) {
-            addCriterion("biz_type >=", value, "bizType");
+        public Criteria andTaskTypeGreaterThanOrEqualTo(String value) {
+            addCriterion("task_type >=", value, "taskType");
             return (Criteria) this;
         }
 
-        public Criteria andBizTypeLessThan(String value) {
-            addCriterion("biz_type <", value, "bizType");
+        public Criteria andTaskTypeLessThan(String value) {
+            addCriterion("task_type <", value, "taskType");
             return (Criteria) this;
         }
 
-        public Criteria andBizTypeLessThanOrEqualTo(String value) {
-            addCriterion("biz_type <=", value, "bizType");
+        public Criteria andTaskTypeLessThanOrEqualTo(String value) {
+            addCriterion("task_type <=", value, "taskType");
             return (Criteria) this;
         }
 
-        public Criteria andBizTypeLike(String value) {
-            addCriterion("biz_type like", value, "bizType");
+        public Criteria andTaskTypeLike(String value) {
+            addCriterion("task_type like", value, "taskType");
             return (Criteria) this;
         }
 
-        public Criteria andBizTypeNotLike(String value) {
-            addCriterion("biz_type not like", value, "bizType");
+        public Criteria andTaskTypeNotLike(String value) {
+            addCriterion("task_type not like", value, "taskType");
             return (Criteria) this;
         }
 
-        public Criteria andBizTypeIn(List<String> values) {
-            addCriterion("biz_type in", values, "bizType");
+        public Criteria andTaskTypeIn(List<String> values) {
+            addCriterion("task_type in", values, "taskType");
             return (Criteria) this;
         }
 
-        public Criteria andBizTypeNotIn(List<String> values) {
-            addCriterion("biz_type not in", values, "bizType");
+        public Criteria andTaskTypeNotIn(List<String> values) {
+            addCriterion("task_type not in", values, "taskType");
             return (Criteria) this;
         }
 
-        public Criteria andBizTypeBetween(String value1, String value2) {
-            addCriterion("biz_type between", value1, value2, "bizType");
+        public Criteria andTaskTypeBetween(String value1, String value2) {
+            addCriterion("task_type between", value1, value2, "taskType");
             return (Criteria) this;
         }
 
-        public Criteria andBizTypeNotBetween(String value1, String value2) {
-            addCriterion("biz_type not between", value1, value2, "bizType");
+        public Criteria andTaskTypeNotBetween(String value1, String value2) {
+            addCriterion("task_type not between", value1, value2, "taskType");
             return (Criteria) this;
         }
 
-        public Criteria andBizParamIsNull() {
-            addCriterion("biz_param is null");
+        public Criteria andTaskParamIsNull() {
+            addCriterion("task_param is null");
             return (Criteria) this;
         }
 
-        public Criteria andBizParamIsNotNull() {
-            addCriterion("biz_param is not null");
+        public Criteria andTaskParamIsNotNull() {
+            addCriterion("task_param is not null");
             return (Criteria) this;
         }
 
-        public Criteria andBizParamEqualTo(String value) {
-            addCriterion("biz_param =", value, "bizParam");
+        public Criteria andTaskParamEqualTo(String value) {
+            addCriterion("task_param =", value, "taskParam");
             return (Criteria) this;
         }
 
-        public Criteria andBizParamNotEqualTo(String value) {
-            addCriterion("biz_param <>", value, "bizParam");
+        public Criteria andTaskParamNotEqualTo(String value) {
+            addCriterion("task_param <>", value, "taskParam");
             return (Criteria) this;
         }
 
-        public Criteria andBizParamGreaterThan(String value) {
-            addCriterion("biz_param >", value, "bizParam");
+        public Criteria andTaskParamGreaterThan(String value) {
+            addCriterion("task_param >", value, "taskParam");
             return (Criteria) this;
         }
 
-        public Criteria andBizParamGreaterThanOrEqualTo(String value) {
-            addCriterion("biz_param >=", value, "bizParam");
+        public Criteria andTaskParamGreaterThanOrEqualTo(String value) {
+            addCriterion("task_param >=", value, "taskParam");
             return (Criteria) this;
         }
 
-        public Criteria andBizParamLessThan(String value) {
-            addCriterion("biz_param <", value, "bizParam");
+        public Criteria andTaskParamLessThan(String value) {
+            addCriterion("task_param <", value, "taskParam");
             return (Criteria) this;
         }
 
-        public Criteria andBizParamLessThanOrEqualTo(String value) {
-            addCriterion("biz_param <=", value, "bizParam");
+        public Criteria andTaskParamLessThanOrEqualTo(String value) {
+            addCriterion("task_param <=", value, "taskParam");
             return (Criteria) this;
         }
 
-        public Criteria andBizParamLike(String value) {
-            addCriterion("biz_param like", value, "bizParam");
+        public Criteria andTaskParamLike(String value) {
+            addCriterion("task_param like", value, "taskParam");
             return (Criteria) this;
         }
 
-        public Criteria andBizParamNotLike(String value) {
-            addCriterion("biz_param not like", value, "bizParam");
+        public Criteria andTaskParamNotLike(String value) {
+            addCriterion("task_param not like", value, "taskParam");
             return (Criteria) this;
         }
 
-        public Criteria andBizParamIn(List<String> values) {
-            addCriterion("biz_param in", values, "bizParam");
+        public Criteria andTaskParamIn(List<String> values) {
+            addCriterion("task_param in", values, "taskParam");
             return (Criteria) this;
         }
 
-        public Criteria andBizParamNotIn(List<String> values) {
-            addCriterion("biz_param not in", values, "bizParam");
+        public Criteria andTaskParamNotIn(List<String> values) {
+            addCriterion("task_param not in", values, "taskParam");
             return (Criteria) this;
         }
 
-        public Criteria andBizParamBetween(String value1, String value2) {
-            addCriterion("biz_param between", value1, value2, "bizParam");
+        public Criteria andTaskParamBetween(String value1, String value2) {
+            addCriterion("task_param between", value1, value2, "taskParam");
             return (Criteria) this;
         }
 
-        public Criteria andBizParamNotBetween(String value1, String value2) {
-            addCriterion("biz_param not between", value1, value2, "bizParam");
+        public Criteria andTaskParamNotBetween(String value1, String value2) {
+            addCriterion("task_param not between", value1, value2, "taskParam");
             return (Criteria) this;
         }
 
@@ -560,66 +560,6 @@ public class BizTaskExample {
 
         public Criteria andNextTriggerTimeNotBetween(LocalDateTime value1, LocalDateTime value2) {
             addCriterion("next_trigger_time not between", value1, value2, "nextTriggerTime");
-            return (Criteria) this;
-        }
-
-        public Criteria andTaskPartitionIsNull() {
-            addCriterion("task_partition is null");
-            return (Criteria) this;
-        }
-
-        public Criteria andTaskPartitionIsNotNull() {
-            addCriterion("task_partition is not null");
-            return (Criteria) this;
-        }
-
-        public Criteria andTaskPartitionEqualTo(Integer value) {
-            addCriterion("task_partition =", value, "taskPartition");
-            return (Criteria) this;
-        }
-
-        public Criteria andTaskPartitionNotEqualTo(Integer value) {
-            addCriterion("task_partition <>", value, "taskPartition");
-            return (Criteria) this;
-        }
-
-        public Criteria andTaskPartitionGreaterThan(Integer value) {
-            addCriterion("task_partition >", value, "taskPartition");
-            return (Criteria) this;
-        }
-
-        public Criteria andTaskPartitionGreaterThanOrEqualTo(Integer value) {
-            addCriterion("task_partition >=", value, "taskPartition");
-            return (Criteria) this;
-        }
-
-        public Criteria andTaskPartitionLessThan(Integer value) {
-            addCriterion("task_partition <", value, "taskPartition");
-            return (Criteria) this;
-        }
-
-        public Criteria andTaskPartitionLessThanOrEqualTo(Integer value) {
-            addCriterion("task_partition <=", value, "taskPartition");
-            return (Criteria) this;
-        }
-
-        public Criteria andTaskPartitionIn(List<Integer> values) {
-            addCriterion("task_partition in", values, "taskPartition");
-            return (Criteria) this;
-        }
-
-        public Criteria andTaskPartitionNotIn(List<Integer> values) {
-            addCriterion("task_partition not in", values, "taskPartition");
-            return (Criteria) this;
-        }
-
-        public Criteria andTaskPartitionBetween(Integer value1, Integer value2) {
-            addCriterion("task_partition between", value1, value2, "taskPartition");
-            return (Criteria) this;
-        }
-
-        public Criteria andTaskPartitionNotBetween(Integer value1, Integer value2) {
-            addCriterion("task_partition not between", value1, value2, "taskPartition");
             return (Criteria) this;
         }
 

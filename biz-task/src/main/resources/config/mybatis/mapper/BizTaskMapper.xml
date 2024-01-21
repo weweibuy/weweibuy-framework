@@ -4,11 +4,10 @@
   <resultMap id="BaseResultMap" type="com.weweibuy.framework.biztask.db.po.BizTask">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="biz_id" jdbcType="BIGINT" property="bizId" />
-    <result column="biz_type" jdbcType="VARCHAR" property="bizType" />
-    <result column="biz_param" jdbcType="VARCHAR" property="bizParam" />
+    <result column="task_type" jdbcType="VARCHAR" property="taskType" />
+    <result column="task_param" jdbcType="VARCHAR" property="taskParam" />
     <result column="trigger_count" jdbcType="INTEGER" property="triggerCount" />
     <result column="next_trigger_time" jdbcType="TIMESTAMP" property="nextTriggerTime" />
-    <result column="task_partition" jdbcType="INTEGER" property="taskPartition" />
     <result column="task_status" jdbcType="INTEGER" property="taskStatus" />
     <result column="biz_status" jdbcType="INTEGER" property="bizStatus" />
     <result column="is_delete" jdbcType="TINYINT" property="deleted" />
@@ -74,8 +73,8 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, biz_id, biz_type, biz_param, trigger_count, next_trigger_time, task_partition, 
-    task_status, biz_status, is_delete, create_time, update_time
+    id, biz_id, task_type, task_param, trigger_count, next_trigger_time, task_status, 
+    biz_status, is_delete, create_time, update_time
   </sql>
   <select id="selectByExample" parameterType="com.weweibuy.framework.biztask.db.po.BizTaskExample" resultMap="BaseResultMap">
     select
@@ -116,14 +115,14 @@
     </if>
   </delete>
   <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.weweibuy.framework.biztask.db.po.BizTask" useGeneratedKeys="true">
-    insert into cm_biz_task (biz_id, biz_type, biz_param, 
-      trigger_count, next_trigger_time, task_partition, 
-      task_status, biz_status, is_delete, 
-      create_time, update_time)
-    values (#{bizId,jdbcType=BIGINT}, #{bizType,jdbcType=VARCHAR}, #{bizParam,jdbcType=VARCHAR}, 
-      #{triggerCount,jdbcType=INTEGER}, #{nextTriggerTime,jdbcType=TIMESTAMP}, #{taskPartition,jdbcType=INTEGER}, 
-      #{taskStatus,jdbcType=INTEGER}, #{bizStatus,jdbcType=INTEGER}, #{deleted,jdbcType=TINYINT}, 
-      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
+    insert into cm_biz_task (biz_id, task_type, task_param, 
+      trigger_count, next_trigger_time, task_status, 
+      biz_status, is_delete, create_time, 
+      update_time)
+    values (#{bizId,jdbcType=BIGINT}, #{taskType,jdbcType=VARCHAR}, #{taskParam,jdbcType=VARCHAR}, 
+      #{triggerCount,jdbcType=INTEGER}, #{nextTriggerTime,jdbcType=TIMESTAMP}, #{taskStatus,jdbcType=INTEGER}, 
+      #{bizStatus,jdbcType=INTEGER}, #{deleted,jdbcType=TINYINT}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{updateTime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.weweibuy.framework.biztask.db.po.BizTask" useGeneratedKeys="true">
     insert into cm_biz_task
@@ -131,20 +130,17 @@
       <if test="bizId != null">
         biz_id,
       </if>
-      <if test="bizType != null">
-        biz_type,
+      <if test="taskType != null">
+        task_type,
       </if>
-      <if test="bizParam != null">
-        biz_param,
+      <if test="taskParam != null">
+        task_param,
       </if>
       <if test="triggerCount != null">
         trigger_count,
       </if>
       <if test="nextTriggerTime != null">
         next_trigger_time,
-      </if>
-      <if test="taskPartition != null">
-        task_partition,
       </if>
       <if test="taskStatus != null">
         task_status,
@@ -166,20 +162,17 @@
       <if test="bizId != null">
         #{bizId,jdbcType=BIGINT},
       </if>
-      <if test="bizType != null">
-        #{bizType,jdbcType=VARCHAR},
+      <if test="taskType != null">
+        #{taskType,jdbcType=VARCHAR},
       </if>
-      <if test="bizParam != null">
-        #{bizParam,jdbcType=VARCHAR},
+      <if test="taskParam != null">
+        #{taskParam,jdbcType=VARCHAR},
       </if>
       <if test="triggerCount != null">
         #{triggerCount,jdbcType=INTEGER},
       </if>
       <if test="nextTriggerTime != null">
         #{nextTriggerTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="taskPartition != null">
-        #{taskPartition,jdbcType=INTEGER},
       </if>
       <if test="taskStatus != null">
         #{taskStatus,jdbcType=INTEGER},
@@ -213,20 +206,17 @@
       <if test="record.bizId != null">
         biz_id = #{record.bizId,jdbcType=BIGINT},
       </if>
-      <if test="record.bizType != null">
-        biz_type = #{record.bizType,jdbcType=VARCHAR},
+      <if test="record.taskType != null">
+        task_type = #{record.taskType,jdbcType=VARCHAR},
       </if>
-      <if test="record.bizParam != null">
-        biz_param = #{record.bizParam,jdbcType=VARCHAR},
+      <if test="record.taskParam != null">
+        task_param = #{record.taskParam,jdbcType=VARCHAR},
       </if>
       <if test="record.triggerCount != null">
         trigger_count = #{record.triggerCount,jdbcType=INTEGER},
       </if>
       <if test="record.nextTriggerTime != null">
         next_trigger_time = #{record.nextTriggerTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="record.taskPartition != null">
-        task_partition = #{record.taskPartition,jdbcType=INTEGER},
       </if>
       <if test="record.taskStatus != null">
         task_status = #{record.taskStatus,jdbcType=INTEGER},
@@ -252,11 +242,10 @@
     update cm_biz_task
     set id = #{record.id,jdbcType=BIGINT},
       biz_id = #{record.bizId,jdbcType=BIGINT},
-      biz_type = #{record.bizType,jdbcType=VARCHAR},
-      biz_param = #{record.bizParam,jdbcType=VARCHAR},
+      task_type = #{record.taskType,jdbcType=VARCHAR},
+      task_param = #{record.taskParam,jdbcType=VARCHAR},
       trigger_count = #{record.triggerCount,jdbcType=INTEGER},
       next_trigger_time = #{record.nextTriggerTime,jdbcType=TIMESTAMP},
-      task_partition = #{record.taskPartition,jdbcType=INTEGER},
       task_status = #{record.taskStatus,jdbcType=INTEGER},
       biz_status = #{record.bizStatus,jdbcType=INTEGER},
       is_delete = #{record.deleted,jdbcType=TINYINT},
@@ -272,20 +261,17 @@
       <if test="bizId != null">
         biz_id = #{bizId,jdbcType=BIGINT},
       </if>
-      <if test="bizType != null">
-        biz_type = #{bizType,jdbcType=VARCHAR},
+      <if test="taskType != null">
+        task_type = #{taskType,jdbcType=VARCHAR},
       </if>
-      <if test="bizParam != null">
-        biz_param = #{bizParam,jdbcType=VARCHAR},
+      <if test="taskParam != null">
+        task_param = #{taskParam,jdbcType=VARCHAR},
       </if>
       <if test="triggerCount != null">
         trigger_count = #{triggerCount,jdbcType=INTEGER},
       </if>
       <if test="nextTriggerTime != null">
         next_trigger_time = #{nextTriggerTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="taskPartition != null">
-        task_partition = #{taskPartition,jdbcType=INTEGER},
       </if>
       <if test="taskStatus != null">
         task_status = #{taskStatus,jdbcType=INTEGER},
@@ -308,11 +294,10 @@
   <update id="updateByPrimaryKey" parameterType="com.weweibuy.framework.biztask.db.po.BizTask">
     update cm_biz_task
     set biz_id = #{bizId,jdbcType=BIGINT},
-      biz_type = #{bizType,jdbcType=VARCHAR},
-      biz_param = #{bizParam,jdbcType=VARCHAR},
+      task_type = #{taskType,jdbcType=VARCHAR},
+      task_param = #{taskParam,jdbcType=VARCHAR},
       trigger_count = #{triggerCount,jdbcType=INTEGER},
       next_trigger_time = #{nextTriggerTime,jdbcType=TIMESTAMP},
-      task_partition = #{taskPartition,jdbcType=INTEGER},
       task_status = #{taskStatus,jdbcType=INTEGER},
       biz_status = #{bizStatus,jdbcType=INTEGER},
       is_delete = #{deleted,jdbcType=TINYINT},
