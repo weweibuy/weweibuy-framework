@@ -28,7 +28,7 @@ public abstract class AbstractBizTaskTrigger {
         if (taskPartition != null && totalPartition != null && taskPartition > totalPartition) {
             throw Exceptions.system(String.format("错误的分区, 当前分区: %s, 总计分区: %s", taskPartition, totalPartition));
         }
-        if (taskPartition == 1 && totalPartition == 1) {
+        if (taskPartition != null && totalPartition != null && taskPartition == 1 && totalPartition == 1) {
             taskPartition = null;
             totalPartition = null;
         }
@@ -38,7 +38,6 @@ public abstract class AbstractBizTaskTrigger {
         }
 
         queryBizTask(taskPartition, totalPartition, limit, 0L);
-
 
     }
 

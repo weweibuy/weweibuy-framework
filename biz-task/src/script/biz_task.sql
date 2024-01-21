@@ -7,6 +7,7 @@ CREATE TABLE `cm_biz_task` (
        `next_trigger_time` datetime NOT NULL COMMENT '下次触发时间',
        `task_status` int(11) NOT NULL COMMENT '任务状态(1: 待执行; 2: 执行中;  3: 执行成功;  4: 执行失败)',
        `biz_status` int(10) unsigned NOT NULL COMMENT '业务状态',
+       `remark` varchar(200) NOT NULL DEFAULT '' COMMENT '备注',
        `is_delete` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '是否删除',
        `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
        `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',

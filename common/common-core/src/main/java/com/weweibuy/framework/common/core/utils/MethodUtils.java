@@ -28,4 +28,8 @@ public class MethodUtils {
     }
 
 
+    public static boolean isPublic(Method method) {
+        return Modifier.isPublic(method.getModifiers());
+    }
+
 }

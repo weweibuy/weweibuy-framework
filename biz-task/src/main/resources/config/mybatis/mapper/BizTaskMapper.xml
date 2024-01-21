@@ -10,6 +10,7 @@
     <result column="next_trigger_time" jdbcType="TIMESTAMP" property="nextTriggerTime" />
     <result column="task_status" jdbcType="INTEGER" property="taskStatus" />
     <result column="biz_status" jdbcType="INTEGER" property="bizStatus" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
     <result column="is_delete" jdbcType="TINYINT" property="deleted" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
@@ -74,7 +75,7 @@
   </sql>
   <sql id="Base_Column_List">
     id, biz_id, task_type, task_param, trigger_count, next_trigger_time, task_status, 
-    biz_status, is_delete, create_time, update_time
+    biz_status, remark, is_delete, create_time, update_time
   </sql>
   <select id="selectByExample" parameterType="com.weweibuy.framework.biztask.db.po.BizTaskExample" resultMap="BaseResultMap">
     select
@@ -117,12 +118,12 @@
   <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.weweibuy.framework.biztask.db.po.BizTask" useGeneratedKeys="true">
     insert into cm_biz_task (biz_id, task_type, task_param, 
       trigger_count, next_trigger_time, task_status, 
-      biz_status, is_delete, create_time, 
-      update_time)
+      biz_status, remark, is_delete, 
+      create_time, update_time)
     values (#{bizId,jdbcType=BIGINT}, #{taskType,jdbcType=VARCHAR}, #{taskParam,jdbcType=VARCHAR}, 
       #{triggerCount,jdbcType=INTEGER}, #{nextTriggerTime,jdbcType=TIMESTAMP}, #{taskStatus,jdbcType=INTEGER}, 
-      #{bizStatus,jdbcType=INTEGER}, #{deleted,jdbcType=TINYINT}, #{createTime,jdbcType=TIMESTAMP}, 
-      #{updateTime,jdbcType=TIMESTAMP})
+      #{bizStatus,jdbcType=INTEGER}, #{remark,jdbcType=VARCHAR}, #{deleted,jdbcType=TINYINT}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.weweibuy.framework.biztask.db.po.BizTask" useGeneratedKeys="true">
     insert into cm_biz_task
@@ -147,6 +148,9 @@
       </if>
       <if test="bizStatus != null">
         biz_status,
+      </if>
+      <if test="remark != null">
+        remark,
       </if>
       <if test="deleted != null">
         is_delete,
@@ -179,6 +183,9 @@
       </if>
       <if test="bizStatus != null">
         #{bizStatus,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
       </if>
       <if test="deleted != null">
         #{deleted,jdbcType=TINYINT},
@@ -224,6 +231,9 @@
       <if test="record.bizStatus != null">
         biz_status = #{record.bizStatus,jdbcType=INTEGER},
       </if>
+      <if test="record.remark != null">
+        remark = #{record.remark,jdbcType=VARCHAR},
+      </if>
       <if test="record.deleted != null">
         is_delete = #{record.deleted,jdbcType=TINYINT},
       </if>
@@ -248,6 +258,7 @@
       next_trigger_time = #{record.nextTriggerTime,jdbcType=TIMESTAMP},
       task_status = #{record.taskStatus,jdbcType=INTEGER},
       biz_status = #{record.bizStatus,jdbcType=INTEGER},
+      remark = #{record.remark,jdbcType=VARCHAR},
       is_delete = #{record.deleted,jdbcType=TINYINT},
       create_time = #{record.createTime,jdbcType=TIMESTAMP},
       update_time = #{record.updateTime,jdbcType=TIMESTAMP}
@@ -279,6 +290,9 @@
       <if test="bizStatus != null">
         biz_status = #{bizStatus,jdbcType=INTEGER},
       </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
       <if test="deleted != null">
         is_delete = #{deleted,jdbcType=TINYINT},
       </if>
@@ -300,6 +314,7 @@
       next_trigger_time = #{nextTriggerTime,jdbcType=TIMESTAMP},
       task_status = #{taskStatus,jdbcType=INTEGER},
       biz_status = #{bizStatus,jdbcType=INTEGER},
+      remark = #{remark,jdbcType=VARCHAR},
       is_delete = #{deleted,jdbcType=TINYINT},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       update_time = #{updateTime,jdbcType=TIMESTAMP}

@@ -46,6 +46,10 @@ public class BizTask {
     private Integer bizStatus;
 
     /**
+     */
+    private String remark;
+
+    /**
      * 是否删除
      */
     private Boolean deleted;

@@ -6,6 +6,7 @@ import com.weweibuy.framework.common.core.utils.BeanCopyUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 /**
@@ -26,7 +27,10 @@ public abstract class BizTaskExecutor {
         try {
             log.info("执行业务任务: {}", bizTask);
             execTask0(bizTask);
-        } catch (Exception e) {
+        } catch (Throwable e) {
+            if (e instanceof InvocationTargetException) {
+                e = ((InvocationTargetException) e).getTargetException();
+            }
             log.warn("执行业务任务: {}, 异常: ", bizTask, e);
             handlerBizTaskExecException(copyBizTask, e);
         }
@@ -36,13 +40,17 @@ public abstract class BizTaskExecutor {
     private void execTask0(BizTask bizTask) throws Exception {
         BizTaskHandlerMethod handlerMethod = bizTaskHandlerMethodHolder.findHandlerMethod(bizTask);
         if (handlerMethod == null) {
+            log.warn("业务任务: {}, 没有对应的执行方法", bizTask);
             // 失败任务
+            BizTaskHelper.failTask(bizTask, "没有对应的执行方法");
+        } else {
+            // 执行任务
+            handlerMethod.invokeMethod(bizTask);
         }
-        // 执行任务
-        handlerMethod.invokeMethod(bizTask);
+
     }
 
-    protected void handlerBizTaskExecException(BizTask task, Exception e) {
+    protected void handlerBizTaskExecException(BizTask task, Throwable e) {
 
         BizTaskHelper.alarmTaskIfNecessity(task, e);
 
