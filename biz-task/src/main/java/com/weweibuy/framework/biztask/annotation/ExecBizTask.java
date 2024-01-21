@@ -20,7 +20,7 @@ public @interface ExecBizTask {
      *
      * @return
      */
-    String type();
+    String taskType();
 
     /**
      * 业务状态值

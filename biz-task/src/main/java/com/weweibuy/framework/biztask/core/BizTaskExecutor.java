@@ -1,11 +1,12 @@
 package com.weweibuy.framework.biztask.core;
 
 import com.weweibuy.framework.biztask.db.po.BizTask;
+import com.weweibuy.framework.biztask.support.BizTaskHelper;
+import com.weweibuy.framework.common.core.utils.BeanCopyUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author durenhao
@@ -20,10 +21,14 @@ public abstract class BizTaskExecutor {
     protected abstract void execTaskList(List<BizTask> bizTaskList);
 
     protected void execTask(BizTask bizTask) {
+        BizTask copyBizTask = BeanCopyUtils.copy(bizTask, BizTask.class);
+
         try {
+            log.info("执行业务任务: {}", bizTask);
             execTask0(bizTask);
         } catch (Exception e) {
             log.warn("执行业务任务: {}, 异常: ", bizTask, e);
+            handlerBizTaskExecException(copyBizTask, e);
         }
     }
 
@@ -35,6 +40,14 @@ public abstract class BizTaskExecutor {
         }
         // 执行任务
         handlerMethod.invokeMethod(bizTask);
+    }
+
+    protected void handlerBizTaskExecException(BizTask task, Exception e) {
+
+        BizTaskHelper.alarmTaskIfNecessity(task, e);
+
+        BizTaskHelper.failOrDelayTask(task);
+
     }
 
 

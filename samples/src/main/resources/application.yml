@@ -29,6 +29,7 @@ spring:
   redis:
     host: 122.51.171.126
     password: ak402507979
+    connect-timeout:
   cloud:
     nacos:
       discovery:
