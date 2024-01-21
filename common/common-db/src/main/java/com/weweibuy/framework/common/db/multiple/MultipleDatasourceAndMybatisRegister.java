@@ -108,7 +108,7 @@ public class MultipleDatasourceAndMybatisRegister implements BeanDefinitionRegis
                 .setPrimary(Optional.ofNullable(mybatisProperties.getPrimary()).orElse(false))
                 .setAutowireMode(AbstractBeanDefinition.AUTOWIRE_BY_TYPE);
         AbstractBeanDefinition definition = definitionBuilder.getBeanDefinition();
-        BeanDefinitionHolder holder = new BeanDefinitionHolder(definition, sqlSessionFactoryBeanName(num));
+        BeanDefinitionHolder holder = new BeanDefinitionHolder(definition, sqlSessionFactoryBeanName(mybatisProperties.getSqlSessionFactoryName(), num));
         BeanDefinitionReaderUtils.registerBeanDefinition(holder, registry);
     }
 
@@ -124,7 +124,7 @@ public class MultipleDatasourceAndMybatisRegister implements BeanDefinitionRegis
 
         BeanDefinitionBuilder builder = BeanDefinitionBuilder.genericBeanDefinition(MapperScannerConfigurer.class)
                 .addPropertyValue("processPropertyPlaceHolders", true)
-                .addPropertyValue("sqlSessionFactoryBeanName", sqlSessionFactoryBeanName(num))
+                .addPropertyValue("sqlSessionFactoryBeanName", sqlSessionFactoryBeanName(properties.getSqlSessionFactoryName(), num))
                 .addPropertyValue("basePackage", StringUtils.collectionToCommaDelimitedString(properties.getMapperScanPackages()));
 
         registry.registerBeanDefinition("mapperScannerConfigurer" + num, builder.getBeanDefinition());
@@ -150,8 +150,10 @@ public class MultipleDatasourceAndMybatisRegister implements BeanDefinitionRegis
     }
 
 
-    private String sqlSessionFactoryBeanName(int num) {
-        return "sqlSessionFactory" + num;
+    private String sqlSessionFactoryBeanName(String sqlSessionFactoryName, int num) {
+        return Optional.ofNullable(sqlSessionFactoryName)
+                .filter(org.apache.commons.lang3.StringUtils::isNotBlank)
+                .orElseGet(() -> "sqlSessionFactory" + num);
     }
 
 
