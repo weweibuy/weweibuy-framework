@@ -34,6 +34,12 @@ public class MybatisAndDatasourceProperties extends MybatisProperties {
      */
     private List<String> mapperScanPackages;
 
+    /**
+     * sqlSessionFactory bean名称
+     * 默认 sqlSessionFactory + 配置数组序号
+     */
+    private String sqlSessionFactoryName;
+
 
     @Data
     public static class RefDatasource {
