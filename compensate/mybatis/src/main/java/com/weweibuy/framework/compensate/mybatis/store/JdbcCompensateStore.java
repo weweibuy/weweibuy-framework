@@ -13,7 +13,6 @@ import com.weweibuy.framework.compensate.mybatis.po.CompensateArgsExt;
 import com.weweibuy.framework.compensate.mybatis.po.CompensateExample;
 import com.weweibuy.framework.compensate.mybatis.repository.CompensateRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
@@ -35,9 +34,6 @@ public class JdbcCompensateStore implements CompensateStore {
 
     @Autowired
     private CompensateConfigStore compensateConfigStore;
-
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
 
     private Integer compensateFieldLength = 5000;
 
@@ -81,7 +77,7 @@ public class JdbcCompensateStore implements CompensateStore {
     @Override
     public Collection<CompensateInfoExt> queryCompensateInfo(Integer limit) {
         CompensateExample compensateExample = CompensateExample.newAndCreateCriteria()
-                .andIsDeleteEqualTo(false)
+                .andDeletedEqualTo(false)
                 .andNextTriggerTimeLessThan(LocalDateTime.now())
                 .andCompensateStatusEqualTo(CompensateStatusConstant.COMPENSATING)
                 .example();

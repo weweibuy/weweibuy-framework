@@ -8,6 +8,7 @@ import com.weweibuy.framework.compensate.mybatis.store.JdbcCompensateStore;
 import com.weweibuy.framework.compensate.mybatis.support.JdbcCompensateRecorder;
 import com.weweibuy.framework.compensate.support.CompensateRecorder;
 import org.mybatis.spring.annotation.MapperScan;
+import org.mybatis.spring.boot.autoconfigure.MybatisAutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.context.annotation.Bean;
@@ -20,8 +21,7 @@ import org.springframework.context.annotation.Primary;
  * @date 2020/2/16 22:34
  **/
 @AutoConfiguration
-@ConditionalOnBean(CompensateAutoConfiguration.class)
-// TODO 优化这里
+@ConditionalOnBean({CompensateAutoConfiguration.class, MybatisAutoConfiguration.class})
 @MapperScan(basePackageClasses = CompensateMapper.class)
 public class JdbcCompensateStoreConfig {
 
