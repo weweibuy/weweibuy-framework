@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.autoconfigure.jdbc.JdbcTemplateAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
@@ -21,7 +22,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
  **/
 @AutoConfiguration
 @EnableConfigurationProperties(value = JdbcIdempotentProperties.class)
-@ConditionalOnBean(IdempotentConfig.class)
+@ConditionalOnBean({IdempotentConfig.class, JdbcTemplateAutoConfiguration.class})
 @ConditionalOnProperty(prefix = "idempotent.jdbc", name = "enable", havingValue = "true", matchIfMissing = true)
 public class JdbcIdempotentConfig {
 

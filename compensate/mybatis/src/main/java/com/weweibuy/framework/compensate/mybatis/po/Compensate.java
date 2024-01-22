@@ -58,7 +58,7 @@ public class Compensate {
     /**
      * 是否删除
      */
-    private Boolean isDelete;
+    private Boolean deleted;
 
     /**
      * 创建时间

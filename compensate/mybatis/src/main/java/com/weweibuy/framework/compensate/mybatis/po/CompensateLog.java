@@ -21,12 +21,12 @@ public class CompensateLog {
     private String triggerType;
 
     /**
-     * 补偿状态(RETRY_ABLE:可以重试; ALARM_ABLE:可以报警; OVER_ALARM_COUNT:超出报警次数)
+     * 补偿状态(INIT:初始态;RETRY_ABLE:可以重试; ALARM_ABLE:可以报警; OVER_ALARM_COUNT:超出报警次数)
      */
     private String compensateState;
 
     /**
-     * 补偿结果: (RETRY_FAIL:补偿重试失败; RETRY_FAIL_RECOVER:补偿重试失败,触发恢复方法; RETRY_SUCCESS:补偿重试成功; ALARM:报警; OVER_ALARM_COUNT:超出报警上限)
+     * 补偿结果: (RETRY_FAIL:补偿重试失败; RETRY_FAIL_RECOVER_FAIL:重试失败,触发恢复方法失败; RETRY_FAIL_RECOVER_SUCCESS:重试失败,触发恢复方法成功 ;RETRY_SUCCESS:补偿重试成功; ALARM:报警; OVER_ALARM_COUNT:超出报警上限 补偿失败)
      */
     private String compensateResult;
 

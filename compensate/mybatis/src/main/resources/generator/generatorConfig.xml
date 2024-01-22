@@ -22,7 +22,7 @@
         </commentGenerator>
         <!--数据库连接的信息：驱动类、连接地址、用户名、密码 -->
         <jdbcConnection driverClass="com.mysql.jdbc.Driver"
-                        connectionURL="jdbc:mysql://106.12.208.53:3306/webuy_learning?characterEncoding=UTF-8"
+                        connectionURL="jdbc:mysql://223.247.141.69:3306/webuy_learning?characterEncoding=UTF-8"
                         userId="user01"
                         password="ak402507979">
             <property name="useInformationSchema" value="true"/>
@@ -44,7 +44,7 @@
             <property name="trimStrings" value="true"/>
         </javaModelGenerator>
         <!-- targetProject:mapper映射文件生成的位置 -->
-        <sqlMapGenerator targetPackage="config/mybatis/mapper"
+        <sqlMapGenerator targetPackage="config/mybatis/mapper/compensate"
                          targetProject="src/main/resources">
             <!-- enableSubPackages:是否让schema作为包的后缀 -->
             <property name="enableSubPackages" value="false"/>
@@ -62,7 +62,8 @@
 
         <table tableName="cm_compensate" domainObjectName="Compensate">
             <generatedKey identity="true" column="id" sqlStatement="JDBC"/>
-            <columnOverride column="is_delete" javaType="Boolean"/>
+            <columnOverride column="is_delete" property="deleted" javaType="Boolean"/>
+            <columnOverride column="has_args_ext" javaType="Boolean"/>
         </table>
 
         <table tableName="cm_compensate_args_ext" domainObjectName="CompensateArgsExt">
