@@ -120,10 +120,9 @@ common:
       database: java_metric
   log:
     http-path:
-      - path: /hello
+      - path: /feign-test/get
         methods: GET
         log:
-          disable-req: true
           disable-resp-body: true
   db:
     encrypt:
