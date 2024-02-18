@@ -16,7 +16,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
  **/
 @EnableCaching
 @SpringBootApplication
-@EnableCompensate
+//@EnableCompensate
 @EnableRocket
 @EnableFeignClients
 @EnableIdempotent

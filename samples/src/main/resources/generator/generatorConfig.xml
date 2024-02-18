@@ -39,9 +39,9 @@
         </commentGenerator>
         <!--数据库连接的信息：驱动类、连接地址、用户名、密码 -->
         <jdbcConnection driverClass="com.mysql.jdbc.Driver"
-                        connectionURL="jdbc:mysql://223.247.141.69:3306/webuy_learning?characterEncoding=UTF-8"
-                        userId="user01"
-                        password="ak402507979">
+                        connectionURL="jdbc:mysql://cyt-db-connect.test.chinawayltd.com:3306/cmtx_test_cmm_pro?characterEncoding=UTF-8"
+                        userId="cmtx_test_rw"
+                        password="2j1ZgIP3xE1mmWBwQLJc">
             <property name="useInformationSchema" value="true"/>
         </jdbcConnection>
 
@@ -82,7 +82,7 @@
             <columnOverride column="is_delete" property="deleted" javaType="Boolean"/>
         </table>
 
-        <table tableName="tb_item" domainObjectName="TbItem">
+        <table tableName="bill_batch_g7_info" domainObjectName="BillBatchG7Info">
         </table>
     </context>
 </generatorConfiguration>
