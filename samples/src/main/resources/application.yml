@@ -167,3 +167,7 @@ management:
           enabled: true
           baseUrl: http://106.12.208.53:9091
 
+
+logging:
+  charset:
+    file: utf-8
