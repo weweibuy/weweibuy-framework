@@ -12,8 +12,7 @@
 
 
     <conversionRule conversionWord="clr" converterClass="org.springframework.boot.logging.logback.ColorConverter"/>
-    <conversionRule conversionWord="wex"
-                    converterClass="org.springframework.boot.logging.logback.WhitespaceThrowableProxyConverter"/>
+
     <conversionRule conversionWord="wEx"
                     converterClass="org.springframework.boot.logging.logback.ExtendedWhitespaceThrowableProxyConverter"/>
 
@@ -21,12 +20,9 @@
                     converterClass="com.weweibuy.framework.common.log.desensitization.DesensitizationLogMessageConverter"/>
 
     <property name="CONSOLE_LOG_PATTERN"
-              value="${CONSOLE_LOG_PATTERN:-%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan} [%X{uid},%X{tid}] %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}}"/>
+              value="%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} %clr(%5p) %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan} [%X{uid},%X{tid}] %clr(:){faint} %m%n%wEx"/>
 
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
-        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
-            <level>DEBUG</level>
-        </filter>
         <encoder>
             <Pattern>${CONSOLE_LOG_PATTERN}</Pattern>
             <charset>UTF-8</charset>
@@ -38,7 +34,7 @@
         <springProfile name="!prod">
             <file>${log.path}/application.log</file>
             <encoder>
-                <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} [%X{uid},%X{tid}] - %m%n</pattern>
+                <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger [%X{uid},%X{tid}] - %m%n</pattern>
                 <charset>UTF-8</charset>
             </encoder>
         </springProfile>
@@ -55,7 +51,7 @@
                             "timestamp":"%d{yyyy-MM-dd HH:mm:ss.SSS}",
                             "thread":"%thread",
                             "level":"%level",
-                            "logger":"%logger{50}",
+                            "logger":"%logger",
                             "uid":"%X{uid}",
                             "tid":"%X{tid}",
                             "message":"%m",
