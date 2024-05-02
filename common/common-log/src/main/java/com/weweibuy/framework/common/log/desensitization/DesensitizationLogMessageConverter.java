@@ -49,7 +49,7 @@ public class DesensitizationLogMessageConverter extends ClassicConverter {
                         .map(l -> event.getLoggerName().equals(l))
                         .orElse(true))
                 .map(s -> doDesensitization(event.getFormattedMessage(), s))
-                .orElse(event.getFormattedMessage());
+                .orElseGet(event::getFormattedMessage);
     }
 
 

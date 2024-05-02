@@ -215,7 +215,7 @@ public class CopyContentCachingRequestWrapper extends HttpServletRequestWrapper 
         @Override
         public boolean isFinished() {
             try {
-                return is.available() > 0;
+                return is.available() <= 0;
             } catch (IOException e) {
                 throw new UncheckedIOException(e);
             }
