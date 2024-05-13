@@ -6,7 +6,7 @@ import org.springframework.aop.support.StaticMethodMatcherPointcut;
 import java.lang.reflect.Method;
 
 /**
- * 幂等切点
+ * 多数据源切点
  *
  * @author durenhao
  * @date 2023/12/02 14:53
