@@ -6,8 +6,8 @@ import feign.httpclient.ApacheHttpClient;
 import org.apache.http.client.HttpClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.cloud.client.loadbalancer.LoadBalancerClient;
 import org.springframework.cloud.client.loadbalancer.LoadBalancerProperties;
 import org.springframework.cloud.loadbalancer.support.LoadBalancerClientFactory;
@@ -28,7 +28,7 @@ public class CommonLoadBalancerConfig {
     private List<DelegateFeignClient> delegateFeignClientList;
 
     @Bean
-    @ConditionalOnMissingBean(value = {LoadBalancerClient.class, HttpClient.class,
+    @ConditionalOnBean(value = {LoadBalancerClient.class, HttpClient.class,
             LoadBalancerProperties.class, LoadBalancerClientFactory.class})
     public Client feignClient(LoadBalancerClient loadBalancerClient,
                               HttpClient httpClient,

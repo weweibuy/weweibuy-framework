@@ -20,7 +20,7 @@ import java.util.*;
  * @date 2022/10/15 11:58
  **/
 @Slf4j
-@NoArgsConstructor(access = AccessLevel.PACKAGE)
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class HttpRespClientLogger {
 
     public static void logResp(HttpResponse response, HttpClientProperties.LogHttpProperties logProperties, Long reqTime) throws IOException {

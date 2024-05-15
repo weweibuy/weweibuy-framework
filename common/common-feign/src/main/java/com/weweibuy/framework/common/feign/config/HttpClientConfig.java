@@ -95,15 +95,6 @@ public class HttpClientConfig {
                     .addInterceptorLast((HttpResponseInterceptor) customHttpClientLogInterceptor);
         }
 
-        if (httpClientProperties.isUseSSL()) {
-            TrustStrategy acceptingTrustStrategy = (X509Certificate[] chain, String authType) -> true;
-            SSLContext sslContext = org.apache.http.ssl.SSLContexts.custom()
-                    .loadTrustMaterial(null, acceptingTrustStrategy)
-                    .build();
-            SSLConnectionSocketFactory csf = new SSLConnectionSocketFactory(sslContext);
-            httpClientBuilder.setSSLSocketFactory(csf);
-
-        }
         return httpClientBuilder.build();
     }
 

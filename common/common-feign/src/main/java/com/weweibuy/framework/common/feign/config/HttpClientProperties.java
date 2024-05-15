@@ -17,8 +17,6 @@ import java.util.stream.Stream;
 @Data
 public class HttpClientProperties {
 
-    private boolean useSSL = true;
-
     /**
      * 最大连接个数
      */

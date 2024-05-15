@@ -125,7 +125,7 @@ public class CustomHttpClientLogInterceptor implements HttpResponseInterceptor, 
                 httpReqProperties.setPath("/**");
             }
             String path = httpReqProperties.getPath();
-            if (path.indexOf("*") != -1) {
+            if (path.indexOf('*') != -1) {
                 addHostMethodPattern(httpReqProperties);
             } else {
                 hostPathMethodExact(httpReqProperties);
