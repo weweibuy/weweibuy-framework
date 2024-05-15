@@ -82,7 +82,7 @@ public class HttpClientConfig {
 
 
     @Bean
-    public CloseableHttpClient httpClient() throws KeyStoreException, NoSuchAlgorithmException, KeyManagementException {
+    public CloseableHttpClient httpClient() {
 
         HttpClientBuilder httpClientBuilder = HttpClients.custom()
                 .setConnectionManager(httpClientConnectionManager())
@@ -153,7 +153,7 @@ public class HttpClientConfig {
 
     @Bean
     @ConditionalOnClass(name = {"org.apache.http.impl.client.CloseableHttpClient"})
-    public RestTemplate restTemplate(RestTemplateBuilder restTemplateBuilder) throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
+    public RestTemplate restTemplate(RestTemplateBuilder restTemplateBuilder) {
         ExtractingResponseErrorHandler errorHandler = new ExtractingResponseErrorHandler();
 
         HttpComponentsClientHttpRequestFactory requestFactory =
