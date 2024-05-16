@@ -257,10 +257,15 @@ public class HttpRequestUtils {
     public static MultiValueMap<String, String> parseQueryParams(String uri) {
         MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
         String query = uriQuery(uri);
-        if (StringUtils.isBlank(query)) {
+        return parseQueryStr(query);
+    }
+
+    public static MultiValueMap<String, String> parseQueryStr(String queryStr) {
+        MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
+        if (StringUtils.isBlank(queryStr)) {
             return queryParams;
         }
-        Matcher matcher = QUERY_PATTERN.matcher(query);
+        Matcher matcher = QUERY_PATTERN.matcher(queryStr);
         while (matcher.find()) {
             String name = UriUtils.decode(matcher.group(1), StandardCharsets.UTF_8);
             String eq = matcher.group(2);

@@ -1,8 +1,12 @@
 package com.weweibuy.framework.common.core.support;
 
+import org.apache.tomcat.util.buf.MessageBytes;
+import org.apache.tomcat.util.buf.UDecoder;
+import org.apache.tomcat.util.http.Parameters;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.util.FastByteArrayOutputStream;
+import org.springframework.web.util.ContentCachingRequestWrapper;
 import org.springframework.web.util.WebUtils;
 
 import javax.servlet.ReadListener;
@@ -19,17 +23,18 @@ import java.util.*;
  **/
 public class CopyContentCachingRequestWrapper extends HttpServletRequestWrapper {
 
+    /**
+     * 缓存请求流的输入流
+     */
     private final FastByteArrayOutputStream cachedContent;
 
     private ServletInputStream inputStream;
 
+    private Parameters parameters;
+
+    private Boolean parameterBodyRead = false;
 
 
-    /**
-     * Create a new CopyContentCachingRequestWrapper for the given servlet request.
-     *
-     * @param request the original servlet request
-     */
     public CopyContentCachingRequestWrapper(HttpServletRequest request) {
         super(request);
         int contentLength = request.getContentLength();
@@ -61,42 +66,99 @@ public class CopyContentCachingRequestWrapper extends HttpServletRequestWrapper 
                 getCharacterEncoding()));
     }
 
+    /**
+     * @param name
+     * @return
+     * @see ContentCachingRequestWrapper#getParameter
+     */
     @Override
     public String getParameter(String name) {
-        if (this.cachedContent.size() == 0 && isFormPost()) {
+        if (!parameterBodyRead && this.cachedContent.size() == 0 && isFormPost()) {
             writeRequestParametersToCachedContent();
         }
-        return super.getParameter(name);
+        if (cachedContent.size() == 0) {
+            return null;
+        }
+        if (parameters == null) {
+            parseParameters();
+        }
+        return parameters.getParameter(name);
     }
 
+    /**
+     * @return
+     * @see ContentCachingRequestWrapper#getParameterMap
+     */
     @Override
     public Map<String, String[]> getParameterMap() {
-        if (this.cachedContent.size() == 0 && isFormPost()) {
+        if (!parameterBodyRead && this.cachedContent.size() == 0 && isFormPost()) {
             writeRequestParametersToCachedContent();
         }
-        return super.getParameterMap();
+        if (cachedContent.size() == 0) {
+            return null;
+        }
+        if (parameters == null) {
+            parseParameters();
+        }
+        Map<String, String[]> parameterMap = new HashMap<>();
+        Enumeration<String> enumeration = parameters.getParameterNames();
+        while (enumeration.hasMoreElements()) {
+            String name = enumeration.nextElement();
+            String[] values = getParameterValues(name);
+            parameterMap.put(name, values);
+        }
+        return parameterMap;
     }
 
+    /**
+     * @return
+     * @see ContentCachingRequestWrapper#getParameterNames
+     */
     @Override
     public Enumeration<String> getParameterNames() {
-        if (this.cachedContent.size() == 0 && isFormPost()) {
+        if (!parameterBodyRead && this.cachedContent.size() == 0 && isFormPost()) {
             writeRequestParametersToCachedContent();
+        }
+        if (cachedContent.size() == 0) {
+            return null;
         }
         return super.getParameterNames();
     }
 
+    /**
+     * @return
+     * @see ContentCachingRequestWrapper#getParameterValues
+     */
     @Override
     public String[] getParameterValues(String name) {
-        if (this.cachedContent.size() == 0 && isFormPost()) {
+        if (!parameterBodyRead && this.cachedContent.size() == 0 && isFormPost()) {
             writeRequestParametersToCachedContent();
         }
-        return super.getParameterValues(name);
+        if (cachedContent.size() == 0) {
+            return null;
+        }
+        if (parameters == null) {
+            parseParameters();
+        }
+        return parameters.getParameterValues(name);
     }
 
 
     private boolean isFormPost() {
         String contentType = getContentType();
         return (contentType != null && contentType.contains(MediaType.APPLICATION_FORM_URLENCODED_VALUE) && HttpMethod.POST.matches(getMethod()));
+    }
+
+    private void parseParameters() {
+        parameters = new Parameters();
+        String queryString = getQueryString();
+        if (queryString != null) {
+            MessageBytes messageBytes = MessageBytes.newInstance();
+            messageBytes.setString(getQueryString());
+            parameters.setQuery(messageBytes);
+            parameters.setURLDecoder(new UDecoder());
+        }
+        parameters.processParameters(cachedContent.toByteArray(), 0, cachedContent.size());
     }
 
     private void writeRequestParametersToCachedContent() {
@@ -123,6 +185,7 @@ public class CopyContentCachingRequestWrapper extends HttpServletRequestWrapper 
                     }
                 }
             }
+            parameterBodyRead = true;
         } catch (IOException ex) {
             throw new IllegalStateException("Failed to write request parameters to cached content", ex);
         }
