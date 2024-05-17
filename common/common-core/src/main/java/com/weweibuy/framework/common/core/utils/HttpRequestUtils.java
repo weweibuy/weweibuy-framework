@@ -1,6 +1,5 @@
 package com.weweibuy.framework.common.core.utils;
 
-import com.weweibuy.framework.common.core.exception.Exceptions;
 import com.weweibuy.framework.common.core.model.ResponseCodeAndMsg;
 import com.weweibuy.framework.common.core.model.constant.CommonConstant;
 import com.weweibuy.framework.common.core.model.dto.CommonCodeResponse;
@@ -25,7 +24,7 @@ import java.io.UncheckedIOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URLDecoder;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Map;
@@ -204,11 +203,11 @@ public class HttpRequestUtils {
      * @return
      */
     public static String urlDecode(String str) {
-        try {
-            return URLDecoder.decode(str, CommonConstant.CharsetConstant.UTF8_STR);
-        } catch (UnsupportedEncodingException e) {
-            throw Exceptions.uncheckedIO(e);
-        }
+        return UriUtils.decode(str, StandardCharsets.UTF_8);
+    }
+
+    public static String urlDecode(String str, Charset charset) {
+        return UriUtils.decode(str, charset);
     }
 
 
@@ -255,7 +254,6 @@ public class HttpRequestUtils {
 
 
     public static MultiValueMap<String, String> parseQueryParams(String uri) {
-        MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
         String query = uriQuery(uri);
         return parseQueryStr(query);
     }
@@ -267,11 +265,11 @@ public class HttpRequestUtils {
         }
         Matcher matcher = QUERY_PATTERN.matcher(queryStr);
         while (matcher.find()) {
-            String name = UriUtils.decode(matcher.group(1), StandardCharsets.UTF_8);
+            String name = urlDecode(matcher.group(1), StandardCharsets.UTF_8);
             String eq = matcher.group(2);
             String value = matcher.group(3);
             if (value != null) {
-                value = UriUtils.decode(value, StandardCharsets.UTF_8);
+                value = urlDecode(value, StandardCharsets.UTF_8);
             } else {
                 value = (org.springframework.util.StringUtils.hasLength(eq) ? "" : null);
             }

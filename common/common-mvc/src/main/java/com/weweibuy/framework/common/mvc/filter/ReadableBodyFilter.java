@@ -41,8 +41,7 @@ public class ReadableBodyFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         setRequestAttributes(request);
 
-        boolean includePayload = HttpRequestUtils.isIncludePayload(request);
-        if (includePayload) {
+        if (HttpRequestUtils.isIncludePayload(request) && HttpRequestUtils.notBoundaryBody(request.getContentType())) {
             request = new CopyContentCachingRequestWrapper(request);
         }
         response = new ContentCachingResponseWrapper(response);

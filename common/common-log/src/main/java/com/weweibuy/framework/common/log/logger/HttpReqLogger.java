@@ -1,19 +1,13 @@
 package com.weweibuy.framework.common.log.logger;
 
-import com.weweibuy.framework.common.core.model.constant.CommonConstant;
 import com.weweibuy.framework.common.core.utils.HttpRequestUtils;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
-import org.springframework.web.util.ContentCachingResponseWrapper;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.UncheckedIOException;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
@@ -43,12 +37,10 @@ public class HttpReqLogger {
     }
 
     private static String reqBody(HttpServletRequest request) {
-        boolean includePayload = HttpRequestUtils.isIncludePayload(request);
-        if (!includePayload) {
+        if (!HttpRequestUtils.isIncludePayload(request)) {
             return "";
         }
-        String contentType = request.getContentType();
-        if (HttpRequestUtils.isBoundaryBody(contentType)) {
+        if (HttpRequestUtils.isBoundaryBody(request.getContentType())) {
             return HttpRequestUtils.BOUNDARY_BODY;
         }
         return HttpRequestUtils.readRequestBodyForJson(request);
