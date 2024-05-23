@@ -196,16 +196,6 @@ public class HttpRequestUtils {
     }
 
 
-    /**
-     * URL 解码
-     *
-     * @param str
-     * @return
-     */
-    public static String urlDecode(String str) {
-        return UriUtils.decode(str, StandardCharsets.UTF_8);
-    }
-
     public static String urlDecode(String str, Charset charset) {
         return UriUtils.decode(str, charset);
     }

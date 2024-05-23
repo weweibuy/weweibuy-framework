@@ -1,12 +1,10 @@
 package com.weweibuy.framework.common.core.support;
 
-import org.apache.tomcat.util.buf.MessageBytes;
-import org.apache.tomcat.util.buf.UDecoder;
-import org.apache.tomcat.util.http.Parameters;
+import com.weweibuy.framework.common.core.utils.HttpRequestUtils;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.util.FastByteArrayOutputStream;
-import org.springframework.web.util.ContentCachingRequestWrapper;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.util.WebUtils;
 
 import javax.servlet.ReadListener;
@@ -14,7 +12,6 @@ import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 import java.io.*;
-import java.net.URLEncoder;
 import java.util.*;
 
 /**
@@ -30,29 +27,74 @@ public class CopyContentCachingRequestWrapper extends HttpServletRequestWrapper 
 
     private ServletInputStream inputStream;
 
-    private Parameters parameters;
-
-    private Boolean parameterBodyRead = false;
-
+    private MultiValueMap<String, String> queryMap;
 
     public CopyContentCachingRequestWrapper(HttpServletRequest request) {
         super(request);
         int contentLength = request.getContentLength();
         this.cachedContent = new FastByteArrayOutputStream(contentLength >= 0 ? contentLength : 1024);
+        String queryString = request.getQueryString();
+        queryMap = HttpRequestUtils.parseQueryParams(queryString);
+        if (isFormPost()) {
+            readForm(request);
+        }
     }
 
+    private void readForm(HttpServletRequest request) {
+        request.getParameterNames();
+    }
 
     @Override
     public ServletInputStream getInputStream() throws IOException {
         if (this.inputStream == null) {
-            this.inputStream = new CopyContentCachingRequestWrapper.ContentCachingInputStream(getRequest().getInputStream());
+            this.inputStream = new ContentCachingInputStream(getRequest().getInputStream());
         }
 
         if (inputStream.isFinished()) {
-            return new CopyContentCachingRequestWrapper.ByteArrayServletInputStream(cachedContent.getInputStream());
+            return withFinished();
         }
         return this.inputStream;
     }
+
+    private ServletInputStream withFinished() {
+        if (cachedContent.size() == 0 && isFormPost()) {
+            writeRequestParametersToCachedContent();
+        }
+        return new ByteArrayServletInputStream(cachedContent.getInputStream());
+    }
+
+
+    private void writeRequestParametersToCachedContent() {
+        try {
+            if (this.cachedContent.size() == 0) {
+                Map<String, String[]> form = super.getParameterMap();
+                for (Iterator<String> nameIterator = form.keySet().iterator(); nameIterator.hasNext(); ) {
+                    String name = nameIterator.next();
+                    if (queryMap.containsKey(name)) {
+                        continue;
+                    }
+                    List<String> values = Arrays.asList(form.get(name));
+                    for (Iterator<String> valueIterator = values.iterator(); valueIterator.hasNext(); ) {
+                        String value = valueIterator.next();
+                        this.cachedContent.write(name.getBytes());
+                        if (value != null) {
+                            this.cachedContent.write('=');
+                            this.cachedContent.write(value.getBytes());
+                            if (valueIterator.hasNext()) {
+                                this.cachedContent.write('&');
+                            }
+                        }
+                    }
+                    if (nameIterator.hasNext()) {
+                        this.cachedContent.write('&');
+                    }
+                }
+            }
+        } catch (IOException ex) {
+            throw new IllegalStateException("Failed to write request parameters to cached content", ex);
+        }
+    }
+
 
     @Override
     public String getCharacterEncoding() {
@@ -66,131 +108,11 @@ public class CopyContentCachingRequestWrapper extends HttpServletRequestWrapper 
                 getCharacterEncoding()));
     }
 
-    /**
-     * @param name
-     * @return
-     * @see ContentCachingRequestWrapper#getParameter
-     */
-    @Override
-    public String getParameter(String name) {
-        if (!parameterBodyRead && this.cachedContent.size() == 0 && isFormPost()) {
-            writeRequestParametersToCachedContent();
-        }
-        if (cachedContent.size() == 0) {
-            return null;
-        }
-        if (parameters == null) {
-            parseParameters();
-        }
-        return parameters.getParameter(name);
-    }
-
-    /**
-     * @return
-     * @see ContentCachingRequestWrapper#getParameterMap
-     */
-    @Override
-    public Map<String, String[]> getParameterMap() {
-        if (!parameterBodyRead && this.cachedContent.size() == 0 && isFormPost()) {
-            writeRequestParametersToCachedContent();
-        }
-        if (cachedContent.size() == 0) {
-            return null;
-        }
-        if (parameters == null) {
-            parseParameters();
-        }
-        Map<String, String[]> parameterMap = new HashMap<>();
-        Enumeration<String> enumeration = parameters.getParameterNames();
-        while (enumeration.hasMoreElements()) {
-            String name = enumeration.nextElement();
-            String[] values = getParameterValues(name);
-            parameterMap.put(name, values);
-        }
-        return parameterMap;
-    }
-
-    /**
-     * @return
-     * @see ContentCachingRequestWrapper#getParameterNames
-     */
-    @Override
-    public Enumeration<String> getParameterNames() {
-        if (!parameterBodyRead && this.cachedContent.size() == 0 && isFormPost()) {
-            writeRequestParametersToCachedContent();
-        }
-        if (cachedContent.size() == 0) {
-            return null;
-        }
-        return super.getParameterNames();
-    }
-
-    /**
-     * @return
-     * @see ContentCachingRequestWrapper#getParameterValues
-     */
-    @Override
-    public String[] getParameterValues(String name) {
-        if (!parameterBodyRead && this.cachedContent.size() == 0 && isFormPost()) {
-            writeRequestParametersToCachedContent();
-        }
-        if (cachedContent.size() == 0) {
-            return null;
-        }
-        if (parameters == null) {
-            parseParameters();
-        }
-        return parameters.getParameterValues(name);
-    }
-
 
     private boolean isFormPost() {
         String contentType = getContentType();
         return (contentType != null && contentType.contains(MediaType.APPLICATION_FORM_URLENCODED_VALUE) && HttpMethod.POST.matches(getMethod()));
     }
-
-    private void parseParameters() {
-        parameters = new Parameters();
-        String queryString = getQueryString();
-        if (queryString != null) {
-            MessageBytes messageBytes = MessageBytes.newInstance();
-            messageBytes.setString(getQueryString());
-            parameters.setQuery(messageBytes);
-            parameters.setURLDecoder(new UDecoder());
-        }
-        parameters.processParameters(cachedContent.toByteArray(), 0, cachedContent.size());
-    }
-
-    private void writeRequestParametersToCachedContent() {
-        try {
-            if (this.cachedContent.size() == 0) {
-                String requestEncoding = getCharacterEncoding();
-                Map<String, String[]> form = super.getParameterMap();
-                for (Iterator<String> nameIterator = form.keySet().iterator(); nameIterator.hasNext(); ) {
-                    String name = nameIterator.next();
-                    List<String> values = Arrays.asList(form.get(name));
-                    for (Iterator<String> valueIterator = values.iterator(); valueIterator.hasNext(); ) {
-                        String value = valueIterator.next();
-                        this.cachedContent.write(URLEncoder.encode(name, requestEncoding).getBytes());
-                        if (value != null) {
-                            this.cachedContent.write('=');
-                            this.cachedContent.write(URLEncoder.encode(value, requestEncoding).getBytes());
-                            if (valueIterator.hasNext()) {
-                                this.cachedContent.write('&');
-                            }
-                        }
-                    }
-                    if (nameIterator.hasNext()) {
-                        this.cachedContent.write('&');
-                    }
-                }
-            }
-            parameterBodyRead = true;
-        } catch (IOException ex) {
-            throw new IllegalStateException("Failed to write request parameters to cached content", ex);
-        }
-    }
-
 
     private class ContentCachingInputStream extends ServletInputStream {
 
@@ -294,6 +216,7 @@ public class CopyContentCachingRequestWrapper extends HttpServletRequestWrapper 
             throw new UnsupportedOperationException();
         }
     }
+
 
 
 }
