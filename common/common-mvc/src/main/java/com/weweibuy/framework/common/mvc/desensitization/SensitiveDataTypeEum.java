@@ -2,6 +2,7 @@ package com.weweibuy.framework.common.mvc.desensitization;
 
 import lombok.Getter;
 
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -32,6 +33,16 @@ public enum SensitiveDataTypeEum {
     SensitiveDataTypeEum(Pattern patten, String replace) {
         this.patten = patten;
         this.replace = replace;
+    }
+
+    public static void main(String[] args) {
+        String str = "123QWErt:?!@#$";
+        Pattern pattern = Pattern.compile(".*");
+        Matcher matcher = pattern.matcher(str);
+
+        String s = pattern.matcher(str)
+                .replaceAll("*");
+        System.err.println(s);
     }
 
 

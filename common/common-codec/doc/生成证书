@@ -1,8 +1,11 @@
 https://www.cnblogs.com/zhangjianqiang/p/10308029.html
 
 1. 生成证书
-openssl req -newkey rsa:2048 -nodes -keyout my.key -x509 -days 36500 -out my.cer
+openssl req -newkey rsa:2048 -nodes -keyout my.pem -x509 -days 36500 -out my.cer
+1.1 从已有的pkcs8中导出证书:
+openssl req -new -x509 -key private_key.pem -out my.cer -days 36500
+
 
 2. 导出私钥
-openssl pkcs12 -export -in my.cer -inkey my.key -out my.pfx
+openssl pkcs12 -export -in my.cer -inkey my.pem -out my.pfx -passout pass:123456
 

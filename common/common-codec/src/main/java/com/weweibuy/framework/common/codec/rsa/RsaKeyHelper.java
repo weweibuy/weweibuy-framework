@@ -17,6 +17,7 @@ import lombok.NoArgsConstructor;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.bouncycastle.asn1.ASN1Sequence;
+import org.bouncycastle.asn1.pkcs.RSAPrivateKey;
 
 import java.io.*;
 import java.math.BigInteger;
@@ -233,7 +234,7 @@ public class RsaKeyHelper {
                 if (seq.size() != 9) {
                     throw new IllegalArgumentException("Invalid RSA Private Key ASN1 sequence.");
                 }
-                org.bouncycastle.asn1.pkcs.RSAPrivateKey key = org.bouncycastle.asn1.pkcs.RSAPrivateKey.getInstance(seq);
+                RSAPrivateKey key = RSAPrivateKey.getInstance(seq);
                 RSAPublicKeySpec pubSpec = new RSAPublicKeySpec(key.getModulus(), key.getPublicExponent());
                 RSAPrivateCrtKeySpec privSpec = new RSAPrivateCrtKeySpec(key.getModulus(), key.getPublicExponent(),
                         key.getPrivateExponent(), key.getPrime1(), key.getPrime2(), key.getExponent1(), key.getExponent2(),
@@ -396,7 +397,10 @@ public class RsaKeyHelper {
         return b;
     }
 
-    public static byte[] utf8Encode(CharSequence string) {
+    public static byte[] utf8Encode(String string) {
+        if (true) {
+            return string.getBytes(StandardCharsets.UTF_8);
+        }
         try {
             ByteBuffer bytes = UTF8.newEncoder().encode(CharBuffer.wrap(string));
             byte[] bytesCopy = new byte[bytes.limit()];
