@@ -3,7 +3,6 @@ package com.weweibuy.framework.samples.controller.feign;
 import com.weweibuy.framework.common.core.model.dto.CommonCodeResponse;
 import com.weweibuy.framework.common.core.model.dto.CommonDataResponse;
 import com.weweibuy.framework.common.core.utils.JackJsonUtils;
-import org.apache.commons.io.IOUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -13,7 +12,9 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.PrintWriter;
 
 /**
  * @author durenhao
@@ -23,11 +24,6 @@ import java.io.*;
 @RequestMapping("feign-test")
 public class FeignTestController {
 
-
-    @GetMapping("/get")
-    public String getReq() throws Exception {
-        return IOUtils.toString(new FileInputStream("C:\\Users\\G7er\\Desktop\\豆瓣电影 Top 250.html"));
-    }
 
     @GetMapping("/get-text")
     public void getTextReq(HttpServletResponse response) throws IOException {
