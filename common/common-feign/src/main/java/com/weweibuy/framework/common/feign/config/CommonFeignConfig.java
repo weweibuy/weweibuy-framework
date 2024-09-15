@@ -67,7 +67,6 @@ public class CommonFeignConfig {
 
 
     @Bean
-    @DependsOn("jackJsonUtils")
     @Profile(value = {"mock"})
     public MockFeignDelegateClient mockClient() {
         return new MockFeignDelegateClient();

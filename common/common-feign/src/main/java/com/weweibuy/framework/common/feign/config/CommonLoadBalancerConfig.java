@@ -30,7 +30,7 @@ public class CommonLoadBalancerConfig {
     @Bean
     @ConditionalOnBean(value = {LoadBalancerClient.class, HttpClient.class,
             LoadBalancerProperties.class, LoadBalancerClientFactory.class})
-    public Client feignClient(LoadBalancerClient loadBalancerClient,
+    public Client feignBlockingLoadBalancerClient(LoadBalancerClient loadBalancerClient,
                               HttpClient httpClient,
                               LoadBalancerClientFactory loadBalancerClientFactory) {
         Client client = new ApacheHttpClient(httpClient);

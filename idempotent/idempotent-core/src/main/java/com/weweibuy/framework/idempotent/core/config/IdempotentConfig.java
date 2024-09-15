@@ -51,7 +51,6 @@ public class IdempotentConfig implements ImportAware {
     }
 
     @Bean
-    @DependsOn("jackJsonUtils")
     public AnnotationMetaDataHolder idempotentAnnotationMetaDataHolder() {
         return new AnnotationMetaDataHolder();
     }

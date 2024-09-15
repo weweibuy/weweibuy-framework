@@ -10,7 +10,6 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
  * @author durenhao
  * @date 2022/9/18 20:16
  **/
-@DependsOn("jackJsonUtils")
 public class UpperCamelCaseEncoderAndDecoder extends EncoderAndDecoder {
 
     private static ObjectFactory<HttpMessageConverters> httpMessageConvertersObjectFactory;

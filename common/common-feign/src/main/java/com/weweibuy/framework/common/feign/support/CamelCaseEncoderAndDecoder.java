@@ -3,14 +3,12 @@ package com.weweibuy.framework.common.feign.support;
 import com.weweibuy.framework.common.core.utils.JackJsonUtils;
 import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.boot.autoconfigure.http.HttpMessageConverters;
-import org.springframework.context.annotation.DependsOn;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 
 /**
  * @author durenhao
  * @date 2020/3/2 23:23
  **/
-@DependsOn("jackJsonUtils")
 public class CamelCaseEncoderAndDecoder extends EncoderAndDecoder {
 
     private static ObjectFactory<HttpMessageConverters> httpMessageConvertersObjectFactory;
