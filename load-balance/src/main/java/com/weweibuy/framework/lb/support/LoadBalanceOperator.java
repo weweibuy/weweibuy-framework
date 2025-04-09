@@ -4,7 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.ServiceInstance;
-import org.springframework.cloud.client.loadbalancer.LoadBalancerClient;
 import org.springframework.cloud.loadbalancer.cache.LoadBalancerCacheManager;
 import org.springframework.cloud.loadbalancer.core.ServiceInstanceListSupplier;
 import org.springframework.cloud.loadbalancer.support.LoadBalancerClientFactory;
@@ -25,9 +24,6 @@ public class LoadBalanceOperator {
 
     @Autowired
     private ApplicationContext applicationContext;
-
-    @Autowired
-    private LoadBalancerClient loadBalancerClient;
 
     @Autowired
     private LoadBalancerClientFactory loadBalancerClientFactory;

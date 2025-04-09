@@ -16,16 +16,6 @@ import org.springframework.context.annotation.Bean;
 @EnableConfigurationProperties({LoadBalanceProperties.class})
 public class CustomLoadBalancerConfig {
 
-    /**
-     * 负载均衡,增加的controller端点
-     *
-     * @return
-     */
-    @Bean
-    public LoadBalanceEndpoint customLoadBalanceEndpoint() {
-        return new LoadBalanceEndpoint(loadBalanceOperator());
-    }
-
 
     /**
      * 负载均衡,缓存服务相关操作类
@@ -36,6 +26,18 @@ public class CustomLoadBalancerConfig {
     public LoadBalanceOperator loadBalanceOperator() {
         return new LoadBalanceOperator();
     }
+
+    /**
+     * 负载均衡,增加的controller端点
+     *
+     * @return
+     */
+    @Bean
+    public LoadBalanceEndpoint customLoadBalanceEndpoint(LoadBalanceOperator loadBalanceOperator) {
+        return new LoadBalanceEndpoint(loadBalanceOperator);
+    }
+
+
 
 
 }

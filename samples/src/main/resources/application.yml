@@ -33,10 +33,7 @@ spring:
   cloud:
     nacos:
       discovery:
-        server-addr: 122.51.171.126:8848
-        username: nacos
-        password: nacos
-        enabled: false
+        server-addr: 223.247.141.69:8848
   elasticsearch:
     rest:
       uris: 106.12.208.53:9200
@@ -171,3 +168,4 @@ management:
 logging:
   charset:
     file: utf-8
+

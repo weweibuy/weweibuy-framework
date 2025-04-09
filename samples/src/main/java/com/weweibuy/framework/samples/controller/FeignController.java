@@ -4,10 +4,7 @@ import com.weweibuy.framework.common.core.model.constant.CommonConstant;
 import com.weweibuy.framework.common.core.model.dto.CommonCodeResponse;
 import com.weweibuy.framework.common.core.model.dto.CommonDataResponse;
 import com.weweibuy.framework.common.feign.support.MultipartFileHelper;
-import com.weweibuy.framework.samples.client.FileClient;
-import com.weweibuy.framework.samples.client.LocalFeignClient;
-import com.weweibuy.framework.samples.client.LocalFileFeignClient;
-import com.weweibuy.framework.samples.client.MyFeignClient;
+import com.weweibuy.framework.samples.client.*;
 import feign.Response;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.io.IOUtils;
@@ -47,9 +44,13 @@ public class FeignController {
 
     private static final ContentType TEXT_HTML_UTF8_CONTENT_TYPE = ContentType.create(MediaType.TEXT_HTML_VALUE, CommonConstant.CharsetConstant.UT8);
 
+    private final MyLbFeignClient lbFeignClient;
 
     @GetMapping("/feign")
     public Object sendToFeign() throws IOException {
+
+        lbFeignClient.helloPost();
+
         CommonCodeResponse postJson = localFeignClient.postJson(CommonDataResponse.success("postJson"));
 
         CommonDataResponse<String> xx = myFeignClient.helloGet("xx", "1");
