@@ -2,7 +2,7 @@ package com.weweibuy.framework.rocketmq.support;
 
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.weweibuy.framework.common.core.utils.JackJsonUtils;
+import com.weweibuy.framework.common.core.utils.JacksonUtils;
 import com.weweibuy.framework.rocketmq.core.MessageConverter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.GenericTypeResolver;
@@ -25,17 +25,17 @@ public class JacksonRocketMqMessageConverter implements MessageConverter {
     private final Map<MethodParameter, JavaType> javaTypeMap = new ConcurrentHashMap<>(64);
 
     public JacksonRocketMqMessageConverter() {
-        this.objectMapper = JackJsonUtils.getCamelCaseMapper();
+        this.objectMapper = JacksonUtils.getCamelCaseMapper();
     }
 
     @Override
     public byte[] toMessageBody(Object payload) {
-        return JackJsonUtils.writeCamelCaseAsByte(payload);
+        return JacksonUtils.writeCamelCaseAsByte(payload);
     }
 
     @Override
     public Object fromMessageBody(byte[] payload, MethodParameter parameter, boolean batch) {
-        return JackJsonUtils.readCamelCaseValue(payload, javaType(parameter, batch));
+        return JacksonUtils.readCamelCaseValue(payload, javaType(parameter, batch));
     }
 
     private JavaType javaType(MethodParameter parameter, boolean batch) {

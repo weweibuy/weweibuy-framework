@@ -2,7 +2,7 @@ package com.weweibuy.framework.common.feign.log;
 
 import com.weweibuy.framework.common.core.model.constant.CommonConstant;
 import com.weweibuy.framework.common.core.utils.HttpRequestUtils;
-import com.weweibuy.framework.common.core.utils.JackJsonUtils;
+import com.weweibuy.framework.common.core.utils.JacksonUtils;
 import com.weweibuy.framework.common.feign.support.FeignLogSetting;
 import feign.Logger;
 import feign.Request;
@@ -38,7 +38,7 @@ public class FeignLogger extends Logger {
     public static void logForResponse(String body, Map<String, String> header, int status, long elapsedTime) {
         log.info("Feign 响应 Status: {}, Header: {}, Body: {}, 耗时: {}",
                 status,
-                JackJsonUtils.writeCamelCase(header),
+                JacksonUtils.writeCamelCase(header),
                 body,
                 elapsedTime);
     }
@@ -69,7 +69,7 @@ public class FeignLogger extends Logger {
         log.info("Feign 请求地址: {}, Method: {}, Header: {}, Body: {}",
                 request.url(),
                 request.httpMethod(),
-                JackJsonUtils.writeCamelCase(header),
+                JacksonUtils.writeCamelCase(header),
                 bodyStr);
     }
 

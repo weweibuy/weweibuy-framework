@@ -45,7 +45,7 @@ public class ReadableBodyFilter extends OncePerRequestFilter {
             request = new CopyContentCachingRequestWrapper(request);
         }
         response = new ContentCachingResponseWrapper(response);
-
+        // TODO 异步请求不生效
         try {
             boolean shouldReturn = handlerReadableBodyRequest(request, response);
             if (shouldReturn) {

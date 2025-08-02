@@ -12,6 +12,10 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "common.jackson")
 public class CommonJacksonProperties {
 
+    public static void main(String[] args) {
+        System.err.println("xxxx");
+    }
+
     /**
      * 日期格式化
      */

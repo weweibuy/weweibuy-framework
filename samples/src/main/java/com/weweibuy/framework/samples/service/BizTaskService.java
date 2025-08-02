@@ -2,7 +2,7 @@ package com.weweibuy.framework.samples.service;
 
 import com.weweibuy.framework.biztask.annotation.ExecBizTask;
 import com.weweibuy.framework.biztask.db.po.BizTask;
-import com.weweibuy.framework.common.core.utils.JackJsonUtils;
+import com.weweibuy.framework.common.core.utils.JacksonUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +18,7 @@ public class BizTaskService {
 
     @ExecBizTask(taskType = "test2", bizStatus = 1)
     public void execBizTask3(BizTask bizTask) {
-        log.info("任务: {}", JackJsonUtils.writeCamelCase(bizTask));
+        log.info("任务: {}", JacksonUtils.writeCamelCase(bizTask));
         throw new RuntimeException("x");
     }
 

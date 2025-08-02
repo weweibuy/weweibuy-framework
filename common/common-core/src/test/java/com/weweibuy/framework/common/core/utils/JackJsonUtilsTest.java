@@ -23,9 +23,9 @@ public class JackJsonUtilsTest {
 
     @Test
     public void readSnakeCaseValue() throws Exception {
-        String json = JackJsonUtils.writeSnakeCase(student);
+        String json = JacksonUtils.writeSnakeCase(student);
         System.err.println(json);
-        Student student1 = JackJsonUtils.readSnakeCaseValue(json, Student.class);
+        Student student1 = JacksonUtils.readSnakeCaseValue(json, Student.class);
         System.err.println(student1);
     }
 

@@ -1,7 +1,7 @@
 package com.weweibuy.framework.idempotent.db;
 
 import com.weweibuy.framework.common.core.exception.IdempotentException;
-import com.weweibuy.framework.common.core.utils.JackJsonUtils;
+import com.weweibuy.framework.common.core.utils.JacksonUtils;
 import com.weweibuy.framework.idempotent.core.support.IdempotentInfo;
 import com.weweibuy.framework.idempotent.core.support.IdempotentManager;
 import lombok.extern.slf4j.Slf4j;
@@ -66,7 +66,7 @@ public class JdbcIdempotentManager implements IdempotentManager {
         if ("null".equals(resultStr)) {
             return null;
         }
-        return JackJsonUtils.readCamelCaseValue(resultStr, idempotentInfo.getJavaType());
+        return JacksonUtils.readCamelCaseValue(resultStr, idempotentInfo.getJavaType());
     }
 
     @Override
@@ -81,7 +81,7 @@ public class JdbcIdempotentManager implements IdempotentManager {
         Object[] objects = prepareArgs(idempotentInfo);
         Object[] prepareArgs = new Object[objects.length + 1];
         System.arraycopy(objects, 0, prepareArgs, 1, objects.length);
-        String resultJson = JackJsonUtils.writeCamelCase(result);
+        String resultJson = JacksonUtils.writeCamelCase(result);
         prepareArgs[0] = resultJson;
         return prepareArgs;
     }

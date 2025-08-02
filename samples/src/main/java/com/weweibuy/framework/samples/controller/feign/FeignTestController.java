@@ -2,7 +2,7 @@ package com.weweibuy.framework.samples.controller.feign;
 
 import com.weweibuy.framework.common.core.model.dto.CommonCodeResponse;
 import com.weweibuy.framework.common.core.model.dto.CommonDataResponse;
-import com.weweibuy.framework.common.core.utils.JackJsonUtils;
+import com.weweibuy.framework.common.core.utils.JacksonUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -30,7 +30,7 @@ public class FeignTestController {
         response.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.TEXT_HTML_VALUE);
         response.setCharacterEncoding("utf-8");
         PrintWriter writer = response.getWriter();
-        String str = JackJsonUtils.writeCamelCase(CommonCodeResponse.success());
+        String str = JacksonUtils.writeCamelCase(CommonCodeResponse.success());
         writer.write(str);
     }
 

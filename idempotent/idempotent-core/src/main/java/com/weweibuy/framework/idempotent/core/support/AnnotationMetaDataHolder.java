@@ -1,7 +1,7 @@
 package com.weweibuy.framework.idempotent.core.support;
 
 import com.fasterxml.jackson.databind.JavaType;
-import com.weweibuy.framework.common.core.utils.JackJsonUtils;
+import com.weweibuy.framework.common.core.utils.JacksonUtils;
 import com.weweibuy.framework.idempotent.core.annotation.Idempotent;
 import org.springframework.core.GenericTypeResolver;
 import org.springframework.core.MethodParameter;
@@ -24,7 +24,7 @@ public class AnnotationMetaDataHolder {
     public synchronized void putMetaData(Method method, Idempotent idempotent) {
         MethodParameter methodParameter = new MethodParameter(method, -1);
         Type parameterType = methodParameter.getNestedGenericParameterType();
-        JavaType javaType = JackJsonUtils.getCamelCaseMapper().getTypeFactory().constructType(GenericTypeResolver.resolveType(parameterType, method.getReturnType()));
+        JavaType javaType = JacksonUtils.getCamelCaseMapper().getTypeFactory().constructType(GenericTypeResolver.resolveType(parameterType, method.getReturnType()));
         hashMap.put(method, new IdempotentAnnotationMeta(idempotent, javaType));
     }
 

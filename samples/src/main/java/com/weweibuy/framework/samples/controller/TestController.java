@@ -1,7 +1,7 @@
 package com.weweibuy.framework.samples.controller;
 
 import com.weweibuy.framework.common.core.model.dto.CommonCodeResponse;
-import com.weweibuy.framework.common.core.utils.JackJsonUtils;
+import com.weweibuy.framework.common.core.utils.JacksonUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,7 +22,7 @@ public class TestController {
 
     @PostMapping("/data")
     public CommonCodeResponse data(@RequestBody Map<String, Object> data) {
-        log.info("数据: {}", JackJsonUtils.writeCamelCase(data));
+        log.info("数据: {}", JacksonUtils.writeCamelCase(data));
         return CommonCodeResponse.success();
     }
 

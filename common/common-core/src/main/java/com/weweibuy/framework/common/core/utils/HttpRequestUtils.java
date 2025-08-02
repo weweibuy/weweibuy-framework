@@ -172,7 +172,7 @@ public class HttpRequestUtils {
      * @return
      */
     public static ResponseCodeAndMsg convertJsonStrToCodeAndMsg(String msgJsonStr) {
-        return JackJsonUtils.readValueWithMvc(msgJsonStr, CommonCodeResponse.class);
+        return JacksonUtilsForSpringMVC.readValueWithMvc(msgJsonStr, CommonCodeResponse.class);
     }
 
 

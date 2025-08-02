@@ -8,10 +8,7 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.weweibuy.framework.common.core.model.constant.CommonConstant;
 import com.weweibuy.framework.common.core.support.JacksonBuilderHelper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 
-import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -21,69 +18,43 @@ import java.io.UncheckedIOException;
  * @date 2020/2/26 20:38
  **/
 @SuppressWarnings("unchecked")
-public class JackJsonUtils {
+public class JacksonUtils {
 
     private static ObjectMapper CAMEL_CASE_MAPPER;
 
     private static ObjectMapper SNAKE_CASE_MAPPER;
 
-    private static ObjectMapper MVC_OBJECT_MAPPER;
-
     private static ObjectMapper UPPER_CAMEL_CASE_MAPPER;
 
-    @Autowired
-    private ObjectMapper objectMapper;
-
     static {
-        Jackson2ObjectMapperBuilder objectMapperBuilder =
-                JacksonBuilderHelper.objectMapperBuilder(CommonConstant.DateConstant.STANDARD_DATE_TIME_FORMAT_STR, CommonConstant.DateConstant.STANDARD_DATE_FORMAT_STR);
-        init(objectMapperBuilder);
+        init();
     }
 
-    @PostConstruct
-    public void initMvc() {
-        MVC_OBJECT_MAPPER = objectMapper;
+    private static void init() {
+        CAMEL_CASE_MAPPER = JacksonBuilderHelper.createObjectMapper(
+                CommonConstant.DateConstant.STANDARD_DATE_TIME_FORMAT_STR, 
+                CommonConstant.DateConstant.STANDARD_DATE_FORMAT_STR,
+                CommonConstant.DateConstant.STANDARD_TIME_FORMAT_STR,
+                null
+        );
+
+        SNAKE_CASE_MAPPER = JacksonBuilderHelper.createObjectMapper(
+                CommonConstant.DateConstant.STANDARD_DATE_TIME_FORMAT_STR,
+                CommonConstant.DateConstant.STANDARD_DATE_FORMAT_STR,
+                CommonConstant.DateConstant.STANDARD_TIME_FORMAT_STR,
+                PropertyNamingStrategies.SNAKE_CASE
+        );
+
+        UPPER_CAMEL_CASE_MAPPER = JacksonBuilderHelper.createObjectMapper(
+                CommonConstant.DateConstant.STANDARD_DATE_TIME_FORMAT_STR,
+                CommonConstant.DateConstant.STANDARD_DATE_FORMAT_STR,
+                CommonConstant.DateConstant.STANDARD_TIME_FORMAT_STR,
+                PropertyNamingStrategies.UPPER_CAMEL_CASE
+        );
     }
 
-    public static ObjectMapper createObjectMapper(String dataTimeFormat, String dataFormat, PropertyNamingStrategy propertyNamingStrategy) {
-        return createObjectMapper(dataTimeFormat, dataFormat, CommonConstant.DateConstant.STANDARD_TIME_FORMAT_STR, propertyNamingStrategy);
-    }
-
-    /**
-     * 创建 objectMapper
-     *
-     * @param dataTimeFormat
-     * @param dataFormat
-     * @param propertyNamingStrategy
-     * @return
-     */
     public static ObjectMapper createObjectMapper(String dataTimeFormat, String dataFormat, String timeFormat, PropertyNamingStrategy propertyNamingStrategy) {
-        Jackson2ObjectMapperBuilder objectMapperBuilder =
-                JacksonBuilderHelper.objectMapperBuilder(dataTimeFormat,
-                        dataFormat, timeFormat);
-        if (propertyNamingStrategy != null) {
-            return objectMapperBuilder.createXmlMapper(false)
-                    .propertyNamingStrategy(propertyNamingStrategy)
-                    .build();
-        }
-        return objectMapperBuilder.createXmlMapper(false)
-                .build();
-    }
-
-
-    private static void init(Jackson2ObjectMapperBuilder objectMapperBuilder) {
-
-        CAMEL_CASE_MAPPER = objectMapperBuilder.createXmlMapper(false)
-                .build();
-
-        SNAKE_CASE_MAPPER = objectMapperBuilder.createXmlMapper(false)
-                .propertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE)
-                .build();
-
-        UPPER_CAMEL_CASE_MAPPER = objectMapperBuilder.createXmlMapper(false)
-                .propertyNamingStrategy(PropertyNamingStrategies.UPPER_CAMEL_CASE)
-                .build();
-
+        return JacksonBuilderHelper.createObjectMapper(dataTimeFormat, dataFormat, timeFormat, propertyNamingStrategy);
     }
 
     public static <T> T readSnakeCaseValue(String json, Class<? extends T> clazz) {
@@ -200,120 +171,6 @@ public class JackJsonUtils {
             throw new UncheckedIOException(e);
         }
     }
-
-    public static <T> T readValueWithMvc(File file, Class<? extends T> clazz) {
-        try {
-            return MVC_OBJECT_MAPPER.readValue(file, clazz);
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
-    }
-
-    public static <T> T readValueWithMvc(String json, Class<? extends T> clazz) {
-        try {
-            return MVC_OBJECT_MAPPER.readValue(json, clazz);
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
-    }
-
-    public static <T> T readValueWithMvc(String json, JavaType javaType) {
-        try {
-            return MVC_OBJECT_MAPPER.readValue(json, javaType);
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
-    }
-
-    public static <T> T readValueWithMvc(File file, JavaType javaType) {
-        try {
-            return MVC_OBJECT_MAPPER.readValue(file, javaType);
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
-    }
-
-    public static <T> T readValueWithMvc(String json, Class<? extends T> clazz, Class<?>... typeClasses) {
-        try {
-            return MVC_OBJECT_MAPPER.readValue(json, javaType(MVC_OBJECT_MAPPER, clazz, typeClasses));
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
-    }
-
-    public static <T> T readValueWithMvc(File file, Class<? extends T> clazz, Class<?>... typeClasses) {
-        try {
-            return MVC_OBJECT_MAPPER.readValue(file, javaType(MVC_OBJECT_MAPPER, clazz, typeClasses));
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
-    }
-
-    public static <T> T readValueWithMvc(String json, TypeReference<T> typeReference) {
-        try {
-            return MVC_OBJECT_MAPPER.readValue(json, typeReference);
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
-    }
-
-    public static <T> T readValueWithMvc(File file, TypeReference<T> typeReference) {
-        try {
-            return MVC_OBJECT_MAPPER.readValue(file, typeReference);
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
-    }
-
-    public static <T> T readValueWithMvc(byte[] json, Class<? extends T> clazz) {
-        try {
-            return MVC_OBJECT_MAPPER.readValue(json, clazz);
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
-    }
-
-    public static <T> T readValueWithMvc(byte[] json, JavaType javaType) {
-        try {
-            return MVC_OBJECT_MAPPER.readValue(json, javaType);
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
-    }
-
-    public static <T> T readValueWithMvc(byte[] json, TypeReference<T> typeReference) {
-        try {
-            return MVC_OBJECT_MAPPER.readValue(json, typeReference);
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
-    }
-
-    public static <T> T readValueWithMvc(byte[] json, Class<? extends T> clazz, Class<?>... typeClasses) {
-        try {
-            return MVC_OBJECT_MAPPER.readValue(json, javaType(MVC_OBJECT_MAPPER, clazz, typeClasses));
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
-    }
-
-
-    public static String writeWithMvc(Object object) {
-        try {
-            return MVC_OBJECT_MAPPER.writeValueAsString(object);
-        } catch (JsonProcessingException e) {
-            throw new UncheckedIOException(e);
-        }
-    }
-
-    public static byte[] writeAsByteWithMvc(Object object) {
-        try {
-            return MVC_OBJECT_MAPPER.writeValueAsBytes(object);
-        } catch (JsonProcessingException e) {
-            throw new UncheckedIOException(e);
-        }
-    }
-
 
     public static <T> T readCamelCaseValue(String json, Class<? extends T> clazz) {
         try {
@@ -542,6 +399,152 @@ public class JackJsonUtils {
         }
     }
 
+    // ==================== Convert Value Methods ====================
+
+    /**
+     * 使用驼峰命名策略的 ObjectMapper 进行对象转换
+     * 
+     * @param fromValue 源对象
+     * @param toValueType 目标类型
+     * @param <T> 目标类型泛型
+     * @return 转换后的对象
+     */
+    public static <T> T convertValue(Object fromValue, Class<T> toValueType) {
+        try {
+            return CAMEL_CASE_MAPPER.convertValue(fromValue, toValueType);
+        } catch (IllegalArgumentException e) {
+            throw new UncheckedIOException(new IOException("Convert value failed", e));
+        }
+    }
+
+    /**
+     * 使用驼峰命名策略的 ObjectMapper 进行对象转换
+     * 
+     * @param fromValue 源对象
+     * @param toValueType 目标类型引用
+     * @param <T> 目标类型泛型
+     * @return 转换后的对象
+     */
+    public static <T> T convertValue(Object fromValue, TypeReference<T> toValueType) {
+        try {
+            return CAMEL_CASE_MAPPER.convertValue(fromValue, toValueType);
+        } catch (IllegalArgumentException e) {
+            throw new UncheckedIOException(new IOException("Convert value failed", e));
+        }
+    }
+
+    /**
+     * 使用驼峰命名策略的 ObjectMapper 进行对象转换
+     * 
+     * @param fromValue 源对象
+     * @param toValueType 目标 Java 类型
+     * @param <T> 目标类型泛型
+     * @return 转换后的对象
+     */
+    public static <T> T convertValue(Object fromValue, JavaType toValueType) {
+        try {
+            return CAMEL_CASE_MAPPER.convertValue(fromValue, toValueType);
+        } catch (IllegalArgumentException e) {
+            throw new UncheckedIOException(new IOException("Convert value failed", e));
+        }
+    }
+
+    /**
+     * 使用下划线命名策略的 ObjectMapper 进行对象转换
+     * 
+     * @param fromValue 源对象
+     * @param toValueType 目标类型
+     * @param <T> 目标类型泛型
+     * @return 转换后的对象
+     */
+    public static <T> T convertSnakeCaseValue(Object fromValue, Class<T> toValueType) {
+        try {
+            return SNAKE_CASE_MAPPER.convertValue(fromValue, toValueType);
+        } catch (IllegalArgumentException e) {
+            throw new UncheckedIOException(new IOException("Convert snake case value failed", e));
+        }
+    }
+
+    /**
+     * 使用下划线命名策略的 ObjectMapper 进行对象转换
+     * 
+     * @param fromValue 源对象
+     * @param toValueType 目标类型引用
+     * @param <T> 目标类型泛型
+     * @return 转换后的对象
+     */
+    public static <T> T convertSnakeCaseValue(Object fromValue, TypeReference<T> toValueType) {
+        try {
+            return SNAKE_CASE_MAPPER.convertValue(fromValue, toValueType);
+        } catch (IllegalArgumentException e) {
+            throw new UncheckedIOException(new IOException("Convert snake case value failed", e));
+        }
+    }
+
+    /**
+     * 使用下划线命名策略的 ObjectMapper 进行对象转换
+     * 
+     * @param fromValue 源对象
+     * @param toValueType 目标 Java 类型
+     * @param <T> 目标类型泛型
+     * @return 转换后的对象
+     */
+    public static <T> T convertSnakeCaseValue(Object fromValue, JavaType toValueType) {
+        try {
+            return SNAKE_CASE_MAPPER.convertValue(fromValue, toValueType);
+        } catch (IllegalArgumentException e) {
+            throw new UncheckedIOException(new IOException("Convert snake case value failed", e));
+        }
+    }
+
+    /**
+     * 使用首字母大写驼峰命名策略的 ObjectMapper 进行对象转换
+     * 
+     * @param fromValue 源对象
+     * @param toValueType 目标类型
+     * @param <T> 目标类型泛型
+     * @return 转换后的对象
+     */
+    public static <T> T convertUpperCamelCaseValue(Object fromValue, Class<T> toValueType) {
+        try {
+            return UPPER_CAMEL_CASE_MAPPER.convertValue(fromValue, toValueType);
+        } catch (IllegalArgumentException e) {
+            throw new UncheckedIOException(new IOException("Convert upper camel case value failed", e));
+        }
+    }
+
+    /**
+     * 使用首字母大写驼峰命名策略的 ObjectMapper 进行对象转换
+     * 
+     * @param fromValue 源对象
+     * @param toValueType 目标类型引用
+     * @param <T> 目标类型泛型
+     * @return 转换后的对象
+     */
+    public static <T> T convertUpperCamelCaseValue(Object fromValue, TypeReference<T> toValueType) {
+        try {
+            return UPPER_CAMEL_CASE_MAPPER.convertValue(fromValue, toValueType);
+        } catch (IllegalArgumentException e) {
+            throw new UncheckedIOException(new IOException("Convert upper camel case value failed", e));
+        }
+    }
+
+    /**
+     * 使用首字母大写驼峰命名策略的 ObjectMapper 进行对象转换
+     * 
+     * @param fromValue 源对象
+     * @param toValueType 目标 Java 类型
+     * @param <T> 目标类型泛型
+     * @return 转换后的对象
+     */
+    public static <T> T convertUpperCamelCaseValue(Object fromValue, JavaType toValueType) {
+        try {
+            return UPPER_CAMEL_CASE_MAPPER.convertValue(fromValue, toValueType);
+        } catch (IllegalArgumentException e) {
+            throw new UncheckedIOException(new IOException("Convert upper camel case value failed", e));
+        }
+    }
+
 
     public static ObjectMapper getCamelCaseMapper() {
         return CAMEL_CASE_MAPPER;
@@ -549,10 +552,6 @@ public class JackJsonUtils {
 
     public static ObjectMapper getSnakeCaseMapper() {
         return SNAKE_CASE_MAPPER;
-    }
-
-    public static ObjectMapper getMvcObjectMapper() {
-        return MVC_OBJECT_MAPPER;
     }
 
     public static ObjectMapper getUpperCamelCaseMapper() {

@@ -3,7 +3,8 @@ package com.weweibuy.framework.common.feign.mock;
 import com.fasterxml.jackson.databind.JavaType;
 import com.weweibuy.framework.common.core.exception.Exceptions;
 import com.weweibuy.framework.common.core.utils.HttpRequestUtils;
-import com.weweibuy.framework.common.core.utils.JackJsonUtils;
+import com.weweibuy.framework.common.core.utils.JacksonUtils;
+import com.weweibuy.framework.common.core.utils.JacksonUtilsForSpringMVC;
 import feign.*;
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
@@ -37,7 +38,7 @@ public class MockClient implements Client {
 
     public MockClient(Client delegate) {
         this.delegate = delegate;
-        this.configJavaType = JackJsonUtils.javaType(List.class, MockConfig.class);
+        this.configJavaType = JacksonUtils.javaType(List.class, MockConfig.class);
     }
 
     @Override
@@ -51,7 +52,7 @@ public class MockClient implements Client {
         // 读取mock数据
         String target = mockConfig.getTarget();
         String dataFile = mockDataDir + target;
-        MockData mockData = JackJsonUtils.readValueWithMvc(new File(dataFile), MockData.class);
+        MockData mockData = JacksonUtilsForSpringMVC.readValueWithMvc(new File(dataFile), MockData.class);
         Map<String, String> mcoKHeader = mockData.getHeader();
         Map<String, List<String>> header = Optional.ofNullable(mcoKHeader)
                 .map(h -> h.entrySet().stream()
@@ -65,7 +66,7 @@ public class MockClient implements Client {
         }
 
         byte[] body = Optional.ofNullable(mockData.getBody())
-                .map(o -> JackJsonUtils.writeAsByteWithMvc(o))
+                .map(o -> JacksonUtilsForSpringMVC.writeAsByteWithMvc(o))
                 .orElse("".getBytes());
 
         Integer status = Optional.ofNullable(mockData.getStatus())
@@ -85,7 +86,7 @@ public class MockClient implements Client {
 
         String url = request.url();
         Request.HttpMethod httpMethod = request.httpMethod();
-        List<MockConfig> configList = JackJsonUtils.readValueWithMvc(new File(configFile), configJavaType);
+        List<MockConfig> configList = JacksonUtilsForSpringMVC.readValueWithMvc(new File(configFile), configJavaType);
 
         Optional<MockConfig> mockDataOpt = configList.stream()
                 .filter(config -> !Objects.equals(config.enable, false))

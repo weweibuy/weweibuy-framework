@@ -1,9 +1,8 @@
 package com.weweibuy.framework.common.feign.support;
 
-import com.weweibuy.framework.common.core.utils.JackJsonUtils;
+import com.weweibuy.framework.common.core.utils.JacksonUtils;
 import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.boot.autoconfigure.http.HttpMessageConverters;
-import org.springframework.context.annotation.DependsOn;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 
 /**
@@ -21,7 +20,7 @@ public class UpperCamelCaseEncoderAndDecoder extends EncoderAndDecoder {
     static synchronized ObjectFactory<HttpMessageConverters> messageConverters() {
         if (httpMessageConvertersObjectFactory == null) {
             MappingJackson2HttpMessageConverter messageConverter =
-                    new MappingJackson2HttpMessageConverter(JackJsonUtils.getUpperCamelCaseMapper());
+                    new MappingJackson2HttpMessageConverter(JacksonUtils.getUpperCamelCaseMapper());
             HttpMessageConverters converters = new HttpMessageConverters(messageConverter);
             httpMessageConvertersObjectFactory = () -> converters;
         }
